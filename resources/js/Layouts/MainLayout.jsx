@@ -2,7 +2,7 @@ import { Header, Sidebar } from "../Components"
 
 export default function MainLayout({ children }) {
     return (
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen font-poppins">
             <Sidebar />
             <div className="">
                 <Header />
