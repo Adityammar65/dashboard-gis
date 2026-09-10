@@ -11,7 +11,7 @@ export default function Sidebar() {
             {/* Navigasi */}
 
             <nav className="space-y-1 px-3 py-5">
-                <a href="Dashboard" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#992e2e] hover:scale-105 transition">
+                <a href="Home" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#992e2e] hover:scale-105 transition">
                     <RiDashboardFill />
                     <span>Dashboard</span>
                 </a>
