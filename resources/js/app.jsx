@@ -2,6 +2,7 @@ import '../css/app.css';
 
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
+import 'leaflet/dist/leaflet.css';
 
 createInertiaApp({
     resolve: (name) => {
