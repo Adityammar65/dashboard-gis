@@ -26,7 +26,7 @@ export default function Dashboard() {
                             Dashboard Overview
                         </span>
                         <span className="mx-3">/</span>
-                        <span classname="text-xs font-light"> Wilayah </span>
+                        <span className="text-xs font-light"> Wilayah </span>
                     </div>
 
                     <button className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white hover:bg-green-600">
@@ -128,7 +128,7 @@ export default function Dashboard() {
 
                     {/* Data Berkoordinat */}
 
-                    <div className="rounded-xl border-t-4 border-sky-500 bg-white p-4 shadow transition-all duration-200 hover:scale-102 hover:shadow-lg">
+                    <div className="rounded-xl border-t-4 border-emerald-600 bg-white p-4 shadow transition-all duration-200 hover:scale-102 hover:shadow-lg">
                         <div className="flex justify-between">
                             <div>
                                 <p className="text-xs font-medium">
@@ -177,11 +177,11 @@ export default function Dashboard() {
                                 </div>
                             </div>
 
-                            <Link
+                            <a
                                 href="PetaSebaranAset"
                                 className="rounded-lg bg-blue-100 px-3 py-2 text-xs text-blue-800 hover:bg-blue-200">
-                                Buka Peta Penuh ↗
-                            </Link>
+                                Buka Peta Penuh
+                            </a>
                         </div>
 
                         <div className="h-64 overflow-hidden rounded-lg">
@@ -260,9 +260,16 @@ export default function Dashboard() {
 
                         </div>
 
-                        <div className="mt-6 flex items-center justify-end gap-2 text-xs">
-                            Lihat Seluruh Aset
-                            <FaArrowRight />
+                        <div className="mt-6 flex items-center justify-between mx-2 text-xs">
+                            <div className="flex items-center gap-2 text-black hover:text-blue-500 transition-all duration-200">
+                                <a href="DataTiang">Lihat Data Tiang</a>
+                                <FaArrowRight />
+                            </div>
+
+                            <div className="flex items-center gap-2 text-black hover:text-blue-500 transition-all duration-200">
+                                <a href="DataONT">Lihat Data ONT</a>
+                                <FaArrowRight />
+                            </div>
                         </div>
                     </div>
                 </div>

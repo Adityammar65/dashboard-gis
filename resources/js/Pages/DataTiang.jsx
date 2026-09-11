@@ -2,7 +2,7 @@
 
 import MainLayout from "../Layouts/MainLayout";
 
-import { FaPlus,FaFilter,FaEye,FaEdit, } from "react-icons/fa";
+import { FaPlus, FaFilter, FaEye, FaEdit, } from "react-icons/fa";
 import { FaTowerBroadcast } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
 
@@ -182,7 +182,7 @@ export default function Tiang() {
                         <table className="w-full min-w-[700px] border-collapse text-xs">
 
                             <thead>
-                                <tr className="border-b border-gray-300 text-left">
+                                <tr className="border-b border-gray-300 text-center">
                                     <th className="w-12 px-4 py-3 font-medium">
                                         No
                                     </th>
@@ -213,7 +213,7 @@ export default function Tiang() {
                                 </tr>
                             </thead>
 
-                            <tbody>
+                            <tbody className="text-center">
                                 {dataTiang.map((tiang) => (
                                     <tr
                                         key={tiang.no}
@@ -256,38 +256,45 @@ export default function Tiang() {
                                             </span>
                                         </td>
 
+                                        {/* Aksi */}
+
                                         <td className="px-4 py-2">
-                                                <div className="flex items-center gap-1">
-                                                    <button
-                                                        type="button"
-                                                        className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
-                                                    >
-                                                       <FaEye className="text-xl" />
-                                                    </button>
+                                            <div className="flex items-center gap-1">
 
-                                                    <button
-                                                        type="button"
-                                                        className="rounded-md bg-yellow-400 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
-                                                    >
-                                                        <FaEdit className="text-xl"/>
-                                                    </button>
+                                                {/* Detail */}
 
-                                                    <button
-                                                        type="button"
-                                                        className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
-                                                    >
-                                                        <MdDelete className="text-xl" />
-                                                    </button>
-                                                </div>
+                                                <button
+                                                    type="button"
+                                                    className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
+                                                >
+                                                    <FaEye className="text-xl" />
+                                                </button>
+
+                                                {/* Edit */}
+
+                                                <button
+                                                    type="button"
+                                                    className="rounded-md bg-yellow-400 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
+                                                >
+                                                    <FaEdit className="text-xl" />
+                                                </button>
+
+                                                {/* Hapus */}
+
+                                                <button
+                                                    type="button"
+                                                    className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
+                                                >
+                                                    <MdDelete className="text-xl" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
-
                         </table>
                     </div>
                 </div>
-
             </div>
         </MainLayout>
     );

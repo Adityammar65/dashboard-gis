@@ -150,38 +150,67 @@ export default function Tiang() {
                         <table className="w-full min-w-[700px] border-collapse text-xs">
 
                             <thead>
-                                <tr className="border-b border-gray-300 text-left">
-                                    <th className="w-12 px-4 py-3 font-medium">
+                                <tr className="border-b border-gray-300 text-center font-medium">
+                                    <th className="w-12 px-4 py-3">
                                         No
                                     </th>
 
-                                    <th className="w-24 px-4 py-3 font-medium">
+                                    <th className="w-24 px-4 py-3">
                                         Wilayah
                                     </th>
 
-                                    <th className="px-4 py-3 font-medium">
+                                    <th className="px-4 py-3">
                                         Total Aset
                                     </th>
 
-                                    <th className="px-4 py-3 font-medium">
+                                    <th className="px-4 py-3">
                                         Total Tiang
                                     </th>
 
-                                    <th className="px-4 py-3 font-medium">
+                                    <th className="px-4 py-3">
                                         Total ONT
                                     </th>
 
-                                    <th className="px-4 py-3 font-medium">
+                                    <th className="px-4 py-3">
                                         Aset Aktif
                                     </th>
 
-                                    <th className="w-20 px-4 py-3 font-medium">
+                                    <th className="w-20 px-4 py-3">
                                         Aset Nonaktif
                                     </th>
                                 </tr>
                             </thead>
 
                             <tbody>
+                                <tr className="border-b border-gray-300 text-center font-light">
+                                    <td className="px-4 py-2">
+                                        No
+                                    </td>
+
+                                    <td className="px-4 py-2">
+                                        Wilayah
+                                    </td>
+
+                                    <td className="px-4 py-2">
+                                        Total Aset
+                                    </td>
+
+                                    <td className="px-4 py23">
+                                        Total Tiang
+                                    </td>
+
+                                    <td className="px-4 py-2">
+                                        Total ONT
+                                    </td>
+
+                                    <td className="px-4 py-2">
+                                        Aset Aktif
+                                    </td>
+
+                                    <td className="px-4 py-2">
+                                        Aset Nonaktif
+                                    </td>
+                                </tr>
                             </tbody>
 
                         </table>
