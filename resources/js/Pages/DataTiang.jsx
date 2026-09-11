@@ -40,9 +40,15 @@ export default function Tiang() {
                 {/* Header */}
 
                 <div className="flex items-center gap-4">
-                    <div className="flex-1 rounded-xl border border-gray-700 bg-white px-4 py-3 shadow">
+                    <div className="items-center flex-1 rounded-xl border border-gray-700 bg-white px-4 py-3 shadow">
                         <span className="text-sm font-medium">
                             Data Tiang
+                        </span>
+
+                        <span className="mx-3">/</span>
+
+                        <span className="text-xs font-light">
+                            Wilayah
                         </span>
                     </div>
 
@@ -59,11 +65,12 @@ export default function Tiang() {
                 </div>
 
                 {/* Statistik */}
+
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
 
                     {/* Total Tiang */}
 
-                    <div className="flex min-h-[136px] flex-col justify-between rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow">
+                    <div className="hover:scale-102 transition-all duration-200 shadow flex min-h-[136px] flex-col justify-between rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow">
                         <div className="flex items-start justify-between">
                             <div>
                                 <p className="text-xs font-medium">
@@ -79,42 +86,30 @@ export default function Tiang() {
                                 <FaTowerBroadcast className="text-2xl" />
                             </div>
                         </div>
-
-                        <div className="flex gap-4 text-xs">
-                            <span className="flex items-center gap-2">
-                                <span className="h-2 w-2 rounded-full bg-green-500" />
-                                Aktif 9999
-                            </span>
-
-                            <span className="flex items-center gap-2">
-                                <span className="h-2 w-2 rounded-full bg-red-500" />
-                                Nonaktif 9999
-                            </span>
-                        </div>
                     </div>
 
                     {/* Aktif & Nonaktif */}
 
                     <div className="flex min-h-[136px] flex-col gap-4">
-                        <div className="flex flex-1 items-center rounded-xl border-t-4 border-emerald-600 bg-white px-4 shadow">
+                        <div className="hover:scale-102 transition-all shadow duration-200 flex flex-1 items-center rounded-xl border-t-4 border-emerald-600 bg-white px-4 shadow">
                             <div>
                                 <p className="text-xs font-medium">
-                                    TIANG ACTIVE
+                                    TIANG AKTIF
                                 </p>
 
-                                <h2 className="mt-1 text-2xl font-semibold">
+                                <h2 className="mt-1 text-xl font-semibold">
                                     999999
                                 </h2>
                             </div>
                         </div>
 
-                        <div className="flex flex-1 items-center rounded-xl border-t-4 border-red-500 bg-white px-4 shadow">
+                        <div className="hover:scale-102 duration-200 transition-all shadow flex flex-1 items-center rounded-xl border-t-4 border-red-500 bg-white px-4 shadow">
                             <div>
                                 <p className="text-xs font-medium">
-                                    TIANG NON ACTIVE
+                                    TIANG NONAKTIF
                                 </p>
 
-                                <h2 className="mt-1 text-2xl font-semibold">
+                                <h2 className="mt-1 text-xl font-semibold">
                                     999999
                                 </h2>
                             </div>
@@ -196,7 +191,7 @@ export default function Tiang() {
                                     </th>
 
                                     <th className="px-4 py-3 font-medium">
-                                        Kode Tiang
+                                        Nomor Tiang
                                     </th>
 
                                     <th className="px-4 py-3 font-medium">
@@ -252,8 +247,8 @@ export default function Tiang() {
                                         <td className="px-4 py-2">
                                             <span
                                                 className={`rounded-full px-2 py-1 text-[10px] text-white ${tiang.status === "Aktif"
-                                                        ? "bg-green-500"
-                                                        : "bg-red-500"
+                                                    ? "bg-green-500"
+                                                    : "bg-red-500"
                                                     }`}
                                             >
                                                 {tiang.status}
