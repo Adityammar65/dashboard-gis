@@ -21,7 +21,7 @@ export default function Sidebar() {
                     <span>Data Tiang</span>
                 </a>
 
-                <a href="#" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#992e2e] hover:scale-105 transition">
+                <a href="DataONT" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#992e2e] hover:scale-105 transition">
                     <MdRouter />
                     <span>Data ONT</span>
                 </a>
@@ -31,7 +31,7 @@ export default function Sidebar() {
                     <span>Wilayah</span>
                 </a>
 
-                <a href="#" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#992e2e] hover:scale-105 transition">
+                <a href="PetaSebaranAset" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#992e2e] hover:scale-105 transition">
                     <FaLocationCrosshairs />
                     <span>Peta Sebaran Aset</span>
                 </a>

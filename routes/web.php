@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use App\Http\Controllers\PageController;
+
+// Navigasi
 
 Route::get('/Home', [PageController::class, 'Index']);
 Route::get('/DataTiang', [PageController::class, 'DataTiang']);
-Route::get('/peta', function () {
-    return Inertia::render('Peta');
-});
+Route::get('/DataONT', [PageController::class, 'DataONT']);
+Route::get('/Peta', [PageController::class, 'Peta']);
+Route::get('/PetaSebaranAset', [PageController::class, 'PetaSebaranAset']);
