@@ -10,13 +10,19 @@ export default function Peta() {
 
     return (
         <MainLayout>
-            <div className="space-y-4">
+            <div className="space-y-4 ml-64">
 
                 {/* Judul */}
-                <div className="w-fit rounded-xl border border-gray-700 bg-white px-4 py-2.5 shadow-sm">
-                    <h1 className="text-sm font-semibold text-gray-800">
-                        Peta Sebaran Aset GIS
-                    </h1>
+                <div className="flex items-center gap-3">
+                    <div className="flex-1 rounded-xl border border-gray-700 bg-white px-4 py-3 shadow">
+                        <span className="text-sm font-medium">
+                            Peta Sebaran Aset
+                        </span>
+                        <span className="mx-3">/</span>
+                        <span classname="text-xs font-light"> Wilayah saat ini  </span>
+                    </div>
+
+                   
                 </div>
 
                 {/* Area utama */}
@@ -161,7 +167,7 @@ export default function Peta() {
                     </div>
 
                     {/* ================= MAP ================= */}
-                    <div className="border-[3px] border-purple-500 bg-white p-4">
+                    <div className="relative z-0 bg-white p-4">
 
                         {/* Header Map */}
                         <div className="flex items-start justify-between">
@@ -173,10 +179,13 @@ export default function Peta() {
 
                                 <div className="mt-2 flex items-center gap-4 text-[10px] text-gray-600">
                                     <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-green-500" />
-                                        Aktif
+                                        <span className="h-2 w-2 rounded-full bg-blue-900" />
+                                        Tiang
                                     </span>
-
+                                    <span className="flex items-center gap-2">
+                                        <span className="h-2 w-2 rounded-full bg-sky-500" />
+                                        ONT
+                                    </span>
                                     <span className="flex items-center gap-2">
                                         <span className="h-2 w-2 rounded-full bg-red-500" />
                                         Nonaktif
@@ -198,7 +207,7 @@ export default function Peta() {
                         </div>
 
                         {/* Map */}
-                        <div className="mt-0 h-[520px] overflow-hidden rounded-b-sm">
+                        <div className="relative z-0 h-[520px] overflow-hidden rounded-b-sm">
                             <MapView />
                         </div>
 

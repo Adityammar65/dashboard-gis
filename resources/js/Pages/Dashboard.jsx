@@ -178,9 +178,8 @@ export default function Dashboard() {
                             </div>
 
                             <Link
-                                href="/dashboard-gis/peta"
-                                className="rounded-lg bg-blue-100 px-3 py-2 text-xs text-blue-800 hover:bg-blue-200"
-                            >
+                                href="PetaSebaranAset"
+                                className="rounded-lg bg-blue-100 px-3 py-2 text-xs text-blue-800 hover:bg-blue-200">
                                 Buka Peta Penuh ↗
                             </Link>
                         </div>

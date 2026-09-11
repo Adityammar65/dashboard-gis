@@ -2,8 +2,9 @@
 
 import MainLayout from "../Layouts/MainLayout";
 
-import { FaPlus, FaFilter } from "react-icons/fa";
+import { FaPlus,FaFilter,FaEye,FaEdit, } from "react-icons/fa";
 import { FaTowerBroadcast } from "react-icons/fa6";
+import { MdDelete } from "react-icons/md";
 
 export default function Tiang() {
     const dataTiang = [
@@ -256,12 +257,28 @@ export default function Tiang() {
                                         </td>
 
                                         <td className="px-4 py-2">
-                                            <button
-                                                type="button"
-                                                className="text-gray-700 hover:text-blue-600"
-                                            >
-                                                Aksi
-                                            </button>
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        type="button"
+                                                        className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
+                                                    >
+                                                       <FaEye className="text-xl" />
+                                                    </button>
+
+                                                    <button
+                                                        type="button"
+                                                        className="rounded-md bg-yellow-400 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
+                                                    >
+                                                        <FaEdit className="text-xl"/>
+                                                    </button>
+
+                                                    <button
+                                                        type="button"
+                                                        className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
+                                                    >
+                                                        <MdDelete className="text-xl" />
+                                                    </button>
+                                                </div>
                                         </td>
                                     </tr>
                                 ))}
