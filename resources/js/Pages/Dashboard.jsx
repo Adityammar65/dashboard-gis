@@ -33,7 +33,7 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
 
                     {/* Total Tiang */}
-                    <div className="rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow">
+                    <div className="rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow transition-all duration-200 hover:scale-102 hover:shadow-lg">
                         <div className="flex justify-between">
                             <div>
                                 <p className="text-xs font-medium">
@@ -63,7 +63,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Total ONT */}
-                    <div className="rounded-xl border-t-4 border-sky-500 bg-white p-4 shadow">
+                    <div className="rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow transition-all duration-200 hover:scale-102 hover:shadow-lg">
                         <div className="flex justify-between">
                             <div>
                                 <p className="text-xs font-medium">
