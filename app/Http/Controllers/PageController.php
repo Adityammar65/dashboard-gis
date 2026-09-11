@@ -39,4 +39,12 @@ class PageController extends Controller
     {
         return Inertia::render('PetaSebaranAset');
     }
+    public function DetailTiang()
+    {
+        return Inertia::render('DetailTiang');
+    }
+    public function DetailONT()
+    {
+        return inertia::render('DetailONT');
+    }
 }
