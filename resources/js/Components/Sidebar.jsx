@@ -26,7 +26,7 @@ export default function Sidebar() {
                     <span>Data ONT</span>
                 </a>
 
-                <a href="#" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#992e2e] hover:scale-105 transition">
+                <a href="Wilayah" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#992e2e] hover:scale-105 transition">
                     <FaMap />
                     <span>Wilayah</span>
                 </a>
