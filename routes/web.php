@@ -9,6 +9,7 @@ Route::get('/Home', [PageController::class, 'Index']);
 Route::get('/DataTiang', [PageController::class, 'DataTiang']);
 Route::get('/DataONT', [PageController::class, 'DataONT']);
 Route::get('/Peta', [PageController::class, 'Peta']);
+Route::get('/Wilayah', [PageController::class, 'Wilayah']);
 Route::get('/PetaSebaranAset', [PageController::class, 'PetaSebaranAset']);
 Route::get('/DetailTiang', [PageController::class, 'DetailTiang']);
 Route::get('/DetailONT',[PageController::class,'DetailONT']);
