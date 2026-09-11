@@ -1,4 +1,7 @@
+{/* Import Main Layout */ }
+
 import MainLayout from "../Layouts/MainLayout";
+
 import {
     FaPlus,
     FaArrowRight,
@@ -16,6 +19,7 @@ export default function Dashboard() {
             <div className="space-y-4 ml-64 ">
 
                 {/* Header Dashboard */}
+
                 <div className="flex items-center gap-3">
                     <div className="flex-1 rounded-xl border border-gray-700 bg-white px-4 py-3 shadow">
                         <span className="text-sm font-medium">
@@ -30,9 +34,11 @@ export default function Dashboard() {
                 </div>
 
                 {/* Statistik */}
+
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
 
-                    {/* Total Tiang */}
+                    {/* Tiang */}
+
                     <div className="rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow transition-all duration-200 hover:scale-102 hover:shadow-lg">
                         <div className="flex justify-between">
                             <div>
@@ -62,8 +68,10 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    {/* Total ONT */}
-                    <div className="rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow transition-all duration-200 hover:scale-102 hover:shadow-lg">
+
+                    {/* ONT */}
+
+                    <div className="rounded-xl border-t-4 border-sky-500 bg-white p-4 shadow">
                         <div className="flex justify-between">
                             <div>
                                 <p className="text-xs font-medium">
@@ -92,7 +100,8 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    {/* Wilayah Coverage */}
+                    {/* Wilayah */}
+
                     <div className="rounded-xl border-t-4 border-yellow-400 bg-white p-4 shadow">
                         <div className="flex justify-between">
                             <div>
@@ -116,6 +125,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Data Berkoordinat */}
+
                     <div className="rounded-xl border-t-4 border-emerald-600 bg-white p-4 shadow">
                         <div className="flex justify-between">
                             <div>
@@ -140,9 +150,11 @@ export default function Dashboard() {
                 </div>
 
                 {/* Bagian bawah */}
+
                 <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
 
                     {/* Peta */}
+
                     <div className="xl:col-span-2 rounded-xl bg-white p-4 shadow">
                         <div className="mb-3 flex items-center justify-between">
                             <div>
@@ -162,11 +174,11 @@ export default function Dashboard() {
                                     </span>
                                 </div>
                             </div>
-                            
+
                             <Link
                                 href="/dashboard-gis/peta"
-                                    className="rounded-lg bg-blue-100 px-3 py-2 text-xs text-blue-800 hover:bg-blue-200"
-                                    >
+                                className="rounded-lg bg-blue-100 px-3 py-2 text-xs text-blue-800 hover:bg-blue-200"
+                            >
                                 Buka Peta Penuh ↗
                             </Link>
                         </div>
@@ -177,6 +189,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Pembaruan Aset */}
+
                     <div className="rounded-xl border-t-4 border-blue-600 bg-white p-4 shadow">
                         <div className="flex items-center justify-between">
                             <div>

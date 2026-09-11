@@ -8,6 +8,7 @@ export default function Peta() {
             <div className="space-y-4">
 
                 {/* Header */}
+
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-xl font-semibold">
@@ -23,11 +24,12 @@ export default function Peta() {
                         href="/dashboard-gis/Home"
                         className="rounded-lg bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
                     >
-                        ← Kembali
+                        Kembali
                     </Link>
                 </div>
 
                 {/* Map */}
+
                 <div className="h-[calc(100vh-100px)] overflow-hidden rounded-xl bg-white shadow">
                     <MapView />
                 </div>
