@@ -1,6 +1,5 @@
 import MainLayout from "../Layouts/MainLayout";
 import MapView from "../Components/MapView";
-import { Link } from "@inertiajs/react";
 import { FaArrowLeft, FaPen, FaExternalLinkAlt } from "react-icons/fa";
 import { useState } from "react";
 
@@ -19,30 +18,30 @@ export default function DetailTiang() {
         <MainLayout>
             <div className="space-y-4 ml-64">
 
-                {/* Header halaman */}
+                {/* Header */}
+
                 <div className="flex items-center justify-between">
-                    <div className="w-full rounded-xl border border-gray-700 bg-white px-4 py-2.5 shadow-sm">
-                        <h1 className="text-sm font-semibold text-gray-800">
+                    <div className="w-full rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] text-white px-4 py-3 shadow-sm">
+                        <h1 className="text-sm font-semibold">
                             Detail Tiang
                         </h1>
                     </div>
 
-                    <Link
-                        href="/dashboard-gis/DataTiang"
+                    <a
+                        href="DataTiang"
                         className="ml-3 flex shrink-0 items-center gap-2 rounded-md bg-red-500 px-3 py-2 text-xs font-medium text-white transition hover:bg-red-600"
                     >
                         <FaArrowLeft />
                         Kembali
-                    </Link>
+                    </a>
                 </div>
 
-                {/* Content */}
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
 
-                    {/* ================= GALERI ================= */}
                     <div className="rounded-lg bg-white p-4 shadow-md">
 
                         {/* Foto utama */}
+
                         <div className="overflow-hidden rounded-md">
                             <img
                                 src={activeImage}
@@ -52,17 +51,17 @@ export default function DetailTiang() {
                         </div>
 
                         {/* Thumbnail */}
+
                         <div className="mt-2 grid grid-cols-3 gap-2">
                             {images.map((image, index) => (
                                 <button
                                     key={image}
                                     type="button"
                                     onClick={() => setActiveImage(image)}
-                                    className={`overflow-hidden rounded-md border-2 transition ${
-                                        activeImage === image
-                                            ? "border-blue-500"
-                                            : "border-transparent hover:border-gray-300"
-                                    }`}
+                                    className={`overflow-hidden rounded-md border-2 transition ${activeImage === image
+                                        ? "border-blue-500"
+                                        : "border-transparent hover:border-gray-300"
+                                        }`}
                                 >
                                     <img
                                         src={image}
@@ -75,10 +74,10 @@ export default function DetailTiang() {
 
                     </div>
 
-                    {/* ================= DETAIL ================= */}
                     <div className="rounded-lg bg-white p-4 shadow-md">
 
                         {/* Judul + badge */}
+
                         <div className="flex items-start justify-between">
                             <div>
                                 <h2 className="text-lg font-bold text-gray-800">
@@ -86,10 +85,11 @@ export default function DetailTiang() {
                                 </h2>
                             </div>
 
-                            
+
                         </div>
 
                         {/* Informasi */}
+
                         <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-5 text-xs">
 
                             <div>
@@ -145,6 +145,7 @@ export default function DetailTiang() {
                         </div>
 
                         {/* Edit */}
+
                         <button
                             type="button"
                             className="mt-5 flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-blue-700"
@@ -154,6 +155,7 @@ export default function DetailTiang() {
                         </button>
 
                         {/* Map */}
+
                         <div className="relative mt-4 h-[210px] overflow-hidden rounded-lg bg-gray-200">
 
                             <MapView />
@@ -165,9 +167,7 @@ export default function DetailTiang() {
                                 <FaExternalLinkAlt className="text-sm" />
                             </button>
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </MainLayout>
