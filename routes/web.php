@@ -12,4 +12,8 @@ Route::get('/Peta', [PageController::class, 'Peta']);
 Route::get('/Wilayah', [PageController::class, 'Wilayah']);
 Route::get('/PetaSebaranAset', [PageController::class, 'PetaSebaranAset']);
 Route::get('/DetailTiang', [PageController::class, 'DetailTiang']);
-Route::get('/DetailONT',[PageController::class,'DetailONT']);
+Route::get('/DetailONT', [PageController::class, 'DetailONT']);
+
+// Auth
+
+Route::get('/Login', [PageController::class, 'Login']);

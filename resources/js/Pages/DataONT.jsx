@@ -41,8 +41,8 @@ export default function ONT() {
                 {/* Header */}
 
                 <div className="flex items-center gap-4">
-                    <div className="items-center flex-1 rounded-xl border border-gray-700 bg-white px-4 py-3 shadow">
-                        <span className="text-sm font-medium">
+                    <div className="items-center flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow text-white">
+                        <span className="text-sm font-semibold">
                             Data ONT
                         </span>
 
@@ -264,7 +264,7 @@ export default function ONT() {
                                                 {/* Detail */}
 
                                                 <a
-                                                   href="DetailONT"
+                                                    href="DetailONT"
                                                     className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
                                                 >
                                                     <FaEye className="text-xl" />

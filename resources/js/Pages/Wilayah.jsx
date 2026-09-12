@@ -14,8 +14,8 @@ export default function Tiang() {
                 {/* Header */}
 
                 <div className="flex items-center gap-4">
-                    <div className="items-center flex-1 rounded-xl border border-gray-700 bg-white px-4 py-3 shadow">
-                        <span className="text-sm font-medium">
+                    <div className="items-center flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] text-white px-4 py-3 shadow">
+                        <span className="text-sm font-semibold">
                             Data Wilayah
                         </span>
 

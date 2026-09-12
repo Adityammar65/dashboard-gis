@@ -11,18 +11,17 @@ import {
 import { FaTowerBroadcast } from "react-icons/fa6";
 import { MdRouter, MdStorage } from "react-icons/md";
 import MapView from "../Components/MapView";
-import { Link } from "@inertiajs/react";
 
 export default function Dashboard() {
     return (
         <MainLayout>
             <div className="space-y-4 ml-64 ">
 
-                {/* Header Dashboard */}
+                {/* Header */}
 
                 <div className="flex items-center gap-3">
-                    <div className="flex-1 rounded-xl border border-gray-700 bg-white px-4 py-3 shadow">
-                        <span className="text-sm font-medium">
+                    <div className="flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow text-white">
+                        <span className="text-sm font-semibold">
                             Dashboard Overview
                         </span>
                         <span className="mx-3">/</span>
@@ -151,8 +150,6 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Bagian bawah */}
-
                 <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
 
                     {/* Peta */}
@@ -191,7 +188,7 @@ export default function Dashboard() {
 
                     {/* Pembaruan Aset */}
 
-                    <div className="rounded-xl border-t-4 border-blue-600 bg-white p-4 shadow">
+                    <div className="rounded-xl border-t-4 border-blue-600 bg-white p-4 shadow hover:scale-102 transition-all duration-200">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs font-medium">

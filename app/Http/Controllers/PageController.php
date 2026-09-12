@@ -42,18 +42,31 @@ class PageController extends Controller
         return Inertia::render('Wilayah');
     }
 
-    // PetaSebaranAset
+    // Peta Sebaran Aset
 
     public function PetaSebaranAset()
     {
         return Inertia::render('PetaSebaranAset');
     }
+
+    // Detail Tiang
+
     public function DetailTiang()
     {
         return Inertia::render('DetailTiang');
     }
+
+    // Detail ONT
+
     public function DetailONT()
     {
-        return inertia::render('DetailONT');
+        return Inertia::render('DetailONT');
+    }
+
+    // Login
+
+    public function Login()
+    {
+        return Inertia::render('Login');
     }
 }
