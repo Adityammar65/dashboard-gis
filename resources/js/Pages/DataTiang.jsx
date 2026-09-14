@@ -2,8 +2,7 @@
 
 import MainLayout from "../Layouts/MainLayout";
 
-import { FaPlus, FaFilter, FaEye, FaEdit, } from "react-icons/fa";
-import { FaTowerBroadcast } from "react-icons/fa6";
+import { FaPlus, FaFilter, FaEye, FaEdit, FaWifi } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
 export default function Tiang() {
@@ -84,7 +83,7 @@ export default function Tiang() {
                             </div>
 
                             <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-900 text-white">
-                                <FaTowerBroadcast className="text-2xl" />
+                                <FaWifi className="text-2xl" />
                             </div>
                         </div>
                     </div>

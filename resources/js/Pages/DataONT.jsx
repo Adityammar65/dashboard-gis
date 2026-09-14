@@ -3,8 +3,7 @@
 import MainLayout from "../Layouts/MainLayout";
 
 import { FaPlus, FaFilter, FaEye, FaEdit } from "react-icons/fa";
-import { FaTowerBroadcast } from "react-icons/fa6";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdRouter } from "react-icons/md";
 
 export default function ONT() {
     const dataONT = [
@@ -71,7 +70,7 @@ export default function ONT() {
 
                     {/* Total ONT */}
 
-                    <div className="hover:scale-102 transition-all duration-200 shadow flex min-h-[136px] flex-col justify-between rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow">
+                    <div className="hover:scale-102 transition-all duration-200 shadow flex min-h-[136px] flex-col justify-between rounded-xl border-t-4 border-sky-500 bg-white p-4 shadow">
                         <div className="flex items-start justify-between">
                             <div>
                                 <p className="text-xs font-medium">
@@ -83,8 +82,8 @@ export default function ONT() {
                                 </h2>
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-900 text-white">
-                                <FaTowerBroadcast className="text-2xl" />
+                            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-sky-500 text-white">
+                                <MdRouter className="text-2xl" />
                             </div>
                         </div>
                     </div>

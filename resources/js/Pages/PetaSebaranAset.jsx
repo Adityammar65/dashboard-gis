@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaWifi } from "react-icons/fa";
+import { MdRouter } from "react-icons/md";
+
 import MainLayout from "../Layouts/MainLayout";
 import MapView from "../Components/MapView";
 
@@ -36,25 +38,30 @@ export default function Peta() {
                         <MapView />
                     </div>
 
-                    <div className="absolute left-4 top-4 z-10">
+                    <div className="absolute left-15 top-4 z-10">
                         <div className="rounded-lg bg-white/95 px-4 py-3 shadow-md backdrop-blur-sm">
 
                             <h2 className="text-sm font-semibold text-gray-800">
-                                Peta Sebaran Aset GIS
+                                Legenda
                             </h2>
 
                             {/* Legenda */}
 
-                            <div className="mt-2 flex items-center gap-4 text-[10px] text-gray-600">
+                            <div className="mt-2 flex items-center gap-4 text-xs text-gray-800">
 
                                 <span className="flex items-center gap-2">
-                                    <span className="h-2 w-2 rounded-full bg-blue-900" />
+                                    <FaWifi size={25} className="p-1 rounded-full text-white bg-blue-900" />
                                     Tiang
                                 </span>
 
                                 <span className="flex items-center gap-2">
-                                    <span className="h-2 w-2 rounded-full bg-sky-500" />
+                                    <MdRouter size={25} className="text-white p-1 rounded-full bg-sky-500" />
                                     ONT
+                                </span>
+
+                                <span className="flex items-center gap-2">
+                                    <span className="h-2 w-2 rounded-full bg-green-500" />
+                                    Aktif
                                 </span>
 
                                 <span className="flex items-center gap-2">
@@ -68,16 +75,9 @@ export default function Peta() {
 
                     {/* Koordinat */}
 
-                    <div className="absolute bottom-4 left-4 z-10 rounded-md bg-white/90 px-3 py-2 text-[10px] text-gray-600 shadow backdrop-blur-sm">
+                    <div className="absolute bottom-4 left-4 z-10 rounded-md bg-white/90 px-3 py-2 text-xs text-gray-800 shadow backdrop-blur-sm">
                         Koordinat
                     </div>
-
-                    <button
-                        type="button"
-                        className="absolute bottom-4 right-4 z-10 rounded-md bg-white/95 px-3 py-2 text-[10px] font-medium text-gray-700 shadow-md backdrop-blur-sm transition hover:bg-white"
-                    >
-                        Buka Peta Penuh ↗
-                    </button>
 
                     <div className="absolute right-4 top-4 z-10 w-[250px] space-y-3">
 
@@ -85,7 +85,7 @@ export default function Peta() {
 
                         <div className="rounded-lg bg-white/95 px-3.5 py-4 shadow-md backdrop-blur-sm">
 
-                            <h2 className="mb-3 text-[11px] font-bold text-gray-800">
+                            <h2 className="mb-3 text-sm font-bold text-gray-800">
                                 INSPEKSI ASET
                             </h2>
 
@@ -97,8 +97,8 @@ export default function Peta() {
                                         type="button"
                                         onClick={() => setAssetType(type)}
                                         className={`h-7 rounded-md border border-gray-800 px-2 text-[10px] font-semibold transition ${assetType === type
-                                                ? "bg-black text-white"
-                                                : "bg-white text-gray-800 hover:bg-gray-100"
+                                            ? "bg-black text-white"
+                                            : "bg-white text-gray-800 hover:bg-gray-100"
                                             }`}
                                     >
                                         {type}
