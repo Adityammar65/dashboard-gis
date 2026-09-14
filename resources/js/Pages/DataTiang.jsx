@@ -54,13 +54,13 @@ export default function Tiang() {
 
                     {/* Form ONT */}
 
-                    <button
-                        type="button"
+                    <a
+                        href="tambah-tiang"
                         className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white shadow hover:bg-green-600"
                     >
                         <FaPlus />
-                        Form ONT
-                    </button>
+                        Form Tiang
+                    </a>
 
                 </div>
 
