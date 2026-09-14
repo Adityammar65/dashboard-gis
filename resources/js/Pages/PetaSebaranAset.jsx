@@ -60,12 +60,12 @@ export default function Peta() {
                                 </span>
 
                                 <span className="flex items-center gap-2">
-                                    <span className="h-2 w-2 rounded-full bg-green-500" />
+                                    <span className="h-3 w-3 rounded-full bg-green-500" />
                                     Aktif
                                 </span>
 
                                 <span className="flex items-center gap-2">
-                                    <span className="h-2 w-2 rounded-full bg-red-500" />
+                                    <span className="h-3 w-3 rounded-full bg-red-500" />
                                     Nonaktif
                                 </span>
 
@@ -75,8 +75,8 @@ export default function Peta() {
 
                     {/* Koordinat */}
 
-                    <div className="absolute bottom-4 left-4 z-10 rounded-md bg-white/90 px-3 py-2 text-xs text-gray-800 shadow backdrop-blur-sm">
-                        Koordinat
+                    <div className="absolute bottom-4 left-4 z-10 rounded-md bg-white/90 px-3 py-2 text-sm text-gray-800 shadow backdrop-blur-sm">
+                        Latitude | Longitude
                     </div>
 
                     <div className="absolute right-4 top-4 z-10 w-[250px] space-y-3">

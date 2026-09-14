@@ -28,12 +28,12 @@ export default function Header() {
                     <input
                         type="text"
                         placeholder="Cari Aset..."
-                        className="w-full rounded bg-white/55 px-5 py-2 pr-10 text-sm text-black outline-none focus:bg-white"
+                        className="w-full rounded bg-white/65 px-5 py-2 pr-10 text-sm text-black outline-none focus:bg-white"
                     />
 
                     <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-700 transition hover:text-[#ab3c3c]" />
                 </div>
-                <div className="flex items-center bg-white/55 rounded gap-2">
+                <div className="flex items-center bg-white/65 rounded gap-2">
                     <select defaultValue="" className="text-xs outline-none appearance-none px-3 py-2">
                         <option value="" disabled>Pilih Aset</option>
                         <option value="Tiang">Tiang</option>
@@ -45,7 +45,7 @@ export default function Header() {
             </div>
 
             <a href="notifikasi">
-                <IoMdNotifications size={50} className="px-3 text-white/55 hover:text-white transition-all duration-200" />
+                <IoMdNotifications size={50} className="px-3 text-white/65 hover:text-white transition-all duration-200" />
             </a>
         </header>
     );

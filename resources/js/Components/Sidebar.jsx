@@ -43,9 +43,9 @@ export default function Sidebar({ isOpen }) {
 
                 {/* Logout */}
 
-                <div className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-[#992e2e] hover:scale-105 transition">
+                <div className="flex rounded items-center gap-3 px-3 py-2 text-sm font-medium text-[#992e2e] hover:scale-105 transition-all hover:bg-red-500 hover:text-white">
                     <IoIosLogOut size={20} />
-                    {isOpen && <a href="login">Keluar</a>}
+                    {isOpen && <a href="login" onClick={() => confirm("Kembali ke Halaman Login?")}>Keluar</a>}
                 </div>
             </nav>
         </aside>
