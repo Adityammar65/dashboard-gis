@@ -10,7 +10,7 @@ export default function Peta() {
 
     return (
         <MainLayout>
-            <div className="space-y-4 ml-64">
+            <div className="space-y-4">
 
                 {/* Header */}
 

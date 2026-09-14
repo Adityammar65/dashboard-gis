@@ -9,7 +9,7 @@ import { LuBox } from "react-icons/lu";
 export default function Tiang() {
     return (
         <MainLayout>
-            <div className="space-y-4 ml-64">
+            <div className="space-y-4">
 
                 {/* Header */}
 
