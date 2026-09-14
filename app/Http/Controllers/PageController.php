@@ -69,4 +69,11 @@ class PageController extends Controller
     {
         return Inertia::render('Login');
     }
+
+    // Notifikasi
+    
+    public function Notifikasi()
+    {
+        return Inertia::render('Notifikasi');
+    }
 }

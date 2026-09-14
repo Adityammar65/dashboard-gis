@@ -44,7 +44,7 @@ export default function Header() {
                 </div>
             </div>
 
-            <a href="#">
+            <a href="notifikasi">
                 <IoMdNotifications size={50} className="px-3 text-white/55 hover:text-white transition-all duration-200" />
             </a>
         </header>
