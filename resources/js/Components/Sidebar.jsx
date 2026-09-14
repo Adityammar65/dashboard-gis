@@ -11,26 +11,41 @@ export default function Sidebar({ isOpen }) {
             label: "Beranda",
             href: "home",
             icon: <IoMdHome size={20} />,
+            activePaths: ["home"],
         },
         {
             label: "Data Tiang",
             href: "data-tiang",
             icon: <FaWifi size={20} />,
+            activePaths: [
+                "data-tiang",
+                "tambah-tiang",
+                "edit-tiang",
+                "detail-tiang",
+            ],
         },
         {
             label: "Data ONT",
             href: "data-ont",
             icon: <MdRouter size={20} />,
+            activePaths: [
+                "data-ont",
+                "tambah-ont",
+                "edit-ont",
+                "detail-ont",
+            ],
         },
         {
             label: "Data Wilayah",
             href: "wilayah",
             icon: <FaMap size={20} />,
+            activePaths: ["wilayah"],
         },
         {
             label: "Peta Sebaran Aset",
             href: "peta-sebaran-aset",
             icon: <FaLocationCrosshairs size={20} />,
+            activePaths: ["peta-sebaran-aset"],
         },
     ];
 
@@ -48,9 +63,11 @@ export default function Sidebar({ isOpen }) {
             <nav className="relative z-10 space-y-2 px-3 py-5">
 
                 {menuItems.map((item) => {
-                    const isActive =
-                        currentPath === `/${item.href}` ||
-                        currentPath.endsWith(`/${item.href}`);
+                    const isActive = item.activePaths.some(
+                        (path) =>
+                            currentPath === `/${path}` ||
+                            currentPath.endsWith(`/${path}`)
+                    );
 
                     return (
                         <div
