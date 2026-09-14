@@ -264,7 +264,7 @@ export default function ONT() {
                                                 {/* Detail */}
 
                                                 <a
-                                                    href="DetailONT"
+                                                    href="detail-ont"
                                                     className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
                                                 >
                                                     <FaEye className="text-xl" />

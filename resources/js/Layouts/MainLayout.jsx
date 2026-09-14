@@ -20,9 +20,9 @@ export default function MainLayout({ children }) {
                 onClick={() => setIsOpen(!isOpen)}
                 className={`fixed top-20 z-50
                 -translate-x-1/2
-                bg-white p-2 rounded-full shadow-md
-                text-[#992e2e]
-                hover:bg-gray-100
+                bg-[#ab3c3c] p-2 rounded-full shadow-md
+                text-white
+                hover:bg-[#ab3c3c]/80
                 transition-all duration-300
                 ${isOpen ? "left-64" : "left-20"}`}
             >

@@ -264,7 +264,7 @@ export default function Tiang() {
                                                 {/* Detail */}
 
                                                 <a
-                                                    href="DetailTiang"
+                                                    href="detail-tiang"
                                                     className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
                                                 >
                                                     <FaEye className="text-xl" />

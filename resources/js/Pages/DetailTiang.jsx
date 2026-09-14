@@ -28,7 +28,7 @@ export default function DetailTiang() {
                     </div>
 
                     <a
-                        href="DataTiang"
+                        href="data-tiang"
                         className="ml-3 flex shrink-0 items-center gap-2 rounded-md bg-red-500 px-3 py-2 text-xs font-medium text-white transition hover:bg-red-600"
                     >
                         <FaArrowLeft />

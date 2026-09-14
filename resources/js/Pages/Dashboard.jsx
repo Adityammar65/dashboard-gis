@@ -22,10 +22,10 @@ export default function Dashboard() {
                 <div className="flex items-center gap-3">
                     <div className="flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow text-white">
                         <span className="text-sm font-semibold">
-                            Dashboard Overview
+                            Beranda
                         </span>
                         <span className="mx-3">/</span>
-                        <span className="text-xs font-light"> Wilayah </span>
+                        <span className="text-xs font-light">Wilayah</span>
                     </div>
 
                     <button className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white hover:bg-green-600">

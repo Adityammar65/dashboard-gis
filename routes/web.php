@@ -5,15 +5,15 @@ use App\Http\Controllers\PageController;
 
 // Navigasi
 
-Route::get('/Home', [PageController::class, 'Index']);
-Route::get('/DataTiang', [PageController::class, 'DataTiang']);
-Route::get('/DataONT', [PageController::class, 'DataONT']);
+Route::get('/home', [PageController::class, 'Index']);
+Route::get('/data-tiang', [PageController::class, 'DataTiang']);
+Route::get('/data-ont', [PageController::class, 'DataONT']);
 Route::get('/Peta', [PageController::class, 'Peta']);
-Route::get('/Wilayah', [PageController::class, 'Wilayah']);
-Route::get('/PetaSebaranAset', [PageController::class, 'PetaSebaranAset']);
-Route::get('/DetailTiang', [PageController::class, 'DetailTiang']);
-Route::get('/DetailONT', [PageController::class, 'DetailONT']);
+Route::get('/wilayah', [PageController::class, 'Wilayah']);
+Route::get('/peta-sebaran-aset', [PageController::class, 'PetaSebaranAset']);
+Route::get('/detail-tiang', [PageController::class, 'DetailTiang']);
+Route::get('/detail-ont', [PageController::class, 'DetailONT']);
 
 // Auth
 
-Route::get('/Login', [PageController::class, 'Login']);
+Route::get('/login', [PageController::class, 'Login']);

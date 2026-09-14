@@ -21,14 +21,14 @@ export default function DetailONT() {
                 {/* Header */}
 
                 <div className="flex items-center justify-between">
-                    <div className="w-full rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow-sm">
-                        <h1 className="text-sm font-semibold text-gray-800">
+                    <div className="w-full rounded-xl bg-gradient-to-r text-white from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow-sm">
+                        <h1 className="text-sm font-semibold">
                             Detail ONT
                         </h1>
                     </div>
 
                     <a
-                        href="DataONT"
+                        href="data-ont"
                         className="ml-3 flex shrink-0 items-center gap-2 rounded-md bg-red-500 px-3 py-2 text-xs font-medium text-white transition hover:bg-red-600"
                     >
                         <FaArrowLeft />
