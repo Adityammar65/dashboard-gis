@@ -13,6 +13,7 @@ Route::get('/wilayah', [PageController::class, 'Wilayah']);
 Route::get('/peta-sebaran-aset', [PageController::class, 'PetaSebaranAset']);
 Route::get('/detail-tiang', [PageController::class, 'DetailTiang']);
 Route::get('/detail-ont', [PageController::class, 'DetailONT']);
+Route::get('/notifikasi', [PageController::class, 'Notifikasi']);
 
 // Auth
 
