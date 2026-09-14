@@ -21,7 +21,7 @@ export default function MainLayout({ children }) {
 
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`fixed top-20 z-50
+                className={`fixed top-82.5 z-50
                 -translate-x-1/2
                 bg-[#ab3c3c] p-2 rounded-full shadow-md
                 text-white
