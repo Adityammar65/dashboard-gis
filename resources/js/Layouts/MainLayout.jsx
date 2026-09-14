@@ -10,12 +10,15 @@ export default function MainLayout({ children }) {
         <div className="relative min-h-screen font-poppins">
 
             {/* Sidebar */}
+            
             <Sidebar isOpen={isOpen} />
 
             {/* Header */}
+
             <Header />
 
-            {/* Tombol panah */}
+            {/* Tombol Toggle Sidebar */}
+
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`fixed top-20 z-50
@@ -34,6 +37,7 @@ export default function MainLayout({ children }) {
             </button>
 
             {/* Isi halaman */}
+
             <main
                 className={`min-h-[calc(100vh-72px)] p-6
                 transition-all duration-300
