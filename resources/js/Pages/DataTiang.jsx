@@ -271,12 +271,12 @@ export default function Tiang() {
 
                                                 {/* Edit */}
 
-                                                <button
-                                                    type="button"
+                                                <a
+                                                    href="edit-tiang"
                                                     className="rounded-md bg-yellow-400 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
                                                 >
                                                     <FaEdit className="text-xl" />
-                                                </button>
+                                                </a>
 
                                                 {/* Hapus */}
 

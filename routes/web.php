@@ -17,6 +17,7 @@ Route::get('/detail-ont', [PageController::class, 'DetailONT']);
 Route::get('/notifikasi', [PageController::class, 'Notifikasi']);
 Route::get('/tambah-tiang', [FormController::class, 'TambahTiang']);
 Route::get('/tambah-ont', [FormController::class, 'TambahONT']);
+Route::get('/edit-tiang', [FormController::class, 'EditTiang']);
 
 // Auth
 
