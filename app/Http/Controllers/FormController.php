@@ -20,8 +20,18 @@ class FormController extends Controller
     {
         return Inertia::render('FormTambahONT');
     }
+
+    // Form Edit Tiang
+
     public function EditTiang()
     {
         return Inertia::render('FormEditTiang');
+    }
+
+    // Form Edit ONT
+
+    public function EditONT()
+    {
+        return Inertia::render('FormEditONT');
     }
 }

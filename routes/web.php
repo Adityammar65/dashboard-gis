@@ -15,9 +15,13 @@ Route::get('/peta-sebaran-aset', [PageController::class, 'PetaSebaranAset']);
 Route::get('/detail-tiang', [PageController::class, 'DetailTiang']);
 Route::get('/detail-ont', [PageController::class, 'DetailONT']);
 Route::get('/notifikasi', [PageController::class, 'Notifikasi']);
+
+// CRUD
+
 Route::get('/tambah-tiang', [FormController::class, 'TambahTiang']);
 Route::get('/tambah-ont', [FormController::class, 'TambahONT']);
 Route::get('/edit-tiang', [FormController::class, 'EditTiang']);
+Route::get('/edit-ont', [FormController::class, 'EditONT']);
 
 // Auth
 
