@@ -1,4 +1,4 @@
-import MainLayout from "../Layouts/MainLayout";
+import MainLayout from "../../Layouts/MainLayout";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 
 export default function FormTambahTiang() {

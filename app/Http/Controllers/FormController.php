@@ -11,27 +11,27 @@ class FormController extends Controller
 
     public function TambahTiang()
     {
-        return Inertia::render('FormTambahTiang');
+        return Inertia::render('Forms/FormTambahTiang');
     }
 
     // Form Tambah ONT
 
     public function TambahONT()
     {
-        return Inertia::render('FormTambahONT');
+        return Inertia::render('Forms/FormTambahONT');
     }
 
     // Form Edit Tiang
 
     public function EditTiang()
     {
-        return Inertia::render('FormEditTiang');
+        return Inertia::render('Forms/FormEditTiang');
     }
 
     // Form Edit ONT
 
     public function EditONT()
     {
-        return Inertia::render('FormEditONT');
+        return Inertia::render('Forms/FormEditONT');
     }
 }
