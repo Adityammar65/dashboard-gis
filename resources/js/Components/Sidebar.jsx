@@ -78,16 +78,15 @@ export default function Sidebar({ isOpen }) {
                                 text-sm font-medium
                                 cursor-pointer
                                 transition-all duration-200
-                                ${
-                                    isActive
-                                        ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
-                                        : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C]"
+                                ${isActive
+                                    ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
+                                    : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C]"
                                 }
                                 ${!isOpen ? "justify-center" : ""}
                             `}
                         >
                             {/* Indicator Active */}
-                            
+
                             {isActive && (
                                 <span
                                     className="
@@ -124,7 +123,7 @@ export default function Sidebar({ isOpen }) {
                 {/* Separator */}
 
                 <div className="py-2">
-                    <hr className="border-0 border-t-2 border-[#AB3C3C]/20 rounded-full" />
+                    <hr className="border-0 border-t-2 border-[#AB3C3C]/50 rounded-full" />
                 </div>
 
                 {/* Logout */}
