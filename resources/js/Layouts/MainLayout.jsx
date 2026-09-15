@@ -10,7 +10,7 @@ export default function MainLayout({ children }) {
         <div className="relative min-h-screen font-poppins">
 
             {/* Sidebar */}
-            
+
             <Sidebar isOpen={isOpen} />
 
             {/* Header */}
@@ -21,18 +21,24 @@ export default function MainLayout({ children }) {
 
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`fixed top-82.5 z-50
-                -translate-x-1/2
-                bg-[#ab3c3c] p-2 rounded-full shadow-md
-                text-white
-                hover:bg-[#ab3c3c]/80
-                transition-all duration-300
-                ${isOpen ? "left-64" : "left-20"}`}
+                className={`
+        fixed top-1/2 z-50
+        -translate-y-1/2
+        flex h-8 w-8 items-center justify-center
+        rounded-full
+        bg-[#ab3c3c]
+        text-white
+        shadow-md
+        ring-2 ring-white
+        transition-all duration-300
+        hover:bg-[#8f3030]
+        ${isOpen ? "left-[15.5rem]" : "left-[4.5rem]"}
+    `}
             >
                 {isOpen ? (
-                    <FiChevronLeft size={20} />
+                    <FiChevronLeft size={17} />
                 ) : (
-                    <FiChevronRight size={20} />
+                    <FiChevronRight size={17} />
                 )}
             </button>
 

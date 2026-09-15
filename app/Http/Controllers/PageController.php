@@ -71,9 +71,16 @@ class PageController extends Controller
     }
 
     // Notifikasi
-    
+
     public function Notifikasi()
     {
         return Inertia::render('Notifikasi');
+    }
+
+    // Pengaturan
+
+    public function Pengaturan()
+    {
+        return Inertia::render('Pengaturan');
     }
 }

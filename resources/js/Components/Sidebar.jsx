@@ -1,7 +1,7 @@
 import { FaWifi, FaMap } from "react-icons/fa";
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import { MdRouter } from "react-icons/md";
-import { IoIosLogOut, IoMdHome } from "react-icons/io";
+import { IoIosLogOut, IoMdHome, IoIosSettings } from "react-icons/io";
 
 export default function Sidebar({ isOpen }) {
     const currentPath = window.location.pathname;
@@ -46,6 +46,12 @@ export default function Sidebar({ isOpen }) {
             href: "peta-sebaran-aset",
             icon: <FaLocationCrosshairs size={20} />,
             activePaths: ["peta-sebaran-aset"],
+        },
+        {
+            label: "Pengaturan",
+            href: "pengaturan",
+            icon: <IoIosSettings size={20} />,
+            activePaths: ["pengaturan"],
         },
     ];
 

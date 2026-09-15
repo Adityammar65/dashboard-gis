@@ -18,6 +18,7 @@ Route::middleware('cek_login')->group(function () {
     Route::get('/detail-tiang', [PageController::class, 'DetailTiang']);
     Route::get('/detail-ont', [PageController::class, 'DetailONT']);
     Route::get('/notifikasi', [PageController::class, 'Notifikasi']);
+    Route::get('/pengaturan', [PageController::class, 'Pengaturan']);
 
     // CRUD
 
