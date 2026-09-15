@@ -7,7 +7,17 @@ export default function Login() {
     return (
         <AuthLayout>
             <div className="flex p-6">
-                <form className="space-y-5">
+                <form className="space-y-5" action="proses-login" method="post">
+
+                    {/* CSRF */}
+
+                    <input
+                        type="hidden"
+                        name="_token"
+                        value={document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute('content')}
+                    />
 
                     {/* Username */}
 

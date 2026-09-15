@@ -6,9 +6,9 @@ import {
     FaPlus,
     FaArrowRight,
     FaSyncAlt,
+    FaWifi,
     FaMapMarkedAlt,
 } from "react-icons/fa";
-import { FaTowerBroadcast } from "react-icons/fa6";
 import { MdRouter, MdStorage } from "react-icons/md";
 import MapView from "../Components/MapView";
 import { useState } from "react";
@@ -40,26 +40,26 @@ export default function Dashboard() {
                         </button>
 
                         {openTambah && (
-                        <div className="absolute right-0 z-50 mt-2 w-48 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
+                            <div className="absolute right-0 z-50 mt-2 w-48 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
 
-                            <a
-                                href="tambah-tiang"
-                                onClick={() => setOpenTambah(false)}
-                                className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100">
-                                <FaTowerBroadcast className="text-blue-700" />
-                                Tambah Tiang
-                            </a>
+                                <a
+                                    href="tambah-tiang"
+                                    onClick={() => setOpenTambah(false)}
+                                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100">
+                                    <FaWifi className="text-blue-700" />
+                                    Tambah Tiang
+                                </a>
 
-                            <a
-                                href="tambah-ont"
-                                onClick={() => setOpenTambah(false)}
-                                className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100">
-                                <MdRouter className="text-sky-500 text-lg" />
-                                Tambah ONT
-                            </a>
+                                <a
+                                    href="tambah-ont"
+                                    onClick={() => setOpenTambah(false)}
+                                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100">
+                                    <MdRouter className="text-sky-500 text-lg" />
+                                    Tambah ONT
+                                </a>
 
-                        </div>
-                    )}
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -81,7 +81,7 @@ export default function Dashboard() {
                             </div>
 
                             <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-900 text-white">
-                                <FaTowerBroadcast className="text-2xl" />
+                                <FaWifi className="text-2xl" />
                             </div>
                         </div>
 
@@ -241,7 +241,7 @@ export default function Dashboard() {
                                     className="flex items-center justify-between"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <FaTowerBroadcast className="text-sm" />
+                                        <FaWifi className="text-sm" />
 
                                         <div className="text-xs">
                                             <p>Tiang</p>

@@ -151,7 +151,7 @@ export default function Sidebar({ isOpen }) {
 
                     {isOpen && (
                         <a
-                            href="login"
+                            href="logout"
                             className="flex-1"
                             onClick={(e) => {
                                 if (!confirm("Kembali ke Halaman Login?")) {
