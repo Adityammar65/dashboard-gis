@@ -1,24 +1,31 @@
+import { useState } from "react";
 import AuthLayout from "../Layouts/AuthLayout";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useState } from 'react';
+import { router, usePage } from "@inertiajs/react";
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
+
+    const { errors } = usePage().props;
+
+    const errorMessage = Object.values(errors || {})[0];
+
     return (
-        <AuthLayout>
+        <AuthLayout errorMessage={errorMessage}>
             <div className="flex p-6">
-                <form className="space-y-5" action="proses-login" method="post">
+                <form
+                    className="space-y-5"
+                    onSubmit={(e) => {
+                        e.preventDefault();
 
-                    {/* CSRF */}
+                        const form = e.currentTarget;
 
-                    <input
-                        type="hidden"
-                        name="_token"
-                        value={document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute('content')}
-                    />
-
+                        router.post("proses-login", {
+                            username: form.username.value,
+                            password: form.password.value,
+                        });
+                    }}
+                >
                     {/* Username */}
 
                     <div>
@@ -57,13 +64,10 @@ export default function Login() {
                                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 pr-12 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#ab3c3c] focus:ring-2 focus:ring-[#7F1D32]/10"
                             />
 
-                            {/* Toggle Preview Password */}
-
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                                aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
                             >
                                 {showPassword ? (
                                     <FiEyeOff size={20} />
@@ -85,11 +89,11 @@ export default function Login() {
                         </a>
                     </div>
 
-                    {/* Login Button */}
+                    {/* Button */}
 
                     <button
                         type="submit"
-                        className="w-full rounded-lg bg-[#ab3c3c] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#68182A] focus:outline-none focus:ring-2 focus:ring-[#7F1D32]/30"
+                        className="w-full rounded-lg bg-[#ab3c3c] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#68182A]"
                     >
                         Masuk
                     </button>
