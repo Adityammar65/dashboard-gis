@@ -22,19 +22,36 @@ export default function Dashboard() {
 
                 {/* Header */}
 
+                <div className="mb-4">
+                    <h1 className="text-xl font-bold text-gray-800">
+                        Selamat Datang di Dashboard GIS
+                    </h1>
+
+                    <p className="mt-1 text-sm text-gray-500">
+                        Pantau dan kelola data aset jaringan secara terintegrasi.
+                    </p>
+                </div>
+
                 <div className="flex items-center gap-3">
+
                     <div className="flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow text-white">
                         <span className="text-sm font-semibold">
                             Beranda
                         </span>
+
                         <span className="mx-3">/</span>
-                        <span className="text-xs font-light">Wilayah</span>
+
+                        <span className="text-xs font-light">
+                            Wilayah
+                        </span>
                     </div>
 
                     <div className="relative">
+
                         <button
                             onClick={() => setOpenTambah(!openTambah)}
-                            className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white transition hover:bg-green-600">
+                            className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white transition hover:bg-green-600"
+                        >
                             <FaPlus />
                             Tambah Aset
                         </button>
@@ -45,7 +62,8 @@ export default function Dashboard() {
                                 <a
                                     href="tambah-tiang"
                                     onClick={() => setOpenTambah(false)}
-                                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100">
+                                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100"
+                                >
                                     <FaWifi className="text-blue-700" />
                                     Tambah Tiang
                                 </a>
@@ -53,14 +71,17 @@ export default function Dashboard() {
                                 <a
                                     href="tambah-ont"
                                     onClick={() => setOpenTambah(false)}
-                                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100">
+                                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100"
+                                >
                                     <MdRouter className="text-sky-500 text-lg" />
                                     Tambah ONT
                                 </a>
 
                             </div>
                         )}
+
                     </div>
+
                 </div>
 
                 {/* Statistik */}
