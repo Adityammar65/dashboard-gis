@@ -1,9 +1,12 @@
 import MainLayout from "../Layouts/MainLayout";
 
+import { usePage } from "@inertiajs/react";
 import { FaPlus, FaFilter, FaEye, FaEdit } from "react-icons/fa";
 import { MdDelete, MdRouter } from "react-icons/md";
 
 export default function ONT({ dataONT = [] }) {
+    const { settings } = usePage().props;
+
     const totalONT = dataONT.length;
 
     const ontAktif = dataONT.filter(
@@ -32,8 +35,8 @@ export default function ONT({ dataONT = [] }) {
                             /
                         </span>
 
-                        <span className="text-xs font-light">
-                            Wilayah
+                        <span className="text-xs font-light capitalize">
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
 
                     </div>
@@ -49,7 +52,6 @@ export default function ONT({ dataONT = [] }) {
                     </a>
 
                 </div>
-
 
                 {/* Statistik */}
 

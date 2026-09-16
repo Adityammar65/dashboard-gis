@@ -1,12 +1,15 @@
 {/* Import Main Layout */ }
 
 import MainLayout from "../Layouts/MainLayout";
+import { usePage } from "@inertiajs/react";
 
 import { FaPlus, FaFilter, FaMap } from "react-icons/fa";
 import { FaTowerBroadcast } from "react-icons/fa6";
 import { LuBox } from "react-icons/lu";
 
 export default function Tiang() {
+    const { settings } = usePage().props;
+
     return (
         <MainLayout>
             <div className="space-y-4">
@@ -21,8 +24,8 @@ export default function Tiang() {
 
                         <span className="mx-3">/</span>
 
-                        <span className="text-xs font-light">
-                            Wilayah Saat Ini
+                        <span className="text-xs font-light capitalize">
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 

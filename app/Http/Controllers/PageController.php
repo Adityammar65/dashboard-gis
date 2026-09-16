@@ -7,6 +7,8 @@ use Inertia\Inertia;
 use App\Models\TiangModel;
 use App\Models\ONTModel;
 use App\Models\NotifikasiModel;
+use App\Models\WilayahModel;
+use Illuminate\Support\Facades\Storage;
 
 class PageController extends Controller
 {
@@ -92,6 +94,20 @@ class PageController extends Controller
 
     public function Pengaturan()
     {
-        return Inertia::render('Pengaturan');
+        $wilayah = WilayahModel::all();
+
+        $settings = [];
+
+        if (Storage::exists('settings.json')) {
+            $settings = json_decode(
+                Storage::get('settings.json'),
+                true
+            ) ?? [];
+        }
+
+        return Inertia::render('Pengaturan', [
+            'wilayah' => $wilayah,
+            'settings' => $settings
+        ]);
     }
 }

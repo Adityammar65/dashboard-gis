@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { FaChevronDown, FaWifi } from "react-icons/fa";
 import { MdRouter } from "react-icons/md";
+import { usePage } from "@inertiajs/react";
 
 import MainLayout from "../Layouts/MainLayout";
 import MapView from "../Components/MapView";
 
 export default function Peta() {
+    const { settings } = usePage().props;
     const [assetType, setAssetType] = useState("Semua");
     const [status, setStatus] = useState("Aktif");
     const [wilayah, setWilayah] = useState("Aceh Tamiang");
@@ -24,8 +26,8 @@ export default function Peta() {
 
                         <span className="mx-3">/</span>
 
-                        <span className="text-xs font-light">
-                            Wilayah saat ini
+                        <span className="text-xs font-light capitalize">
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
                 </div>

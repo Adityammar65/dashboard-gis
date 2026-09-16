@@ -2,6 +2,7 @@
 
 import MainLayout from "../Layouts/MainLayout";
 
+import { usePage } from "@inertiajs/react";
 import {
     FaPlus,
     FaArrowRight,
@@ -15,6 +16,8 @@ import { useState } from "react";
 
 export default function Dashboard() {
     const [openTambah, setOpenTambah] = useState(false);
+
+    const { settings } = usePage().props;
 
     return (
         <MainLayout>
@@ -41,8 +44,8 @@ export default function Dashboard() {
 
                         <span className="mx-3">/</span>
 
-                        <span className="text-xs font-light">
-                            Wilayah
+                        <span className="text-xs font-light capitalize">
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 
