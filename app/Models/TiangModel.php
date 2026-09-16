@@ -11,10 +11,9 @@ class TiangModel extends Model
     protected $fillable = [
         'kode_tiang',
         'nomor_tiang',
-        'area',
         'deskripsi_tiang',
-        'foto_tiang_1', 
-        'foto_tiang_2', 
+        'foto_tiang_1',
+        'foto_tiang_2',
         'foto_tiang_3',
         'latitude',
         'logitude',
