@@ -2,6 +2,7 @@ import MainLayout from "../Layouts/MainLayout";
 
 import { FaPlus, FaFilter, FaEye, FaEdit, FaWifi } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { router } from "@inertiajs/react";
 
 export default function Tiang({ dataTiang = [] }) {
     return (
@@ -277,9 +278,9 @@ export default function Tiang({ dataTiang = [] }) {
                                                 {tiang.status ? (
                                                     <span
                                                         className={`rounded-full px-2 py-1 text-[10px] text-white ${tiang.status.toLowerCase() ===
-                                                                "aktif"
-                                                                ? "bg-green-500"
-                                                                : "bg-red-500"
+                                                            "aktif"
+                                                            ? "bg-green-500"
+                                                            : "bg-red-500"
                                                             }`}
                                                     >
                                                         {tiang.status}
@@ -319,7 +320,13 @@ export default function Tiang({ dataTiang = [] }) {
 
                                                     <button
                                                         type="button"
+                                                        onClick={() => {
+                                                            if (confirm(`Yakin ingin menghapus tiang ${tiang.kode_tiang}?`)) {
+                                                                router.delete(`/dashboard-gis/data-tiang/${tiang.id}`);
+                                                            }
+                                                        }}
                                                         className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
+                                                        title="Hapus"
                                                     >
                                                         <MdDelete className="text-xl" />
                                                     </button>
