@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\TiangController;
+use App\Http\Controllers\SettingsController;
 
 Route::middleware('cek_login')->group(function () {
 
@@ -27,7 +28,7 @@ Route::middleware('cek_login')->group(function () {
     Route::get('/tambah-ont', [FormController::class, 'TambahONT']);
     Route::get('/edit-tiang', [FormController::class, 'EditTiang']);
     Route::get('/edit-ont', [FormController::class, 'EditONT']);
-    Route::delete('/data-tiang/{id}', [TiangController::class, 'HapusTiang']);
+    Route::post('/update-pengaturan', [SettingsController::class, 'updateWilayah']);
 });
 
 // Auth

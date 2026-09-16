@@ -321,18 +321,12 @@ export default function Tiang({ dataTiang = [] }) {
 
                                                     {/* Hapus */}
 
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            if (confirm(`Yakin ingin menghapus tiang ${tiang.kode_tiang}?`)) {
-                                                                router.delete(`/dashboard-gis/data-tiang/${tiang.id}`);
-                                                            }
-                                                        }}
-                                                        className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
-                                                        title="Hapus"
+                                                    <a
+                                                        href={`hapus-tiang/${tiang.id}`}
+                                                        className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
                                                     >
-                                                        <MdDelete className="text-xl" />
-                                                    </button>
+                                                        <FaEdit className="text-xl" />
+                                                    </a>
 
                                                 </div>
                                             </td>

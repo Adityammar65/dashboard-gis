@@ -1,7 +1,15 @@
 import MainLayout from "../Layouts/MainLayout";
 import { FaMapMarked, FaSave } from "react-icons/fa";
+import { useState } from "react";
+import { router, usePage } from "@inertiajs/react";
 
 export default function Pengaturan({ wilayah }) {
+    const page = usePage();
+
+    const [selectedWilayah, setSelectedWilayah] = useState(
+        page.props.settings?.id ?? ""
+    );
+
     return (
         <MainLayout>
             <div className="space-y-4">
@@ -36,35 +44,21 @@ export default function Pengaturan({ wilayah }) {
                         </div>
                     </div>
 
-                    <form
-                        action="/pengaturan/wilayah"
-                        method="POST"
-                        className="space-y-4"
-                    >
+                    {/* Form ubah wilayah operasi */}
 
-                        {/* CSRF */}
-
-                        <input
-                            type="hidden"
-                            name="_token"
-                            value={
-                                document
-                                    .querySelector('meta[name="csrf-token"]')
-                                    ?.getAttribute("content")
-                            }
-                        />
+                    <div className="space-y-4">
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="mb-2 block text-sm font-medium text-gray-700">
                                     Wilayah
                                 </label>
 
                                 <select
-                                    name="wilayah"
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
-                                    defaultValue=""
+                                    value={selectedWilayah}
+                                    onChange={(e) => setSelectedWilayah(e.target.value)}
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none transition focus:border-red-700 focus:ring-1 focus:ring-red-700"
                                     disabled={wilayah.length === 0}
                                 >
                                     <option value="" disabled>
@@ -85,19 +79,20 @@ export default function Pengaturan({ wilayah }) {
 
                         {/* Button */}
 
-                        {wilayah.length > 0 && (
-                            <div className="flex justify-end pt-2">
-                                <button
-                                    type="submit"
-                                    className="flex items-center gap-2 rounded-lg bg-[#AB3C3C] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#8f3030]"
-                                >
-                                    <FaSave />
-                                    Simpan
-                                </button>
-                            </div>
-                        )}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                router.post("update-pengaturan", {
+                                    wilayah: selectedWilayah,
+                                });
+                            }}
+                            className="flex items-center gap-2 rounded-lg bg-[#AB3C3C] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#8f3030]"
+                        >
+                            <FaSave />
+                            Simpan
+                        </button>
 
-                    </form>
+                    </div>
                 </div>
             </div>
         </MainLayout>
