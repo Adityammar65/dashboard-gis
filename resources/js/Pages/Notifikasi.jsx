@@ -1,9 +1,20 @@
+
 import MainLayout from "../Layouts/MainLayout";
 
-export default function Notifikasi() {
+export default function Notifikasi({ notifikasi = [] }) {
+    // Statistik
+    const totalNotifikasi = notifikasi.length;
+
+    const belumDibaca = notifikasi.filter(
+        (item) => item.status === "belum_dibaca"
+    ).length;
+
+    const sudahDibaca = notifikasi.filter(
+        (item) => item.status === "dibaca"
+    ).length;
+
     return (
         <MainLayout>
-
             <div className="space-y-4">
 
                 {/* Header */}
@@ -15,7 +26,6 @@ export default function Notifikasi() {
                     </div>
                 </div>
 
-
                 {/* Statistik */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
 
@@ -26,10 +36,9 @@ export default function Notifikasi() {
                         </p>
 
                         <h2 className="mt-1 text-2xl font-semibold">
-                            12
+                            {totalNotifikasi}
                         </h2>
                     </div>
-
 
                     {/* Belum Dibaca */}
                     <div className="rounded-xl border-t-4 border-red-500 bg-white p-4 shadow">
@@ -38,10 +47,9 @@ export default function Notifikasi() {
                         </p>
 
                         <h2 className="mt-1 text-2xl font-semibold">
-                            3
+                            {belumDibaca}
                         </h2>
                     </div>
-
 
                     {/* Sudah Dibaca */}
                     <div className="rounded-xl border-t-4 border-green-600 bg-white p-4 shadow">
@@ -50,16 +58,15 @@ export default function Notifikasi() {
                         </p>
 
                         <h2 className="mt-1 text-2xl font-semibold">
-                            9
+                            {sudahDibaca}
                         </h2>
                     </div>
-
                 </div>
-
 
                 {/* Daftar Notifikasi */}
                 <div className="rounded-xl bg-white shadow">
 
+                    {/* Header Daftar */}
                     <div className="flex items-center justify-between border-b px-5 py-4">
                         <div>
                             <h3 className="font-semibold">
@@ -76,84 +83,76 @@ export default function Notifikasi() {
                         </button>
                     </div>
 
+                    {/* Data Notifikasi */}
+                    {notifikasi.length > 0 ? (
+                        notifikasi.map((item) => {
 
-                    {/* Notifikasi 1 */}
-                    <div className="flex items-center gap-4 border-b px-5 py-4 bg-red-50/40">
+                            const belumDibaca =
+                                item.status === "belum_dibaca";
 
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-red-100 text-red-600">
-                            ⚠
-                        </div>
+                            return (
+                                <div
+                                    key={item.id}
+                                    className={`flex items-center gap-4 border-b px-5 py-4 ${
+                                        belumDibaca
+                                            ? "bg-red-50/40"
+                                            : ""
+                                    }`}
+                                >
 
-                        <div className="flex-1">
-                            <p className="text-sm font-medium">
-                                Data Tiang Perlu Diperiksa
-                            </p>
+                                    {/* Icon */}
+                                    <div
+                                        className={`flex h-11 w-11 items-center justify-center rounded-full ${
+                                            belumDibaca
+                                                ? "bg-red-100 text-red-600"
+                                                : "bg-green-100 text-green-600"
+                                        }`}
+                                    >
+                                        {belumDibaca ? "⚠" : "✓"}
+                                    </div>
 
-                            <p className="mt-1 text-xs text-gray-500">
-                                Terdapat data tiang yang perlu diperiksa.
-                            </p>
+                                    {/* Isi */}
+                                    <div className="flex-1">
 
-                            <p className="mt-1 text-[10px] text-gray-400">
-                                5 menit yang lalu
-                            </p>
-                        </div>
+                                        <p className="text-sm font-medium">
+                                            {item.jenis}
+                                        </p>
 
-                        <span className="h-2 w-2 rounded-full bg-red-500" />
+                                        <p className="mt-1 text-xs text-gray-500">
+                                            {item.kategori}
+                                        </p>
 
-                    </div>
+                                        <p className="mt-1 text-[10px] text-gray-400">
+                                            {item.created_at
+                                                ? new Date(
+                                                      item.created_at
+                                                  ).toLocaleString(
+                                                      "id-ID",
+                                                      {
+                                                          dateStyle: "medium",
+                                                          timeStyle: "short",
+                                                      }
+                                                  )
+                                                : "-"}
+                                        </p>
+                                    </div>
 
-
-                    {/* Notifikasi 2 */}
-                    <div className="flex items-center gap-4 border-b px-5 py-4">
-
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                            ℹ
-                        </div>
-
-                        <div className="flex-1">
-                            <p className="text-sm font-medium">
-                                Data ONT Baru
-                            </p>
-
-                            <p className="mt-1 text-xs text-gray-500">
-                                Data ONT baru telah ditambahkan ke sistem.
-                            </p>
-
-                            <p className="mt-1 text-[10px] text-gray-400">
-                                30 menit yang lalu
-                            </p>
-                        </div>
-
-                    </div>
-
-
-                    {/* Notifikasi 3 */}
-                    <div className="flex items-center gap-4 px-5 py-4">
-
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-green-100 text-green-600">
-                            ✓
-                        </div>
-
-                        <div className="flex-1">
-                            <p className="text-sm font-medium">
-                                Data Berhasil Diperbarui
-                            </p>
-
-                            <p className="mt-1 text-xs text-gray-500">
-                                Data wilayah berhasil diperbarui.
-                            </p>
-
-                            <p className="mt-1 text-[10px] text-gray-400">
-                                1 jam yang lalu
+                                    {/* Status belum dibaca */}
+                                    {belumDibaca && (
+                                        <span className="h-2 w-2 rounded-full bg-red-500" />
+                                    )}
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <div className="px-5 py-10 text-center">
+                            <p className="text-sm text-gray-500">
+                                Belum ada notifikasi.
                             </p>
                         </div>
-
-                    </div>
-
+                    )}
                 </div>
-
             </div>
-
         </MainLayout>
     );
 }
