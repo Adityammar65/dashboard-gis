@@ -25,14 +25,13 @@ class AppServiceProvider extends ServiceProvider
 
             $path = storage_path('app/settings.json');
 
-            if (!File::exists($path)) {
+            if (!file_exists($path)) {
                 return [];
             }
 
-            return json_decode(
-                File::get($path),
-                true
-            ) ?? [];
+            $json = file_get_contents($path);
+
+            return json_decode($json, true) ?? [];
         });
     }
 }

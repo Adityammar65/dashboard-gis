@@ -96,18 +96,20 @@ class PageController extends Controller
     {
         $wilayah = WilayahModel::all();
 
+        $path = storage_path('app/settings.json');
+
         $settings = [];
 
-        if (Storage::exists('settings.json')) {
+        if (file_exists($path)) {
             $settings = json_decode(
-                Storage::get('settings.json'),
+                file_get_contents($path),
                 true
             ) ?? [];
         }
 
         return Inertia::render('Pengaturan', [
             'wilayah' => $wilayah,
-            'settings' => $settings
+            'settings' => $settings,
         ]);
     }
 }

@@ -35,10 +35,25 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $settings = [];
+
+        $path = storage_path('app/settings.json');
+
+        if (file_exists($path)) {
+            $settings = json_decode(
+                file_get_contents($path),
+                true
+            ) ?? [];
+        }
+
         return [
             ...parent::share($request),
 
-            'errors' => fn() => $request->session()->get('errors') ? $request->session()->get('errors')->getBag('default')->toArray() : (object) [],
+            'settings' => $settings,
+
+            'errors' => fn() => $request->session()->get('errors')
+                ? $request->session()->get('errors')->getBag('default')->toArray()
+                : (object) [],
         ];
     }
 }

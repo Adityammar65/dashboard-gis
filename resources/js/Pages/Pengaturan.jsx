@@ -4,11 +4,19 @@ import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 
 export default function Pengaturan({ wilayah }) {
-    const page = usePage();
+    const { props } = usePage();
+    const { settings } = props;
+    const [selectedWilayah, setSelectedWilayah] = useState("");
 
-    const [selectedWilayah, setSelectedWilayah] = useState(
-        page.props.settings?.id ?? ""
-    );
+    const handleSimpan = () => {
+        if (!selectedWilayah) {
+            return;
+        }
+
+        router.post("update-pengaturan", {
+            wilayah: selectedWilayah,
+        });
+    };
 
     return (
         <MainLayout>
@@ -17,7 +25,7 @@ export default function Pengaturan({ wilayah }) {
                 {/* Header */}
 
                 <div className="flex items-center gap-4">
-                    <div className="items-center flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] text-white px-4 py-3 shadow">
+                    <div className="flex flex-1 items-center rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 text-white shadow">
                         <span className="text-sm font-semibold">
                             Pengaturan
                         </span>
@@ -44,55 +52,85 @@ export default function Pengaturan({ wilayah }) {
                         </div>
                     </div>
 
-                    {/* Form ubah wilayah operasi */}
+                    {/* Ubah Wilayah */}
 
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        {/* Wilayah Saat Ini */}
 
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-gray-700">
-                                    Wilayah
-                                </label>
+                        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                            <p className="mb-1 text-sm text-gray-500">
+                                Wilayah Saat Ini
+                            </p>
 
-                                <select
-                                    value={selectedWilayah}
-                                    onChange={(e) => setSelectedWilayah(e.target.value)}
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none transition focus:border-red-700 focus:ring-1 focus:ring-red-700"
-                                    disabled={wilayah.length === 0}
-                                >
-                                    <option value="" disabled>
-                                        {wilayah.length === 0
-                                            ? "Belum ada data wilayah"
-                                            : "Pilih Wilayah"}
-                                    </option>
+                            <p className="text-base font-semibold capitalize text-gray-800">
+                                {settings?.nama_wilayah ?? "Belum ditentukan"}
+                            </p>
 
-                                    {wilayah.map((item) => (
-                                        <option key={item.id} value={item.id}>
-                                            {item.nama_wilayah}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
+                            <p className="mt-1 text-xs text-gray-500">
+                                Kode: {settings?.kode_wilayah ?? "-"}
+                            </p>
                         </div>
 
-                        {/* Button */}
+                        {/* Pilih Wilayah Baru */}
 
+                        <div className="rounded-xl border border-gray-200 bg-white p-4">
+                            <label
+                                htmlFor="wilayah"
+                                className="mb-1 block text-sm text-gray-500"
+                            >
+                                Pilih Wilayah Baru
+                            </label>
+
+                            <select
+                                id="wilayah"
+                                value={selectedWilayah}
+                                onChange={(e) =>
+                                    setSelectedWilayah(e.target.value)
+                                }
+                                className="capitalize w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none transition focus:border-red-700 focus:ring-1 focus:ring-red-700"
+                                disabled={wilayah.length === 0}
+                            >
+                                {wilayah.length === 0 ? (
+                                    <option value="">
+                                        Belum ada data wilayah
+                                    </option>
+                                ) : (
+                                    <>
+                                        <option value="">
+                                            Pilih wilayah
+                                        </option>
+
+                                        {wilayah.map((item) => (
+                                            <option
+                                                className="capitalize"
+                                                key={item.id}
+                                                value={item.id}
+                                            >
+                                                {item.nama_wilayah}
+                                            </option>
+                                        ))}
+                                    </>
+                                )}
+                            </select>
+                        </div>
+
+                    </div>
+
+                    {/* Tombol Simpan */}
+
+                    <div className="mt-5 flex justify-end">
                         <button
                             type="button"
-                            onClick={() => {
-                                router.post("update-pengaturan", {
-                                    wilayah: selectedWilayah,
-                                });
-                            }}
-                            className="flex items-center gap-2 rounded-lg bg-[#AB3C3C] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#8f3030]"
+                            onClick={handleSimpan}
+                            disabled={!selectedWilayah}
+                            className="flex items-center gap-2 rounded-lg bg-[#AB3C3C] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#8f3030] disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <FaSave />
                             Simpan
                         </button>
-
                     </div>
+
                 </div>
             </div>
         </MainLayout>
