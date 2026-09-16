@@ -18,27 +18,25 @@ export default function MainLayout({ children }) {
             <Header />
 
             {/* Tombol Toggle Sidebar */}
-
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`
-        fixed top-1/2 z-50
-        -translate-y-1/2
-        flex h-8 w-8 items-center justify-center
-        rounded-full
-        bg-[#ab3c3c]
-        text-white
-        shadow-md
-        ring-2 ring-white
-        transition-all duration-300
-        hover:bg-[#8f3030]
-        ${isOpen ? "left-[15.5rem]" : "left-[4.5rem]"}
-    `}
-            >
+                fixed top-83 z-50
+                flex h-8 w-8 items-center justify-center
+                rounded-full
+                bg-[#ab3c3c]
+                text-white
+                shadow-lg
+                transition-all duration-300
+                hover:scale-105
+                hover:bg-[#8f3030]
+                ${isOpen ? "left-[15rem]" : "left-[4rem]"}`}
+                title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}>
+
                 {isOpen ? (
-                    <FiChevronLeft size={17} />
+                    <FiChevronLeft size={20} />
                 ) : (
-                    <FiChevronRight size={17} />
+                    <FiChevronRight size={20} />
                 )}
             </button>
 

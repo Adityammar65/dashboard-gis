@@ -47,12 +47,6 @@ export default function Sidebar({ isOpen }) {
             icon: <FaLocationCrosshairs size={20} />,
             activePaths: ["peta-sebaran-aset"],
         },
-        {
-            label: "Pengaturan",
-            href: "pengaturan",
-            icon: <IoIosSettings size={20} />,
-            activePaths: ["pengaturan"],
-        },
     ];
 
     return (
@@ -130,6 +124,55 @@ export default function Sidebar({ isOpen }) {
 
                 <div className="py-2">
                     <hr className="border-0 border-t-2 border-[#AB3C3C]/50 rounded-full" />
+                </div>
+
+                {/* Pengaturan */}
+                <div
+                    className={`
+        group flex items-center gap-3
+        rounded-xl px-3 py-3
+        text-sm font-medium
+        cursor-pointer
+        transition-all duration-200
+        ${currentPath === "/pengaturan" ||
+                            currentPath.endsWith("/pengaturan")
+                            ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
+                            : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C]"
+                        }
+        ${!isOpen ? "justify-center" : ""}
+    `}
+                >
+                    {(
+                        currentPath === "/pengaturan" ||
+                        currentPath.endsWith("/pengaturan")
+                    ) && (
+                            <span
+                                className="
+                absolute left-0
+                h-7 w-1
+                rounded-r-full
+                bg-white
+            "
+                            />
+                        )}
+
+                    <IoIosSettings
+                        size={20}
+                        className="
+            shrink-0
+            transition-transform duration-200
+            group-hover:rotate-45
+        "
+                    />
+
+                    {isOpen && (
+                        <a
+                            href="pengaturan"
+                            className="flex-1 whitespace-nowrap"
+                        >
+                            Pengaturan
+                        </a>
+                    )}
                 </div>
 
                 {/* Logout */}
