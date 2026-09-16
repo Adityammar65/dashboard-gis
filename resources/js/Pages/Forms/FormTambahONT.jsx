@@ -36,15 +36,16 @@ export default function FormTambahTiang() {
                     <form>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                            {/* Nomor ONT */}
+                            {/* Kode ONT */}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Nomor ONT
+                                    Kode ONT
                                 </label>
                                 <input
+                                    name="kode"
                                     type="text"
-                                    placeholder="Masukkan nomor ONT"
+                                    placeholder="Masukkan kode ont"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                 />
                             </div>
@@ -56,6 +57,7 @@ export default function FormTambahTiang() {
                                     Wilayah
                                 </label>
                                 <select
+                                    name="wilayah"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                     defaultValue=""
                                 >
@@ -86,11 +88,12 @@ export default function FormTambahTiang() {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Lokasi
+                                    Area
                                 </label>
                                 <input
+                                    name="area"
                                     type="text"
-                                    placeholder="Masukkan lokasi ONT"
+                                    placeholder="Masukkan area ONT"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                 />
                             </div>
@@ -102,6 +105,7 @@ export default function FormTambahTiang() {
                                     Petugas Lapangan
                                 </label>
                                 <input
+                                    name="petugas"
                                     type="text"
                                     placeholder="Masukkan nama petugas"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
@@ -115,6 +119,7 @@ export default function FormTambahTiang() {
                                     Status
                                 </label>
                                 <select
+                                    name="status"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                     defaultValue=""
                                 >
@@ -126,18 +131,52 @@ export default function FormTambahTiang() {
                                 </select>
                             </div>
 
-                            {/* Foto */}
+                            {/* Foto ONT */}
 
-                            <div>
+                            <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Foto ONT
                                 </label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
-                                />
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">
+                                            Foto 1
+                                        </label>
+                                        <input
+                                            name="foto_1"
+                                            type="file"
+                                            accept="image/*"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">
+                                            Foto 2
+                                        </label>
+                                        <input
+                                            name="foto_2"
+                                            type="file"
+                                            accept="image/*"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">
+                                            Foto 3
+                                        </label>
+                                        <input
+                                            name="foto_3"
+                                            type="file"
+                                            accept="image/*"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                                        />
+                                    </div>
+
+                                </div>
                             </div>
+
 
                             {/* Latitude */}
 
@@ -146,6 +185,7 @@ export default function FormTambahTiang() {
                                     Latitude
                                 </label>
                                 <input
+                                    name="latitude"
                                     type="text"
                                     placeholder="Contoh: -7.7956"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
@@ -159,6 +199,7 @@ export default function FormTambahTiang() {
                                     Longitude
                                 </label>
                                 <input
+                                    name="longitude"
                                     type="text"
                                     placeholder="Contoh: 110.3695"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
@@ -173,6 +214,7 @@ export default function FormTambahTiang() {
                                 Deskripsi
                             </label>
                             <textarea
+                                name="deskripsi"
                                 rows="4"
                                 placeholder="Masukkan deskripsi..."
                                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none resize-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"

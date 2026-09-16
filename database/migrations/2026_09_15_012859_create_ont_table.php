@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('ont', function (Blueprint $table) {
             $table->id();
             $table->string('kode_ont')->unique();
-            $table->string('nomor_ont');
             $table->string('area');
             $table->text('deskripsi_ont');
             $table->string('foto_ont_1');

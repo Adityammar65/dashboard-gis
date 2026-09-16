@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('tiang', function (Blueprint $table) {
             $table->id();
             $table->string('kode_tiang')->unique();
-            $table->string('nomor_tiang');
             $table->string('area');
             $table->text('deskripsi_tiang');
             $table->string('foto_tiang_1');
