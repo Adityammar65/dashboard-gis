@@ -3,6 +3,7 @@ import MainLayout from "../Layouts/MainLayout";
 
 export default function Notifikasi({ notifikasi = [] }) {
     // Statistik
+
     const totalNotifikasi = notifikasi.length;
 
     const belumDibaca = notifikasi.filter(
@@ -18,6 +19,7 @@ export default function Notifikasi({ notifikasi = [] }) {
             <div className="space-y-4">
 
                 {/* Header */}
+
                 <div className="flex items-center gap-3">
                     <div className="flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow text-white">
                         <span className="text-sm font-semibold">
@@ -27,9 +29,11 @@ export default function Notifikasi({ notifikasi = [] }) {
                 </div>
 
                 {/* Statistik */}
+
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
 
                     {/* Total */}
+
                     <div className="rounded-xl border-t-4 border-blue-600 bg-white p-4 shadow">
                         <p className="text-xs font-medium text-gray-500">
                             TOTAL NOTIFIKASI
@@ -41,6 +45,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                     </div>
 
                     {/* Belum Dibaca */}
+
                     <div className="rounded-xl border-t-4 border-red-500 bg-white p-4 shadow">
                         <p className="text-xs font-medium text-gray-500">
                             BELUM DIBACA
@@ -52,6 +57,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                     </div>
 
                     {/* Sudah Dibaca */}
+
                     <div className="rounded-xl border-t-4 border-green-600 bg-white p-4 shadow">
                         <p className="text-xs font-medium text-gray-500">
                             SUDAH DIBACA
@@ -64,10 +70,9 @@ export default function Notifikasi({ notifikasi = [] }) {
                 </div>
 
                 {/* Daftar Notifikasi */}
-                <div className="rounded-xl bg-white shadow">
 
-                    {/* Header Daftar */}
-                    <div className="flex items-center justify-between border-b px-5 py-4">
+                <div className="rounded-xl bg-white shadow">
+                    <div className="flex items-center justify-between border-b-2 border-[#ab3c3c]/60 px-5 py-4">
                         <div>
                             <h3 className="font-semibold">
                                 Notifikasi Terbaru
@@ -84,6 +89,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                     </div>
 
                     {/* Data Notifikasi */}
+
                     {notifikasi.length > 0 ? (
                         notifikasi.map((item) => {
 
@@ -93,25 +99,21 @@ export default function Notifikasi({ notifikasi = [] }) {
                             return (
                                 <div
                                     key={item.id}
-                                    className={`flex items-center gap-4 border-b px-5 py-4 ${
-                                        belumDibaca
-                                            ? "bg-red-50/40"
-                                            : ""
-                                    }`}
+                                    className={`flex items-center gap-4 border-b px-5 py-4 ${belumDibaca
+                                        ? "bg-red-50/40"
+                                        : ""
+                                        }`}
                                 >
 
-                                    {/* Icon */}
                                     <div
-                                        className={`flex h-11 w-11 items-center justify-center rounded-full ${
-                                            belumDibaca
-                                                ? "bg-red-100 text-red-600"
-                                                : "bg-green-100 text-green-600"
-                                        }`}
+                                        className={`flex h-11 w-11 items-center justify-center rounded-full ${belumDibaca
+                                            ? "bg-red-100 text-red-600"
+                                            : "bg-green-100 text-green-600"
+                                            }`}
                                     >
                                         {belumDibaca ? "⚠" : "✓"}
                                     </div>
 
-                                    {/* Isi */}
                                     <div className="flex-1">
 
                                         <p className="text-sm font-medium">
@@ -125,19 +127,20 @@ export default function Notifikasi({ notifikasi = [] }) {
                                         <p className="mt-1 text-[10px] text-gray-400">
                                             {item.created_at
                                                 ? new Date(
-                                                      item.created_at
-                                                  ).toLocaleString(
-                                                      "id-ID",
-                                                      {
-                                                          dateStyle: "medium",
-                                                          timeStyle: "short",
-                                                      }
-                                                  )
+                                                    item.created_at
+                                                ).toLocaleString(
+                                                    "id-ID",
+                                                    {
+                                                        dateStyle: "medium",
+                                                        timeStyle: "short",
+                                                    }
+                                                )
                                                 : "-"}
                                         </p>
                                     </div>
 
                                     {/* Status belum dibaca */}
+
                                     {belumDibaca && (
                                         <span className="h-2 w-2 rounded-full bg-red-500" />
                                     )}

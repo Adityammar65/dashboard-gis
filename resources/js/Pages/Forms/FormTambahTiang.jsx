@@ -1,7 +1,7 @@
 import MainLayout from "../../Layouts/MainLayout";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 
-export default function FormTambahTiang() {
+export default function FormTambahTiang({ wilayah }) {
     return (
         <MainLayout>
             <div className="p-6">
@@ -56,31 +56,24 @@ export default function FormTambahTiang() {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Wilayah
                                 </label>
+
                                 <select
                                     name="wilayah"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                     defaultValue=""
                                 >
                                     <option value="" disabled>
-                                        Pilih Wilayah
+                                        {wilayah.length === 0
+                                            ? "Belum ada data wilayah"
+                                            : "Pilih Wilayah"}
                                     </option>
-                                    <option value="aceh">Aceh</option>
-                                    <option value="sumatera-utara">
-                                        Sumatera Utara
-                                    </option>
-                                    <option value="sumatera-barat">
-                                        Sumatera Barat
-                                    </option>
-                                    <option value="riau">Riau</option>
-                                    <option value="jawa-barat">
-                                        Jawa Barat
-                                    </option>
-                                    <option value="jawa-tengah">
-                                        Jawa Tengah
-                                    </option>
-                                    <option value="jawa-timur">
-                                        Jawa Timur
-                                    </option>
+
+                                    {wilayah.length > 0 &&
+                                        wilayah.map((item) => (
+                                            <option key={item.id} value={item.id}>
+                                                {item.nama_wilayah}
+                                            </option>
+                                        ))}
                                 </select>
                             </div>
 

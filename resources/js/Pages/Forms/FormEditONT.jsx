@@ -1,7 +1,7 @@
 import MainLayout from "../../Layouts/MainLayout";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 
-export default function FormEditTiang({ tiang }) {
+export default function FormTambahTiang() {
     return (
         <MainLayout>
             <div className="p-6">
@@ -10,11 +10,10 @@ export default function FormEditTiang({ tiang }) {
 
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
-
                         <button
                             type="button"
                             onClick={() => window.history.back()}
-                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-400 transition"
+                            className="flex items-center justify-center px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-400 transition"
                         >
                             <FaArrowLeft size={14} />
                             Kembali
@@ -24,34 +23,29 @@ export default function FormEditTiang({ tiang }) {
                             <h1 className="text-xl font-semibold text-gray-800">
                                 Form Edit ONT
                             </h1>
-
                             <p className="text-sm text-gray-500">
-                                Ubah informasi data ONT
+                                Edit data ONT
                             </p>
                         </div>
-
                     </div>
                 </div>
 
                 {/* Form */}
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-
                     <form>
-
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                            {/* Nomor ONT */}
+                            {/* Kode ONT */}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Nomor ONT
+                                    Kode ONT
                                 </label>
-
                                 <input
+                                    name="kode"
                                     type="text"
-                                    defaultValue={tiang?.kode_tiang ?? ""}
-                                    placeholder="Masukkan nomor tiang"
+                                    placeholder="Masukkan kode ont"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                 />
                             </div>
@@ -62,39 +56,28 @@ export default function FormEditTiang({ tiang }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Wilayah
                                 </label>
-
                                 <select
-                                    defaultValue={tiang?.wilayah ?? ""}
+                                    name="wilayah"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
+                                    defaultValue=""
                                 >
                                     <option value="" disabled>
                                         Pilih Wilayah
                                     </option>
-
-                                    <option value="aceh">
-                                        Aceh
-                                    </option>
-
+                                    <option value="aceh">Aceh</option>
                                     <option value="sumatera-utara">
                                         Sumatera Utara
                                     </option>
-
                                     <option value="sumatera-barat">
                                         Sumatera Barat
                                     </option>
-
-                                    <option value="riau">
-                                        Riau
-                                    </option>
-
+                                    <option value="riau">Riau</option>
                                     <option value="jawa-barat">
                                         Jawa Barat
                                     </option>
-
                                     <option value="jawa-tengah">
                                         Jawa Tengah
                                     </option>
-
                                     <option value="jawa-timur">
                                         Jawa Timur
                                     </option>
@@ -105,13 +88,12 @@ export default function FormEditTiang({ tiang }) {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Lokasi
+                                    Area
                                 </label>
-
                                 <input
+                                    name="area"
                                     type="text"
-                                    defaultValue={tiang?.lokasi ?? ""}
-                                    placeholder="Masukkan lokasi tiang"
+                                    placeholder="Masukkan area ONT"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                 />
                             </div>
@@ -122,10 +104,9 @@ export default function FormEditTiang({ tiang }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Petugas Lapangan
                                 </label>
-
                                 <input
+                                    name="petugas"
                                     type="text"
-                                    defaultValue={tiang?.petugas_lapangan ?? ""}
                                     placeholder="Masukkan nama petugas"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                 />
@@ -137,38 +118,65 @@ export default function FormEditTiang({ tiang }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Status
                                 </label>
-
                                 <select
-                                    defaultValue={tiang?.status ?? ""}
+                                    name="status"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
+                                    defaultValue=""
                                 >
                                     <option value="" disabled>
                                         Pilih Status
                                     </option>
-
-                                    <option value="aktif">
-                                        Aktif
-                                    </option>
-
-                                    <option value="nonaktif">
-                                        Nonaktif
-                                    </option>
+                                    <option value="aktif">Aktif</option>
+                                    <option value="nonaktif">Nonaktif</option>
                                 </select>
                             </div>
 
-                            {/* Foto */}
+                            {/* Foto ONT */}
 
-                            <div>
+                            <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Foto ONT
                                 </label>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">
+                                            Foto 1
+                                        </label>
+                                        <input
+                                            name="foto_1"
+                                            type="file"
+                                            accept="image/*"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                                        />
+                                    </div>
 
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
-                                />
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">
+                                            Foto 2
+                                        </label>
+                                        <input
+                                            name="foto_2"
+                                            type="file"
+                                            accept="image/*"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">
+                                            Foto 3
+                                        </label>
+                                        <input
+                                            name="foto_3"
+                                            type="file"
+                                            accept="image/*"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                                        />
+                                    </div>
+
+                                </div>
                             </div>
+
 
                             {/* Latitude */}
 
@@ -176,10 +184,9 @@ export default function FormEditTiang({ tiang }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Latitude
                                 </label>
-
                                 <input
+                                    name="latitude"
                                     type="text"
-                                    defaultValue={tiang?.latitude ?? ""}
                                     placeholder="Contoh: -7.7956"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                 />
@@ -191,15 +198,13 @@ export default function FormEditTiang({ tiang }) {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Longitude
                                 </label>
-
                                 <input
+                                    name="longitude"
                                     type="text"
-                                    defaultValue={tiang?.longitude ?? ""}
                                     placeholder="Contoh: 110.3695"
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                 />
                             </div>
-
                         </div>
 
                         {/* Deskripsi */}
@@ -208,10 +213,9 @@ export default function FormEditTiang({ tiang }) {
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Deskripsi
                             </label>
-
                             <textarea
+                                name="deskripsi"
                                 rows="4"
-                                defaultValue={tiang?.deskripsi ?? ""}
                                 placeholder="Masukkan deskripsi..."
                                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none resize-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                             ></textarea>
@@ -220,17 +224,14 @@ export default function FormEditTiang({ tiang }) {
                         {/* Submit */}
 
                         <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100">
-
                             <button
                                 type="submit"
                                 className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#00c853] text-white hover:bg-[#00b34a] transition"
                             >
                                 <FaSave size={14} />
-                                Simpan Perubahan
+                                Simpan Data
                             </button>
-
                         </div>
-
                     </form>
                 </div>
             </div>

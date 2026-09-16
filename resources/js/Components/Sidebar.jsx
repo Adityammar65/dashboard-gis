@@ -127,6 +127,7 @@ export default function Sidebar({ isOpen }) {
                 </div>
 
                 {/* Pengaturan */}
+
                 <div
                     className={`
         group flex items-center gap-3

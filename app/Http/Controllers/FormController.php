@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\WilayahModel;
 
 class FormController extends Controller
 {
@@ -11,14 +12,22 @@ class FormController extends Controller
 
     public function TambahTiang()
     {
-        return Inertia::render('Forms/FormTambahTiang');
+        $wilayah = WilayahModel::all();
+
+        return Inertia::render('Forms/FormTambahTiang', [
+            'wilayah' => $wilayah
+        ]);
     }
 
     // Form Tambah ONT
 
     public function TambahONT()
     {
-        return Inertia::render('Forms/FormTambahONT');
+        $wilayah = WilayahModel::all();
+
+        return Inertia::render('Forms/FormTambahONT', [
+            'wilayah' => $wilayah
+        ]);
     }
 
     // Form Edit Tiang

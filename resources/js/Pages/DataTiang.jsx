@@ -1,38 +1,9 @@
-{/* Import Main Layout */ }
-
 import MainLayout from "../Layouts/MainLayout";
 
 import { FaPlus, FaFilter, FaEye, FaEdit, FaWifi } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
-export default function Tiang() {
-    const dataTiang = [
-        {
-            no: "01",
-            foto: "/images/empty.png",
-            kode: "TNG-001",
-            lokasi: "Aceh",
-            petugas: "Lorem Ipsum Dolor",
-            status: "Aktif",
-        },
-        {
-            no: "02",
-            foto: "/images/empty.png",
-            kode: "TNG-002",
-            lokasi: "Aceh",
-            petugas: "Lorem Ipsum Dolor",
-            status: "Nonaktif",
-        },
-        {
-            no: "03",
-            foto: "/images/empty.png",
-            kode: "TNG-003",
-            lokasi: "Aceh",
-            petugas: "Lorem Ipsum Dolor",
-            status: "Aktif",
-        },
-    ];
-
+export default function Tiang({ dataTiang = [] }) {
     return (
         <MainLayout>
             <div className="space-y-4">
@@ -52,8 +23,6 @@ export default function Tiang() {
                         </span>
                     </div>
 
-                    {/* Form ONT */}
-
                     <a
                         href="tambah-tiang"
                         className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white shadow hover:bg-green-600"
@@ -61,7 +30,6 @@ export default function Tiang() {
                         <FaPlus />
                         Form Tiang
                     </a>
-
                 </div>
 
                 {/* Statistik */}
@@ -70,7 +38,7 @@ export default function Tiang() {
 
                     {/* Total Tiang */}
 
-                    <div className="hover:scale-102 transition-all duration-200 shadow flex min-h-[136px] flex-col justify-between rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow">
+                    <div className="hover:scale-102 transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow">
                         <div className="flex items-start justify-between">
                             <div>
                                 <p className="text-xs font-medium">
@@ -78,7 +46,7 @@ export default function Tiang() {
                                 </p>
 
                                 <h2 className="mt-1 text-2xl font-semibold">
-                                    999999
+                                    {dataTiang.length}
                                 </h2>
                             </div>
 
@@ -91,30 +59,41 @@ export default function Tiang() {
                     {/* Aktif & Nonaktif */}
 
                     <div className="flex min-h-[136px] flex-col gap-4">
-                        <div className="hover:scale-102 transition-all shadow duration-200 flex flex-1 items-center rounded-xl border-t-4 border-emerald-600 bg-white px-4 shadow">
+                        <div className="hover:scale-102 transition-all shadow duration-200 flex flex-1 items-center rounded-xl border-t-4 border-emerald-600 bg-white px-4">
                             <div>
                                 <p className="text-xs font-medium">
                                     TIANG AKTIF
                                 </p>
 
                                 <h2 className="mt-1 text-xl font-semibold">
-                                    999999
+                                    {
+                                        dataTiang.filter(
+                                            (tiang) =>
+                                                tiang.status?.toLowerCase() ===
+                                                "aktif"
+                                        ).length
+                                    }
                                 </h2>
                             </div>
                         </div>
 
-                        <div className="hover:scale-102 duration-200 transition-all shadow flex flex-1 items-center rounded-xl border-t-4 border-red-500 bg-white px-4 shadow">
+                        <div className="hover:scale-102 duration-200 transition-all shadow flex flex-1 items-center rounded-xl border-t-4 border-red-500 bg-white px-4">
                             <div>
                                 <p className="text-xs font-medium">
                                     TIANG NONAKTIF
                                 </p>
 
                                 <h2 className="mt-1 text-xl font-semibold">
-                                    999999
+                                    {
+                                        dataTiang.filter(
+                                            (tiang) =>
+                                                tiang.status?.toLowerCase() ===
+                                                "nonaktif"
+                                        ).length
+                                    }
                                 </h2>
                             </div>
                         </div>
-
                     </div>
 
                     {/* Filter */}
@@ -140,12 +119,15 @@ export default function Tiang() {
                                 <option value="" disabled>
                                     Pilih Wilayah
                                 </option>
+
                                 <option value="aceh">
                                     Aceh
                                 </option>
+
                                 <option value="sumut">
                                     Sumatera Utara
                                 </option>
+
                                 <option value="sumbar">
                                     Sumatera Barat
                                 </option>
@@ -160,16 +142,17 @@ export default function Tiang() {
                                 <option value="" disabled>
                                     Pilih Status
                                 </option>
+
                                 <option value="aktif">
                                     Aktif
                                 </option>
+
                                 <option value="nonaktif">
                                     Nonaktif
                                 </option>
                             </select>
 
                         </div>
-
                     </div>
 
                 </div>
@@ -178,10 +161,12 @@ export default function Tiang() {
 
                 <div className="overflow-hidden rounded-xl bg-white shadow">
                     <div className="overflow-x-auto">
+
                         <table className="w-full min-w-[700px] border-collapse text-xs">
 
                             <thead>
                                 <tr className="border-b border-gray-300 text-center">
+
                                     <th className="w-12 px-4 py-3 font-medium">
                                         No
                                     </th>
@@ -209,91 +194,175 @@ export default function Tiang() {
                                     <th className="w-20 px-4 py-3 font-medium">
                                         Aksi
                                     </th>
+
                                 </tr>
                             </thead>
 
                             <tbody className="text-center">
-                                {dataTiang.map((tiang) => (
-                                    <tr
-                                        key={tiang.no}
-                                        className="border-b border-gray-300 last:border-b-0 hover:bg-gray-50"
-                                    >
-                                        <td className="px-4 py-2">
-                                            {tiang.no}
-                                        </td>
 
-                                        <td className="px-4 py-2">
-                                            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
-                                                <img
-                                                    src={tiang.foto}
-                                                    alt="Foto"
-                                                    className="h-full w-full object-cover"
-                                                />
-                                            </div>
-                                        </td>
+                                {dataTiang.length > 0 ? (
 
-                                        <td className="px-4 py-2">
-                                            {tiang.kode}
-                                        </td>
+                                    dataTiang.map((tiang, index) => (
 
-                                        <td className="px-4 py-2">
-                                            {tiang.lokasi}
-                                        </td>
+                                        <tr
+                                            key={tiang.id}
+                                            className="border-b border-gray-300 last:border-b-0 hover:bg-gray-50"
+                                        >
 
-                                        <td className="px-4 py-2">
-                                            {tiang.petugas}
-                                        </td>
+                                            {/* No */}
 
-                                        <td className="px-4 py-2">
-                                            <span
-                                                className={`rounded-full px-2 py-1 text-[10px] text-white ${tiang.status === "Aktif"
-                                                    ? "bg-green-500"
-                                                    : "bg-red-500"
-                                                    }`}
-                                            >
-                                                {tiang.status}
-                                            </span>
-                                        </td>
+                                            <td className="px-4 py-2">
+                                                {String(index + 1).padStart(2, "0")}
+                                            </td>
 
-                                        {/* Aksi */}
+                                            {/* Foto */}
 
-                                        <td className="px-4 py-2">
-                                            <div className="flex items-center gap-1">
+                                            <td className="px-4 py-2">
+                                                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
 
-                                                {/* Detail */}
+                                                    {tiang.foto_tiang_1 ? (
+                                                        <img
+                                                            src={`/storage/${tiang.foto_tiang_1}`}
+                                                            alt={`Foto ${tiang.kode_tiang}`}
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <span className="text-[10px] text-gray-400">
+                                                            Belum ada foto
+                                                        </span>
+                                                    )}
 
-                                                <a
-                                                    href="detail-tiang"
-                                                    className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
-                                                >
-                                                    <FaEye className="text-xl" />
-                                                </a>
+                                                </div>
+                                            </td>
 
-                                                {/* Edit */}
+                                            {/* Nomor Tiang */}
 
-                                                <a
-                                                    href="edit-tiang"
-                                                    className="rounded-md bg-yellow-400 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
-                                                >
-                                                    <FaEdit className="text-xl" />
-                                                </a>
+                                            <td className="px-4 py-2">
+                                                {tiang.kode_tiang || (
+                                                    <span className="text-gray-400">
+                                                        Belum ada data
+                                                    </span>
+                                                )}
+                                            </td>
 
-                                                {/* Hapus */}
+                                            {/* Lokasi */}
 
-                                                <button
-                                                    type="button"
-                                                    className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
-                                                >
-                                                    <MdDelete className="text-xl" />
-                                                </button>
+                                            <td className="px-4 py-2">
+                                                {tiang.wilayah || tiang.area ? (
+                                                    <>
+                                                        {tiang.wilayah}
+                                                        {tiang.area && ` - ${tiang.area}`}
+                                                    </>
+                                                ) : (
+                                                    <span className="text-gray-400">
+                                                        Belum ada data
+                                                    </span>
+                                                )}
+                                            </td>
+
+                                            {/* Petugas */}
+
+                                            <td className="px-4 py-2">
+                                                {tiang.petugas || (
+                                                    <span className="text-gray-400">
+                                                        Belum ada data
+                                                    </span>
+                                                )}
+                                            </td>
+
+                                            {/* Status */}
+
+                                            <td className="px-4 py-2">
+
+                                                {tiang.status ? (
+                                                    <span
+                                                        className={`rounded-full px-2 py-1 text-[10px] text-white ${tiang.status.toLowerCase() ===
+                                                                "aktif"
+                                                                ? "bg-green-500"
+                                                                : "bg-red-500"
+                                                            }`}
+                                                    >
+                                                        {tiang.status}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-400">
+                                                        Belum ada data
+                                                    </span>
+                                                )}
+
+                                            </td>
+
+                                            {/* Aksi */}
+
+                                            <td className="px-4 py-2">
+                                                <div className="flex items-center gap-1">
+
+                                                    {/* Detail */}
+
+                                                    <a
+                                                        href={`detail-tiang/${tiang.id}`}
+                                                        className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
+                                                    >
+                                                        <FaEye className="text-xl" />
+                                                    </a>
+
+                                                    {/* Edit */}
+
+                                                    <a
+                                                        href={`edit-tiang/${tiang.id}`}
+                                                        className="rounded-md bg-yellow-400 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
+                                                    >
+                                                        <FaEdit className="text-xl" />
+                                                    </a>
+
+                                                    {/* Hapus */}
+
+                                                    <button
+                                                        type="button"
+                                                        className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
+                                                    >
+                                                        <MdDelete className="text-xl" />
+                                                    </button>
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+
+                                    ))
+
+                                ) : (
+
+                                    <tr>
+                                        <td
+                                            colSpan="7"
+                                            className="px-4 py-12 text-center"
+                                        >
+                                            <div className="flex flex-col items-center justify-center gap-2">
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                                                    <FaWifi className="text-xl text-gray-400" />
+                                                </div>
+
+                                                <p className="text-sm font-medium text-gray-500">
+                                                    Belum ada data
+                                                </p>
+
+                                                <p className="text-xs text-gray-400">
+                                                    Data tiang belum tersedia.
+                                                </p>
                                             </div>
                                         </td>
                                     </tr>
-                                ))}
+
+                                )}
+
                             </tbody>
+
                         </table>
+
                     </div>
                 </div>
+
             </div>
         </MainLayout>
     );

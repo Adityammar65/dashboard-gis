@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\TiangModel;
+use App\Models\ONTModel;
+use App\Models\NotifikasiModel;
 
 class PageController extends Controller
 {
@@ -18,14 +21,22 @@ class PageController extends Controller
 
     public function DataTiang()
     {
-        return Inertia::render('DataTiang');
+        $tiang = TiangModel::all();
+
+        return Inertia::render('DataTiang', [
+            'dataTiang' => $tiang
+        ]);
     }
 
     // Halaman Data ONT
 
     public function DataONT()
     {
-        return Inertia::render('DataONT');
+        $ont = ONTModel::all();
+
+        return Inertia::render('DataONT', [
+            'dataONT' => $ont
+        ]);
     }
 
     // Preview Peta

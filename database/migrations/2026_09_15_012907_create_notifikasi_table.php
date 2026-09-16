@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('jenis');
             $table->string('kategori');
-            $table->string('status');
+            $table->enum('status', [
+                'dibaca',
+                'belum_dibaca'
+            ])->default('belum_dibaca');
+            $table->text('pesan');
             $table->timestamps();
         });
     }
