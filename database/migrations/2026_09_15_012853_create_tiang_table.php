@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode_tiang')->unique();
             $table->string('area');
+            $table->string('wilayah');
             $table->text('deskripsi_tiang');
             $table->string('foto_tiang_1');
             $table->string('foto_tiang_2');

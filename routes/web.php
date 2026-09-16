@@ -29,6 +29,8 @@ Route::middleware('cek_login')->group(function () {
     Route::get('/edit-tiang', [FormController::class, 'EditTiang']);
     Route::get('/edit-ont', [FormController::class, 'EditONT']);
     Route::post('/update-pengaturan', [SettingsController::class, 'updateWilayah']);
+    Route::post('/simpan-tiang', [TiangController::class, 'SimpanTiang']);
+    Route::get('/hapus-tiang/{id}', [TiangController::class, 'HapusTiang']);
 });
 
 // Auth

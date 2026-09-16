@@ -1,12 +1,52 @@
 import MainLayout from "../Layouts/MainLayout";
 
-import { usePage } from "@inertiajs/react";
+import { usePage, router } from "@inertiajs/react";
+import { useState } from "react";
 import { FaPlus, FaFilter, FaEye, FaEdit, FaWifi } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import { router } from "@inertiajs/react";
 
-export default function Tiang({ dataTiang = [] }) {
+export default function Tiang({
+    dataTiang = [],
+    wilayah = [],
+    filter = {},
+}) {
     const { settings } = usePage().props;
+
+    const [filterWilayah, setFilterWilayah] = useState(
+        filter.wilayah ?? ""
+    );
+
+    const [filterStatus, setFilterStatus] = useState(
+        filter.status ?? ""
+    );
+
+    const totalTiang = dataTiang.length;
+
+    const tiangAktif = dataTiang.filter(
+        (tiang) => tiang.status?.toLowerCase() === "aktif"
+    ).length;
+
+    const tiangNonaktif = dataTiang.filter(
+        (tiang) => tiang.status?.toLowerCase() === "nonaktif"
+    ).length;
+
+    const handleFilter = (wilayahValue, statusValue) => {
+        setFilterWilayah(wilayahValue);
+        setFilterStatus(statusValue);
+
+        router.get(
+            window.location.pathname,
+            {
+                wilayah: wilayahValue,
+                status: statusValue,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+            }
+        );
+    };
 
     return (
         <MainLayout>
@@ -15,17 +55,24 @@ export default function Tiang({ dataTiang = [] }) {
                 {/* Header */}
 
                 <div className="flex items-center gap-4">
-                    <div className="items-center flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] text-white px-4 py-3 shadow">
+
+                    <div className="items-center flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow text-white">
+
                         <span className="text-sm font-semibold">
                             Data Tiang
                         </span>
 
-                        <span className="mx-3">/</span>
+                        <span className="mx-3">
+                            /
+                        </span>
 
                         <span className="text-xs font-light capitalize">
                             {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
+
                     </div>
+
+                    {/* Form Tiang */}
 
                     <a
                         href="tambah-tiang"
@@ -34,6 +81,7 @@ export default function Tiang({ dataTiang = [] }) {
                         <FaPlus />
                         Form Tiang
                     </a>
+
                 </div>
 
                 {/* Statistik */}
@@ -43,132 +91,166 @@ export default function Tiang({ dataTiang = [] }) {
                     {/* Total Tiang */}
 
                     <div className="hover:scale-102 transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow">
+
                         <div className="flex items-start justify-between">
+
                             <div>
+
                                 <p className="text-xs font-medium">
                                     TOTAL TIANG
                                 </p>
 
                                 <h2 className="mt-1 text-2xl font-semibold">
-                                    {dataTiang.length}
+                                    {totalTiang}
                                 </h2>
+
                             </div>
 
                             <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-900 text-white">
                                 <FaWifi className="text-2xl" />
                             </div>
+
                         </div>
+
                     </div>
+
 
                     {/* Aktif & Nonaktif */}
 
                     <div className="flex min-h-[136px] flex-col gap-4">
+
+                        {/* Aktif */}
+
                         <div className="hover:scale-102 transition-all shadow duration-200 flex flex-1 items-center rounded-xl border-t-4 border-emerald-600 bg-white px-4">
+
                             <div>
+
                                 <p className="text-xs font-medium">
                                     TIANG AKTIF
                                 </p>
 
                                 <h2 className="mt-1 text-xl font-semibold">
-                                    {
-                                        dataTiang.filter(
-                                            (tiang) =>
-                                                tiang.status?.toLowerCase() ===
-                                                "aktif"
-                                        ).length
-                                    }
+                                    {tiangAktif}
                                 </h2>
+
                             </div>
+
                         </div>
 
+
+                        {/* Nonaktif */}
+
                         <div className="hover:scale-102 duration-200 transition-all shadow flex flex-1 items-center rounded-xl border-t-4 border-red-500 bg-white px-4">
+
                             <div>
+
                                 <p className="text-xs font-medium">
                                     TIANG NONAKTIF
                                 </p>
 
                                 <h2 className="mt-1 text-xl font-semibold">
-                                    {
-                                        dataTiang.filter(
-                                            (tiang) =>
-                                                tiang.status?.toLowerCase() ===
-                                                "nonaktif"
-                                        ).length
-                                    }
+                                    {tiangNonaktif}
                                 </h2>
+
                             </div>
+
                         </div>
+
                     </div>
+
 
                     {/* Filter */}
 
                     <div className="min-h-[136px] rounded-xl bg-white p-4 shadow">
 
                         <div className="mb-4 flex items-center gap-2">
+
                             <FaFilter className="text-gray-600" />
 
                             <span className="text-xs font-medium">
                                 FILTER DATA
                             </span>
+
                         </div>
+
 
                         <div className="space-y-3">
 
                             {/* Wilayah */}
 
                             <select
-                                defaultValue=""
+                                value={filterWilayah}
+                                onChange={(e) =>
+                                    handleFilter(
+                                        e.target.value,
+                                        filterStatus
+                                    )
+                                }
                                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-900"
                             >
-                                <option value="" disabled>
-                                    Pilih Wilayah
+
+                                <option value="">
+                                    Semua Wilayah
                                 </option>
 
-                                <option value="aceh">
-                                    Aceh
-                                </option>
+                                {wilayah.map((item) => (
+                                    <option
+                                        key={item.id}
+                                        value={item.id}
+                                    >
+                                        {item.nama_wilayah}
+                                    </option>
+                                ))}
 
-                                <option value="sumut">
-                                    Sumatera Utara
-                                </option>
-
-                                <option value="sumbar">
-                                    Sumatera Barat
-                                </option>
                             </select>
+
 
                             {/* Status */}
 
                             <select
-                                defaultValue=""
+                                value={filterStatus}
+                                onChange={(e) =>
+                                    handleFilter(
+                                        filterWilayah,
+                                        e.target.value
+                                    )
+                                }
                                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-900"
                             >
-                                <option value="" disabled>
-                                    Pilih Status
+
+                                <option value="">
+                                    Semua Status
                                 </option>
 
-                                <option value="aktif">
+                                <option value="Aktif">
                                     Aktif
                                 </option>
 
-                                <option value="nonaktif">
+                                <option value="Nonaktif">
                                     Nonaktif
                                 </option>
+
                             </select>
 
                         </div>
+
                     </div>
 
                 </div>
 
+
                 {/* Tabel */}
 
                 <div className="overflow-hidden rounded-xl bg-white shadow">
+
                     <div className="overflow-x-auto">
 
                         <table className="w-full min-w-[700px] border-collapse text-xs">
 
+                            {/* Header Tabel */}
+
                             <thead>
+
                                 <tr className="border-b border-gray-300 text-center">
 
                                     <th className="w-12 px-4 py-3 font-medium">
@@ -184,7 +266,7 @@ export default function Tiang({ dataTiang = [] }) {
                                     </th>
 
                                     <th className="px-4 py-3 font-medium">
-                                        Lokasi
+                                        Area
                                     </th>
 
                                     <th className="px-4 py-3 font-medium">
@@ -200,7 +282,11 @@ export default function Tiang({ dataTiang = [] }) {
                                     </th>
 
                                 </tr>
+
                             </thead>
+
+
+                            {/* Body Tabel */}
 
                             <tbody className="text-center">
 
@@ -219,86 +305,117 @@ export default function Tiang({ dataTiang = [] }) {
                                                 {String(index + 1).padStart(2, "0")}
                                             </td>
 
+
                                             {/* Foto */}
 
                                             <td className="px-4 py-2">
+
                                                 <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
 
                                                     {tiang.foto_tiang_1 ? (
+
                                                         <img
-                                                            src={`/storage/${tiang.foto_tiang_1}`}
+                                                            src={`/dashboard-gis/public/storage/${tiang.foto_tiang_1}`}
                                                             alt={`Foto ${tiang.kode_tiang}`}
                                                             className="h-full w-full object-cover"
                                                         />
+
                                                     ) : (
+
                                                         <span className="text-[10px] text-gray-400">
                                                             Belum ada foto
                                                         </span>
+
                                                     )}
 
                                                 </div>
+
                                             </td>
 
-                                            {/* Nomor Tiang */}
+
+                                            {/* Kode Tiang */}
 
                                             <td className="px-4 py-2">
+
                                                 {tiang.kode_tiang || (
+
                                                     <span className="text-gray-400">
                                                         Belum ada data
                                                     </span>
+
                                                 )}
+
                                             </td>
 
-                                            {/* Lokasi */}
+
+                                            {/* Area */}
 
                                             <td className="px-4 py-2">
+
                                                 {tiang.wilayah || tiang.area ? (
+
                                                     <>
                                                         {tiang.wilayah}
-                                                        {tiang.area && ` - ${tiang.area}`}
+
+                                                        {tiang.area &&
+                                                            ` - ${tiang.area}`}
                                                     </>
+
                                                 ) : (
+
                                                     <span className="text-gray-400">
                                                         Belum ada data
                                                     </span>
-                                                )}
-                                            </td>
 
+                                                )}
+
+                                            </td>
                                             {/* Petugas */}
 
                                             <td className="px-4 py-2">
-                                                {tiang.petugas || (
+
+                                                {tiang.nama_petugas || (
+
                                                     <span className="text-gray-400">
                                                         Belum ada data
                                                     </span>
+
                                                 )}
+
                                             </td>
+
 
                                             {/* Status */}
 
                                             <td className="px-4 py-2">
 
                                                 {tiang.status ? (
+
                                                     <span
                                                         className={`rounded-full px-2 py-1 text-[10px] text-white ${tiang.status.toLowerCase() ===
-                                                            "aktif"
-                                                            ? "bg-green-500"
-                                                            : "bg-red-500"
+                                                                "aktif"
+                                                                ? "bg-green-500"
+                                                                : "bg-red-500"
                                                             }`}
                                                     >
                                                         {tiang.status}
                                                     </span>
+
                                                 ) : (
+
                                                     <span className="text-gray-400">
                                                         Belum ada data
                                                     </span>
+
                                                 )}
 
                                             </td>
 
+
                                             {/* Aksi */}
 
                                             <td className="px-4 py-2">
+
                                                 <div className="flex items-center gap-1">
 
                                                     {/* Detail */}
@@ -310,6 +427,7 @@ export default function Tiang({ dataTiang = [] }) {
                                                         <FaEye className="text-xl" />
                                                     </a>
 
+
                                                     {/* Edit */}
 
                                                     <a
@@ -319,16 +437,18 @@ export default function Tiang({ dataTiang = [] }) {
                                                         <FaEdit className="text-xl" />
                                                     </a>
 
+
                                                     {/* Hapus */}
 
-                                                    <a
-                                                        href={`hapus-tiang/${tiang.id}`}
-                                                        className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
+                                                    <button
+                                                        type="button"
+                                                        className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
                                                     >
-                                                        <FaEdit className="text-xl" />
-                                                    </a>
+                                                        <MdDelete className="text-xl" />
+                                                    </button>
 
                                                 </div>
+
                                             </td>
 
                                         </tr>
@@ -337,12 +457,17 @@ export default function Tiang({ dataTiang = [] }) {
 
                                 ) : (
 
+                                    /* Placeholder ketika tidak ada data */
+
                                     <tr>
+
                                         <td
                                             colSpan="7"
                                             className="px-4 py-12 text-center"
                                         >
+
                                             <div className="flex flex-col items-center justify-center gap-2">
+
                                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
                                                     <FaWifi className="text-xl text-gray-400" />
                                                 </div>
@@ -354,8 +479,11 @@ export default function Tiang({ dataTiang = [] }) {
                                                 <p className="text-xs text-gray-400">
                                                     Data tiang belum tersedia.
                                                 </p>
+
                                             </div>
+
                                         </td>
+
                                     </tr>
 
                                 )}
@@ -365,6 +493,7 @@ export default function Tiang({ dataTiang = [] }) {
                         </table>
 
                     </div>
+
                 </div>
 
             </div>

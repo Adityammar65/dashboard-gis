@@ -1,11 +1,24 @@
 import MainLayout from "../Layouts/MainLayout";
 
-import { usePage } from "@inertiajs/react";
+import { usePage, router } from "@inertiajs/react";
+import { useState } from "react";
 import { FaPlus, FaFilter, FaEye, FaEdit } from "react-icons/fa";
 import { MdDelete, MdRouter } from "react-icons/md";
 
-export default function ONT({ dataONT = [] }) {
+export default function ONT({
+    dataONT = [],
+    wilayah = [],
+    filter = {},
+}) {
     const { settings } = usePage().props;
+
+    const [filterWilayah, setFilterWilayah] = useState(
+        filter.wilayah ?? ""
+    );
+
+    const [filterStatus, setFilterStatus] = useState(
+        filter.status ?? ""
+    );
 
     const totalONT = dataONT.length;
 
@@ -16,6 +29,33 @@ export default function ONT({ dataONT = [] }) {
     const ontNonaktif = dataONT.filter(
         (ont) => ont.status?.toLowerCase() === "nonaktif"
     ).length;
+
+    const handleFilter = (wilayahValue, statusValue) => {
+        setFilterWilayah(wilayahValue);
+        setFilterStatus(statusValue);
+
+        router.get(
+            window.location.pathname,
+            {
+                wilayah: wilayahValue,
+                status: statusValue,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+            }
+        );
+    };
+
+    const getNamaWilayah = (wilayahId) => {
+        const dataWilayah = wilayah.find(
+            (item) =>
+                Number(item.id) === Number(wilayahId)
+        );
+
+        return dataWilayah?.nama_wilayah ?? "-";
+    };
 
     return (
         <MainLayout>
@@ -148,25 +188,28 @@ export default function ONT({ dataONT = [] }) {
                             {/* Wilayah */}
 
                             <select
-                                defaultValue=""
+                                value={filterWilayah}
+                                onChange={(e) =>
+                                    handleFilter(
+                                        e.target.value,
+                                        filterStatus
+                                    )
+                                }
                                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-900"
                             >
 
-                                <option value="" disabled>
-                                    Pilih Wilayah
+                                <option value="">
+                                    Semua Wilayah
                                 </option>
 
-                                <option value="aceh">
-                                    Aceh
-                                </option>
-
-                                <option value="sumut">
-                                    Sumatera Utara
-                                </option>
-
-                                <option value="sumbar">
-                                    Sumatera Barat
-                                </option>
+                                {wilayah.map((item) => (
+                                    <option
+                                        key={item.id}
+                                        value={item.id}
+                                    >
+                                        {item.nama_wilayah}
+                                    </option>
+                                ))}
 
                             </select>
 
@@ -174,19 +217,25 @@ export default function ONT({ dataONT = [] }) {
                             {/* Status */}
 
                             <select
-                                defaultValue=""
+                                value={filterStatus}
+                                onChange={(e) =>
+                                    handleFilter(
+                                        filterWilayah,
+                                        e.target.value
+                                    )
+                                }
                                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-900"
                             >
 
-                                <option value="" disabled>
-                                    Pilih Status
+                                <option value="">
+                                    Semua Status
                                 </option>
 
-                                <option value="aktif">
+                                <option value="Aktif">
                                     Aktif
                                 </option>
 
-                                <option value="nonaktif">
+                                <option value="Nonaktif">
                                     Nonaktif
                                 </option>
 
@@ -275,7 +324,7 @@ export default function ONT({ dataONT = [] }) {
                                                     {ont.foto_ont_1 ? (
 
                                                         <img
-                                                            src={`/storage/${ont.foto_ont_1}`}
+                                                            src={`/dashboard-gis/public/storage/${ont.foto_ont_1}`}
                                                             alt={`Foto ${ont.kode_ont}`}
                                                             className="h-full w-full object-cover"
                                                         />
@@ -315,7 +364,9 @@ export default function ONT({ dataONT = [] }) {
                                                 {ont.wilayah || ont.area ? (
 
                                                     <>
-                                                        {ont.wilayah}
+                                                        {getNamaWilayah(
+                                                            ont.wilayah
+                                                        )}
 
                                                         {ont.area &&
                                                             ` - ${ont.area}`}
@@ -354,11 +405,12 @@ export default function ONT({ dataONT = [] }) {
                                                 {ont.status ? (
 
                                                     <span
-                                                        className={`rounded-full px-2 py-1 text-[10px] text-white ${ont.status.toLowerCase() ===
+                                                        className={`rounded-full px-2 py-1 text-[10px] text-white ${
+                                                            ont.status.toLowerCase() ===
                                                             "aktif"
-                                                            ? "bg-green-500"
-                                                            : "bg-red-500"
-                                                            }`}
+                                                                ? "bg-green-500"
+                                                                : "bg-red-500"
+                                                        }`}
                                                     >
                                                         {ont.status}
                                                     </span>
@@ -418,8 +470,6 @@ export default function ONT({ dataONT = [] }) {
                                     ))
 
                                 ) : (
-
-                                    /* Placeholder ketika tidak ada data */
 
                                     <tr>
 

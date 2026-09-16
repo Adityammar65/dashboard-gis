@@ -21,23 +21,62 @@ class PageController extends Controller
 
     // Halaman Data Tiang
 
-    public function DataTiang()
+    public function DataTiang(Request $request)
     {
-        $tiang = TiangModel::all();
+        $query = TiangModel::query();
+
+        if ($request->filled('wilayah')) {
+            $wilayah = WilayahModel::find($request->wilayah);
+
+            if ($wilayah) {
+                $query->where('wilayah', $wilayah->nama_wilayah);
+            }
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $dataTiang = $query->get();
+
+        $wilayah = WilayahModel::all();
 
         return Inertia::render('DataTiang', [
-            'dataTiang' => $tiang
+            'dataTiang' => $dataTiang,
+            'wilayah' => $wilayah,
+            'filter' => [
+                'wilayah' => $request->wilayah ?? '',
+                'status' => $request->status ?? '',
+            ],
         ]);
     }
 
     // Halaman Data ONT
 
-    public function DataONT()
+    public function DataONT(Request $request)
     {
-        $ont = ONTModel::all();
+        $query = ONTModel::query();
+
+        if ($request->filled('wilayah')) {
+            $query->where('wilayah', $request->wilayah);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $ont = $query->get();
+
+        $wilayah = WilayahModel::all();
 
         return Inertia::render('DataONT', [
-            'dataONT' => $ont
+            'dataONT' => $ont,
+            'wilayah' => $wilayah,
+
+            'filter' => [
+                'wilayah' => $request->wilayah ?? '',
+                'status' => $request->status ?? '',
+            ],
         ]);
     }
 
