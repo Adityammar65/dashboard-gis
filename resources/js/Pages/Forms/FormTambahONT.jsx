@@ -32,8 +32,13 @@ export default function FormTambahONT({ wilayah }) {
 
         router.post("simpan-ont", form, {
             forceFormData: true,
+            
             onError: (errors) => {
                 console.log(errors);
+                const raw = errors?.error || Object.values(errors || {})[0];
+                const msg = Array.isArray(raw) ? raw[0] : raw;
+                const display = msg || "Gagal menyimpan ONT. Periksa kembali isian form.";
+                window.dispatchEvent(new CustomEvent("layout:error", { detail: display }));
             },
         });
     };

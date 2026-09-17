@@ -32,8 +32,13 @@ export default function FormTambahTiang({ wilayah }) {
 
         router.post("/dashboard-gis/simpan-tiang", form, {
             forceFormData: true,
+
             onError: (errors) => {
                 console.log(errors);
+                const raw = errors?.error || Object.values(errors || {})[0];
+                const msg = Array.isArray(raw) ? raw[0] : raw;
+                const display = msg || "Gagal menyimpan tiang. Periksa kembali isian form.";
+                window.dispatchEvent(new CustomEvent("layout:error", { detail: display }));
             },
         });
     };

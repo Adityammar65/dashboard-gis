@@ -54,6 +54,12 @@ class HandleInertiaRequests extends Middleware
             'errors' => fn() => $request->session()->get('errors')
                 ? $request->session()->get('errors')->getBag('default')->toArray()
                 : (object) [],
+
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+                'message' => fn() => $request->session()->get('message'),
+            ],
         ];
     }
 }
