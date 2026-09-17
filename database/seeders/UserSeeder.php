@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         UserModel::create([
             'username' => 'admin',
             'password' => Hash::make('password'),
-            'remember_token' => 'p'
+            'remember_token' => null,
         ]);
     }
 }

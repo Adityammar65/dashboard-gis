@@ -9,7 +9,9 @@ class UserModel extends Model
     protected $table = 'user';
 
     protected $fillable = [
-        'username'
+        'username',
+        'password',
+        'remember_token',
     ];
 
     protected $hidden = [

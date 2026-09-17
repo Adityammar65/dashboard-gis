@@ -1,31 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AuthLayout from "../Layouts/AuthLayout";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { router, usePage } from "@inertiajs/react";
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
 
     const { errors } = usePage().props;
 
     const errorMessage = Object.values(errors || {})[0];
 
+    useEffect(() => {
+        const savedRemember = localStorage.getItem("gis_remember_me") === "true";
+        const savedUsername = localStorage.getItem("gis_saved_username") || "";
+        if (savedRemember && savedUsername) {
+            setRememberMe(true);
+            setUsername(savedUsername);
+        }
+    }, []);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (rememberMe) {
+            localStorage.setItem("gis_remember_me", "true");
+            localStorage.setItem("gis_saved_username", username);
+        } else {
+            localStorage.removeItem("gis_remember_me");
+            localStorage.removeItem("gis_saved_username");
+        }
+
+        router.post("proses-login", {
+            username,
+            password,
+            remember: rememberMe,
+        });
+    };
+
     return (
         <AuthLayout errorMessage={errorMessage}>
             <div className="flex p-6">
-                <form
-                    className="space-y-5"
-                    onSubmit={(e) => {
-                        e.preventDefault();
+                <form className="space-y-5" onSubmit={handleSubmit}>
 
-                        const form = e.currentTarget;
-
-                        router.post("proses-login", {
-                            username: form.username.value,
-                            password: form.password.value,
-                        });
-                    }}
-                >
                     {/* Username */}
 
                     <div>
@@ -40,6 +59,8 @@ export default function Login() {
                             type="text"
                             id="username"
                             name="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             placeholder="Masukkan username"
                             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#ab3c3c] focus:ring-2 focus:ring-[#7F1D32]/10"
                         />
@@ -60,6 +81,8 @@ export default function Login() {
                                 type={showPassword ? "text" : "password"}
                                 id="password"
                                 name="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Masukkan password"
                                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 pr-12 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#ab3c3c] focus:ring-2 focus:ring-[#7F1D32]/10"
                             />
@@ -78,9 +101,28 @@ export default function Login() {
                         </div>
                     </div>
 
-                    {/* Forgot Password */}
+                    {/* Remember Me + Forgot Password */}
 
-                    <div className="text-right">
+                    <div className="flex items-center justify-between">
+                        <label
+                            htmlFor="remember"
+                            className="flex cursor-pointer select-none items-center gap-2"
+                        >
+                            <input
+                                type="checkbox"
+                                id="remember"
+                                name="remember"
+                                checked={rememberMe}
+                                onChange={(e) =>
+                                    setRememberMe(e.target.checked)
+                                }
+                                className="h-4 w-4 rounded border-gray-300 text-[#ab3c3c] accent-[#ab3c3c] focus:ring-1 focus:ring-[#ab3c3c]/20"
+                            />
+                            <span className="text-sm text-gray-600">
+                                Ingat saya
+                            </span>
+                        </label>
+
                         <a
                             href="#"
                             className="text-sm text-gray-500 transition hover:text-[#ab3c3c]"

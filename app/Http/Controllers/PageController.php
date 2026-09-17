@@ -24,10 +24,10 @@ class PageController extends Controller
 
     public function DataTiang(Request $request)
     {
-        $query = TiangModel::query()->select(['id','kode_tiang','wilayah','area','nama_petugas','status','foto_tiang_1','latitude','longitude']);
+        $query = TiangModel::query()->select(['id', 'kode_tiang', 'wilayah', 'area', 'nama_petugas', 'status', 'foto_tiang_1', 'latitude', 'longitude']);
 
         if ($request->filled('wilayah')) {
-            $wilayah = Cache::remember('wilayah:'.$request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
+            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
             if ($wilayah) {
                 $query->where('wilayah', $wilayah->nama_wilayah);
             }
@@ -54,10 +54,10 @@ class PageController extends Controller
 
     public function DataONT(Request $request)
     {
-        $query = ONTModel::query()->select(['id','kode_ont','wilayah','area','nama_petugas','status','foto_ont_1','latitude','longitude']);
+        $query = ONTModel::query()->select(['id', 'kode_ont', 'wilayah', 'area', 'nama_petugas', 'status', 'foto_ont_1', 'latitude', 'longitude']);
 
         if ($request->filled('wilayah')) {
-            $wilayah = Cache::remember('wilayah:'.$request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
+            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
             if ($wilayah) {
                 $query->where('wilayah', $wilayah->nama_wilayah);
             }
@@ -125,8 +125,27 @@ class PageController extends Controller
 
     // Login
 
-    public function Login()
+    public function Login(Request $request)
     {
+        if ($request->session()->has('login')) {
+            return redirect('home');
+        }
+
+        $cookie = $request->cookie('gis_remember');
+        if ($cookie && str_contains($cookie, '|')) {
+            [$id, $plainToken] = explode('|', $cookie, 2);
+            $user = \App\Models\UserModel::find($id);
+            if ($user && $user->remember_token && hash_equals($user->remember_token, hash('sha256', $plainToken))) {
+                $request->session()->regenerate();
+                $request->session()->put([
+                    'login' => true,
+                    'user_id' => $user->id,
+                    'username' => $user->username,
+                ]);
+                return redirect('home');
+            }
+        }
+
         return Inertia::render('Login');
     }
 
@@ -154,4 +173,3 @@ class PageController extends Controller
         ]);
     }
 }
-

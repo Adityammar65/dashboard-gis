@@ -23,7 +23,6 @@ return new class extends Migration
         });
 
         Schema::table('user', function (Blueprint $table) {
-            $table->unique('username');
             $table->index('username');
         });
 
@@ -43,17 +42,20 @@ return new class extends Migration
         Schema::table('tiang', function (Blueprint $table) {
             $table->dropIndex(['wilayah']);
             $table->dropIndex(['status']);
-            $table->dropIndex(['wilayah_status_index'] ?? ['wilayah', 'status']);
+            $table->dropIndex(['wilayah', 'status']);
             $table->dropIndex(['area']);
         });
         Schema::table('ont', function (Blueprint $table) {
             $table->dropIndex(['wilayah']);
             $table->dropIndex(['status']);
-            $table->dropIndex(['wilayah_status_index'] ?? ['wilayah', 'status']);
+            $table->dropIndex(['wilayah', 'status']);
             $table->dropIndex(['area']);
         });
         Schema::table('user', function (Blueprint $table) {
-            $table->dropUnique(['username']);
+            try {
+                $table->dropUnique(['username']);
+            } catch (\Throwable $e) {
+            }
             $table->dropIndex(['username']);
         });
         Schema::table('notifikasi', function (Blueprint $table) {
