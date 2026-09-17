@@ -30,7 +30,7 @@ export default function FormTambahTiang({ wilayah }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        router.post("/dashboard-gis/simpan-tiang", form, {
+        router.post("simpan-tiang", form, {
             forceFormData: true,
 
             onError: (errors) => {
