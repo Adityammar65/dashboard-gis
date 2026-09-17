@@ -27,7 +27,7 @@ Route::middleware('cek_login')->group(function () {
     Route::get('/wilayah', [PageController::class, 'Wilayah']);
     Route::get('/peta-sebaran-aset', [PageController::class, 'PetaSebaranAset']);
     Route::get('/detail-tiang/{id}', [PageController::class, 'DetailTiang']);
-    Route::get('/detail-ont', [PageController::class, 'DetailONT']);
+    Route::get('/detail-ont/{id}', [PageController::class, 'DetailONT']);
     Route::get('/notifikasi', [PageController::class, 'Notifikasi']);
     Route::get('/pengaturan', [PageController::class, 'Pengaturan']);
 

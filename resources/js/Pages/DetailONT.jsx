@@ -2,17 +2,23 @@ import MainLayout from "../Layouts/MainLayout";
 import MapView from "../Components/MapView";
 import { FaArrowLeft, FaPen, FaExternalLinkAlt } from "react-icons/fa";
 import { useState } from "react";
+import { router } from "@inertiajs/react";
 
-export default function DetailONT() {
-    const [activeImage, setActiveImage] = useState(
-        "/Assets/Tiang/tiang-1.jpg"
-    );
+export default function DetailONT({ ont }) {
+    const getFotoUrl = (foto) => {
+        if (!foto) return null;
+        return `../public/storage/${foto}`;
+    };
 
     const images = [
-        "/Assets/Tiang/tiang-1.jpg",
-        "/Assets/Tiang/tiang-2.jpg",
-        "/Assets/Tiang/tiang-3.jpg",
-    ];
+        ont?.foto_ont_1,
+        ont?.foto_ont_2,
+        ont?.foto_ont_3,
+    ].filter(Boolean);
+
+    const [activeImage, setActiveImage] = useState(
+        images.length > 0 ? getFotoUrl(images[0]) : null
+    );
 
     return (
         <MainLayout>
@@ -27,13 +33,14 @@ export default function DetailONT() {
                         </h1>
                     </div>
 
-                    <a
-                        href="data-ont"
+                    <button
+                        type="button"
+                        onClick={() => window.history.back()}
                         className="ml-3 flex shrink-0 items-center gap-2 rounded-md bg-red-500 px-3 py-2 text-xs font-medium text-white transition hover:bg-red-600"
                     >
                         <FaArrowLeft />
                         Kembali
-                    </a>
+                    </button>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -41,34 +48,62 @@ export default function DetailONT() {
 
                         {/* Foto utama */}
 
-                        <div className="overflow-hidden rounded-md">
-                            <img
-                                src={activeImage}
-                                alt="Foto Tiang"
-                                className="h-[330px] w-full object-cover transition duration-300"
-                            />
+                        <div className="mb-3">
+                            <p className="mb-2 text-xs font-semibold text-gray-800">
+                                Foto Utama
+                            </p>
+                            <div className="overflow-hidden rounded-md">
+                                {activeImage ? (
+                                    <img
+                                        src={activeImage}
+                                        alt={`Foto ${ont?.kode_ont ?? "ONT"}`}
+                                        className="h-[330px] w-full object-cover transition duration-300"
+                                    />
+                                ) : (
+                                    <div className="flex h-[330px] w-full items-center justify-center bg-gray-100">
+                                        <span className="text-xs text-gray-400">
+                                            Belum ada foto ONT
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Thumbnail */}
+                        {/* Thumbnail Foto 1, 2, 3 */}
 
                         <div className="mt-2 grid grid-cols-3 gap-2">
-                            {images.map((image, index) => (
-                                <button
-                                    key={image}
-                                    type="button"
-                                    onClick={() => setActiveImage(image)}
-                                    className={`overflow-hidden rounded-md border-2 transition ${activeImage === image
-                                        ? "border-blue-500"
-                                        : "border-transparent hover:border-gray-300"
-                                        }`}
-                                >
-                                    <img
-                                        src={image}
-                                        alt={`Foto ${index + 1}`}
-                                        className="h-24 w-full object-cover"
-                                    />
-                                </button>
-                            ))}
+                            {images.length > 0 ? (
+                                images.map((image, index) => {
+                                    const imageUrl = getFotoUrl(image);
+                                    return (
+                                        <div key={image}>
+                                            <p className="mb-1 text-center text-[10px] font-semibold text-gray-700">
+                                                Foto {index + 1}
+                                            </p>
+                                            <button
+                                                type="button"
+                                                onClick={() => setActiveImage(imageUrl)}
+                                                className={`w-full overflow-hidden rounded-md border-2 transition ${activeImage === imageUrl
+                                                    ? "border-blue-500"
+                                                    : "border-transparent hover:border-gray-300"
+                                                    }`}
+                                            >
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={`Foto ${index + 1}`}
+                                                    className="h-24 w-full object-cover"
+                                                />
+                                            </button>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <div className="col-span-3 flex h-24 items-center justify-center rounded-md bg-gray-100">
+                                    <span className="text-[10px] text-gray-400">
+                                        Belum ada foto
+                                    </span>
+                                </div>
+                            )}
                         </div>
 
                     </div>
@@ -80,7 +115,7 @@ export default function DetailONT() {
                         <div className="flex items-start justify-between">
                             <div>
                                 <h2 className="text-lg font-bold text-gray-800">
-                                    Nomor ONT
+                                    {ont?.kode_ont ?? "Data ONT"}
                                 </h2>
                             </div>
                         </div>
@@ -94,7 +129,7 @@ export default function DetailONT() {
                                     Wilayah
                                 </p>
                                 <p className="mt-1 text-gray-600">
-                                    Jl. Lorem No 9
+                                    {ont?.wilayah || "-"}
                                 </p>
                             </div>
 
@@ -103,19 +138,19 @@ export default function DetailONT() {
                                     Koordinat
                                 </p>
                                 <p className="mt-1 text-gray-600">
-                                    Latitude: xxxxx
+                                    Latitude: {ont?.latitude || "-"}
                                 </p>
                                 <p className="text-gray-600">
-                                    Longitude: xxxx
+                                    Longitude: {ont?.longitude || "-"}
                                 </p>
                             </div>
 
                             <div>
                                 <p className="font-semibold text-gray-800">
-                                    Deskripsi Tiang
+                                    Deskripsi ONT
                                 </p>
                                 <p className="mt-1 text-gray-600">
-                                    Lorem Ipsum
+                                    {ont?.deskripsi_ont || "-"}
                                 </p>
                             </div>
 
@@ -123,10 +158,9 @@ export default function DetailONT() {
                                 <p className="font-semibold text-gray-800">
                                     Status
                                 </p>
-
                                 <div className="mt-1 flex items-center gap-1 text-gray-600">
-                                    <span className="h-2 w-2 rounded-full bg-green-500" />
-                                    Aktif
+                                    <span className={`h-2 w-2 rounded-full ${ont?.status?.toLowerCase() === "aktif" ? "bg-green-500" : "bg-red-500"}`} />
+                                    {ont?.status || "-"}
                                 </div>
                             </div>
 
@@ -135,7 +169,25 @@ export default function DetailONT() {
                                     Petugas
                                 </p>
                                 <p className="mt-1 text-gray-600">
-                                    Ahmad Fauzi
+                                    {ont?.nama_petugas || "-"}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p className="font-semibold text-gray-800">
+                                    Area
+                                </p>
+                                <p className="mt-1 text-gray-600">
+                                    {ont?.area || "-"}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p className="font-semibold text-gray-800">
+                                    Kode ONT
+                                </p>
+                                <p className="mt-1 text-gray-600">
+                                    {ont?.kode_ont || "-"}
                                 </p>
                             </div>
 
@@ -145,7 +197,8 @@ export default function DetailONT() {
 
                         <button
                             type="button"
-                            className="mt-5 flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-blue-700"
+                            onClick={() => router.get(`../edit-ont/${ont?.id}`)}
+                            className="mt-5 flex w-fit items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-blue-700"
                         >
                             <FaPen />
                             Edit Data
@@ -155,14 +208,20 @@ export default function DetailONT() {
 
                         <div className="relative mt-4 h-[210px] overflow-hidden rounded-lg bg-gray-200">
 
-                            <MapView />
+                            <MapView
+                                latitude={ont?.latitude}
+                                longitude={ont?.longitude}
+                            />
 
                             <button
                                 type="button"
                                 className="absolute right-3 top-3 z-[1000] flex h-8 w-8 items-center justify-center rounded-md bg-white shadow-md transition hover:bg-gray-100"
                             >
+
                                 <FaExternalLinkAlt className="text-sm" />
+
                             </button>
+
                         </div>
                     </div>
                 </div>

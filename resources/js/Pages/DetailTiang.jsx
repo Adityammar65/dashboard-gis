@@ -1,8 +1,8 @@
-
 import MainLayout from "../Layouts/MainLayout";
 import MapView from "../Components/MapView";
 import { FaArrowLeft, FaPen, FaExternalLinkAlt } from "react-icons/fa";
 import { useState } from "react";
+import { router } from "@inertiajs/react";
 
 export default function DetailTiang({ tiang }) {
 
@@ -10,7 +10,7 @@ export default function DetailTiang({ tiang }) {
     const getFotoUrl = (foto) => {
         if (!foto) return null;
 
-        return `/dashboard-gis/public/storage/${foto}`;
+        return `../public/storage/${foto}`;
     };
 
     const images = [
@@ -41,8 +41,9 @@ export default function DetailTiang({ tiang }) {
 
                     </div>
 
-                    <a
-                        href="/dashboard-gis/data-tiang"
+                    <button
+                        type="button"
+                        onClick={() => window.history.back()}
                         className="ml-3 flex shrink-0 items-center gap-2 rounded-md bg-red-500 px-3 py-2 text-xs font-medium text-white transition hover:bg-red-600"
                     >
 
@@ -50,7 +51,7 @@ export default function DetailTiang({ tiang }) {
 
                         Kembali
 
-                    </a>
+                    </button>
 
                 </div>
 
@@ -59,9 +60,11 @@ export default function DetailTiang({ tiang }) {
 
 
                     {/* FOTO */}
+
                     <div className="rounded-lg bg-white p-4 shadow-md">
 
                         {/* Foto utama */}
+
                         <div className="mb-3">
                             <p className="mb-2 text-xs font-semibold text-gray-800">
                                 Foto Utama
@@ -85,6 +88,7 @@ export default function DetailTiang({ tiang }) {
                         </div>
 
                         {/* Thumbnail Foto 1, 2, 3 */}
+
                         <div className="mt-2 grid grid-cols-3 gap-2">
                             {images.length > 0 ? (
                                 images.map((image, index) => {
@@ -100,8 +104,8 @@ export default function DetailTiang({ tiang }) {
                                                 type="button"
                                                 onClick={() => setActiveImage(imageUrl)}
                                                 className={`w-full overflow-hidden rounded-md border-2 transition ${activeImage === imageUrl
-                                                        ? "border-blue-500"
-                                                        : "border-transparent hover:border-gray-300"
+                                                    ? "border-blue-500"
+                                                    : "border-transparent hover:border-gray-300"
                                                     }`}
                                             >
                                                 <img
@@ -271,8 +275,9 @@ export default function DetailTiang({ tiang }) {
 
                         {/* Edit */}
 
-                        <a
-                            href={`/dashboard-gis/public/edit-tiang/${tiang?.id}`}
+                        <button
+                            type="button"
+                            onClick={() => router.get(`../edit-tiang/${tiang?.id}`)}
                             className="mt-5 flex w-fit items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-blue-700"
                         >
 
@@ -280,7 +285,7 @@ export default function DetailTiang({ tiang }) {
 
                             Edit Data
 
-                        </a>
+                        </button>
 
 
                         {/* Map */}

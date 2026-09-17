@@ -117,9 +117,13 @@ class PageController extends Controller
 
     // Detail ONT
 
-    public function DetailONT()
+    public function DetailONT($id)
     {
-        return Inertia::render('DetailONT');
+        $ont = ONTModel::findOrFail($id);
+
+        return Inertia::render('DetailONT', [
+            'ont' => $ont,
+        ]);
     }
 
     // Login
