@@ -7,6 +7,8 @@ use App\Models\ONTModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ONTController extends Controller
 {
@@ -15,7 +17,6 @@ class ONTController extends Controller
     public function SimpanONT(Request $request)
     {
         $storedFiles = [];
-
         try {
             $validated = $request->validate([
                 'kode_ont'      => 'required|string|max:255|unique:ont,kode_ont',
@@ -49,7 +50,6 @@ class ONTController extends Controller
                 'status.required' => 'Status wajib diisi.',
                 'status.in' => 'Status tidak valid.',
             ]);
-
             $data = [
                 'kode_ont'      => $validated['kode_ont'],
                 'area'            => $validated['area'],
@@ -60,36 +60,28 @@ class ONTController extends Controller
                 'nama_petugas'    => $validated['nama_petugas'],
                 'status'          => $validated['status'],
             ];
-
+            if (!Storage::disk('public')->exists('ont')) Storage::disk('public')->makeDirectory('ont');
             if ($request->hasFile('foto_ont_1')) {
-                $path = $request->file('foto_ont_1')->store('ont', 'public');
+                $path = $this->storeOptimizedImage($request->file('foto_ont_1'), 'ont');
                 $data['foto_ont_1'] = $path;
                 $storedFiles[] = $path;
             }
-
             if ($request->hasFile('foto_ont_2')) {
-                $path = $request->file('foto_ont_2')->store('ont', 'public');
+                $path = $this->storeOptimizedImage($request->file('foto_ont_2'), 'ont');
                 $data['foto_ont_2'] = $path;
                 $storedFiles[] = $path;
             }
-
             if ($request->hasFile('foto_ont_3')) {
-                $path = $request->file('foto_ont_3')->store('ont', 'public');
+                $path = $this->storeOptimizedImage($request->file('foto_ont_3'), 'ont');
                 $data['foto_ont_3'] = $path;
                 $storedFiles[] = $path;
             }
-
             ONTModel::create($data);
-
-            return redirect('data-ont')
-                ->with('success', 'Data ONT berhasil disimpan.');
+            return redirect('data-ont')->with('success', 'Data ONT berhasil disimpan.');
         } catch (QueryException $e) {
             $this->cleanupFiles($storedFiles);
             Log::error('SimpanONT QueryException: ' . $e->getMessage());
-            $fieldErrors = $this->parseQueryError($e);
-            return redirect()->back()
-                ->withErrors($fieldErrors)
-                ->withInput();
+            return redirect()->back()->withErrors($this->parseQueryError($e))->withInput();
         } catch (\Throwable $e) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
                 $this->cleanupFiles($storedFiles);
@@ -97,9 +89,7 @@ class ONTController extends Controller
             }
             $this->cleanupFiles($storedFiles);
             Log::error('SimpanONT Error: ' . $e->getMessage());
-            return redirect()->back()
-                ->withErrors(['error' => 'Gagal menyimpan ONT: ' . $e->getMessage()])
-                ->withInput();
+            return redirect()->back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
 
@@ -109,10 +99,8 @@ class ONTController extends Controller
     {
         $newFiles = [];
         $oldFilesToDelete = [];
-
         try {
             $ont = ONTModel::findOrFail($id);
-
             $validated = $request->validate([
                 'kode_ont'      => 'required|string|max:255|unique:ont,kode_ont,' . $id,
                 'area'            => 'required|string|max:255',
@@ -139,7 +127,6 @@ class ONTController extends Controller
                 'status.required' => 'Status wajib diisi.',
                 'status.in' => 'Status tidak valid.',
             ]);
-
             $data = [
                 'kode_ont'      => $validated['kode_ont'],
                 'wilayah'         => $validated['wilayah'],
@@ -150,47 +137,32 @@ class ONTController extends Controller
                 'nama_petugas'    => $validated['nama_petugas'],
                 'status'          => $validated['status'],
             ];
-
+            if (!Storage::disk('public')->exists('ont')) Storage::disk('public')->makeDirectory('ont');
             if ($request->hasFile('foto_ont_1')) {
-                $path = $request->file('foto_ont_1')->store('ont', 'public');
+                $path = $this->storeOptimizedImage($request->file('foto_ont_1'), 'ont');
                 $data['foto_ont_1'] = $path;
                 $newFiles[] = $path;
-                if ($ont->foto_ont_1) {
-                    $oldFilesToDelete[] = $ont->foto_ont_1;
-                }
+                if ($ont->foto_ont_1) $oldFilesToDelete[] = $ont->foto_ont_1;
             }
-
             if ($request->hasFile('foto_ont_2')) {
-                $path = $request->file('foto_ont_2')->store('ont', 'public');
+                $path = $this->storeOptimizedImage($request->file('foto_ont_2'), 'ont');
                 $data['foto_ont_2'] = $path;
                 $newFiles[] = $path;
-                if ($ont->foto_ont_2) {
-                    $oldFilesToDelete[] = $ont->foto_ont_2;
-                }
+                if ($ont->foto_ont_2) $oldFilesToDelete[] = $ont->foto_ont_2;
             }
-
             if ($request->hasFile('foto_ont_3')) {
-                $path = $request->file('foto_ont_3')->store('ont', 'public');
+                $path = $this->storeOptimizedImage($request->file('foto_ont_3'), 'ont');
                 $data['foto_ont_3'] = $path;
                 $newFiles[] = $path;
-                if ($ont->foto_ont_3) {
-                    $oldFilesToDelete[] = $ont->foto_ont_3;
-                }
+                if ($ont->foto_ont_3) $oldFilesToDelete[] = $ont->foto_ont_3;
             }
-
             $ont->update($data);
-
             $this->cleanupFiles($oldFilesToDelete);
-
-            return redirect('data-ont')
-                ->with('success', 'Data ONT berhasil diperbarui.');
+            return redirect('data-ont')->with('success', 'Data ONT berhasil diperbarui.');
         } catch (QueryException $e) {
             $this->cleanupFiles($newFiles);
             Log::error('UpdateONT QueryException: ' . $e->getMessage());
-            $fieldErrors = $this->parseQueryError($e);
-            return redirect()->back()
-                ->withErrors($fieldErrors)
-                ->withInput();
+            return redirect()->back()->withErrors($this->parseQueryError($e))->withInput();
         } catch (\Throwable $e) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
                 $this->cleanupFiles($newFiles);
@@ -198,9 +170,7 @@ class ONTController extends Controller
             }
             $this->cleanupFiles($newFiles);
             Log::error('UpdateONT Error: ' . $e->getMessage());
-            return redirect()->back()
-                ->withErrors(['error' => 'Gagal memperbarui ONT: ' . $e->getMessage()])
-                ->withInput();
+            return redirect()->back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
 
@@ -209,19 +179,10 @@ class ONTController extends Controller
     public function HapusONT($id)
     {
         $ont = ONTModel::findOrFail($id);
-
-        $files = array_filter([
-            $ont->foto_ont_1,
-            $ont->foto_ont_2,
-            $ont->foto_ont_3,
-        ]);
-
+        $files = array_filter([$ont->foto_ont_1, $ont->foto_ont_2, $ont->foto_ont_3]);
         $ont->delete();
-
         $this->cleanupFiles($files);
-
-        return redirect('data-ont')
-            ->with('success', 'Data ONT berhasil dihapus.');
+        return redirect('data-ont')->with('success', 'Data ONT berhasil dihapus.');
     }
 
     // Handle Error Message
@@ -229,53 +190,59 @@ class ONTController extends Controller
     private function parseQueryError(QueryException $e): array
     {
         $msg = $e->getMessage();
-
-        if (str_contains($msg, 'cannot be null') || str_contains($msg, '1048') || preg_match("/Column '[^']+' cannot be null/", $msg)) {
-            if (preg_match("/Column '([^']+)'/", $msg, $m)) {
+        if (str_contains($msg, 'cannot be null') || str_contains($msg, "doesn't have a default value") || str_contains($msg, '1048') || str_contains($msg, '1364') || preg_match("/(Column|Field) '[^']+' (cannot be null|doesn't have a default value)/", $msg)) {
+            if (preg_match("/(?:Column|Field) '([^']+)'/", $msg, $m)) {
                 $col = $m[1];
-                $labels = [
-                    'kode_ont' => 'Kode ONT',
-                    'area' => 'Area',
-                    'wilayah' => 'Wilayah',
-                    'deskripsi_ont' => 'Deskripsi ONT',
-                    'foto_ont_1' => 'Foto ONT 1',
-                    'foto_ont_2' => 'Foto ONT 2',
-                    'foto_ont_3' => 'Foto ONT 3',
-                    'latitude' => 'Latitude',
-                    'longitude' => 'Longitude',
-                    'nama_petugas' => 'Nama Petugas',
-                    'status' => 'Status',
-                ];
-                $label = $labels[$col] ?? $col;
-                return [$col => $label . ' wajib diisi.'];
+                $labels = ['kode_ont' => 'Kode ONT', 'area' => 'Area', 'wilayah' => 'Wilayah', 'deskripsi_ont' => 'Deskripsi ONT', 'foto_ont_1' => 'Foto ONT 1', 'foto_ont_2' => 'Foto ONT 2', 'foto_ont_3' => 'Foto ONT 3', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
+                return [$col => ($labels[$col] ?? $col) . ' wajib diisi.'];
             }
             return ['error' => 'Ada field wajib yang belum diisi.'];
         }
-
-        if (str_contains($msg, 'Duplicate entry') || str_contains($msg, 'UNIQUE') || str_contains($msg, 'unique constraint')) {
-            if (str_contains($msg, 'kode_ont')) {
-                return ['kode_ont' => 'Kode ONT sudah digunakan. Gunakan kode lain.'];
-            }
-            if (str_contains($msg, 'kode_tiang')) {
-                return ['kode_tiang' => 'Kode Tiang sudah digunakan.'];
-            }
+        if (str_contains($msg, 'Duplicate entry') || str_contains($msg, 'UNIQUE') || str_contains($msg, 'unique constraint') || str_contains($msg, '1062')) {
+            if (str_contains($msg, 'kode_ont')) return ['kode_ont' => 'Kode ONT sudah digunakan. Gunakan kode lain.'];
+            if (str_contains($msg, 'kode_tiang')) return ['kode_tiang' => 'Kode Tiang sudah digunakan.'];
             if (preg_match("/for key '[^']*\.([^']+)'/", $msg, $m)) {
                 $col = $m[1];
-                return [$col => ucfirst(str_replace('_',' ',$col)) . ' sudah digunakan.'];
+                return [$col => ucfirst(str_replace('_', ' ', $col)) . ' sudah digunakan.'];
             }
             return ['error' => 'Data sudah ada (duplikat). Periksa kembali kode unik.'];
         }
+        if (str_contains($msg, 'foreign key') || str_contains($msg, '1452')) return ['error' => 'Data relasi tidak valid.'];
+        Log::warning('Unmapped QueryException for ONT: ' . $msg);
+        return ['error' => 'Gagal menyimpan data ONT: ' . $this->extractSqlDetail($msg)];
+    }
 
-        if (str_contains($msg, 'foreign key') || str_contains($msg, '1452')) {
-            return ['error' => 'Data relasi tidak valid.'];
-        }
-
-        return ['error' => 'Gagal menyimpan data ONT. Periksa kembali isian form.'];
+    private function extractSqlDetail(string $msg): string
+    {
+        if (preg_match('/SQLSTATE\[.*?\]:\s*(.+?)(?:\s*\(|$)/', $msg, $m)) return trim($m[1]);
+        return mb_substr($msg, -200);
     }
 
     private function formatQueryError(QueryException $e): string
     {
         return array_values($this->parseQueryError($e))[0];
+    }
+
+    // Handle Image Optimize
+
+    private function storeOptimizedImage($file, string $dir): string
+    {
+        try {
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($file);
+            if ($image->width() > 1024) $image->scale(width: 1024);
+            $ext = strtolower($file->getClientOriginalExtension());
+            $isPng = $ext === 'png';
+            $encoded = $isPng ? $image->encodeByExtension('png') : $image->encodeByExtension('jpg', quality: 75);
+            $filename = uniqid() . '.' . ($isPng ? 'png' : 'jpg');
+            Storage::disk('public')->put($dir . '/' . $filename, (string) $encoded);
+            return $dir . '/' . $filename;
+        } catch (\Throwable $e) {
+            Log::warning('Image optimize failed, fallback to store: ' . $e->getMessage());
+            $path = $file->store($dir, 'public');
+            if (!$path) throw new \Exception('Gagal menyimpan gambar: storage gagal.');
+            return $path;
+        }
     }
 
     // Handle Delete File
@@ -285,9 +252,7 @@ class ONTController extends Controller
         foreach ($paths as $path) {
             if (!$path) continue;
             try {
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->delete($path);
-                }
+                if (Storage::disk('public')->exists($path)) Storage::disk('public')->delete($path);
             } catch (\Throwable $e) {
                 Log::warning('Failed to cleanup file: ' . $path . ' - ' . $e->getMessage());
             }

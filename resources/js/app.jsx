@@ -5,12 +5,10 @@ import { createInertiaApp } from '@inertiajs/react';
 import 'leaflet/dist/leaflet.css';
 
 createInertiaApp({
-    resolve: (name) => {
-        const pages = import.meta.glob('./Pages/**/*.jsx', {
-            eager: true,
-        });
-
-        return pages[`./Pages/${name}.jsx`];
+    resolve: async (name) => {
+        const pages = import.meta.glob('./Pages/**/*.jsx');
+        const mod = await pages[`./Pages/${name}.jsx`]();
+        return mod.default;
     },
 
     setup({ el, App, props }) {

@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoMdArrowDropdown, IoMdNotifications } from "react-icons/io";
 
-export default function Header() {
+const Header = memo(function Header() {
     return (
         <header className="sticky top-0 z-50 flex h-18 items-center justify-between bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-6 py-2">
 
@@ -13,6 +14,10 @@ export default function Header() {
                         src="/dashboard-gis/public/Assets/Logo.png"
                         alt="Logo"
                         className="w-10"
+                        width="40"
+                        height="40"
+                        loading="lazy"
+                        decoding="async"
                     />
                 </div>
 
@@ -49,4 +54,6 @@ export default function Header() {
             </a>
         </header>
     );
-}
+});
+
+export default Header;

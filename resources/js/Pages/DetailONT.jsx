@@ -58,6 +58,8 @@ export default function DetailONT({ ont }) {
                                         src={activeImage}
                                         alt={`Foto ${ont?.kode_ont ?? "ONT"}`}
                                         className="h-[330px] w-full object-cover transition duration-300"
+                                        loading="lazy"
+                                        decoding="async"
                                     />
                                 ) : (
                                     <div className="flex h-[330px] w-full items-center justify-center bg-gray-100">
@@ -92,6 +94,8 @@ export default function DetailONT({ ont }) {
                                                     src={imageUrl}
                                                     alt={`Foto ${index + 1}`}
                                                     className="h-24 w-full object-cover"
+                                                    loading="lazy"
+                                                    decoding="async"
                                                 />
                                             </button>
                                         </div>

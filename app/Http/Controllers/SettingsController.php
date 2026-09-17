@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Models\WilayahModel;
+use Illuminate\Support\Facades\Cache;
 
 class SettingsController extends Controller
 {
@@ -31,6 +32,8 @@ class SettingsController extends Controller
                 JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
             )
         );
+        Cache::forget('settings');
+        Cache::forget('wilayah:list');
 
         return redirect()
             ->back()

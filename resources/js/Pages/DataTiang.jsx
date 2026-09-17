@@ -1,7 +1,7 @@
 import MainLayout from "../Layouts/MainLayout";
 
 import { usePage, router } from "@inertiajs/react";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { FaPlus, FaFilter, FaEye, FaEdit, FaWifi } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
@@ -20,20 +20,14 @@ export default function DataTiang({
         filter.status ?? ""
     );
 
-    const totalTiang = dataTiang.length;
+    const listTiang = useMemo(() => (Array.isArray(dataTiang) ? dataTiang : (dataTiang?.data ?? [])), [dataTiang]);
+    const totalTiang = useMemo(() => dataTiang?.total ?? listTiang.length, [dataTiang, listTiang]);
+    const tiangAktif = useMemo(() => listTiang.filter((tiang) => tiang.status?.toLowerCase() === "aktif").length, [listTiang]);
+    const tiangNonaktif = useMemo(() => listTiang.filter((tiang) => tiang.status?.toLowerCase() === "nonaktif").length, [listTiang]);
 
-    const tiangAktif = dataTiang.filter(
-        (tiang) => tiang.status?.toLowerCase() === "aktif"
-    ).length;
-
-    const tiangNonaktif = dataTiang.filter(
-        (tiang) => tiang.status?.toLowerCase() === "nonaktif"
-    ).length;
-
-    const handleFilter = (wilayahValue, statusValue) => {
+    const handleFilter = useCallback((wilayahValue, statusValue) => {
         setFilterWilayah(wilayahValue);
         setFilterStatus(statusValue);
-
         router.get(
             window.location.pathname,
             {
@@ -46,7 +40,7 @@ export default function DataTiang({
                 replace: true,
             }
         );
-    };
+    }, []);
 
     return (
         <MainLayout>
@@ -290,9 +284,9 @@ export default function DataTiang({
 
                             <tbody className="text-center">
 
-                                {dataTiang.length > 0 ? (
+                                {listTiang.length > 0 ? (
 
-                                    dataTiang.map((tiang, index) => (
+                                    listTiang.map((tiang, index) => (
 
                                         <tr
                                             key={tiang.id}
@@ -318,6 +312,10 @@ export default function DataTiang({
                                                             src={`/dashboard-gis/public/storage/${tiang.foto_tiang_1}`}
                                                             alt={`Foto ${tiang.kode_tiang}`}
                                                             className="h-full w-full object-cover"
+                                                            loading="lazy"
+                                                            decoding="async"
+                                                            width="64"
+                                                            height="64"
                                                         />
 
                                                     ) : (
@@ -503,7 +501,13 @@ export default function DataTiang({
                         </table>
 
                     </div>
-
+                    {dataTiang?.links && dataTiang.links.length > 3 && (
+                        <div className="flex flex-wrap gap-1 justify-center mt-4">
+                            {dataTiang.links.map((link, i) => (
+                                <button key={i} disabled={!link.url} onClick={() => link.url && router.get(link.url, {}, { preserveState: true, preserveScroll: true })} className={`px-3 py-1 text-xs rounded ${link.active ? 'bg-[#AB3C3C] text-white' : 'bg-white border'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`} dangerouslySetInnerHTML={{ __html: link.label }} />
+                            ))}
+                        </div>
+                    )}
                 </div>
 
             </div>

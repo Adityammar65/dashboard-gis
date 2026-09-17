@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\WilayahModel;
 use App\Models\TiangModel;
 use App\Models\ONTModel;
+use Illuminate\Support\Facades\Cache;
 
 class FormController extends Controller
 {
@@ -14,8 +15,7 @@ class FormController extends Controller
 
     public function TambahTiang()
     {
-        $wilayah = WilayahModel::all();
-
+        $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
         return Inertia::render('Forms/FormTambahTiang', [
             'wilayah' => $wilayah
         ]);
@@ -25,8 +25,7 @@ class FormController extends Controller
 
     public function TambahONT()
     {
-        $wilayah = WilayahModel::all();
-
+        $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
         return Inertia::render('Forms/FormTambahONT', [
             'wilayah' => $wilayah
         ]);
@@ -37,8 +36,7 @@ class FormController extends Controller
     public function EditTiang($id)
     {
         $tiang = \App\Models\TiangModel::findOrFail($id);
-        $wilayah = WilayahModel::all();
-
+        $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
         return Inertia::render('Forms/FormEditTiang', [
             'tiang' => $tiang,
             'wilayah' => $wilayah,
@@ -50,8 +48,7 @@ class FormController extends Controller
     public function EditONT($id)
     {
         $ont = ONTModel::findOrFail($id);
-        $wilayah = WilayahModel::all();
-
+        $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
         return Inertia::render('Forms/FormEditONT', [
             'ont' => $ont,
             'wilayah' => $wilayah,

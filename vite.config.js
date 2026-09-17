@@ -12,4 +12,18 @@ export default defineConfig({
         react(),
         tailwindcss(),
     ],
+    build: {
+        chunkSizeWarningLimit: 600,
+        assetsInlineLimit: 4096,
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    react: ['react', 'react-dom'],
+                    inertia: ['@inertiajs/react'],
+                    leaflet: ['leaflet', 'react-leaflet'],
+                    icons: ['react-icons'],
+                },
+            },
+        },
+    },
 });

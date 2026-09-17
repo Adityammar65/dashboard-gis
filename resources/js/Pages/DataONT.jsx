@@ -1,7 +1,7 @@
 import MainLayout from "../Layouts/MainLayout";
 
 import { usePage, router } from "@inertiajs/react";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { FaPlus, FaFilter, FaEye, FaEdit } from "react-icons/fa";
 import { MdDelete, MdRouter } from "react-icons/md";
 
@@ -20,20 +20,14 @@ export default function DataONT({
         filter.status ?? ""
     );
 
-    const totalONT = dataONT.length;
+    const listONT = useMemo(() => (Array.isArray(dataONT) ? dataONT : (dataONT?.data ?? [])), [dataONT]);
+    const totalONT = useMemo(() => dataONT?.total ?? listONT.length, [dataONT, listONT]);
+    const ONTAktif = useMemo(() => listONT.filter((ont) => ont.status?.toLowerCase() === "aktif").length, [listONT]);
+    const ONTNonaktif = useMemo(() => listONT.filter((ont) => ont.status?.toLowerCase() === "nonaktif").length, [listONT]);
 
-    const ONTAktif = dataONT.filter(
-        (ont) => ont.status?.toLowerCase() === "aktif"
-    ).length;
-
-    const ONTNonaktif = dataONT.filter(
-        (ont) => ont.status?.toLowerCase() === "nonaktif"
-    ).length;
-
-    const handleFilter = (wilayahValue, statusValue) => {
+    const handleFilter = useCallback((wilayahValue, statusValue) => {
         setFilterWilayah(wilayahValue);
         setFilterStatus(statusValue);
-
         router.get(
             window.location.pathname,
             {
@@ -46,7 +40,7 @@ export default function DataONT({
                 replace: true,
             }
         );
-    };
+    }, []);
 
     return (
         <MainLayout>
@@ -290,9 +284,9 @@ export default function DataONT({
 
                             <tbody className="text-center">
 
-                                {dataONT.length > 0 ? (
+                                {listONT.length > 0 ? (
 
-                                    dataONT.map((ont, index) => (
+                                    listONT.map((ont, index) => (
 
                                         <tr
                                             key={ont.id}
@@ -318,6 +312,10 @@ export default function DataONT({
                                                             src={`/dashboard-gis/public/storage/${ont.foto_ont_1}`}
                                                             alt={`Foto ${ont.kode_ont}`}
                                                             className="h-full w-full object-cover"
+                                                            loading="lazy"
+                                                            decoding="async"
+                                                            width="64"
+                                                            height="64"
                                                         />
 
                                                     ) : (
@@ -494,7 +492,13 @@ export default function DataONT({
                         </table>
 
                     </div>
-
+                    {dataONT?.links && dataONT.links.length > 3 && (
+                        <div className="flex flex-wrap gap-1 justify-center mt-4">
+                            {dataONT.links.map((link, i) => (
+                                <button key={i} disabled={!link.url} onClick={() => link.url && router.get(link.url, {}, { preserveState: true, preserveScroll: true })} className={`px-3 py-1 text-xs rounded ${link.active ? 'bg-[#AB3C3C] text-white' : 'bg-white border'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`} dangerouslySetInnerHTML={{ __html: link.label }} />
+                            ))}
+                        </div>
+                    )}
                 </div>
 
             </div>

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\Cache;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,16 +36,11 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $settings = [];
-
-        $path = storage_path('app/settings.json');
-
-        if (file_exists($path)) {
-            $settings = json_decode(
-                file_get_contents($path),
-                true
-            ) ?? [];
-        }
+        $settings = Cache::remember('settings', 3600, function () {
+            $path = storage_path('app/settings.json');
+            if (!file_exists($path)) return [];
+            return json_decode(file_get_contents($path), true) ?? [];
+        });
 
         return [
             ...parent::share($request),

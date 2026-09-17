@@ -1,10 +1,13 @@
+import { memo, useMemo } from "react";
 import { FaWifi, FaMap } from "react-icons/fa";
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import { MdRouter } from "react-icons/md";
 import { IoIosLogOut, IoMdHome, IoIosSettings } from "react-icons/io";
+import { usePage } from "@inertiajs/react";
 
-export default function Sidebar({ isOpen }) {
-    const currentPath = window.location.pathname;
+const Sidebar = memo(function Sidebar({ isOpen }) {
+    const { url } = usePage();
+    const currentPath = useMemo(() => url.split('?')[0], [url]);
 
     const menuItems = [
         {
@@ -285,5 +288,7 @@ export default function Sidebar({ isOpen }) {
             </div>
         </aside>
     );
-}
+});
+
+export default Sidebar;
 

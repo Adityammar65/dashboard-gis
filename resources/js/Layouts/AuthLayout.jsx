@@ -28,6 +28,10 @@ export default function AuthLayout({ children, errorMessage }) {
                         src="public/Assets/Logo.png"
                         alt="Logo"
                         className="w-25"
+                        width="100"
+                        height="100"
+                        loading="lazy"
+                        decoding="async"
                     />
 
                     <div className="flex flex-col items-left gap-3">

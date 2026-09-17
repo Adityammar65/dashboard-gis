@@ -9,6 +9,7 @@ use App\Models\ONTModel;
 use App\Models\NotifikasiModel;
 use App\Models\WilayahModel;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class PageController extends Controller
 {
@@ -23,11 +24,10 @@ class PageController extends Controller
 
     public function DataTiang(Request $request)
     {
-        $query = TiangModel::query();
+        $query = TiangModel::query()->select(['id','kode_tiang','wilayah','area','nama_petugas','status','foto_tiang_1','latitude','longitude']);
 
         if ($request->filled('wilayah')) {
-            $wilayah = WilayahModel::find($request->wilayah);
-
+            $wilayah = Cache::remember('wilayah:'.$request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
             if ($wilayah) {
                 $query->where('wilayah', $wilayah->nama_wilayah);
             }
@@ -37,9 +37,8 @@ class PageController extends Controller
             $query->where('status', $request->status);
         }
 
-        $dataTiang = $query->get();
-
-        $wilayah = WilayahModel::all();
+        $dataTiang = $query->latest('id')->paginate(15)->withQueryString();
+        $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
 
         return Inertia::render('DataTiang', [
             'dataTiang' => $dataTiang,
@@ -55,11 +54,10 @@ class PageController extends Controller
 
     public function DataONT(Request $request)
     {
-        $query = ONTModel::query();
+        $query = ONTModel::query()->select(['id','kode_ont','wilayah','area','nama_petugas','status','foto_ont_1','latitude','longitude']);
 
         if ($request->filled('wilayah')) {
-            $wilayah = WilayahModel::find($request->wilayah);
-
+            $wilayah = Cache::remember('wilayah:'.$request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
             if ($wilayah) {
                 $query->where('wilayah', $wilayah->nama_wilayah);
             }
@@ -69,9 +67,8 @@ class PageController extends Controller
             $query->where('status', $request->status);
         }
 
-        $dataONT = $query->get();
-
-        $wilayah = WilayahModel::all();
+        $dataONT = $query->latest('id')->paginate(15)->withQueryString();
+        $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
 
         return Inertia::render('DataONT', [
             'dataONT' => $dataONT,
@@ -144,18 +141,12 @@ class PageController extends Controller
 
     public function Pengaturan()
     {
-        $wilayah = WilayahModel::all();
-
-        $path = storage_path('app/settings.json');
-
-        $settings = [];
-
-        if (file_exists($path)) {
-            $settings = json_decode(
-                file_get_contents($path),
-                true
-            ) ?? [];
-        }
+        $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
+        $settings = Cache::remember('settings', 3600, function () {
+            $path = storage_path('app/settings.json');
+            if (!file_exists($path)) return [];
+            return json_decode(file_get_contents($path), true) ?? [];
+        });
 
         return Inertia::render('Pengaturan', [
             'wilayah' => $wilayah,
