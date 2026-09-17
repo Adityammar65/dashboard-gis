@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\WilayahModel;
+use App\Models\TiangModel;
+use App\Models\ONTModel;
 
 class FormController extends Controller
 {
@@ -45,8 +47,14 @@ class FormController extends Controller
 
     // Form Edit ONT
 
-    public function EditONT()
+    public function EditONT($id)
     {
-        return Inertia::render('Forms/FormEditONT');
+        $ont = ONTModel::findOrFail($id);
+        $wilayah = WilayahModel::all();
+
+        return Inertia::render('Forms/FormEditONT', [
+            'ont' => $ont,
+            'wilayah' => $wilayah,
+        ]);
     }
 }

@@ -7,7 +7,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
     const getFotoUrl = (foto) => {
         if (!foto) return null;
 
-        return `/dashboard-gis/public/storage/${foto}`;
+        return `../public/storage/${foto}`;
     };
 
     const [form, setForm] = useState({
@@ -57,7 +57,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
         e.preventDefault();
 
         router.post(
-            `/dashboard-gis/update-tiang/${tiang.id}`,
+            `../update-tiang/${tiang.id}`,
             form,
             {
                 forceFormData: true,
@@ -78,6 +78,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
             <div className="p-6">
 
                 {/* Header */}
+
                 <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
 
@@ -104,6 +105,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                 </div>
 
                 {/* Form */}
+
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
 
                     <form onSubmit={handleSubmit}>
@@ -111,6 +113,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                             {/* Kode Tiang */}
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Kode Tiang
@@ -128,6 +131,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             </div>
 
                             {/* Wilayah */}
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Wilayah
@@ -156,6 +160,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             </div>
 
                             {/* Area */}
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Area
@@ -173,6 +178,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             </div>
 
                             {/* Petugas */}
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Petugas Lapangan
@@ -190,6 +196,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             </div>
 
                             {/* Status */}
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Status
@@ -217,6 +224,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             </div>
 
                             {/* Latitude */}
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Latitude
@@ -234,6 +242,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             </div>
 
                             {/* Longitude */}
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Longitude
@@ -251,6 +260,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             </div>
 
                             {/* Foto Tiang */}
+
                             <div className="md:col-span-2">
 
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -260,6 +270,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
                                     {/* Foto 1 */}
+
                                     <div>
                                         <label className="block text-xs text-gray-500 mb-2">
                                             Foto 1
@@ -291,6 +302,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     </div>
 
                                     {/* Foto 2 */}
+
                                     <div>
                                         <label className="block text-xs text-gray-500 mb-2">
                                             Foto 2
@@ -322,6 +334,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     </div>
 
                                     {/* Foto 3 */}
+
                                     <div>
                                         <label className="block text-xs text-gray-500 mb-2">
                                             Foto 3
@@ -357,6 +370,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                         </div>
 
                         {/* Deskripsi */}
+
                         <div className="mt-5">
 
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -375,6 +389,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                         </div>
 
                         {/* Submit */}
+
                         <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100">
 
                             <button

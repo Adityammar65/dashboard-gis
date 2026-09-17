@@ -1,12 +1,20 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FormController;
-use App\Http\Controllers\TiangController;
-use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ONTController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TiangController;
+
+// Auth
+
+Route::get('/login', [PageController::class, 'Login']);
+Route::post('/proses-login', [AuthController::class, 'ProsesLogin']);
+Route::get('/logout', [AuthController::class, 'Logout']);
+
+// Protected Routes
 
 Route::middleware('cek_login')->group(function () {
 
@@ -23,21 +31,26 @@ Route::middleware('cek_login')->group(function () {
     Route::get('/notifikasi', [PageController::class, 'Notifikasi']);
     Route::get('/pengaturan', [PageController::class, 'Pengaturan']);
 
-    // CRUD
+    // Form
 
     Route::get('/tambah-tiang', [FormController::class, 'TambahTiang']);
     Route::get('/tambah-ont', [FormController::class, 'TambahONT']);
     Route::get('/edit-tiang/{id}', [FormController::class, 'EditTiang']);
-    Route::get('/edit-ont', [FormController::class, 'EditONT']);
+    Route::get('/edit-ont/{id}', [FormController::class, 'EditONT']);
+
+    // Settings
+
     Route::post('/update-pengaturan', [SettingsController::class, 'updateWilayah']);
+
+    // CRUD Tiang
+
     Route::post('/simpan-tiang', [TiangController::class, 'SimpanTiang']);
     Route::post('/update-tiang/{id}', [TiangController::class, 'UpdateTiang']);
     Route::get('/hapus-tiang/{id}', [TiangController::class, 'HapusTiang']);
+
+    // CRUD ONT
+
     Route::post('/simpan-ont', [ONTController::class, 'SimpanONT']);
+    Route::post('/update-ont/{id}', [ONTController::class, 'UpdateONT']);
+    Route::get('/hapus-ont/{id}', [ONTController::class, 'HapusONT']);
 });
-
-// Auth
-
-Route::get('/login', [PageController::class, 'Login']);
-Route::post('/proses-login', [AuthController::class, 'ProsesLogin']);
-Route::get('/logout', [AuthController::class, 'Logout']);

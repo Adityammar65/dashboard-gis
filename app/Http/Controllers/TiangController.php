@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class TiangController extends Controller
 {
     // Tambah Tiang
+
     public function SimpanTiang(Request $request)
     {
         $validated = $request->validate([
@@ -38,21 +39,18 @@ class TiangController extends Controller
             'status'          => $validated['status'],
         ];
 
-        // Upload foto 1
         if ($request->hasFile('foto_tiang_1')) {
             $data['foto_tiang_1'] = $request
                 ->file('foto_tiang_1')
                 ->store('tiang', 'public');
         }
 
-        // Upload foto 2
         if ($request->hasFile('foto_tiang_2')) {
             $data['foto_tiang_2'] = $request
                 ->file('foto_tiang_2')
                 ->store('tiang', 'public');
         }
 
-        // Upload foto 3
         if ($request->hasFile('foto_tiang_3')) {
             $data['foto_tiang_3'] = $request
                 ->file('foto_tiang_3')
@@ -64,6 +62,8 @@ class TiangController extends Controller
         return redirect('data-tiang')
             ->with('success', 'Data tiang berhasil disimpan.');
     }
+
+    // Update Data Tiang
 
     public function UpdateTiang(Request $request, $id)
     {
@@ -85,7 +85,6 @@ class TiangController extends Controller
             'status'          => 'required|in:Aktif,Nonaktif,aktif,nonaktif',
         ]);
 
-        // Samakan status dengan enum database
         $validated['status'] = strtolower($validated['status']);
 
         $data = [
@@ -99,7 +98,6 @@ class TiangController extends Controller
             'status'          => $validated['status'],
         ];
 
-        // Foto 1
         if ($request->hasFile('foto_tiang_1')) {
             if ($tiang->foto_tiang_1) {
                 Storage::disk('public')->delete($tiang->foto_tiang_1);
@@ -110,7 +108,6 @@ class TiangController extends Controller
                 ->store('tiang', 'public');
         }
 
-        // Foto 2
         if ($request->hasFile('foto_tiang_2')) {
             if ($tiang->foto_tiang_2) {
                 Storage::disk('public')->delete($tiang->foto_tiang_2);
@@ -121,7 +118,6 @@ class TiangController extends Controller
                 ->store('tiang', 'public');
         }
 
-        // Foto 3
         if ($request->hasFile('foto_tiang_3')) {
             if ($tiang->foto_tiang_3) {
                 Storage::disk('public')->delete($tiang->foto_tiang_3);
@@ -139,6 +135,7 @@ class TiangController extends Controller
     }
 
     // Hapus Tiang
+
     public function HapusTiang($id)
     {
         $tiang = TiangModel::findOrFail($id);
