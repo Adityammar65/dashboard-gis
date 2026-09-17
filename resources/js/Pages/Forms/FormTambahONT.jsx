@@ -38,7 +38,6 @@ export default function FormTambahONT({ wilayah }) {
         });
     };
 
-
     return (
         <MainLayout>
             <div className="p-6">

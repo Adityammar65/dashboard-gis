@@ -19,9 +19,9 @@ class TiangController extends Controller
             'wilayah'         => 'required',
             'deskripsi_tiang' => 'nullable|string',
 
-            'foto_tiang_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_tiang_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_tiang_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_tiang_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'foto_tiang_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'foto_tiang_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
 
             'latitude'        => 'required|numeric',
             'longitude'       => 'required|numeric',
@@ -77,9 +77,9 @@ class TiangController extends Controller
             'wilayah'         => 'required|string',
             'deskripsi_tiang' => 'nullable|string',
 
-            'foto_tiang_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_tiang_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_tiang_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_tiang_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'foto_tiang_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'foto_tiang_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
 
             'latitude'        => 'required|numeric',
             'longitude'       => 'required|numeric',

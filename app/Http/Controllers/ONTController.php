@@ -18,9 +18,9 @@ class ONTController extends Controller
             'wilayah'         => 'required',
             'deskripsi_ont' => 'nullable|string',
 
-            'foto_ont_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_ont_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_ont_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_ont_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'foto_ont_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'foto_ont_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
 
             'latitude'        => 'required|numeric',
             'longitude'       => 'required|numeric',
@@ -76,9 +76,9 @@ class ONTController extends Controller
             'wilayah'         => 'required|string',
             'deskripsi_ont' => 'nullable|string',
 
-            'foto_ont_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_ont_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'foto_ont_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_ont_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'foto_ont_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'foto_ont_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
 
             'latitude'        => 'required|numeric',
             'longitude'       => 'required|numeric',
