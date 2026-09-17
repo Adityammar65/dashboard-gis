@@ -32,6 +32,9 @@ export default function FormTambahTiang({ wilayah }) {
 
         router.post("simpan-tiang", form, {
             forceFormData: true,
+            onError: (errors) => {
+                console.log(errors);
+            },
         });
     };
 
@@ -173,11 +176,11 @@ export default function FormTambahTiang({ wilayah }) {
                                         Pilih Status
                                     </option>
 
-                                    <option value="Aktif">
+                                    <option value="aktif">
                                         Aktif
                                     </option>
 
-                                    <option value="Nonaktif">
+                                    <option value="nonaktif">
                                         Nonaktif
                                     </option>
                                 </select>

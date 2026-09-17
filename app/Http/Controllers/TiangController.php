@@ -82,10 +82,8 @@ class TiangController extends Controller
             'latitude'        => 'required|numeric',
             'longitude'       => 'required|numeric',
             'nama_petugas'    => 'required|string|max:255',
-            'status'          => 'required|in:Aktif,Nonaktif,aktif,nonaktif',
+            'status'          => 'required|in:aktif,nonaktif',
         ]);
-
-        $validated['status'] = strtolower($validated['status']);
 
         $data = [
             'kode_tiang'      => $validated['kode_tiang'],

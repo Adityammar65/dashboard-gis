@@ -32,6 +32,9 @@ export default function FormTambahONT({ wilayah }) {
 
         router.post("simpan-ont", form, {
             forceFormData: true,
+            onError: (errors) => {
+                console.log(errors);
+            },
         });
     };
 
@@ -174,11 +177,11 @@ export default function FormTambahONT({ wilayah }) {
                                         Pilih Status
                                     </option>
 
-                                    <option value="Aktif">
+                                    <option value="aktif">
                                         Aktif
                                     </option>
 
-                                    <option value="Nonaktif">
+                                    <option value="nonaktif">
                                         Nonaktif
                                     </option>
                                 </select>
