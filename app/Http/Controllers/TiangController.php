@@ -64,41 +64,20 @@ class TiangController extends Controller
                 'status'          => $validated['status'],
             ];
 
-            foreach (['tiang'] as $dir) {
-                if (!Storage::disk('public')->exists($dir)) {
-                    Storage::disk('public')->makeDirectory($dir);
-                }
-            }
-
             if ($request->hasFile('foto_tiang_1')) {
-                try {
-                    $path = $request->file('foto_tiang_1')->store('tiang', 'public');
-                } catch (\Throwable $e) {
-                    throw new \Exception('Foto Tiang 1 gagal disimpan: ' . $e->getMessage());
-                }
-                if (!$path) throw new \Exception('Foto Tiang 1 gagal disimpan: storage gagal.');
+                $path = $request->file('foto_tiang_1')->store('tiang', 'public');
                 $data['foto_tiang_1'] = $path;
                 $storedFiles[] = $path;
             }
 
             if ($request->hasFile('foto_tiang_2')) {
-                try {
-                    $path = $request->file('foto_tiang_2')->store('tiang', 'public');
-                } catch (\Throwable $e) {
-                    throw new \Exception('Foto Tiang 2 gagal disimpan: ' . $e->getMessage());
-                }
-                if (!$path) throw new \Exception('Foto Tiang 2 gagal disimpan: storage gagal.');
+                $path = $request->file('foto_tiang_2')->store('tiang', 'public');
                 $data['foto_tiang_2'] = $path;
                 $storedFiles[] = $path;
             }
 
             if ($request->hasFile('foto_tiang_3')) {
-                try {
-                    $path = $request->file('foto_tiang_3')->store('tiang', 'public');
-                } catch (\Throwable $e) {
-                    throw new \Exception('Foto Tiang 3 gagal disimpan: ' . $e->getMessage());
-                }
-                if (!$path) throw new \Exception('Foto Tiang 3 gagal disimpan: storage gagal.');
+                $path = $request->file('foto_tiang_3')->store('tiang', 'public');
                 $data['foto_tiang_3'] = $path;
                 $storedFiles[] = $path;
             }
@@ -122,7 +101,7 @@ class TiangController extends Controller
             $this->cleanupFiles($storedFiles);
             Log::error('SimpanTiang Error: ' . $e->getMessage());
             return redirect()->back()
-                ->withErrors(['error' => $e->getMessage()])
+                ->withErrors(['error' => 'Gagal menyimpan tiang: ' . $e->getMessage()])
                 ->withInput();
         }
     }
@@ -175,19 +154,8 @@ class TiangController extends Controller
                 'status'          => $validated['status'],
             ];
 
-            foreach (['tiang'] as $dir) {
-                if (!Storage::disk('public')->exists($dir)) {
-                    Storage::disk('public')->makeDirectory($dir);
-                }
-            }
-
             if ($request->hasFile('foto_tiang_1')) {
-                try {
-                    $path = $request->file('foto_tiang_1')->store('tiang', 'public');
-                } catch (\Throwable $e) {
-                    throw new \Exception('Foto Tiang 1 gagal disimpan: ' . $e->getMessage());
-                }
-                if (!$path) throw new \Exception('Foto Tiang 1 gagal disimpan: storage gagal.');
+                $path = $request->file('foto_tiang_1')->store('tiang', 'public');
                 $data['foto_tiang_1'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_1) {
@@ -196,12 +164,7 @@ class TiangController extends Controller
             }
 
             if ($request->hasFile('foto_tiang_2')) {
-                try {
-                    $path = $request->file('foto_tiang_2')->store('tiang', 'public');
-                } catch (\Throwable $e) {
-                    throw new \Exception('Foto Tiang 2 gagal disimpan: ' . $e->getMessage());
-                }
-                if (!$path) throw new \Exception('Foto Tiang 2 gagal disimpan: storage gagal.');
+                $path = $request->file('foto_tiang_2')->store('tiang', 'public');
                 $data['foto_tiang_2'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_2) {
@@ -210,12 +173,7 @@ class TiangController extends Controller
             }
 
             if ($request->hasFile('foto_tiang_3')) {
-                try {
-                    $path = $request->file('foto_tiang_3')->store('tiang', 'public');
-                } catch (\Throwable $e) {
-                    throw new \Exception('Foto Tiang 3 gagal disimpan: ' . $e->getMessage());
-                }
-                if (!$path) throw new \Exception('Foto Tiang 3 gagal disimpan: storage gagal.');
+                $path = $request->file('foto_tiang_3')->store('tiang', 'public');
                 $data['foto_tiang_3'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_3) {
@@ -244,7 +202,7 @@ class TiangController extends Controller
             $this->cleanupFiles($newFiles);
             Log::error('UpdateTiang Error: ' . $e->getMessage());
             return redirect()->back()
-                ->withErrors(['error' => $e->getMessage()])
+                ->withErrors(['error' => 'Gagal memperbarui tiang: ' . $e->getMessage()])
                 ->withInput();
         }
     }
@@ -275,8 +233,8 @@ class TiangController extends Controller
     {
         $msg = $e->getMessage();
 
-        if (str_contains($msg, 'cannot be null') || str_contains($msg, "doesn't have a default value") || str_contains($msg, '1048') || str_contains($msg, '1364') || preg_match("/(Column|Field) '[^']+' (cannot be null|doesn't have a default value)/", $msg)) {
-            if (preg_match("/(?:Column|Field) '([^']+)'/", $msg, $m)) {
+        if (str_contains($msg, 'cannot be null') || str_contains($msg, '1048') || preg_match("/Column '[^']+' cannot be null/", $msg)) {
+            if (preg_match("/Column '([^']+)'/", $msg, $m)) {
                 $col = $m[1];
                 $labels = [
                     'kode_tiang' => 'Kode Tiang',
@@ -298,7 +256,7 @@ class TiangController extends Controller
             return ['error' => 'Ada field wajib yang belum diisi.'];
         }
 
-        if (str_contains($msg, 'Duplicate entry') || str_contains($msg, 'UNIQUE') || str_contains($msg, 'unique constraint') || str_contains($msg, '1062')) {
+        if (str_contains($msg, 'Duplicate entry') || str_contains($msg, 'UNIQUE') || str_contains($msg, 'unique constraint')) {
             if (str_contains($msg, 'kode_tiang')) {
                 return ['kode_tiang' => 'Kode Tiang sudah digunakan. Gunakan kode lain.'];
             }
@@ -316,16 +274,7 @@ class TiangController extends Controller
             return ['error' => 'Data relasi tidak valid.'];
         }
 
-        Log::warning('Unmapped QueryException for Tiang: ' . $msg);
-        return ['error' => 'Gagal menyimpan data tiang: ' . $this->extractSqlDetail($msg)];
-    }
-
-    private function extractSqlDetail(string $msg): string
-    {
-        if (preg_match('/SQLSTATE\[.*?\]:\s*(.+?)(?:\s*\(|$)/', $msg, $m)) {
-            return trim($m[1]);
-        }
-        return mb_substr($msg, -200);
+        return ['error' => 'Gagal menyimpan data tiang. Periksa kembali isian form.'];
     }
 
     private function formatQueryError(QueryException $e): string
