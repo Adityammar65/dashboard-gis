@@ -103,9 +103,13 @@ class PageController extends Controller
 
     // Detail Tiang
 
-    public function DetailTiang()
+    public function DetailTiang($id)
     {
-        return Inertia::render('DetailTiang');
+        $tiang = TiangModel::findOrFail($id);
+
+        return Inertia::render('DetailTiang', [
+            'tiang' => $tiang,
+        ]);
     }
 
     // Detail ONT

@@ -32,9 +32,15 @@ class FormController extends Controller
 
     // Form Edit Tiang
 
-    public function EditTiang()
+    public function EditTiang($id)
     {
-        return Inertia::render('Forms/FormEditTiang');
+        $tiang = \App\Models\TiangModel::findOrFail($id);
+        $wilayah = WilayahModel::all();
+
+        return Inertia::render('Forms/FormEditTiang', [
+            'tiang' => $tiang,
+            'wilayah' => $wilayah,
+        ]);
     }
 
     // Form Edit ONT

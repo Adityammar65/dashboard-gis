@@ -10,7 +10,7 @@ export default function Header() {
             <div className="flex items-center gap-5">
                 <div>
                     <img
-                        src="public/Assets/Logo.png"
+                        src="/dashboard-gis/public/Assets/Logo.png"
                         alt="Logo"
                         className="w-10"
                     />
