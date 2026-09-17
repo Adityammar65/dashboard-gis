@@ -6,6 +6,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\TiangController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ONTController;
 
 Route::middleware('cek_login')->group(function () {
 
@@ -31,6 +32,7 @@ Route::middleware('cek_login')->group(function () {
     Route::post('/update-pengaturan', [SettingsController::class, 'updateWilayah']);
     Route::post('/simpan-tiang', [TiangController::class, 'SimpanTiang']);
     Route::get('/hapus-tiang/{id}', [TiangController::class, 'HapusTiang']);
+    Route::post('/simpan-ont', [ONTController::class, 'SimpanONT']);
 });
 
 // Auth

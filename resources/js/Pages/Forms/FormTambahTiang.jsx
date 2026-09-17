@@ -32,14 +32,6 @@ export default function FormTambahTiang({ wilayah }) {
 
         router.post("simpan-tiang", form, {
             forceFormData: true,
-
-            onSuccess: () => {
-                console.log("Data tiang berhasil disimpan.");
-            },
-
-            onError: (errors) => {
-                console.log(errors);
-            },
         });
     };
 
