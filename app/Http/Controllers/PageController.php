@@ -58,21 +58,24 @@ class PageController extends Controller
         $query = ONTModel::query();
 
         if ($request->filled('wilayah')) {
-            $query->where('wilayah', $request->wilayah);
+            $wilayah = WilayahModel::find($request->wilayah);
+
+            if ($wilayah) {
+                $query->where('wilayah', $wilayah->nama_wilayah);
+            }
         }
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        $ont = $query->get();
+        $dataONT = $query->get();
 
         $wilayah = WilayahModel::all();
 
         return Inertia::render('DataONT', [
-            'dataONT' => $ont,
+            'dataONT' => $dataONT,
             'wilayah' => $wilayah,
-
             'filter' => [
                 'wilayah' => $request->wilayah ?? '',
                 'status' => $request->status ?? '',
@@ -156,3 +159,4 @@ class PageController extends Controller
         ]);
     }
 }
+

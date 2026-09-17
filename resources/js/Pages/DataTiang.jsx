@@ -5,7 +5,7 @@ import { useState } from "react";
 import { FaPlus, FaFilter, FaEye, FaEdit, FaWifi } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
-export default function Tiang({
+export default function DataTiang({
     dataTiang = [],
     wilayah = [],
     filter = {},
@@ -393,9 +393,9 @@ export default function Tiang({
 
                                                     <span
                                                         className={`rounded-full px-2 py-1 text-[10px] text-white ${tiang.status.toLowerCase() ===
-                                                                "aktif"
-                                                                ? "bg-green-500"
-                                                                : "bg-red-500"
+                                                            "aktif"
+                                                            ? "bg-green-500"
+                                                            : "bg-red-500"
                                                             }`}
                                                     >
                                                         {tiang.status}

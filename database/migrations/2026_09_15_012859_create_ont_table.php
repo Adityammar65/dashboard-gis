@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode_ont')->unique();
             $table->string('area');
+            $table->string('wilayah');
             $table->text('deskripsi_ont');
             $table->string('foto_ont_1');
             $table->string('foto_ont_2');

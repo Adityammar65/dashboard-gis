@@ -5,7 +5,7 @@ import { useState } from "react";
 import { FaPlus, FaFilter, FaEye, FaEdit } from "react-icons/fa";
 import { MdDelete, MdRouter } from "react-icons/md";
 
-export default function ONT({
+export default function DataONT({
     dataONT = [],
     wilayah = [],
     filter = {},
@@ -22,11 +22,11 @@ export default function ONT({
 
     const totalONT = dataONT.length;
 
-    const ontAktif = dataONT.filter(
+    const ONTAktif = dataONT.filter(
         (ont) => ont.status?.toLowerCase() === "aktif"
     ).length;
 
-    const ontNonaktif = dataONT.filter(
+    const ONTNonaktif = dataONT.filter(
         (ont) => ont.status?.toLowerCase() === "nonaktif"
     ).length;
 
@@ -46,15 +46,6 @@ export default function ONT({
                 replace: true,
             }
         );
-    };
-
-    const getNamaWilayah = (wilayahId) => {
-        const dataWilayah = wilayah.find(
-            (item) =>
-                Number(item.id) === Number(wilayahId)
-        );
-
-        return dataWilayah?.nama_wilayah ?? "-";
     };
 
     return (
@@ -139,7 +130,7 @@ export default function ONT({
                                 </p>
 
                                 <h2 className="mt-1 text-xl font-semibold">
-                                    {ontAktif}
+                                    {ONTAktif}
                                 </h2>
 
                             </div>
@@ -158,7 +149,7 @@ export default function ONT({
                                 </p>
 
                                 <h2 className="mt-1 text-xl font-semibold">
-                                    {ontNonaktif}
+                                    {ONTNonaktif}
                                 </h2>
 
                             </div>
@@ -364,9 +355,7 @@ export default function ONT({
                                                 {ont.wilayah || ont.area ? (
 
                                                     <>
-                                                        {getNamaWilayah(
-                                                            ont.wilayah
-                                                        )}
+                                                        {ont.wilayah}
 
                                                         {ont.area &&
                                                             ` - ${ont.area}`}
@@ -382,12 +371,11 @@ export default function ONT({
 
                                             </td>
 
-
                                             {/* Petugas */}
 
                                             <td className="px-4 py-2">
 
-                                                {ont.petugas || (
+                                                {ont.nama_petugas || (
 
                                                     <span className="text-gray-400">
                                                         Belum ada data
@@ -405,12 +393,11 @@ export default function ONT({
                                                 {ont.status ? (
 
                                                     <span
-                                                        className={`rounded-full px-2 py-1 text-[10px] text-white ${
-                                                            ont.status.toLowerCase() ===
+                                                        className={`rounded-full px-2 py-1 text-[10px] text-white ${ont.status.toLowerCase() ===
                                                             "aktif"
-                                                                ? "bg-green-500"
-                                                                : "bg-red-500"
-                                                        }`}
+                                                            ? "bg-green-500"
+                                                            : "bg-red-500"
+                                                            }`}
                                                     >
                                                         {ont.status}
                                                     </span>
@@ -471,6 +458,8 @@ export default function ONT({
 
                                 ) : (
 
+                                    /* Placeholder ketika tidak ada data */
+
                                     <tr>
 
                                         <td
@@ -489,7 +478,7 @@ export default function ONT({
                                                 </p>
 
                                                 <p className="text-xs text-gray-400">
-                                                    Data ONT belum tersedia.
+                                                    Data ont belum tersedia.
                                                 </p>
 
                                             </div>
