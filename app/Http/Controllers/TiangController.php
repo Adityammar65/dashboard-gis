@@ -13,6 +13,7 @@ class TiangController extends Controller
     public function SimpanTiang(Request $request)
     {
         $validated = $request->validate([
+
             'kode_tiang'      => 'required|string|max:255',
             'area'            => 'required|string|max:255',
             'wilayah'         => 'required',
@@ -25,8 +26,9 @@ class TiangController extends Controller
             'latitude'        => 'required|numeric',
             'longitude'       => 'required|numeric',
             'nama_petugas'    => 'required|string|max:255',
-            'status'          => 'required|in:aktif,nonaktif',
+            'status' => 'required|in:Aktif,Nonaktif,aktif,nonaktif',
         ]);
+        $validated['status'] = strtolower($validated['status']);
 
         $data = [
             'kode_tiang'      => $validated['kode_tiang'],
@@ -137,6 +139,18 @@ class TiangController extends Controller
     public function HapusTiang($id)
     {
         $tiang = TiangModel::findOrFail($id);
+
+        if ($tiang->foto_tiang_1) {
+            Storage::disk('public')->delete($tiang->foto_tiang_1);
+        }
+
+        if ($tiang->foto_tiang_2) {
+            Storage::disk('public')->delete($tiang->foto_tiang_2);
+        }
+
+        if ($tiang->foto_tiang_3) {
+            Storage::disk('public')->delete($tiang->foto_tiang_3);
+        }
 
         $tiang->delete();
 

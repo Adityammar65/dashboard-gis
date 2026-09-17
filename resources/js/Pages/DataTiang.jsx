@@ -442,7 +442,17 @@ export default function DataTiang({
 
                                                     <button
                                                         type="button"
+                                                        onClick={() => {
+                                                            if (
+                                                                window.confirm(
+                                                                    `Apakah kamu yakin ingin menghapus data tiang ${tiang.kode_tiang}?`
+                                                                )
+                                                            ) {
+                                                                window.location.href = `/dashboard-gis/hapus-tiang/${tiang.id}`;
+                                                            }
+                                                        }}
                                                         className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
+                                                        title="Hapus Data"
                                                     >
                                                         <MdDelete className="text-xl" />
                                                     </button>
