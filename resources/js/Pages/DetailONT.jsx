@@ -1,13 +1,20 @@
 import MainLayout from "../Layouts/MainLayout";
 import MapView from "../Components/MapView";
 import { FaArrowLeft, FaPen, FaExternalLinkAlt } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { router } from "@inertiajs/react";
 
 export default function DetailONT({ ont }) {
+    const base = useMemo(() => {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','edit-tiang','edit-ont','tambah-tiang','tambah-ont'];
+        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
+        return '';
+    }, []);
+
     const getFotoUrl = (foto) => {
         if (!foto) return null;
-        return `../public/storage/${foto}`;
+        return `${base}/public/storage/${foto}`.replace(/\/+/g, '/');
     };
 
     const images = [
@@ -201,7 +208,7 @@ export default function DetailONT({ ont }) {
 
                         <button
                             type="button"
-                            onClick={() => router.get(`../edit-ont/${ont?.id}`)}
+                            onClick={() => router.get(`${base}/edit-ont/${ont?.id}`.replace(/\/+/g, '/'))}
                             className="mt-5 flex w-fit items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-blue-700"
                         >
                             <FaPen />

@@ -8,6 +8,13 @@ import { usePage } from "@inertiajs/react";
 const Sidebar = memo(function Sidebar({ isOpen }) {
     const { url } = usePage();
     const currentPath = useMemo(() => url.split('?')[0], [url]);
+    const base = useMemo(() => {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
+        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
+        return '';
+    }, []);
+    const resolveHref = (href) => `${base}/${href}`.replace(/\/+/g, '/');
 
     const menuItems = [
         {
@@ -113,7 +120,7 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
 
                             {isOpen && (
                                 <a
-                                    href={item.href}
+                                    href={resolveHref(item.href)}
                                     className="flex-1 whitespace-nowrap"
                                 >
                                     {item.label}
@@ -171,7 +178,7 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
 
                     {isOpen && (
                         <a
-                            href="pengaturan"
+                            href={resolveHref("pengaturan")}
                             className="flex-1 whitespace-nowrap"
                         >
                             Pengaturan
@@ -204,7 +211,7 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
 
                     {isOpen && (
                         <a
-                            href="logout"
+                            href={resolveHref("logout")}
                             className="flex-1"
                             onClick={(e) => {
                                 if (!confirm("Kembali ke Halaman Login?")) {

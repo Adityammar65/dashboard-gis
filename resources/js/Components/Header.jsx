@@ -1,8 +1,16 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoMdArrowDropdown, IoMdNotifications } from "react-icons/io";
+import { usePage } from "@inertiajs/react";
 
 const Header = memo(function Header() {
+    const { url } = usePage();
+    const base = useMemo(() => {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','edit-tiang','edit-ont','tambah-tiang','tambah-ont'];
+        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
+        return '';
+    }, []);
     return (
         <header className="sticky top-0 z-50 flex h-18 items-center justify-between bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-6 py-2">
 
@@ -49,7 +57,7 @@ const Header = memo(function Header() {
                 </div>
             </div>
 
-            <a href="notifikasi">
+            <a href={`${base}/notifikasi`.replace(/\/+/g, '/')}>
                 <IoMdNotifications size={50} className="px-3 text-white/65 hover:text-white transition-all duration-200" />
             </a>
         </header>
