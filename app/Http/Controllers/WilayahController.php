@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\WilayahModel;
+use App\Models\TiangModel;
+use App\Models\ONTModel;
 use App\Helpers\NotifikasiHelper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -33,7 +35,6 @@ class WilayahController extends Controller
 
             WilayahModel::create($data);
 
-            // Model booted already clears wilayah:list, but also clear explicit keys for safety (database cache store)
             Cache::forget('wilayah:list');
             Cache::forget('wilayah:name:' . strtolower($data['nama_wilayah']));
 
@@ -59,9 +60,21 @@ class WilayahController extends Controller
         $wilayah = WilayahModel::findOrFail($id);
         $nama = $wilayah->nama_wilayah;
         $kode = $wilayah->kode_wilayah;
+
+        $tiangCount = TiangModel::where('wilayah', $nama)->count();
+        $ontCount = ONTModel::where('wilayah', $nama)->count();
+
+        if ($tiangCount > 0 || $ontCount > 0) {
+            $parts = [];
+            if ($tiangCount > 0) $parts[] = $tiangCount . ' data tiang';
+            if ($ontCount > 0) $parts[] = $ontCount . ' data ONT';
+            $detail = implode(' dan ', $parts);
+            $msg = "Wilayah \"{$nama}\" tidak dapat dihapus karena masih memiliki {$detail}. Hapus atau pindahkan data terkait terlebih dahulu.";
+            return redirect()->back()->withErrors(['error' => $msg])->with('error', $msg);
+        }
+
         $wilayah->delete();
 
-        // Explicit forget for database cache store (model booted also does)
         Cache::forget('wilayah:list');
         Cache::forget('wilayah:' . $id);
         Cache::forget('wilayah:name:' . strtolower($nama));
