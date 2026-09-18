@@ -161,6 +161,123 @@ Setelah login, verifikasi:
 - **Autentikasi** — login session + cookie `gis_remember` 30 hari & remember-me, middleware `cek_login`.
 - **Manajemen File** — upload 3 foto `jpg/jpeg/png` max 5MB, optimasi Intervention Image (scale 1024px, compress 75%), cleanup saat gagal/hapus.
 
+### 10. Dokumentasi Antarmuka
+
+Bagian ini menampilkan dokumentasi antarmuka **GIS Dashboard** untuk pengelolaan dan pemantauan aset jaringan Tiang dan ONT.
+
+### Screenshots
+
+### Login
+
+Halaman login digunakan untuk melakukan autentikasi pengguna sebelum mengakses sistem GIS Dashboard.
+
+<p align="center">
+  <img src="docs/screenshots/Login.png" width="900">
+</p>
+
+---
+
+### Home
+
+Halaman Home merupakan halaman utama setelah pengguna berhasil login. Halaman ini menampilkan ringkasan data aset Tiang serta informasi status aset.
+
+<p align="center">
+  <img src="docs/screenshots/Home.png" width="900">
+</p>
+
+---
+
+### Data Tiang
+
+Halaman Data Tiang digunakan untuk melihat dan mengelola data aset Tiang yang tersimpan di dalam sistem. Pengguna dapat melihat informasi Tiang, melakukan pencarian atau penyaringan data, serta mengakses detail dan fungsi pengelolaan data.
+
+<p align="center">
+  <img src="docs/screenshots/Data_Tiang.png" width="900">
+</p>
+
+---
+
+### Data ONT
+
+Halaman Data ONT digunakan untuk menampilkan dan mengelola data perangkat ONT yang terdaftar pada sistem.
+
+<p align="center">
+  <img src="docs/screenshots/Data_ONT.png" width="900">
+</p>
+
+---
+
+### Data Wilayah
+
+Halaman Data Wilayah digunakan untuk mengelola daftar wilayah yang digunakan sebagai bagian dari pengelompokan dan pengelolaan aset jaringan.
+
+<p align="center">
+  <img src="docs/screenshots/Data_Wilayah.png" width="900">
+</p>
+
+---
+
+### Peta Sebaran Aset
+
+Halaman Peta Sebaran Aset digunakan untuk menampilkan persebaran aset jaringan secara geografis. Data aset dapat ditampilkan berdasarkan wilayah dan jenis aset sehingga memudahkan pemantauan lokasi Tiang dan ONT.
+
+<p align="center">
+  <img src="docs/screenshots/Peta_Sebaran_Aset.png" width="900">
+</p>
+
+---
+
+### Form Tambah Tiang
+
+Form Tambah Tiang digunakan untuk memasukkan data aset Tiang baru ke dalam sistem. Form mencakup informasi identitas Tiang, wilayah, area, deskripsi, foto, koordinat lokasi, petugas, serta status aset.
+
+<p align="center">
+  <img src="docs/screenshots/Tambah_Tiang.png" width="900">
+</p>
+
+---
+
+### Edit Tiang
+
+Form Edit Tiang digunakan untuk memperbarui data Tiang yang sudah tersimpan di dalam sistem.
+
+<p align="center">
+  <img src="docs/screenshots/Edit_Tiang.png" width="900">
+</p>
+
+> **Catatan:** Form Tambah ONT dan Edit ONT memiliki tampilan dan struktur form yang hampir sama dengan form pengelolaan Tiang, dengan penyesuaian field sesuai kebutuhan data ONT.
+
+---
+
+### Notifikasi
+
+Halaman Notifikasi digunakan untuk menampilkan informasi atau pemberitahuan terkait aktivitas dan kondisi data dalam sistem.
+
+<p align="center">
+  <img src="docs/screenshots/Notifikasi.png" width="900">
+</p>
+
+---
+
+### Detail Notifikasi
+
+Halaman Detail Notifikasi digunakan untuk melihat informasi notifikasi secara lebih lengkap.
+
+<p align="center">
+  <img src="docs/screenshots/Detail_Notifikasi.png" width="900">
+</p>
+
+---
+
+### Pengaturan
+
+Halaman Pengaturan digunakan untuk mengatur konfigurasi yang berkaitan dengan wilayah operasi sistem.
+
+<p align="center">
+  <img src="docs/screenshots/Pengaturan.png" width="900">
+</p>
+
+
 ### Contributor
 
 Aditya Ammar Al Haqqi

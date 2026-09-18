@@ -67,6 +67,14 @@ export default function Pengaturan({ wilayah }) {
                             <span className="font-semibold">yogyakarta (YOG)</span>. Jika file sudah ada akan muncul{" "}
                             <span className="font-mono">settings.json sudah ada.</span>
                         </p>
+                        <p className="mt-2 text-[11px] text-gray-500">Langkah tambahan bagi pengguna linux:</p>
+                        <code className="mt-2 block rounded-md bg-gray-900 px-3 py-2 text-xs font-mono text-green-400">
+                            cd storage/app
+                            <br />
+                            chmod 775 settings.json
+                            <br />
+                            chown $USER:daemon settings.json
+                        </code>
                     </div>
                 </div>
 
