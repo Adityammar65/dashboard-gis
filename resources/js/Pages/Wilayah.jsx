@@ -1,14 +1,72 @@
 {/* Import Main Layout */ }
 
 import MainLayout from "../Layouts/MainLayout";
-import { usePage } from "@inertiajs/react";
+import { usePage, router } from "@inertiajs/react";
+import { useState, useMemo, useCallback } from "react";
 
-import { FaPlus, FaFilter, FaMap } from "react-icons/fa";
-import { FaTowerBroadcast } from "react-icons/fa6";
+import { FaFilter, FaMap } from "react-icons/fa";
 import { LuBox } from "react-icons/lu";
 
-export default function Tiang() {
+export default function Tiang({
+    dataWilayah = { data: [], total: 0, links: [] },
+    wilayah = [],
+    filter = {},
+}) {
     const { settings } = usePage().props;
+
+    const [filterWilayah, setFilterWilayah] = useState(filter.wilayah ?? "");
+    const [filterAset, setFilterAset] = useState(filter.aset ?? "");
+
+    const listWilayah = useMemo(() => {
+        if (Array.isArray(dataWilayah)) return dataWilayah;
+        return dataWilayah?.data ?? [];
+    }, [dataWilayah]);
+
+    const totalWilayah = useMemo(() => {
+        if (typeof dataWilayah?.total === "number") return dataWilayah.total;
+        return listWilayah.length;
+    }, [dataWilayah, listWilayah]);
+
+    const totalAset = useMemo(() => {
+        return listWilayah.reduce((sum, w) => {
+            if (filterAset === "tiang") return sum + (w.total_tiang ?? 0);
+            if (filterAset === "ont") return sum + (w.total_ont ?? 0);
+            return sum + (w.total_aset ?? 0);
+        }, 0);
+    }, [listWilayah, filterAset]);
+
+    const asetAktif = useMemo(() => {
+        if (filterAset === "tiang" || filterAset === "ont") {
+        }
+        return listWilayah.reduce((sum, w) => sum + (w.aset_aktif ?? 0), 0);
+    }, [listWilayah, filterAset]);
+
+    const asetNonaktif = useMemo(() => {
+        return listWilayah.reduce((sum, w) => sum + (w.aset_nonaktif ?? 0), 0);
+    }, [listWilayah]);
+
+    const namaAsetLabel = useMemo(() => {
+        if (filterAset === "tiang") return "Tiang";
+        if (filterAset === "ont") return "ONT";
+        return "Semua Aset";
+    }, [filterAset]);
+
+    const handleFilter = useCallback((wilayahValue, asetValue) => {
+        setFilterWilayah(wilayahValue);
+        setFilterAset(asetValue);
+        router.get(
+            window.location.pathname,
+            {
+                wilayah: wilayahValue,
+                aset: asetValue,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+            }
+        );
+    }, []);
 
     return (
         <MainLayout>
@@ -45,7 +103,7 @@ export default function Tiang() {
                                 </p>
 
                                 <h2 className="mt-1 text-2xl font-semibold">
-                                    999999
+                                    {totalWilayah}
                                 </h2>
                             </div>
 
@@ -64,21 +122,21 @@ export default function Tiang() {
                                     TOTAL ASET TERPETAKAN
                                 </p>
 
-                                <p className="text-xs font-light my-1">Nama Aset</p>
+                                <p className="text-xs font-light my-1">{namaAsetLabel}</p>
 
                                 <h2 className="mt-1 text-2xl font-semibold">
-                                    999999
+                                    {totalAset}
                                 </h2>
 
                                 <div className="flex items-center gap-2 text-xs font-light mt-1.5">
                                     <span className="flex items-center gap-2">
                                         <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                                        Aktif 999
+                                        Aktif {asetAktif}
                                     </span>
 
                                     <span className="flex items-center gap-2">
                                         <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                                        Nonaktif 999
+                                        Nonaktif {asetNonaktif}
                                     </span>
                                 </div>
                             </div>
@@ -91,7 +149,7 @@ export default function Tiang() {
 
                     {/* Filter */}
 
-                    <div className="min-h-[136px] rounded-xl bg-white p-4 shadow">
+                    <div className="min-h-[136px] rounded-xl bg-white p-4 shadow capitalize">
 
                         <div className="mb-4 flex items-center gap-2">
                             <FaFilter className="text-gray-600" />
@@ -106,36 +164,34 @@ export default function Tiang() {
                             {/* Wilayah */}
 
                             <select
-                                defaultValue=""
+                                value={filterWilayah}
+                                onChange={(e) => handleFilter(e.target.value, filterAset)}
                                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-900"
                             >
-                                <option value="" disabled>
-                                    Pilih Wilayah
+                                <option value="">
+                                    Semua Wilayah
                                 </option>
-                                <option value="aceh">
-                                    Aceh
-                                </option>
-                                <option value="sumut">
-                                    Sumatera Utara
-                                </option>
-                                <option value="sumbar">
-                                    Sumatera Barat
-                                </option>
+                                {wilayah.map((item) => (
+                                    <option key={item.id} value={item.id} className="capitalize">
+                                        {item.nama_wilayah}
+                                    </option>
+                                ))}
                             </select>
 
-                            {/* Status */}
+                            {/* Aset */}
 
                             <select
-                                defaultValue=""
+                                value={filterAset}
+                                onChange={(e) => handleFilter(filterWilayah, e.target.value)}
                                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-900"
                             >
-                                <option value="" disabled>
-                                    Pilih Aset
+                                <option value="">
+                                    Semua Aset
                                 </option>
-                                <option value="aktif">
+                                <option value="tiang">
                                     Tiang
                                 </option>
-                                <option value="nonaktif">
+                                <option value="ont">
                                     ONT
                                 </option>
                             </select>
@@ -184,40 +240,77 @@ export default function Tiang() {
                                 </tr>
                             </thead>
 
-                            <tbody>
-                                <tr className="border-b border-gray-300 text-center font-light">
-                                    <td className="px-4 py-2">
-                                        No
-                                    </td>
+                            <tbody className="text-center capitalize">
+                                {listWilayah.length > 0 ? (
+                                    listWilayah.map((row, index) => (
+                                        <tr key={row.id ?? row.nama_wilayah ?? index} className="border-b border-gray-300 last:border-b-0 hover:bg-gray-50 font-light">
+                                            <td className="px-4 py-2">
+                                                {String((dataWilayah?.from ? dataWilayah.from + index : index + 1)).padStart(2, "0")}
+                                            </td>
 
-                                    <td className="px-4 py-2">
-                                        Wilayah
-                                    </td>
+                                            <td className="px-4 py-2">
+                                                {row.nama_wilayah ?? <span className="text-gray-400">Belum ada data</span>}
+                                            </td>
 
-                                    <td className="px-4 py-2">
-                                        Total Aset
-                                    </td>
+                                            <td className="px-4 py-2">
+                                                {row.total_aset ?? 0}
+                                            </td>
 
-                                    <td className="px-4 py23">
-                                        Total Tiang
-                                    </td>
+                                            <td className="px-4 py-2">
+                                                {row.total_tiang ?? 0}
+                                            </td>
 
-                                    <td className="px-4 py-2">
-                                        Total ONT
-                                    </td>
+                                            <td className="px-4 py-2">
+                                                {row.total_ont ?? 0}
+                                            </td>
 
-                                    <td className="px-4 py-2">
-                                        Aset Aktif
-                                    </td>
+                                            <td className="px-4 py-2">
+                                                <span className="rounded-full bg-green-500 px-2 py-1 text-[10px] text-white">
+                                                    {row.aset_aktif ?? 0}
+                                                </span>
+                                            </td>
 
-                                    <td className="px-4 py-2">
-                                        Aset Nonaktif
-                                    </td>
-                                </tr>
+                                            <td className="px-4 py-2">
+                                                <span className="rounded-full bg-red-500 px-2 py-1 text-[10px] text-white">
+                                                    {row.aset_nonaktif ?? 0}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="7" className="px-4 py-12 text-center">
+                                            <div className="flex flex-col items-center justify-center gap-2">
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                                                    <FaMap className="text-xl text-gray-400" />
+                                                </div>
+                                                <p className="text-sm font-medium text-gray-500">
+                                                    Belum ada data
+                                                </p>
+                                                <p className="text-xs text-gray-400">
+                                                    Data wilayah belum tersedia atau filter tidak menghasilkan data.
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
 
                         </table>
                     </div>
+                    {dataWilayah?.links && dataWilayah.links.length > 3 && (
+                        <div className="flex flex-wrap gap-1 justify-center mt-4 pb-3">
+                            {dataWilayah.links.map((link, i) => (
+                                <button
+                                    key={i}
+                                    disabled={!link.url}
+                                    onClick={() => link.url && router.get(link.url, {}, { preserveState: true, preserveScroll: true })}
+                                    className={`px-3 py-1 text-xs rounded ${link.active ? 'bg-[#AB3C3C] text-white' : 'bg-white border'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
 
             </div>

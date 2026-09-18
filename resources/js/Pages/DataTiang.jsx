@@ -189,6 +189,7 @@ export default function DataTiang({
 
                                 {wilayah.map((item) => (
                                     <option
+                                        className="capitalize"
                                         key={item.id}
                                         value={item.id}
                                     >
@@ -282,7 +283,7 @@ export default function DataTiang({
 
                             {/* Body Tabel */}
 
-                            <tbody className="text-center">
+                            <tbody className="text-center capitalize">
 
                                 {listTiang.length > 0 ? (
 

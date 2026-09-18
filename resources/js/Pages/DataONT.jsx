@@ -189,6 +189,7 @@ export default function DataONT({
 
                                 {wilayah.map((item) => (
                                     <option
+                                        className="capitalize"
                                         key={item.id}
                                         value={item.id}
                                     >
@@ -282,7 +283,7 @@ export default function DataONT({
 
                             {/* Body Tabel */}
 
-                            <tbody className="text-center">
+                            <tbody className="text-center capitalize">
 
                                 {listONT.length > 0 ? (
 

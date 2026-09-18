@@ -89,9 +89,116 @@ class PageController extends Controller
 
     // Wilayah
 
-    public function Wilayah()
+    public function Wilayah(Request $request)
     {
-        return Inertia::render('Wilayah');
+        $wilayahList = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
+
+        $tiangGrouped = TiangModel::selectRaw("wilayah, COUNT(*) as total, SUM(CASE WHEN LOWER(status)='aktif' THEN 1 ELSE 0 END) as aktif, SUM(CASE WHEN LOWER(status)='nonaktif' THEN 1 ELSE 0 END) as nonaktif")
+            ->groupBy('wilayah')
+            ->get()
+            ->keyBy('wilayah');
+
+        $ontGrouped = ONTModel::selectRaw("wilayah, COUNT(*) as total, SUM(CASE WHEN LOWER(status)='aktif' THEN 1 ELSE 0 END) as aktif, SUM(CASE WHEN LOWER(status)='nonaktif' THEN 1 ELSE 0 END) as nonaktif")
+            ->groupBy('wilayah')
+            ->get()
+            ->keyBy('wilayah');
+
+        $rows = collect($wilayahList)->map(function ($w) use ($tiangGrouped, $ontGrouped) {
+            $nama = $w->nama_wilayah;
+            $tg = $tiangGrouped->get($nama);
+            $og = $ontGrouped->get($nama);
+            $totalTiang = $tg ? (int) $tg->total : 0;
+            $totalOnt = $og ? (int) $og->total : 0;
+            $aktif = (int) ($tg->aktif ?? 0) + (int) ($og->aktif ?? 0);
+            $nonaktif = (int) ($tg->nonaktif ?? 0) + (int) ($og->nonaktif ?? 0);
+            return [
+                'id' => $w->id,
+                'nama_wilayah' => $nama,
+                'kode_wilayah' => $w->kode_wilayah,
+                'total_tiang' => $totalTiang,
+                'total_ont' => $totalOnt,
+                'total_aset' => $totalTiang + $totalOnt,
+                'aset_aktif' => $aktif,
+                'aset_nonaktif' => $nonaktif,
+            ];
+        });
+
+        $filterWilayah = $request->query('wilayah', '');
+        $filterAset = $request->query('aset', '');
+
+        if ($request->filled('wilayah')) {
+            $wilayahFilter = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
+            if ($wilayahFilter) {
+                $rows = $rows->where('id', (int) $wilayahFilter->id)->values();
+            } else {
+                $rows = $rows->where('nama_wilayah', $request->wilayah)->values();
+            }
+        }
+
+        if ($request->filled('aset') && in_array($request->aset, ['tiang', 'ont'])) {
+            if ($request->aset === 'tiang') {
+                $rows = $rows->filter(fn($r) => $r['total_tiang'] > 0)->values();
+                if ($request->filled('wilayah') && $rows->isEmpty()) {
+                    $rows = collect($wilayahList)->map(function ($w) use ($tiangGrouped, $ontGrouped) {
+                        $nama = $w->nama_wilayah;
+                        $tg = $tiangGrouped->get($nama);
+                        $og = $ontGrouped->get($nama);
+                        return [
+                            'id' => $w->id,
+                            'nama_wilayah' => $nama,
+                            'kode_wilayah' => $w->kode_wilayah,
+                            'total_tiang' => $tg ? (int) $tg->total : 0,
+                            'total_ont' => $og ? (int) $og->total : 0,
+                            'total_aset' => ($tg ? (int) $tg->total : 0) + ($og ? (int) $og->total : 0),
+                            'aset_aktif' => (int) ($tg->aktif ?? 0) + (int) ($og->aktif ?? 0),
+                            'aset_nonaktif' => (int) ($tg->nonaktif ?? 0) + (int) ($og->nonaktif ?? 0),
+                        ];
+                    })->where('id', (int) $request->wilayah)->values();
+                }
+            }
+
+            if ($request->aset === 'ont') {
+                $rows = $rows->filter(fn($r) => $r['total_ont'] > 0)->values();
+                if ($request->filled('wilayah') && $rows->isEmpty()) {
+                    $rows = collect($wilayahList)->map(function ($w) use ($tiangGrouped, $ontGrouped) {
+                        $nama = $w->nama_wilayah;
+                        $tg = $tiangGrouped->get($nama);
+                        $og = $ontGrouped->get($nama);
+                        return [
+                            'id' => $w->id,
+                            'nama_wilayah' => $nama,
+                            'kode_wilayah' => $w->kode_wilayah,
+                            'total_tiang' => $tg ? (int) $tg->total : 0,
+                            'total_ont' => $og ? (int) $og->total : 0,
+                            'total_aset' => ($tg ? (int) $tg->total : 0) + ($og ? (int) $og->total : 0),
+                            'aset_aktif' => (int) ($tg->aktif ?? 0) + (int) ($og->aktif ?? 0),
+                            'aset_nonaktif' => (int) ($tg->nonaktif ?? 0) + (int) ($og->nonaktif ?? 0),
+                        ];
+                    })->where('id', (int) $request->wilayah)->values();
+                }
+            }
+        }
+
+        $page = max(1, (int) $request->query('page', 1));
+        $perPage = 15;
+        $totalRows = $rows->count();
+        $paginatedRows = $rows->forPage($page, $perPage)->values();
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $paginatedRows,
+            $totalRows,
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return Inertia::render('Wilayah', [
+            'dataWilayah' => $paginator,
+            'wilayah' => $wilayahList,
+            'filter' => [
+                'wilayah' => $filterWilayah,
+                'aset' => $filterAset,
+            ],
+        ]);
     }
 
     // Peta Sebaran Aset
