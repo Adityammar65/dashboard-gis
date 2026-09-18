@@ -118,6 +118,7 @@ export default function FormTambahTiang({ wilayah }) {
 
                                     {wilayah?.map((item) => (
                                         <option
+                                            className="capitalize"
                                             key={item.id}
                                             value={item.nama_wilayah}
                                         >

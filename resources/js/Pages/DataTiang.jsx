@@ -14,7 +14,7 @@ export default function DataTiang({
 
     const base = useMemo(() => {
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
+        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont','hapus-tiang','hapus-ont'];
         if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
         return '';
     }, []);
@@ -445,7 +445,7 @@ export default function DataTiang({
                                                     </a>
 
 
-                                                    {/* Hapus - modular, base-aware, uses DELETE like Notifikasi */}
+                                                    {/* Hapus */}
                                                     <button
                                                         type="button"
                                                         onClick={() => {
@@ -454,7 +454,7 @@ export default function DataTiang({
                                                                     `Apakah kamu yakin ingin menghapus data tiang ${tiang.kode_tiang}?`
                                                                 )
                                                             ) {
-                                                                router.delete(`${base}/hapus-tiang/${tiang.id}`.replace(/\/+/g, '/'));
+                                                                window.location.href = `${base}/hapus-tiang/${tiang.id}`.replace(/\/+/g, '/');
                                                             }
                                                         }}
                                                         className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"

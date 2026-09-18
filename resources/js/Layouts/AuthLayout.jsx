@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 export default function AuthLayout({ children, errorMessage }) {
     const base = useMemo(() => {
@@ -8,12 +8,17 @@ export default function AuthLayout({ children, errorMessage }) {
         return '';
     }, []);
 
+    const [visible, setVisible] = useState(!!errorMessage);
+    useEffect(() => {
+        setVisible(!!errorMessage);
+        if (!errorMessage) return;
+        const t = setTimeout(() => setVisible(false), 3000);
+        return () => clearTimeout(t);
+    }, [errorMessage]);
+
     return (
         <div className="relative flex h-screen font-poppins">
-
-            {/* Popup Error */}
-            
-            {errorMessage && (
+            {visible && errorMessage && (
                 <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2">
                     <div className="rounded-lg bg-red-500 px-4 py-2 text-xs font-medium text-white shadow-lg">
                         {errorMessage}

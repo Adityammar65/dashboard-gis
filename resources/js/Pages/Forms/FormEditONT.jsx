@@ -154,6 +154,7 @@ export default function FormEditONT({ ont, wilayah }) {
 
                                     {wilayah?.map((item) => (
                                         <option
+                                            className="capitalize"
                                             key={item.id}
                                             value={item.nama_wilayah}
                                         >
@@ -201,7 +202,7 @@ export default function FormEditONT({ ont, wilayah }) {
 
                             {/* Status */}
 
-                            <div>
+                            <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Status
                                 </label>
@@ -227,7 +228,7 @@ export default function FormEditONT({ ont, wilayah }) {
                                 </select>
                             </div>
 
-                            {/* Latitude */}
+                            {/* Koordinat */}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -244,8 +245,6 @@ export default function FormEditONT({ ont, wilayah }) {
                                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
                                 />
                             </div>
-
-                            {/* Longitude */}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">

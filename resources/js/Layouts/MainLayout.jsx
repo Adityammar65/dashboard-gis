@@ -52,7 +52,7 @@ export default function MainLayout({ children, errorMessage }) {
 
     useEffect(() => {
         if (!localError) return;
-        const t = setTimeout(() => setLocalError(null), 4000);
+        const t = setTimeout(() => setLocalError(null), 3000);
         return () => clearTimeout(t);
     }, [localError]);
 
@@ -67,6 +67,20 @@ export default function MainLayout({ children, errorMessage }) {
     const displayError = Array.isArray(resolvedError)
         ? resolvedError[0]
         : resolvedError;
+
+    useEffect(() => {
+        if (!displayError) return;
+        const t = setTimeout(() => {
+            clearError();
+        }, 3000);
+        return () => clearTimeout(t);
+    }, [displayError, clearError]);
+
+    useEffect(() => {
+        if (!flashSuccess || dismissed || displayError) return;
+        const t = setTimeout(() => setDismissed(true), 3000);
+        return () => clearTimeout(t);
+    }, [flashSuccess, dismissed, displayError]);
 
     return (
         <LayoutErrorContext.Provider value={{ error: displayError, showError, setError: showError, clearError }}>

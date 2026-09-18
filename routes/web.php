@@ -47,15 +47,13 @@ Route::middleware('cek_login')->group(function () {
 
     // CRUD Tiang
 
-    Route::post('/simpan-tiang', [TiangController::class, 'SimpanTiang'])->name('tiang.simpan');
-    Route::post('/update-tiang/{id}', [TiangController::class, 'UpdateTiang'])->name('tiang.update');
-    Route::delete('/hapus-tiang/{id}', [TiangController::class, 'HapusTiang'])->name('tiang.hapus');
+    Route::post('/simpan-tiang', [TiangController::class, 'SimpanTiang']);
+    Route::post('/update-tiang/{id}', [TiangController::class, 'UpdateTiang']);
     Route::get('/hapus-tiang/{id}', [TiangController::class, 'HapusTiang']);
 
     // CRUD ONT
 
-    Route::post('/simpan-ont', [ONTController::class, 'SimpanONT'])->name('ont.simpan');
-    Route::post('/update-ont/{id}', [ONTController::class, 'UpdateONT'])->name('ont.update');
-    Route::delete('/hapus-ont/{id}', [ONTController::class, 'HapusONT'])->name('ont.hapus');
+    Route::post('/simpan-ont', [ONTController::class, 'SimpanONT']);
+    Route::post('/update-ont/{id}', [ONTController::class, 'UpdateONT']);
     Route::get('/hapus-ont/{id}', [ONTController::class, 'HapusONT']);
 });

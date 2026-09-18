@@ -32,7 +32,7 @@ export default function FormTambahONT({ wilayah }) {
 
         router.post("simpan-ont", form, {
             forceFormData: true,
-            
+
             onError: (errors) => {
                 console.log(errors);
                 const raw = errors?.error || Object.values(errors || {})[0];
@@ -118,6 +118,7 @@ export default function FormTambahONT({ wilayah }) {
 
                                     {wilayah?.map((item) => (
                                         <option
+                                            className="capitalize"
                                             key={item.id}
                                             value={item.nama_wilayah}
                                         >
