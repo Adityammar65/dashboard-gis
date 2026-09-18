@@ -10,7 +10,7 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
     const currentPath = useMemo(() => url.split('?')[0], [url]);
     const base = useMemo(() => {
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
+        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
         if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
         return '';
     }, []);

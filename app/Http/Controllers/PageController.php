@@ -8,6 +8,7 @@ use App\Models\TiangModel;
 use App\Models\ONTModel;
 use App\Models\NotifikasiModel;
 use App\Models\WilayahModel;
+use App\Models\UserModel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 
@@ -241,7 +242,7 @@ class PageController extends Controller
         $cookie = $request->cookie('gis_remember');
         if ($cookie && str_contains($cookie, '|')) {
             [$id, $plainToken] = explode('|', $cookie, 2);
-            $user = \App\Models\UserModel::find($id);
+            $user = UserModel::find($id);
             if ($user && $user->remember_token && hash_equals($user->remember_token, hash('sha256', $plainToken))) {
                 $request->session()->regenerate();
                 $request->session()->put([
@@ -260,7 +261,40 @@ class PageController extends Controller
 
     public function Notifikasi()
     {
-        return Inertia::render('Notifikasi');
+        $notifikasi = NotifikasiModel::orderByRaw("CASE WHEN status = 'belum_dibaca' THEN 0 ELSE 1 END")->orderByDesc('id')->limit(100)->get();
+        return Inertia::render('Notifikasi', [
+            'notifikasi' => $notifikasi,
+        ]);
+    }
+
+    // Detail Notifikasi
+
+    public function DetailNotifikasi($id)
+    {
+        $notifikasi = NotifikasiModel::findOrFail($id);
+        if ($notifikasi->status === 'belum_dibaca') {
+            $notifikasi->update(['status' => 'dibaca']);
+            $notifikasi->refresh();
+        }
+        return Inertia::render('DetailNotifikasi', [
+            'notifikasi' => $notifikasi,
+        ]);
+    }
+
+    // Tandai Semua Notifikasi Dibaca
+
+    public function TandaiSemuaDibaca()
+    {
+        NotifikasiModel::where('status', 'belum_dibaca')->update(['status' => 'dibaca']);
+        return redirect('notifikasi');
+    }
+
+    // Hapus Semua Notifikasi yang Sudah Dibaca
+
+    public function HapusSudahDibaca()
+    {
+        NotifikasiModel::where('status', 'dibaca')->delete();
+        return redirect('notifikasi');
     }
 
     // Pengaturan

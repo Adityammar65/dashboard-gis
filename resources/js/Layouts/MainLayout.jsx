@@ -42,7 +42,7 @@ export default function MainLayout({ children, errorMessage }) {
 
     // Reset dismissed when new errors arrive
     useEffect(() => {
-        if (errors || flash?.error || flash?.message || errorMessage) {
+        if (errors || flash?.error || flash?.message || flash?.success || errorMessage) {
             setDismissed(false);
         }
     }, [errors, flash, errorMessage]);
@@ -66,6 +66,7 @@ export default function MainLayout({ children, errorMessage }) {
     // 1. explicit prop 2. imperative localError (via context/event) 3. Inertia validation errors 4. flash
     const inertiaError = Object.values(errors || {})?.[0];
     const flashError = flash?.error || flash?.message || null;
+    const flashSuccess = flash?.success || null;
 
     const resolvedError = dismissed
         ? localError
@@ -92,6 +93,22 @@ export default function MainLayout({ children, errorMessage }) {
                                 onClick={clearError}
                                 className="rounded p-0.5 hover:bg-white/20"
                                 aria-label="Close error"
+                            >
+                                <FiX size={14} />
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {!displayError && !dismissed && flashSuccess && (
+                    <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2">
+                        <div className="flex items-center gap-3 rounded-lg bg-green-600 px-4 py-2 text-xs font-medium text-white shadow-lg">
+                            <span>{flashSuccess}</span>
+                            <button
+                                type="button"
+                                onClick={clearError}
+                                className="rounded p-0.5 hover:bg-white/20"
+                                aria-label="Close success"
                             >
                                 <FiX size={14} />
                             </button>

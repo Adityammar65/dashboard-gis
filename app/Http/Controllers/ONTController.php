@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ONTModel;
+use App\Helpers\NotifikasiHelper;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
@@ -77,7 +78,8 @@ class ONTController extends Controller
                 $storedFiles[] = $path;
             }
             ONTModel::create($data);
-            return redirect('data-ont')->with('success', 'Data ONT berhasil disimpan.');
+            NotifikasiHelper::push('Data ONT Ditambahkan', 'ont', NotifikasiHelper::detailPesan('ditambahkan', 'ont', [], $data));
+            return redirect('data-ont')->with('success', NotifikasiHelper::successMessage('ditambahkan', 'ont', $data['kode_ont'], $data['nama_petugas']));
         } catch (QueryException $e) {
             $this->cleanupFiles($storedFiles);
             Log::error('SimpanONT QueryException: ' . $e->getMessage());
@@ -156,9 +158,11 @@ class ONTController extends Controller
                 $newFiles[] = $path;
                 if ($ont->foto_ont_3) $oldFilesToDelete[] = $ont->foto_ont_3;
             }
+            $lama = $ont->toArray();
             $ont->update($data);
             $this->cleanupFiles($oldFilesToDelete);
-            return redirect('data-ont')->with('success', 'Data ONT berhasil diperbarui.');
+            NotifikasiHelper::push('Data ONT Diperbarui', 'ont', NotifikasiHelper::detailPesan('diperbarui', 'ont', $lama, $data));
+            return redirect('data-ont')->with('success', NotifikasiHelper::successMessage('diperbarui', 'ont', $data['kode_ont'], $data['nama_petugas']));
         } catch (QueryException $e) {
             $this->cleanupFiles($newFiles);
             Log::error('UpdateONT QueryException: ' . $e->getMessage());
@@ -179,10 +183,13 @@ class ONTController extends Controller
     public function HapusONT($id)
     {
         $ont = ONTModel::findOrFail($id);
+        $kode = $ont->kode_ont;
+        $lama = $ont->toArray();
         $files = array_filter([$ont->foto_ont_1, $ont->foto_ont_2, $ont->foto_ont_3]);
         $ont->delete();
         $this->cleanupFiles($files);
-        return redirect('data-ont')->with('success', 'Data ONT berhasil dihapus.');
+        NotifikasiHelper::push('Data ONT Dihapus', 'ont', NotifikasiHelper::detailPesan('dihapus', 'ont', $lama, []));
+        return redirect('data-ont')->with('success', NotifikasiHelper::successMessage('dihapus', 'ont', $kode));
     }
 
     // Handle Error Message

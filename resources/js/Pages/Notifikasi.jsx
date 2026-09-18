@@ -1,7 +1,126 @@
 
 import MainLayout from "../Layouts/MainLayout";
+import { FaWifi, FaChevronRight } from "react-icons/fa";
+import { MdRouter } from "react-icons/md";
+import { useMemo } from "react";
+import { router } from "@inertiajs/react";
+
+const getNotifikasiVisual = (item) => {
+    const jenis = item.jenis || "";
+    const kategori = (item.kategori || "").toLowerCase();
+
+    if (jenis.includes("Ditambahkan")) {
+        return {
+            Icon: kategori === "ont" ? MdRouter : FaWifi,
+            circle: "bg-green-100 text-green-600",
+        };
+    }
+    if (jenis.includes("Diperbarui")) {
+        return {
+            Icon: kategori === "ont" ? MdRouter : FaWifi,
+            circle: "bg-yellow-100 text-yellow-600",
+        };
+    }
+    if (jenis.includes("Dihapus")) {
+        return {
+            Icon: kategori === "ont" ? MdRouter : FaWifi,
+            circle: "bg-red-100 text-red-600",
+        };
+    }
+    return { Icon: null, circle: "" };
+};
 
 export default function Notifikasi({ notifikasi = [] }) {
+    const base = useMemo(() => {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
+        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
+        return '';
+    }, []);
+
+    const goDetail = (id) => {
+        router.get(`${base}/detail-notifikasi/${id}`.replace(/\/+/g, '/'));
+    };
+
+    const tandaiSemuaDibaca = () => {
+        router.post(`${base}/notifikasi/baca-semua`.replace(/\/+/g, '/'));
+    };
+
+    const hapusSudahDibaca = () => {
+        if (
+            window.confirm(
+                "Apakah kamu yakin ingin menghapus semua notifikasi yang sudah dibaca? Tindakan ini tidak dapat dibatalkan."
+            )
+        ) {
+            router.delete(`${base}/notifikasi/hapus-dibaca`.replace(/\/+/g, '/'));
+        }
+    };
+
+    const renderRow = (item) => {
+        const isUnread = item.status === "belum_dibaca";
+        const { Icon, circle } = getNotifikasiVisual(item);
+
+        return (
+            <div
+                key={item.id}
+                className={`flex items-center gap-4 border-b px-5 py-4 ${isUnread ? "bg-red-50/40" : ""}`}
+            >
+                <div
+                    className={`flex h-11 w-11 items-center justify-center rounded-full ${circle || (isUnread
+                        ? "bg-red-100 text-red-600"
+                        : "bg-green-100 text-green-600")
+                        }`}
+                >
+                    {Icon ? (
+                        <Icon size={20} />
+                    ) : isUnread ? (
+                        "⚠"
+                    ) : (
+                        "✓"
+                    )}
+                </div>
+
+                <div className="flex-1">
+                    <p className="text-sm font-medium">
+                        {item.jenis}
+                    </p>
+
+                    <p className="mt-1 text-xs text-gray-500">
+                        {item.kategori}
+                    </p>
+
+                    {item.pesan && (
+                        <p className="mt-1 line-clamp-2 text-xs text-gray-700">
+                            {String(item.pesan).split("\n")[0]}
+                        </p>
+                    )}
+
+                    <p className="mt-1 text-[10px] text-gray-400">
+                        {item.created_at
+                            ? new Date(item.created_at).toLocaleString("id-ID", {
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                            })
+                            : "-"}
+                    </p>
+                </div>
+
+                {isUnread && (
+                    <span className="h-2 w-2 rounded-full bg-red-500" />
+                )}
+
+                <button
+                    type="button"
+                    onClick={() => goDetail(item.id)}
+                    className="flex shrink-0 items-center gap-1 text-xs font-medium text-[#992e2e] hover:underline"
+                >
+                    Lihat detail
+                    <FaChevronRight size={12} />
+                </button>
+            </div>
+        );
+    };
+
     // Statistik
 
     const totalNotifikasi = notifikasi.length;
@@ -83,70 +202,57 @@ export default function Notifikasi({ notifikasi = [] }) {
                             </p>
                         </div>
 
-                        <button className="text-xs text-[#992e2e] hover:underline">
-                            Tandai semua dibaca
-                        </button>
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={tandaiSemuaDibaca}
+                                disabled={belumDibaca === 0}
+                                className="text-xs text-[#992e2e] hover:underline disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:no-underline"
+                            >
+                                Tandai semua dibaca
+                            </button>
+
+                            <span className="h-4 w-px bg-gray-200" />
+
+                            <button
+                                onClick={hapusSudahDibaca}
+                                disabled={sudahDibaca === 0}
+                                className="text-xs text-[#992e2e] hover:underline disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:no-underline"
+                            >
+                                Hapus yang dibaca
+                            </button>
+                        </div>
                     </div>
 
                     {/* Data Notifikasi */}
 
                     {notifikasi.length > 0 ? (
-                        notifikasi.map((item) => {
-
-                            const belumDibaca =
-                                item.status === "belum_dibaca";
-
-                            return (
-                                <div
-                                    key={item.id}
-                                    className={`flex items-center gap-4 border-b px-5 py-4 ${belumDibaca
-                                        ? "bg-red-50/40"
-                                        : ""
-                                        }`}
-                                >
-
-                                    <div
-                                        className={`flex h-11 w-11 items-center justify-center rounded-full ${belumDibaca
-                                            ? "bg-red-100 text-red-600"
-                                            : "bg-green-100 text-green-600"
-                                            }`}
-                                    >
-                                        {belumDibaca ? "⚠" : "✓"}
-                                    </div>
-
-                                    <div className="flex-1">
-
-                                        <p className="text-sm font-medium">
-                                            {item.jenis}
-                                        </p>
-
-                                        <p className="mt-1 text-xs text-gray-500">
-                                            {item.kategori}
-                                        </p>
-
-                                        <p className="mt-1 text-[10px] text-gray-400">
-                                            {item.created_at
-                                                ? new Date(
-                                                    item.created_at
-                                                ).toLocaleString(
-                                                    "id-ID",
-                                                    {
-                                                        dateStyle: "medium",
-                                                        timeStyle: "short",
-                                                    }
-                                                )
-                                                : "-"}
+                        <>
+                            {notifikasi.filter((item) => item.status === "belum_dibaca").length > 0 && (
+                                <>
+                                    <div className="bg-orange-400/20 px-5 py-2">
+                                        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                                            Belum dibaca
                                         </p>
                                     </div>
+                                    {notifikasi
+                                        .filter((item) => item.status === "belum_dibaca")
+                                        .map((item) => renderRow(item))}
+                                </>
+                            )}
 
-                                    {/* Status belum dibaca */}
-
-                                    {belumDibaca && (
-                                        <span className="h-2 w-2 rounded-full bg-red-500" />
-                                    )}
-                                </div>
-                            );
-                        })
+                            {notifikasi.filter((item) => item.status !== "belum_dibaca").length > 0 && (
+                                <>
+                                    <div className="bg-green-500/20 px-5 py-2">
+                                        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                                            Sudah dibaca
+                                        </p>
+                                    </div>
+                                    {notifikasi
+                                        .filter((item) => item.status !== "belum_dibaca")
+                                        .map((item) => renderRow(item))}
+                                </>
+                            )}
+                        </>
                     ) : (
                         <div className="px-5 py-10 text-center">
                             <p className="text-sm text-gray-500">

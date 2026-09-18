@@ -4,10 +4,11 @@ import { IoMdArrowDropdown, IoMdNotifications } from "react-icons/io";
 import { usePage } from "@inertiajs/react";
 
 const Header = memo(function Header() {
-    const { url } = usePage();
+    const { url, props } = usePage();
+    const unreadCount = Number(props?.unreadNotifikasi || 0);
     const base = useMemo(() => {
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','edit-tiang','edit-ont','tambah-tiang','tambah-ont'];
+        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont'];
         if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
         return '';
     }, []);
@@ -57,8 +58,13 @@ const Header = memo(function Header() {
                 </div>
             </div>
 
-            <a href={`${base}/notifikasi`.replace(/\/+/g, '/')}>
+            <a href={`${base}/notifikasi`.replace(/\/+/g, '/')} className="relative">
                 <IoMdNotifications size={50} className="px-3 text-white/65 hover:text-white transition-all duration-200" />
+                {unreadCount > 0 && (
+                    <span className="absolute right-2 top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                )}
             </a>
         </header>
     );

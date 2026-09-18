@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TiangModel;
+use App\Helpers\NotifikasiHelper;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -79,7 +80,8 @@ class TiangController extends Controller
                 $storedFiles[] = $path;
             }
             TiangModel::create($data);
-            return redirect('data-tiang')->with('success', 'Data tiang berhasil disimpan.');
+            NotifikasiHelper::push('Data Tiang Ditambahkan', 'tiang', NotifikasiHelper::detailPesan('ditambahkan', 'tiang', [], $data));
+            return redirect('data-tiang')->with('success', NotifikasiHelper::successMessage('ditambahkan', 'tiang', $data['kode_tiang'], $data['nama_petugas']));
         } catch (QueryException $e) {
             $this->cleanupFiles($storedFiles);
             Log::error('SimpanTiang QueryException: ' . $e->getMessage());
@@ -158,9 +160,11 @@ class TiangController extends Controller
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_3) $oldFilesToDelete[] = $tiang->foto_tiang_3;
             }
+            $lama = $tiang->toArray();
             $tiang->update($data);
             $this->cleanupFiles($oldFilesToDelete);
-            return redirect('data-tiang')->with('success', 'Data tiang berhasil diperbarui.');
+            NotifikasiHelper::push('Data Tiang Diperbarui', 'tiang', NotifikasiHelper::detailPesan('diperbarui', 'tiang', $lama, $data));
+            return redirect('data-tiang')->with('success', NotifikasiHelper::successMessage('diperbarui', 'tiang', $data['kode_tiang'], $data['nama_petugas']));
         } catch (QueryException $e) {
             $this->cleanupFiles($newFiles);
             Log::error('UpdateTiang QueryException: ' . $e->getMessage());
@@ -181,10 +185,13 @@ class TiangController extends Controller
     public function HapusTiang($id)
     {
         $tiang = TiangModel::findOrFail($id);
+        $kode = $tiang->kode_tiang;
+        $lama = $tiang->toArray();
         $files = array_filter([$tiang->foto_tiang_1, $tiang->foto_tiang_2, $tiang->foto_tiang_3]);
         $tiang->delete();
         $this->cleanupFiles($files);
-        return redirect('data-tiang')->with('success', 'Data tiang berhasil dihapus.');
+        NotifikasiHelper::push('Data Tiang Dihapus', 'tiang', NotifikasiHelper::detailPesan('dihapus', 'tiang', $lama, []));
+        return redirect('data-tiang')->with('success', NotifikasiHelper::successMessage('dihapus', 'tiang', $kode));
     }
 
     // Handle Error Message

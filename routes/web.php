@@ -29,6 +29,9 @@ Route::middleware('cek_login')->group(function () {
     Route::get('/detail-tiang/{id}', [PageController::class, 'DetailTiang']);
     Route::get('/detail-ont/{id}', [PageController::class, 'DetailONT']);
     Route::get('/notifikasi', [PageController::class, 'Notifikasi']);
+    Route::get('/detail-notifikasi/{id}', [PageController::class, 'DetailNotifikasi']);
+    Route::post('/notifikasi/baca-semua', [PageController::class, 'TandaiSemuaDibaca']);
+    Route::delete('/notifikasi/hapus-dibaca', [PageController::class, 'HapusSudahDibaca']);
     Route::get('/pengaturan', [PageController::class, 'Pengaturan']);
 
     // Form
