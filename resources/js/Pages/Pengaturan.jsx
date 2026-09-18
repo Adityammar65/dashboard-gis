@@ -1,5 +1,5 @@
 import MainLayout from "../Layouts/MainLayout";
-import { FaMapMarked, FaSave } from "react-icons/fa";
+import { FaMapMarked, FaSave, FaInfoCircle, FaTerminal } from "react-icons/fa";
 import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 
@@ -29,6 +29,44 @@ export default function Pengaturan({ wilayah }) {
                         <span className="text-sm font-semibold">
                             Pengaturan
                         </span>
+                    </div>
+                </div>
+
+                {/* Panduan Pengaturan Awal */}
+
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
+                    <div className="mb-4 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
+                            <FaInfoCircle />
+                        </div>
+                        <div>
+                            <h2 className="text-sm font-semibold text-gray-800">
+                                Panduan Pengaturan Wilayah – Pertama Kali
+                            </h2>
+                            <p className="text-xs text-gray-600">
+                                Jalankan perintah berikut untuk mengatur wilayah operasi
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="mx-auto max-w-2xl rounded-lg border border-amber-200 bg-white p-4">
+                        <div className="mb-2 flex items-center gap-2">
+                            <FaTerminal className="text-amber-600" />
+                            <h3 className="text-sm font-semibold text-gray-800">
+                                Via CLI
+                            </h3>
+                        </div>
+                        <p className="mb-2 text-xs text-gray-600">
+                            Buat pengaturan default dengan perintah artisan:
+                        </p>
+                        <code className="block rounded-md bg-gray-900 px-3 py-2 text-xs font-mono text-green-400">
+                            php artisan settings:generate
+                        </code>
+                        <p className="mt-2 text-[11px] text-gray-500">
+                            Membuat <span className="font-mono">storage/app/settings.json</span> dengan wilayah default{" "}
+                            <span className="font-semibold">yogyakarta (YOG)</span>. Jika file sudah ada akan muncul{" "}
+                            <span className="font-mono">settings.json sudah ada.</span>
+                        </p>
                     </div>
                 </div>
 

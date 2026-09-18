@@ -18,7 +18,100 @@ class PageController extends Controller
 
     public function Index()
     {
-        return Inertia::render('Home');
+        $settings = Cache::remember('settings', 3600, function () {
+            $path = storage_path('app/settings.json');
+            if (!file_exists($path)) return [];
+            return json_decode(file_get_contents($path), true) ?? [];
+        });
+        $namaWilayah = trim((string) ($settings['nama_wilayah'] ?? ''));
+
+        $tiang = collect();
+        $ont = collect();
+
+        if ($namaWilayah !== '') {
+            $tiang = TiangModel::query()
+                ->select(['id', 'kode_tiang', 'wilayah', 'area', 'status', 'latitude', 'longitude'])
+                ->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)])
+                ->whereNotNull('latitude')->where('latitude', '!=', '')
+                ->whereNotNull('longitude')->where('longitude', '!=', '')
+                ->orderByDesc('id')->limit(2000)->get();
+            $ont = ONTModel::query()
+                ->select(['id', 'kode_ont', 'wilayah', 'area', 'status', 'latitude', 'longitude'])
+                ->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)])
+                ->whereNotNull('latitude')->where('latitude', '!=', '')
+                ->whereNotNull('longitude')->where('longitude', '!=', '')
+                ->orderByDesc('id')->limit(2000)->get();
+        }
+
+        // Statistik - scoped to active wilayah if set, otherwise global
+        $tiangAgg = TiangModel::query()
+            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->selectRaw("COUNT(*) as total, SUM(CASE WHEN LOWER(status)='aktif' THEN 1 ELSE 0 END) as aktif, SUM(CASE WHEN LOWER(status)='nonaktif' THEN 1 ELSE 0 END) as nonaktif")
+            ->first();
+        $ontAgg = ONTModel::query()
+            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->selectRaw("COUNT(*) as total, SUM(CASE WHEN LOWER(status)='aktif' THEN 1 ELSE 0 END) as aktif, SUM(CASE WHEN LOWER(status)='nonaktif' THEN 1 ELSE 0 END) as nonaktif")
+            ->first();
+
+        $wilayahTotal = WilayahModel::count();
+
+        $berkoordTiang = TiangModel::query()
+            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->whereNotNull('latitude')->where('latitude', '!=', '')
+            ->whereNotNull('longitude')->where('longitude', '!=', '')
+            ->count();
+        $berkoordOnt = ONTModel::query()
+            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->whereNotNull('latitude')->where('latitude', '!=', '')
+            ->whereNotNull('longitude')->where('longitude', '!=', '')
+            ->count();
+
+        $totalTiang = (int) ($tiangAgg->total ?? 0);
+        $totalOnt = (int) ($ontAgg->total ?? 0);
+        $totalAset = $totalTiang + $totalOnt;
+        $berkoord = $berkoordTiang + $berkoordOnt;
+        $persen = $totalAset > 0 ? (int) round($berkoord / $totalAset * 100) : 0;
+
+        $stats = [
+            'tiang' => [
+                'total' => $totalTiang,
+                'aktif' => (int) ($tiangAgg->aktif ?? 0),
+                'nonaktif' => (int) ($tiangAgg->nonaktif ?? 0),
+            ],
+            'ont' => [
+                'total' => $totalOnt,
+                'aktif' => (int) ($ontAgg->aktif ?? 0),
+                'nonaktif' => (int) ($ontAgg->nonaktif ?? 0),
+            ],
+            'wilayah' => [
+                'total' => (int) $wilayahTotal,
+            ],
+            'koordinat' => [
+                'total' => $totalAset,
+                'berkoordinat' => $berkoord,
+                'persen' => $persen,
+            ],
+        ];
+
+        // Pembaruan Aset - latest 5 added or updated (by updated_at desc)
+        $recentTiang = TiangModel::query()
+            ->select(['id', 'kode_tiang as kode', 'wilayah', 'area', 'status', 'created_at', 'updated_at'])
+            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->orderByDesc('updated_at')->orderByDesc('id')->limit(5)->get()
+            ->map(fn($r) => array_merge($r->toArray(), ['type' => 'tiang']));
+        $recentOnt = ONTModel::query()
+            ->select(['id', 'kode_ont as kode', 'wilayah', 'area', 'status', 'created_at', 'updated_at'])
+            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->orderByDesc('updated_at')->orderByDesc('id')->limit(5)->get()
+            ->map(fn($r) => array_merge($r->toArray(), ['type' => 'ont']));
+        $recentAssets = $recentTiang->concat($recentOnt)->sortByDesc('updated_at')->take(5)->values();
+
+        return Inertia::render('Home', [
+            'tiang' => $tiang,
+            'ont' => $ont,
+            'stats' => $stats,
+            'recentAssets' => $recentAssets,
+        ]);
     }
 
     // Halaman Data Tiang
