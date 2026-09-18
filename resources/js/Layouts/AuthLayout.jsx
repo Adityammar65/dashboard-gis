@@ -1,4 +1,13 @@
+import { useMemo } from "react";
+
 export default function AuthLayout({ children, errorMessage }) {
+    const base = useMemo(() => {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'login', 'hapus-tiang', 'hapus-ont'];
+        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
+        return '';
+    }, []);
+
     return (
         <div className="relative flex h-screen font-poppins">
 
@@ -18,14 +27,14 @@ export default function AuthLayout({ children, errorMessage }) {
                 className="flex w-1/2 items-center justify-center"
                 style={{
                     backgroundImage:
-                        "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)), url('public/Assets/LoginBackground.jpg')",
+                        `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)), url('${`${base}/public/Assets/LoginBackground.jpg`.replace(/\/+/g, '/')}')`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}
             >
                 <div className="flex flex-row items-center gap-8">
                     <img
-                        src="public/Assets/Logo.png"
+                        src={`${base}/public/Assets/Logo.png`.replace(/\/+/g, '/')}
                         alt="Logo"
                         className="w-25"
                         width="100"

@@ -12,6 +12,14 @@ export default function DataTiang({
 }) {
     const { settings } = usePage().props;
 
+    const base = useMemo(() => {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
+        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
+        return '';
+    }, []);
+    const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, '/'), [base]);
+
     const [filterWilayah, setFilterWilayah] = useState(
         filter.wilayah ?? ""
     );
@@ -69,7 +77,7 @@ export default function DataTiang({
                     {/* Form Tiang */}
 
                     <a
-                        href="tambah-tiang"
+                        href={resolveHref("tambah-tiang")}
                         className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white shadow hover:bg-green-600"
                     >
                         <FaPlus />
@@ -310,7 +318,7 @@ export default function DataTiang({
                                                     {tiang.foto_tiang_1 ? (
 
                                                         <img
-                                                            src={`/dashboard-gis/public/storage/${tiang.foto_tiang_1}`}
+                                                            src={`${base}/public/storage/${tiang.foto_tiang_1}`.replace(/\/+/g, '/')}
                                                             alt={`Foto ${tiang.kode_tiang}`}
                                                             className="h-full w-full object-cover"
                                                             loading="lazy"
@@ -420,7 +428,7 @@ export default function DataTiang({
                                                     {/* Detail */}
 
                                                     <a
-                                                        href={`detail-tiang/${tiang.id}`}
+                                                        href={resolveHref(`detail-tiang/${tiang.id}`)}
                                                         className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
                                                     >
                                                         <FaEye className="text-xl" />
@@ -430,15 +438,14 @@ export default function DataTiang({
                                                     {/* Edit */}
 
                                                     <a
-                                                        href={`edit-tiang/${tiang.id}`}
+                                                        href={resolveHref(`edit-tiang/${tiang.id}`)}
                                                         className="rounded-md bg-yellow-400 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
                                                     >
                                                         <FaEdit className="text-xl" />
                                                     </a>
 
 
-                                                    {/* Hapus */}
-
+                                                    {/* Hapus - modular, base-aware, uses DELETE like Notifikasi */}
                                                     <button
                                                         type="button"
                                                         onClick={() => {
@@ -447,7 +454,7 @@ export default function DataTiang({
                                                                     `Apakah kamu yakin ingin menghapus data tiang ${tiang.kode_tiang}?`
                                                                 )
                                                             ) {
-                                                                window.location.href = `/dashboard-gis/hapus-tiang/${tiang.id}`;
+                                                                router.delete(`${base}/hapus-tiang/${tiang.id}`.replace(/\/+/g, '/'));
                                                             }
                                                         }}
                                                         className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"

@@ -3,7 +3,6 @@ import { Header, Sidebar } from "../Components";
 import { FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
 
-// Context so any child inside MainLayout can trigger the error popup
 export const LayoutErrorContext = createContext(null);
 
 export function useLayoutError() {
@@ -21,10 +20,9 @@ export default function MainLayout({ children, errorMessage }) {
 
     const { errors, flash } = usePage().props;
 
-    // Imperative API for children: showError("msg") / clearError()
     const showError = useCallback((msg) => {
         if (!msg) return;
-        // normalize: if object/array passed, pick first string
+
         if (Array.isArray(msg)) msg = msg[0];
         else if (typeof msg === "object") {
             const vals = Object.values(msg);
@@ -40,30 +38,24 @@ export default function MainLayout({ children, errorMessage }) {
         setDismissed(true);
     }, []);
 
-    // Reset dismissed when new errors arrive
     useEffect(() => {
         if (errors || flash?.error || flash?.message || flash?.success || errorMessage) {
             setDismissed(false);
         }
     }, [errors, flash, errorMessage]);
 
-    // Allow children that don't use context to dispatch a window event:
-    // window.dispatchEvent(new CustomEvent("layout:error", { detail: "msg" }))
     useEffect(() => {
         const handler = (e) => showError(e.detail);
         window.addEventListener("layout:error", handler);
         return () => window.removeEventListener("layout:error", handler);
     }, [showError]);
 
-    // Auto-dismiss local (imperative) errors after 4s
     useEffect(() => {
         if (!localError) return;
         const t = setTimeout(() => setLocalError(null), 4000);
         return () => clearTimeout(t);
     }, [localError]);
 
-    // Resolve error from 4 sources (priority order):
-    // 1. explicit prop 2. imperative localError (via context/event) 3. Inertia validation errors 4. flash
     const inertiaError = Object.values(errors || {})?.[0];
     const flashError = flash?.error || flash?.message || null;
     const flashSuccess = flash?.success || null;
@@ -76,14 +68,9 @@ export default function MainLayout({ children, errorMessage }) {
         ? resolvedError[0]
         : resolvedError;
 
-    // Auto-dismiss also for inertia/flash errors? keep visible until navigation; but allow manual close
-    // If error came from props/inertia, clearing should also clear local; for inertia it will disappear on next visit
-
     return (
         <LayoutErrorContext.Provider value={{ error: displayError, showError, setError: showError, clearError }}>
             <div className="relative min-h-screen font-poppins">
-                {/* Popup Error - copied from AuthLayout.jsx */}
-
                 {displayError && (
                     <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2">
                         <div className="flex items-center gap-3 rounded-lg bg-red-500 px-4 py-2 text-xs font-medium text-white shadow-lg">

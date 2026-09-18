@@ -12,6 +12,14 @@ export default function DataONT({
 }) {
     const { settings } = usePage().props;
 
+    const base = useMemo(() => {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
+        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
+        return '';
+    }, []);
+    const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, '/'), [base]);
+
     const [filterWilayah, setFilterWilayah] = useState(
         filter.wilayah ?? ""
     );
@@ -69,7 +77,7 @@ export default function DataONT({
                     {/* Form ONT */}
 
                     <a
-                        href="tambah-ont"
+                        href={resolveHref("tambah-ont")}
                         className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white shadow hover:bg-green-600"
                     >
                         <FaPlus />
@@ -310,7 +318,7 @@ export default function DataONT({
                                                     {ont.foto_ont_1 ? (
 
                                                         <img
-                                                            src={`/dashboard-gis/public/storage/${ont.foto_ont_1}`}
+                                                            src={`${base}/public/storage/${ont.foto_ont_1}`.replace(/\/+/g, '/')}
                                                             alt={`Foto ${ont.kode_ont}`}
                                                             className="h-full w-full object-cover"
                                                             loading="lazy"
@@ -421,7 +429,7 @@ export default function DataONT({
                                                     {/* Detail */}
 
                                                     <a
-                                                        href={`detail-ont/${ont.id}`}
+                                                        href={resolveHref(`detail-ont/${ont.id}`)}
                                                         className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
                                                     >
                                                         <FaEye className="text-xl" />
@@ -431,18 +439,27 @@ export default function DataONT({
                                                     {/* Edit */}
 
                                                     <a
-                                                        href={`edit-ont/${ont.id}`}
+                                                        href={resolveHref(`edit-ont/${ont.id}`)}
                                                         className="rounded-md bg-yellow-400 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
                                                     >
                                                         <FaEdit className="text-xl" />
                                                     </a>
 
 
-                                                    {/* Hapus */}
-
+                                                    {/* Hapus - modular, base-aware, uses DELETE like Notifikasi */}
                                                     <button
                                                         type="button"
+                                                        onClick={() => {
+                                                            if (
+                                                                window.confirm(
+                                                                    `Apakah kamu yakin ingin menghapus data ont ${ont.kode_ont}?`
+                                                                )
+                                                            ) {
+                                                                router.delete(`${base}/hapus-ont/${ont.id}`.replace(/\/+/g, '/'));
+                                                            }
+                                                        }}
                                                         className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
+                                                        title="Hapus Data"
                                                     >
                                                         <MdDelete className="text-xl" />
                                                     </button>

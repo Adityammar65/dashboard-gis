@@ -8,7 +8,7 @@ const Header = memo(function Header() {
     const unreadCount = Number(props?.unreadNotifikasi || 0);
     const base = useMemo(() => {
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont'];
+        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
         if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
         return '';
     }, []);
@@ -20,7 +20,7 @@ const Header = memo(function Header() {
             <div className="flex items-center gap-5">
                 <div>
                     <img
-                        src="/dashboard-gis/public/Assets/Logo.png"
+                        src={`${base}/public/Assets/Logo.png`.replace(/\/+/g, '/')}
                         alt="Logo"
                         className="w-10"
                         width="40"

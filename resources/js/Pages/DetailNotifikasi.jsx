@@ -72,7 +72,9 @@ export default function DetailNotifikasi({ notifikasi }) {
     return (
         <MainLayout>
             <div className="space-y-4">
+
                 {/* Header */}
+
                 <div className="flex items-center justify-between">
                     <div className="w-full rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 text-white shadow-sm">
                         <h1 className="text-sm font-semibold">
@@ -98,7 +100,9 @@ export default function DetailNotifikasi({ notifikasi }) {
                     </div>
                 ) : (
                     <>
+
                         {/* Ringkasan */}
+
                         <div className="flex items-center gap-4 rounded-xl bg-white px-5 py-4 shadow">
                             <div
                                 className={`flex h-11 w-11 items-center justify-center rounded-full ${circle || (belumDibaca
@@ -141,6 +145,7 @@ export default function DetailNotifikasi({ notifikasi }) {
                         </div>
 
                         {/* Perubahan */}
+
                         {changes.length > 0 && (
                             <div className="rounded-xl bg-white shadow">
                                 <div className="border-b-2 border-[#ab3c3c]/60 px-5 py-4">
@@ -182,6 +187,7 @@ export default function DetailNotifikasi({ notifikasi }) {
                         )}
 
                         {/* Detail data (tambah/hapus) */}
+
                         {details.length > 0 && (
                             <div className="rounded-xl bg-white shadow">
                                 <div className="border-b-2 border-[#ab3c3c]/60 px-5 py-4">
