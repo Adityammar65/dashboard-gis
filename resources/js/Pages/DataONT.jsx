@@ -1,7 +1,7 @@
 import MainLayout from "../Layouts/MainLayout";
 
 import { usePage, router } from "@inertiajs/react";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { FaPlus, FaFilter, FaEye, FaEdit } from "react-icons/fa";
 import { MdDelete, MdRouter } from "react-icons/md";
 
@@ -14,7 +14,7 @@ export default function DataONT({
 
     const base = useMemo(() => {
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont','hapus-tiang','hapus-ont'];
+        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
         if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
         return '';
     }, []);
@@ -32,6 +32,24 @@ export default function DataONT({
     const totalONT = useMemo(() => dataONT?.total ?? listONT.length, [dataONT, listONT]);
     const ONTAktif = useMemo(() => listONT.filter((ont) => ont.status?.toLowerCase() === "aktif").length, [listONT]);
     const ONTNonaktif = useMemo(() => listONT.filter((ont) => ont.status?.toLowerCase() === "nonaktif").length, [listONT]);
+
+    const selectedWilayahLabel = useMemo(() => {
+        if (!filterWilayah) return "Semua Wilayah";
+        const found = wilayah.find((item) => String(item.id) === String(filterWilayah));
+        return found ? found.nama_wilayah : "Semua Wilayah";
+    }, [filterWilayah, wilayah]);
+
+    useEffect(() => {
+        if ((filter.wilayah ?? "") !== filterWilayah) {
+            setFilterWilayah(filter.wilayah ?? "");
+        }
+    }, [filter.wilayah]);
+
+    useEffect(() => {
+        if ((filter.status ?? "") !== filterStatus) {
+            setFilterStatus(filter.status ?? "");
+        }
+    }, [filter.status]);
 
     const handleFilter = useCallback((wilayahValue, statusValue) => {
         setFilterWilayah(wilayahValue);
@@ -100,6 +118,10 @@ export default function DataONT({
 
                                 <p className="text-xs font-medium">
                                     TOTAL ONT
+                                </p>
+
+                                <p className="text-sm font-light capitalize text-gray-500 mt-1 truncate">
+                                    {selectedWilayahLabel}
                                 </p>
 
                                 <h2 className="mt-1 text-2xl font-semibold">
@@ -188,7 +210,7 @@ export default function DataONT({
                                         filterStatus
                                     )
                                 }
-                                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-900"
+                                className="capitalize w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-900"
                             >
 
                                 <option value="">
