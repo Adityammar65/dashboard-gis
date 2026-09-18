@@ -4,8 +4,9 @@ import MainLayout from "../Layouts/MainLayout";
 import { usePage, router } from "@inertiajs/react";
 import { useState, useMemo, useCallback } from "react";
 
-import { FaFilter, FaMap } from "react-icons/fa";
+import { FaFilter, FaMap, FaPlus } from "react-icons/fa";
 import { LuBox } from "react-icons/lu";
+import { MdDelete } from "react-icons/md";
 
 export default function Tiang({
     dataWilayah = { data: [], total: 0, links: [] },
@@ -13,6 +14,14 @@ export default function Tiang({
     filter = {},
 }) {
     const { settings } = usePage().props;
+
+    const base = useMemo(() => {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont','tambah-wilayah','hapus-tiang','hapus-ont','hapus-wilayah'];
+        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
+        return '';
+    }, []);
+    const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, '/'), [base]);
 
     const [filterWilayah, setFilterWilayah] = useState(filter.wilayah ?? "");
     const [filterAset, setFilterAset] = useState(filter.aset ?? "");
@@ -86,6 +95,16 @@ export default function Tiang({
                             {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
+
+                    {/* Form Wilayah */}
+
+                    <a
+                        href={resolveHref("tambah-wilayah")}
+                        className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white shadow hover:bg-green-600"
+                    >
+                        <FaPlus />
+                        Form Wilayah
+                    </a>
 
                 </div>
 
@@ -237,6 +256,10 @@ export default function Tiang({
                                     <th className="w-20 px-4 py-3">
                                         Aset Nonaktif
                                     </th>
+
+                                    <th className="w-20 px-4 py-3">
+                                        Aksi
+                                    </th>
                                 </tr>
                             </thead>
 
@@ -275,11 +298,32 @@ export default function Tiang({
                                                     {row.aset_nonaktif ?? 0}
                                                 </span>
                                             </td>
+
+                                            <td className="px-4 py-2">
+                                                <div className="flex items-center justify-center">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            if (
+                                                                window.confirm(
+                                                                    `Apakah kamu yakin ingin menghapus wilayah ${row.nama_wilayah}?`
+                                                                )
+                                                            ) {
+                                                                window.location.href = `${base}/hapus-wilayah/${row.id}`.replace(/\/+/g, '/');
+                                                            }
+                                                        }}
+                                                        className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
+                                                        title="Hapus Wilayah"
+                                                    >
+                                                        <MdDelete className="text-xl" />
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="7" className="px-4 py-12 text-center">
+                                        <td colSpan="8" className="px-4 py-12 text-center">
                                             <div className="flex flex-col items-center justify-center gap-2">
                                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
                                                     <FaMap className="text-xl text-gray-400" />

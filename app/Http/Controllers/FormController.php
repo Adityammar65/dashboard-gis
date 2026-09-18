@@ -54,4 +54,11 @@ class FormController extends Controller
             'wilayah' => $wilayah,
         ]);
     }
+
+    // Form Tambah Wilayah
+
+    public function TambahWilayah()
+    {
+        return Inertia::render('Forms/FormTambahWilayah');
+    }
 }

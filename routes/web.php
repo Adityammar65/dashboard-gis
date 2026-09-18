@@ -7,6 +7,7 @@ use App\Http\Controllers\ONTController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TiangController;
+use App\Http\Controllers\WilayahController;
 
 // Auth
 
@@ -39,6 +40,7 @@ Route::middleware('cek_login')->group(function () {
 
     Route::get('/tambah-tiang', [FormController::class, 'TambahTiang']);
     Route::get('/tambah-ont', [FormController::class, 'TambahONT']);
+    Route::get('/tambah-wilayah', [FormController::class, 'TambahWilayah']);
     Route::get('/edit-tiang/{id}', [FormController::class, 'EditTiang']);
     Route::get('/edit-ont/{id}', [FormController::class, 'EditONT']);
 
@@ -57,4 +59,9 @@ Route::middleware('cek_login')->group(function () {
     Route::post('/simpan-ont', [ONTController::class, 'SimpanONT']);
     Route::post('/update-ont/{id}', [ONTController::class, 'UpdateONT']);
     Route::get('/hapus-ont/{id}', [ONTController::class, 'HapusONT']);
+
+    // CRUD Wilayah
+
+    Route::post('/simpan-wilayah', [WilayahController::class, 'SimpanWilayah']);
+    Route::get('/hapus-wilayah/{id}', [WilayahController::class, 'HapusWilayah']);
 });

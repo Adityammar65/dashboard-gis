@@ -1,7 +1,14 @@
 import MainLayout from "../Layouts/MainLayout";
-import { FaArrowLeft, FaWifi } from "react-icons/fa";
+import { FaArrowLeft, FaWifi, FaMap } from "react-icons/fa";
 import { MdRouter } from "react-icons/md";
 import { useMemo } from "react";
+
+const getIconByKategori = (kategori) => {
+    const k = (kategori || "").toLowerCase();
+    if (k === "ont") return MdRouter;
+    if (k === "wilayah") return FaMap;
+    return FaWifi;
+};
 
 const getNotifikasiVisual = (item) => {
     const jenis = item?.jenis || "";
@@ -9,19 +16,19 @@ const getNotifikasiVisual = (item) => {
 
     if (jenis.includes("Ditambahkan")) {
         return {
-            Icon: kategori === "ont" ? MdRouter : FaWifi,
+            Icon: getIconByKategori(kategori),
             circle: "bg-green-100 text-green-600",
         };
     }
     if (jenis.includes("Diperbarui")) {
         return {
-            Icon: kategori === "ont" ? MdRouter : FaWifi,
+            Icon: getIconByKategori(kategori),
             circle: "bg-yellow-100 text-yellow-600",
         };
     }
     if (jenis.includes("Dihapus")) {
         return {
-            Icon: kategori === "ont" ? MdRouter : FaWifi,
+            Icon: getIconByKategori(kategori),
             circle: "bg-red-100 text-red-600",
         };
     }
@@ -186,7 +193,7 @@ export default function DetailNotifikasi({ notifikasi }) {
                             </div>
                         )}
 
-                        {/* Detail data (tambah/hapus) */}
+                        {/* Detail */}
 
                         {details.length > 0 && (
                             <div className="rounded-xl bg-white shadow">

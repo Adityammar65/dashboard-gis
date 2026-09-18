@@ -201,7 +201,7 @@ class PageController extends Controller
 
     public function Wilayah(Request $request)
     {
-        $wilayahList = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
+        $wilayahList = WilayahModel::all();
 
         $tiangGrouped = TiangModel::selectRaw("wilayah, COUNT(*) as total, SUM(CASE WHEN LOWER(status)='aktif' THEN 1 ELSE 0 END) as aktif, SUM(CASE WHEN LOWER(status)='nonaktif' THEN 1 ELSE 0 END) as nonaktif")
             ->groupBy('wilayah')
