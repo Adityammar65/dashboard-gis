@@ -54,8 +54,29 @@ export default function Peta() {
             }))
             : [];
         return [...tiangMarkers, ...ontMarkers];
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tiang, ont, assetType, status, wilayah]);
+
+    // Derived center for selected wilayah (Option A: average of all assets in that wilayah, independent of other filters)
+    const wilayahCenter = useMemo(() => {
+        if (wilayah === "Semua") return null;
+        const all = [...tiang, ...ont].filter((it) => String(it.wilayah || "") === wilayah);
+        const coords = all
+            .map((it) => {
+                const latStr = String(it.latitude ?? "").trim().replace(",", ".");
+                const lngStr = String(it.longitude ?? "").trim().replace(",", ".");
+                const lat = parseFloat(latStr);
+                const lng = parseFloat(lngStr);
+                if (!isFinite(lat) || !isFinite(lng)) return null;
+                if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+                if (latStr === "" || lngStr === "") return null;
+                return [lat, lng];
+            })
+            .filter(Boolean);
+        if (coords.length === 0) return null;
+        let sumLat = 0, sumLng = 0;
+        for (const [lat, lng] of coords) { sumLat += lat; sumLng += lng; }
+        return [sumLat / coords.length, sumLng / coords.length];
+    }, [wilayah, tiang, ont]);
 
     return (
         <MainLayout>
@@ -82,7 +103,7 @@ export default function Peta() {
                     {/* Map */}
 
                     <div className="absolute inset-0 z-0">
-                        <MapView markers={markers} />
+                        <MapView markers={markers} wilayah={wilayah} wilayahCenter={wilayahCenter} />
                     </div>
 
                     <div className="absolute left-15 top-4 z-10">
@@ -120,74 +141,64 @@ export default function Peta() {
                         </div>
                     </div>
 
-                    {/* Koordinat */}
+                    <div className="absolute right-4 top-4 z-10 w-[260px] space-y-3">
 
-                    <div className="absolute bottom-4 left-4 z-10 rounded-md bg-white/90 px-3 py-2 text-sm text-gray-800 shadow backdrop-blur-sm">
-                        Latitude | Longitude
-                    </div>
+                        {/* Filter */}
 
-                    <div className="absolute right-4 top-4 z-10 w-[250px] space-y-3">
+                        <div className="rounded-lg bg-white/95 px-3.5 py-4 shadow-md backdrop-blur-sm border border-gray-100">
 
-                        {/* Panel Aset */}
-
-                        <div className="rounded-lg bg-white/95 px-3.5 py-4 shadow-md backdrop-blur-sm">
-
-                            <h2 className="mb-3 text-sm font-bold text-gray-800">
-                                INSPEKSI ASET
+                            <h2 className="mb-3 text-sm font-bold tracking-wide text-gray-800">
+                                FILTER
                             </h2>
 
-                            <div className="grid grid-cols-3 gap-3">
+                            <div className="grid grid-cols-3 gap-2">
 
-                                {["Semua", "ONT", "Tiang"].map((type) => (
-                                    <button
-                                        key={type}
-                                        type="button"
-                                        onClick={() => setAssetType(type)}
-                                        className={`h-7 rounded-md border border-gray-800 px-2 text-[10px] font-semibold transition ${assetType === type
-                                            ? "bg-black text-white"
-                                            : "bg-white text-gray-800 hover:bg-gray-100"
-                                            }`}
-                                    >
-                                        {type}
-                                    </button>
-                                ))}
+                                {[
+                                    { label: "Semua", icon: null, active: "bg-gray-900 text-white border-gray-900 shadow", idle: "bg-white text-gray-700 border-gray-300 hover:bg-gray-50" },
+                                    { label: "Tiang", icon: FaWifi, active: "bg-[#1e3a8a] text-white border-[#1e3a8a] shadow", idle: "bg-white text-[#1e3a8a] border-[#1e3a8a]/30 hover:bg-blue-50" },
+                                    { label: "ONT", icon: MdRouter, active: "bg-sky-500 text-white border-sky-500 shadow", idle: "bg-white text-sky-600 border-sky-500/30 hover:bg-sky-50" },
+                                ].map(({ label, icon: Icon, active, idle }) => {
+                                    const isActive = assetType === label;
+                                    return (
+                                        <button
+                                            key={label}
+                                            type="button"
+                                            onClick={() => setAssetType(label)}
+                                            className={`h-8 rounded-md border px-2 text-[10px] font-semibold transition flex items-center justify-center gap-1 ${isActive ? active : idle}`}
+                                        >
+                                            {Icon && <Icon size={11} />}
+                                            {label}
+                                        </button>
+                                    );
+                                })}
 
                             </div>
 
-                            {/* Filter */}
-
-                            <div className="mt-2 grid grid-cols-2 gap-3">
+                            <div className="mt-3 grid grid-cols-2 gap-3">
 
                                 {/* Status */}
 
                                 <div className="relative">
-
                                     <select
                                         value={status}
-                                        onChange={(e) =>
-                                            setStatus(e.target.value)
-                                        }
-                                        className="h-8 w-full appearance-none rounded-md border border-gray-800 bg-white px-3 pr-7 text-[10px] font-medium outline-none hover:bg-gray-50"
+                                        onChange={(e) => setStatus(e.target.value)}
+                                        className={`h-8 w-full appearance-none rounded-md border bg-white pl-6 pr-7 text-[10px] font-medium outline-none transition ${status === "Aktif" ? "border-green-500 bg-green-50 text-green-700" : status === "Nonaktif" ? "border-red-500 bg-red-50 text-red-700" : "border-gray-300 hover:bg-gray-50"}`}
                                     >
+                                        <option>Semua</option>
                                         <option>Aktif</option>
                                         <option>Nonaktif</option>
-                                        <option>Semua</option>
                                     </select>
-
-                                    <FaChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px]" />
-
+                                    <span className={`pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full ${status === "Aktif" ? "bg-green-500" : status === "Nonaktif" ? "bg-red-500" : "bg-gray-400"}`} />
+                                    <FaChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px] opacity-60" />
                                 </div>
 
                                 {/* Wilayah */}
 
                                 <div className="relative">
-
                                     <select
                                         value={wilayah}
-                                        onChange={(e) =>
-                                            setWilayah(e.target.value)
-                                        }
-                                        className="h-8 w-full appearance-none rounded-md border border-gray-800 bg-white px-2 pr-6 text-[10px] font-medium outline-none hover:bg-gray-50"
+                                        onChange={(e) => setWilayah(e.target.value)}
+                                        className="h-8 w-full appearance-none rounded-md border border-gray-300 bg-white px-2 pr-6 text-[10px] font-medium outline-none hover:bg-gray-50"
                                     >
                                         <option value="Semua">Semua</option>
                                         {wilayahOptions.map((nama) => (
@@ -196,84 +207,41 @@ export default function Peta() {
                                             </option>
                                         ))}
                                     </select>
-
-                                    <FaChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px]" />
-
+                                    <FaChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px] opacity-60" />
                                 </div>
 
                             </div>
 
                             {/* Statistik */}
 
-                            <div className="mt-3 grid grid-cols-3 gap-4">
+                            <div className="mt-3 grid grid-cols-3 gap-3">
 
-                                <div className="flex h-11 flex-col items-center justify-center rounded-md border border-gray-800">
-                                    <span className="text-[11px] font-bold">
-                                        {totalTiang}
+                                <div className="flex h-[52px] flex-col items-center justify-center rounded-md border-2 border-[#1e3a8a] bg-blue-50/60">
+                                    <span className="flex items-center gap-1 text-[11px] font-bold text-[#1e3a8a]">
+                                        <FaWifi size={10} /> {totalTiang}
                                     </span>
-
-                                    <span className="text-[10px]">
+                                    <span className="text-[10px] font-medium text-[#1e3a8a]">
                                         Tiang
                                     </span>
                                 </div>
 
-                                <div className="flex h-11 flex-col items-center justify-center rounded-md border border-gray-800">
-                                    <span className="text-[11px] font-bold">
-                                        {totalOnt}
+                                <div className="flex h-[52px] flex-col items-center justify-center rounded-md border-2 border-sky-500 bg-sky-50/60">
+                                    <span className="flex items-center gap-1 text-[11px] font-bold text-sky-600">
+                                        <MdRouter size={12} /> {totalOnt}
                                     </span>
-
-                                    <span className="text-[10px]">
+                                    <span className="text-[10px] font-medium text-sky-600">
                                         ONT
                                     </span>
                                 </div>
 
-                                <div className="flex h-11 flex-col items-center justify-center rounded-md border border-gray-800">
-                                    <span className="text-[11px] font-bold">
+                                <div className="flex h-[52px] flex-col items-center justify-center rounded-md border-2 border-gray-800 bg-gray-50">
+                                    <span className="text-[11px] font-bold text-gray-800">
                                         {markers.length}
                                     </span>
-
-                                    <span className="text-[10px]">
+                                    <span className="text-[10px] font-medium text-gray-600">
                                         Tampil
                                     </span>
                                 </div>
-
-                            </div>
-
-                        </div>
-
-                        {/* Layer Peta */}
-
-                        <div className="rounded-lg bg-white/95 px-4 py-4 shadow-md backdrop-blur-sm">
-
-                            <h2 className="text-[11px] font-bold text-gray-800">
-                                Layer Peta
-                            </h2>
-
-                            <div className="mt-3 flex flex-col gap-3">
-
-                                <label className="flex cursor-pointer items-center gap-2 text-[10px] font-medium">
-
-                                    <input
-                                        type="checkbox"
-                                        defaultChecked
-                                        className="h-3 w-3 accent-black"
-                                    />
-
-                                    Jalur fiber trunk
-
-                                </label>
-
-                                <label className="flex cursor-pointer items-center gap-2 text-[10px] font-medium">
-
-                                    <input
-                                        type="checkbox"
-                                        defaultChecked
-                                        className="h-3 w-3 accent-black"
-                                    />
-
-                                    Batas wilayah
-
-                                </label>
 
                             </div>
 

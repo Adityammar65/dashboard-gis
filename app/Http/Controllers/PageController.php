@@ -158,6 +158,7 @@ class PageController extends Controller
                 }
             }
         }
+
         if ($type === '' || $type === 'ont') {
             $ontRows = ONTModel::select(['id', 'kode_ont', 'wilayah', 'area', 'nama_petugas'])
                 ->selectRaw("{$rankSqlOnt} as r", [$exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like])
@@ -315,8 +316,14 @@ class PageController extends Controller
 
     public function PetaSebaranAset()
     {
-        $tiang = TiangModel::query()->select(['id', 'kode_tiang', 'wilayah', 'area', 'status', 'latitude', 'longitude', 'nama_petugas'])->orderByDesc('id')->limit(2000)->get();
-        $ont = ONTModel::query()->select(['id', 'kode_ont', 'wilayah', 'area', 'status', 'latitude', 'longitude', 'nama_petugas'])->orderByDesc('id')->limit(2000)->get();
+        $tiang = TiangModel::query()->select(['id', 'kode_tiang', 'wilayah', 'area', 'status', 'latitude', 'longitude', 'nama_petugas'])
+            ->whereNotNull('latitude')->where('latitude', '!=', '')
+            ->whereNotNull('longitude')->where('longitude', '!=', '')
+            ->orderByDesc('id')->limit(2000)->get();
+        $ont = ONTModel::query()->select(['id', 'kode_ont', 'wilayah', 'area', 'status', 'latitude', 'longitude', 'nama_petugas'])
+            ->whereNotNull('latitude')->where('latitude', '!=', '')
+            ->whereNotNull('longitude')->where('longitude', '!=', '')
+            ->orderByDesc('id')->limit(2000)->get();
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
 
         return Inertia::render('PetaSebaranAset', [
