@@ -315,7 +315,15 @@ class PageController extends Controller
 
     public function PetaSebaranAset()
     {
-        return Inertia::render('PetaSebaranAset');
+        $tiang = TiangModel::query()->select(['id', 'kode_tiang', 'wilayah', 'area', 'status', 'latitude', 'longitude', 'nama_petugas'])->orderByDesc('id')->limit(2000)->get();
+        $ont = ONTModel::query()->select(['id', 'kode_ont', 'wilayah', 'area', 'status', 'latitude', 'longitude', 'nama_petugas'])->orderByDesc('id')->limit(2000)->get();
+        $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
+
+        return Inertia::render('PetaSebaranAset', [
+            'tiang' => $tiang,
+            'ont' => $ont,
+            'wilayah' => $wilayah,
+        ]);
     }
 
     // Detail Tiang

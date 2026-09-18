@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { FaChevronDown, FaWifi } from "react-icons/fa";
 import { MdRouter } from "react-icons/md";
 import { usePage } from "@inertiajs/react";
@@ -6,11 +6,56 @@ import { usePage } from "@inertiajs/react";
 import MainLayout from "../Layouts/MainLayout";
 import MapView from "../Components/MapView";
 
+const normalizeStatus = (status) => String(status || "").toLowerCase();
+
 export default function Peta() {
-    const { settings } = usePage().props;
+    const { settings, tiang = [], ont = [], wilayah: wilayahList = [] } = usePage().props;
     const [assetType, setAssetType] = useState("Semua");
-    const [status, setStatus] = useState("Aktif");
-    const [wilayah, setWilayah] = useState("Aceh Tamiang");
+    const [status, setStatus] = useState("Semua");
+    const [wilayah, setWilayah] = useState("Semua");
+
+    const wilayahOptions = useMemo(
+        () => (Array.isArray(wilayahList) ? wilayahList.map((w) => w.nama_wilayah).filter(Boolean) : []),
+        [wilayahList]
+    );
+
+    const matchesScope = (item) => {
+        if (status !== "Semua" && normalizeStatus(item.status) !== normalizeStatus(status)) return false;
+        if (wilayah !== "Semua" && String(item.wilayah || "") !== wilayah) return false;
+        return true;
+    };
+
+    const totalTiang = useMemo(() => tiang.filter(matchesScope).length, [tiang, status, wilayah]);
+    const totalOnt = useMemo(() => ont.filter(matchesScope).length, [ont, status, wilayah]);
+
+    const markers = useMemo(() => {
+        const tiangMarkers = (assetType === "Semua" || assetType === "Tiang")
+            ? tiang.filter(matchesScope).map((t) => ({
+                id: t.id,
+                type: "tiang",
+                kode: t.kode_tiang,
+                status: t.status,
+                wilayah: t.wilayah,
+                area: t.area,
+                latitude: t.latitude,
+                longitude: t.longitude,
+            }))
+            : [];
+        const ontMarkers = (assetType === "Semua" || assetType === "ONT")
+            ? ont.filter(matchesScope).map((o) => ({
+                id: o.id,
+                type: "ont",
+                kode: o.kode_ont,
+                status: o.status,
+                wilayah: o.wilayah,
+                area: o.area,
+                latitude: o.latitude,
+                longitude: o.longitude,
+            }))
+            : [];
+        return [...tiangMarkers, ...ontMarkers];
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tiang, ont, assetType, status, wilayah]);
 
     return (
         <MainLayout>
@@ -37,7 +82,7 @@ export default function Peta() {
                     {/* Map */}
 
                     <div className="absolute inset-0 z-0">
-                        <MapView />
+                        <MapView markers={markers} />
                     </div>
 
                     <div className="absolute left-15 top-4 z-10">
@@ -144,10 +189,12 @@ export default function Peta() {
                                         }
                                         className="h-8 w-full appearance-none rounded-md border border-gray-800 bg-white px-2 pr-6 text-[10px] font-medium outline-none hover:bg-gray-50"
                                     >
-                                        <option>Aceh Tamiang</option>
-                                        <option>Banda Aceh</option>
-                                        <option>Langsa</option>
-                                        <option>Medan</option>
+                                        <option value="Semua">Semua</option>
+                                        {wilayahOptions.map((nama) => (
+                                            <option key={nama} value={nama}>
+                                                {nama}
+                                            </option>
+                                        ))}
                                     </select>
 
                                     <FaChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px]" />
@@ -162,7 +209,7 @@ export default function Peta() {
 
                                 <div className="flex h-11 flex-col items-center justify-center rounded-md border border-gray-800">
                                     <span className="text-[11px] font-bold">
-                                        74
+                                        {totalTiang}
                                     </span>
 
                                     <span className="text-[10px]">
@@ -172,7 +219,7 @@ export default function Peta() {
 
                                 <div className="flex h-11 flex-col items-center justify-center rounded-md border border-gray-800">
                                     <span className="text-[11px] font-bold">
-                                        49
+                                        {totalOnt}
                                     </span>
 
                                     <span className="text-[10px]">
@@ -182,7 +229,7 @@ export default function Peta() {
 
                                 <div className="flex h-11 flex-col items-center justify-center rounded-md border border-gray-800">
                                     <span className="text-[11px] font-bold">
-                                        123
+                                        {markers.length}
                                     </span>
 
                                     <span className="text-[10px]">
