@@ -38,6 +38,19 @@ class PageController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('q')) {
+            $q = trim($request->q);
+            if (mb_strlen($q) >= 1) {
+                $like = '%' . str_replace(['%', '_'], ['\%', '\_'], $q) . '%';
+                $query->where(function ($w) use ($like) {
+                    $w->where('kode_tiang', 'like', $like)
+                        ->orWhere('wilayah', 'like', $like)
+                        ->orWhere('area', 'like', $like)
+                        ->orWhere('nama_petugas', 'like', $like);
+                });
+            }
+        }
+
         $dataTiang = $query->latest('id')->paginate(15)->withQueryString();
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
 
@@ -47,6 +60,7 @@ class PageController extends Controller
             'filter' => [
                 'wilayah' => $request->wilayah ?? '',
                 'status' => $request->status ?? '',
+                'q' => $request->q ?? '',
             ],
         ]);
     }
@@ -68,6 +82,19 @@ class PageController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('q')) {
+            $q = trim($request->q);
+            if (mb_strlen($q) >= 1) {
+                $like = '%' . str_replace(['%', '_'], ['\%', '\_'], $q) . '%';
+                $query->where(function ($w) use ($like) {
+                    $w->where('kode_ont', 'like', $like)
+                        ->orWhere('wilayah', 'like', $like)
+                        ->orWhere('area', 'like', $like)
+                        ->orWhere('nama_petugas', 'like', $like);
+                });
+            }
+        }
+
         $dataONT = $query->latest('id')->paginate(15)->withQueryString();
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
 
@@ -77,8 +104,90 @@ class PageController extends Controller
             'filter' => [
                 'wilayah' => $request->wilayah ?? '',
                 'status' => $request->status ?? '',
+                'q' => $request->q ?? '',
             ],
         ]);
+    }
+
+    // Search API
+
+    public function Search(Request $request)
+    {
+        $qRaw = trim((string) $request->query('q', ''));
+        $typeRaw = strtolower(trim((string) $request->query('type', '')));
+        $type = in_array($typeRaw, ['tiang', 'ont']) ? $typeRaw : '';
+        if (mb_strlen($qRaw) < 2) {
+            return response()->json(['results' => []]);
+        }
+
+        $esc = str_replace(['\\', '%', '_'], ['\\\\', '\%', '\_'], $qRaw);
+        $like = "%{$esc}%";
+        $exact = $qRaw;
+        $prefix = "{$esc}%";
+
+        $results = collect();
+        $limitPerType = 5;
+
+        $rankSqlTiang = "CASE WHEN kode_tiang = ? THEN 0 WHEN kode_tiang LIKE ? THEN 1 WHEN kode_tiang LIKE ? THEN 2 WHEN wilayah = ? THEN 3 WHEN wilayah LIKE ? THEN 4 WHEN wilayah LIKE ? THEN 5 WHEN area = ? THEN 6 WHEN area LIKE ? THEN 7 WHEN area LIKE ? THEN 8 WHEN nama_petugas = ? THEN 9 WHEN nama_petugas LIKE ? THEN 10 WHEN nama_petugas LIKE ? THEN 11 ELSE 12 END";
+        $rankSqlOnt = "CASE WHEN kode_ont = ? THEN 0 WHEN kode_ont LIKE ? THEN 1 WHEN kode_ont LIKE ? THEN 2 WHEN wilayah = ? THEN 3 WHEN wilayah LIKE ? THEN 4 WHEN wilayah LIKE ? THEN 5 WHEN area = ? THEN 6 WHEN area LIKE ? THEN 7 WHEN area LIKE ? THEN 8 WHEN nama_petugas = ? THEN 9 WHEN nama_petugas LIKE ? THEN 10 WHEN nama_petugas LIKE ? THEN 11 ELSE 12 END";
+
+        if ($type === '' || $type === 'tiang') {
+            $tiangRows = TiangModel::select(['id', 'kode_tiang', 'wilayah', 'area', 'nama_petugas'])
+                ->selectRaw("{$rankSqlTiang} as r", [$exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like])
+                ->where(function ($w) use ($like) {
+                    $w->where('kode_tiang', 'like', $like)->orWhere('wilayah', 'like', $like)->orWhere('area', 'like', $like)->orWhere('nama_petugas', 'like', $like);
+                })
+                ->orderBy('r')->orderBy('kode_tiang')->limit($limitPerType)->get();
+            foreach ($tiangRows as $row) {
+                $r = (int) $row->r;
+                $isKode = $r <= 2;
+                if ($isKode) {
+                    $results->push(['id' => $row->id, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => 'kode', 'matchedValue' => $row->kode_tiang, 'label' => $row->kode_tiang . ' - ' . $row->wilayah . ' / ' . $row->area, 'href' => "detail-tiang/{$row->id}", 'rank' => $r]);
+                } else {
+                    $field = $r <= 5 ? 'wilayah' : ($r <= 8 ? 'area' : 'petugas');
+                    $val = $field === 'wilayah' ? $row->wilayah : ($field === 'area' ? $row->area : $row->nama_petugas);
+                    $href = null;
+                    if ($field === 'wilayah') {
+                        $wModel = Cache::remember('wilayah:name:' . strtolower($val), 3600, fn() => WilayahModel::where('nama_wilayah', $val)->first());
+                        if ($wModel) $href = "data-tiang?wilayah={$wModel->id}";
+                        else $href = "data-tiang?q=" . urlencode($val);
+                    } else {
+                        $href = "data-tiang?q=" . urlencode($val);
+                    }
+                    $results->push(['id' => $row->id, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'rank' => $r + 2]);
+                }
+            }
+        }
+        if ($type === '' || $type === 'ont') {
+            $ontRows = ONTModel::select(['id', 'kode_ont', 'wilayah', 'area', 'nama_petugas'])
+                ->selectRaw("{$rankSqlOnt} as r", [$exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like])
+                ->where(function ($w) use ($like) {
+                    $w->where('kode_ont', 'like', $like)->orWhere('wilayah', 'like', $like)->orWhere('area', 'like', $like)->orWhere('nama_petugas', 'like', $like);
+                })
+                ->orderBy('r')->orderBy('kode_ont')->limit($limitPerType)->get();
+            foreach ($ontRows as $row) {
+                $r = (int) $row->r;
+                $isKode = $r <= 2;
+                if ($isKode) {
+                    $results->push(['id' => $row->id, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => 'kode', 'matchedValue' => $row->kode_ont, 'label' => $row->kode_ont . ' - ' . $row->wilayah . ' / ' . $row->area, 'href' => "detail-ont/{$row->id}", 'rank' => $r]);
+                } else {
+                    $field = $r <= 5 ? 'wilayah' : ($r <= 8 ? 'area' : 'petugas');
+                    $val = $field === 'wilayah' ? $row->wilayah : ($field === 'area' ? $row->area : $row->nama_petugas);
+                    $href = null;
+                    if ($field === 'wilayah') {
+                        $wModel = Cache::remember('wilayah:name:' . strtolower($val), 3600, fn() => WilayahModel::where('nama_wilayah', $val)->first());
+                        if ($wModel) $href = "data-ont?wilayah={$wModel->id}";
+                        else $href = "data-ont?q=" . urlencode($val);
+                    } else {
+                        $href = "data-ont?q=" . urlencode($val);
+                    }
+                    $results->push(['id' => $row->id, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'rank' => $r + 2]);
+                }
+            }
+        }
+
+        $results = $results->sortBy('rank')->unique('href')->take(8)->values();
+        return response()->json(['results' => $results]);
     }
 
     // Preview Peta

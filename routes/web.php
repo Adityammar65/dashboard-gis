@@ -23,6 +23,7 @@ Route::middleware('cek_login')->group(function () {
     Route::get('/home', [PageController::class, 'Index']);
     Route::get('/data-tiang', [PageController::class, 'DataTiang']);
     Route::get('/data-ont', [PageController::class, 'DataONT']);
+    Route::get('/api/search', [PageController::class, 'Search']);
     Route::get('/Peta', [PageController::class, 'Peta']);
     Route::get('/wilayah', [PageController::class, 'Wilayah']);
     Route::get('/peta-sebaran-aset', [PageController::class, 'PetaSebaranAset']);
