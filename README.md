@@ -287,6 +287,16 @@ Halaman Pengaturan digunakan untuk mengatur konfigurasi yang berkaitan dengan wi
   <img src="docs/screenshots/Pengaturan.png" width="900">
 </p>
 
+### Tech Stack
+<p align="center">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg" width="50"/>
+
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" width="50"/>
+
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" width="50"/>
+
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/inertiajs/inertiajs-original.svg" width="50"/>
+</p>
 
 ### Contributor
 
