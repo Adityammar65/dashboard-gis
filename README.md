@@ -249,6 +249,16 @@ Form Edit Tiang digunakan untuk memperbarui data Tiang yang sudah tersimpan di d
 
 ---
 
+### Form Tambah Wilayah
+
+Form Tambah Wilayah digunakan untuk memasukkan data wilayah baru ke dalam sistem. Form mencakup informasi nama wilayah dan kode wilayah.
+
+<p align="center">
+  <img src="docs/screenshots/Tambah_Wilayah.png" width="900">
+</p>
+
+---
+
 ### Notifikasi
 
 Halaman Notifikasi digunakan untuk menampilkan informasi atau pemberitahuan terkait aktivitas dan kondisi data dalam sistem.
