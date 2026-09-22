@@ -36,7 +36,7 @@ export default function Dashboard() {
 
     const base = useMemo(() => {
         const seg = window.location.pathname.split("/").filter(Boolean)[0];
-        const knownRoutes = ["home","data-tiang","data-ont","wilayah","peta-sebaran-aset","pengaturan","logout","notifikasi","detail-tiang","detail-ont","detail-notifikasi","edit-tiang","edit-ont","tambah-tiang","tambah-ont","tambah-wilayah","hapus-tiang","hapus-ont","hapus-wilayah"];
+        const knownRoutes = ["home", "data-tiang", "data-ont", "wilayah", "peta-sebaran-aset", "pengaturan", "logout", "notifikasi", "detail-tiang", "detail-ont", "detail-notifikasi", "edit-tiang", "edit-ont", "tambah-tiang", "tambah-ont", "tambah-wilayah", "hapus-tiang", "hapus-ont", "hapus-wilayah"];
         if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
         return "";
     }, []);
@@ -204,7 +204,6 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-
                     {/* ONT */}
 
                     <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-sky-500 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
@@ -241,10 +240,10 @@ export default function Dashboard() {
                     <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-yellow-400 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
+                                <p className="text-[10px] font-semibold tracking-widest text-gray-500">
                                     WILAYAH COVERAGE
                                 </p>
-                                <h2 className="mt-1 text-2xl font-bold text-gray-800">
+                                <h2 className="mt-1 text-xl font-bold text-gray-800">
                                     {stats?.wilayah?.total ?? 0} Wilayah
                                 </h2>
                             </div>
