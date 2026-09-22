@@ -34,7 +34,7 @@ export default function FormTambahWilayah() {
 
     return (
         <MainLayout>
-            <div className="p-6">
+            <div className="space-y-4">
 
                 {/* Header */}
 
@@ -43,14 +43,14 @@ export default function FormTambahWilayah() {
                         <button
                             type="button"
                             onClick={() => window.history.back()}
-                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-400 transition"
+                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] transition"
                         >
                             <FaArrowLeft size={14} />
                             Kembali
                         </button>
 
                         <div>
-                            <h1 className="text-xl font-semibold text-gray-800">
+                            <h1 className="text-xl font-bold text-gray-800 tracking-tight">
                                 Form Tambah Wilayah
                             </h1>
 
@@ -63,7 +63,7 @@ export default function FormTambahWilayah() {
 
                 {/* Form */}
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-7">
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -81,7 +81,7 @@ export default function FormTambahWilayah() {
                                     onChange={handleChange}
                                     placeholder="Masukkan nama wilayah"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition capitalize"
+                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 capitalize"
                                 />
                             </div>
 
@@ -99,7 +99,7 @@ export default function FormTambahWilayah() {
                                     onChange={handleChange}
                                     placeholder="Masukkan kode wilayah"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
+                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                 />
                             </div>
 
@@ -110,7 +110,7 @@ export default function FormTambahWilayah() {
                         <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100">
                             <button
                                 type="submit"
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#00c853] text-white hover:bg-[#00b34a] transition"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-green-700 active:scale-[0.98] transition"
                             >
                                 <FaSave size={14} />
                                 Simpan Data

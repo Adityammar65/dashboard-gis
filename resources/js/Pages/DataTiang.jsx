@@ -76,17 +76,17 @@ export default function DataTiang({
 
                 <div className="flex items-center gap-4">
 
-                    <div className="items-center flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow text-white">
+                    <div className="items-center flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white">
 
-                        <span className="text-sm font-semibold">
+                        <span className="text-sm font-semibold tracking-wide">
                             Data Tiang
                         </span>
 
-                        <span className="mx-3">
+                        <span className="mx-3 opacity-60">
                             /
                         </span>
 
-                        <span className="text-xs font-light capitalize">
+                        <span className="text-xs font-light capitalize opacity-90">
                             {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
 
@@ -96,7 +96,7 @@ export default function DataTiang({
 
                     <a
                         href={resolveHref("tambah-tiang")}
-                        className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white shadow hover:bg-green-600"
+                        className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98]"
                     >
                         <FaPlus />
                         Form Tiang
@@ -110,7 +110,7 @@ export default function DataTiang({
 
                     {/* Total Tiang */}
 
-                    <div className="hover:scale-102 transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow">
+                    <div className="hover:scale-[1.02] transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-900 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 will-change-transform">
 
                         <div className="flex items-start justify-between">
 
@@ -145,15 +145,15 @@ export default function DataTiang({
 
                         {/* Aktif */}
 
-                        <div className="hover:scale-102 transition-all shadow duration-200 flex flex-1 items-center rounded-xl border-t-4 border-emerald-600 bg-white px-4">
+                        <div className="hover:scale-[1.02] transition-all shadow-sm duration-200 flex flex-1 items-center rounded-2xl border border-gray-100 border-t-[3px] border-t-emerald-600 bg-white px-5 hover:shadow-md hover:-translate-y-0.5 will-change-transform">
 
                             <div>
 
-                                <p className="text-xs font-medium">
+                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                                     TIANG AKTIF
                                 </p>
 
-                                <h2 className="mt-1 text-xl font-semibold">
+                                <h2 className="mt-1 text-xl font-bold text-gray-800">
                                     {tiangAktif}
                                 </h2>
 
@@ -164,15 +164,15 @@ export default function DataTiang({
 
                         {/* Nonaktif */}
 
-                        <div className="hover:scale-102 duration-200 transition-all shadow flex flex-1 items-center rounded-xl border-t-4 border-red-500 bg-white px-4">
+                        <div className="hover:scale-[1.02] duration-200 transition-all shadow-sm flex flex-1 items-center rounded-2xl border border-gray-100 border-t-[3px] border-t-red-500 bg-white px-5 hover:shadow-md hover:-translate-y-0.5 will-change-transform">
 
                             <div>
 
-                                <p className="text-xs font-medium">
+                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                                     TIANG NONAKTIF
                                 </p>
 
-                                <h2 className="mt-1 text-xl font-semibold">
+                                <h2 className="mt-1 text-xl font-bold text-gray-800">
                                     {tiangNonaktif}
                                 </h2>
 
@@ -185,13 +185,13 @@ export default function DataTiang({
 
                     {/* Filter */}
 
-                    <div className="min-h-[136px] rounded-xl bg-white p-4 shadow">
+                    <div className="min-h-[136px] rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
 
                         <div className="mb-4 flex items-center gap-2">
 
-                            <FaFilter className="text-gray-600" />
+                            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-50 ring-1 ring-gray-200"><FaFilter className="text-gray-600 text-xs" /></span>
 
-                            <span className="text-xs font-medium">
+                            <span className="text-[11px] font-semibold tracking-widest text-gray-600">
                                 FILTER DATA
                             </span>
 
@@ -210,7 +210,7 @@ export default function DataTiang({
                                         filterStatus
                                     )
                                 }
-                                className="capitalize w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-900"
+                                className="capitalize w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
 
                                 <option value="">
@@ -240,7 +240,7 @@ export default function DataTiang({
                                         e.target.value
                                     )
                                 }
-                                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs outline-none focus:border-blue-900"
+                                className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
 
                                 <option value="">
@@ -266,7 +266,7 @@ export default function DataTiang({
 
                 {/* Tabel */}
 
-                <div className="overflow-hidden rounded-xl bg-white shadow">
+                <div className="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
 
                     <div className="overflow-x-auto">
 
@@ -276,7 +276,7 @@ export default function DataTiang({
 
                             <thead>
 
-                                <tr className="border-b border-gray-300 text-center">
+                                <tr className="bg-gray-50/70 border-b border-gray-200 text-center">
 
                                     <th className="w-12 px-4 py-3 font-medium">
                                         No
@@ -313,7 +313,7 @@ export default function DataTiang({
 
                             {/* Body Tabel */}
 
-                            <tbody className="text-center capitalize">
+                            <tbody className="text-center capitalize divide-y divide-gray-100">
 
                                 {listTiang.length > 0 ? (
 
@@ -321,7 +321,7 @@ export default function DataTiang({
 
                                         <tr
                                             key={tiang.id}
-                                            className="border-b border-gray-300 last:border-b-0 hover:bg-gray-50"
+                                            className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/80 transition-colors"
                                         >
 
                                             {/* No */}
@@ -333,9 +333,9 @@ export default function DataTiang({
 
                                             {/* Foto */}
 
-                                            <td className="px-4 py-2">
+                                            <td className="px-4 py-2.5">
 
-                                                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
+                                                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-gray-100 ring-1 ring-gray-200 shadow-sm">
 
                                                     {tiang.foto_tiang_1 ? (
 
@@ -416,12 +416,12 @@ export default function DataTiang({
 
                                             {/* Status */}
 
-                                            <td className="px-4 py-2">
+                                            <td className="px-4 py-2.5">
 
                                                 {tiang.status ? (
 
                                                     <span
-                                                        className={`rounded-full px-2 py-1 text-[10px] text-white ${tiang.status.toLowerCase() ===
+                                                        className={`rounded-full px-2.5 py-1 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/20 ${tiang.status.toLowerCase() ===
                                                             "aktif"
                                                             ? "bg-green-500"
                                                             : "bg-red-500"
@@ -443,17 +443,17 @@ export default function DataTiang({
 
                                             {/* Aksi */}
 
-                                            <td className="px-4 py-2">
+                                            <td className="px-4 py-2.5">
 
-                                                <div className="flex items-center gap-1">
+                                                <div className="flex items-center gap-1.5">
 
                                                     {/* Detail */}
 
                                                     <a
                                                         href={resolveHref(`detail-tiang/${tiang.id}`)}
-                                                        className="rounded-md bg-blue-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-blue-600"
+                                                        className="rounded-lg bg-blue-500 px-2 py-1.5 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/10 transition hover:bg-blue-600 hover:shadow"
                                                     >
-                                                        <FaEye className="text-xl" />
+                                                        <FaEye className="text-[16px]" />
                                                     </a>
 
 
@@ -461,9 +461,9 @@ export default function DataTiang({
 
                                                     <a
                                                         href={resolveHref(`edit-tiang/${tiang.id}`)}
-                                                        className="rounded-md bg-yellow-400 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-yellow-500"
+                                                        className="rounded-lg bg-amber-400 px-2 py-1.5 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/10 transition hover:bg-amber-500 hover:shadow"
                                                     >
-                                                        <FaEdit className="text-xl" />
+                                                        <FaEdit className="text-[16px]" />
                                                     </a>
 
 
@@ -479,10 +479,10 @@ export default function DataTiang({
                                                                 window.location.href = `${base}/hapus-tiang/${tiang.id}`.replace(/\/+/g, '/');
                                                             }
                                                         }}
-                                                        className="rounded-md bg-red-500 px-2 py-1 text-[10px] font-medium text-white transition hover:bg-red-600"
+                                                        className="rounded-lg bg-red-500 px-2 py-1.5 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/10 transition hover:bg-red-600 hover:shadow"
                                                         title="Hapus Data"
                                                     >
-                                                        <MdDelete className="text-xl" />
+                                                        <MdDelete className="text-[16px]" />
                                                     </button>
 
                                                 </div>
@@ -532,9 +532,9 @@ export default function DataTiang({
 
                     </div>
                     {dataTiang?.links && dataTiang.links.length > 3 && (
-                        <div className="flex flex-wrap gap-1 justify-center mt-4">
+                        <div className="flex flex-wrap gap-1.5 justify-center mt-4 pb-3">
                             {dataTiang.links.map((link, i) => (
-                                <button key={i} disabled={!link.url} onClick={() => link.url && router.get(link.url, {}, { preserveState: true, preserveScroll: true })} className={`px-3 py-1 text-xs rounded ${link.active ? 'bg-[#AB3C3C] text-white' : 'bg-white border'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`} dangerouslySetInnerHTML={{ __html: link.label }} />
+                                <button key={i} disabled={!link.url} onClick={() => link.url && router.get(link.url, {}, { preserveState: true, preserveScroll: true })} className={`px-3 py-1.5 text-xs font-medium rounded-full shadow-sm ring-1 transition ${link.active ? 'bg-[#AB3C3C] text-white ring-[#AB3C3C]' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`} dangerouslySetInnerHTML={{ __html: link.label }} />
                             ))}
                         </div>
                     )}

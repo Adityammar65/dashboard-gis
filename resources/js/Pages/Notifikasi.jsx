@@ -70,10 +70,10 @@ export default function Notifikasi({ notifikasi = [] }) {
         return (
             <div
                 key={item.id}
-                className={`flex items-center gap-4 border-b px-5 py-4 ${isUnread ? "bg-red-50/40" : ""}`}
+                className={`flex items-center gap-4 border-b border-gray-100 px-5 py-4 transition hover:bg-gray-50/60 ${isUnread ? "bg-red-50/50 border-l-4 border-l-red-500" : ""}`}
             >
                 <div
-                    className={`flex h-11 w-11 items-center justify-center rounded-full ${circle || (isUnread
+                    className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${circle || (isUnread
                         ? "bg-red-100 text-red-600"
                         : "bg-green-100 text-green-600")
                         }`}
@@ -119,10 +119,10 @@ export default function Notifikasi({ notifikasi = [] }) {
                 <button
                     type="button"
                     onClick={() => goDetail(item.id)}
-                    className="flex shrink-0 items-center gap-1 text-xs font-medium text-[#992e2e] hover:underline"
+                    className="flex shrink-0 items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#992e2e] ring-1 ring-[#AB3C3C]/20 shadow-sm transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C]"
                 >
                     Lihat detail
-                    <FaChevronRight size={12} />
+                    <FaChevronRight size={10} />
                 </button>
             </div>
         );
@@ -147,8 +147,8 @@ export default function Notifikasi({ notifikasi = [] }) {
                 {/* Header */}
 
                 <div className="flex items-center gap-3">
-                    <div className="flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow text-white">
-                        <span className="text-sm font-semibold">
+                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white">
+                        <span className="text-sm font-semibold tracking-wide">
                             Notifikasi
                         </span>
                     </div>
@@ -160,36 +160,36 @@ export default function Notifikasi({ notifikasi = [] }) {
 
                     {/* Total */}
 
-                    <div className="rounded-xl border-t-4 border-blue-600 bg-white p-4 shadow">
-                        <p className="text-xs font-medium text-gray-500">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-600 bg-white p-5 shadow-sm hover:shadow-md transition">
+                        <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                             TOTAL NOTIFIKASI
                         </p>
 
-                        <h2 className="mt-1 text-2xl font-semibold">
+                        <h2 className="mt-1 text-2xl font-bold text-gray-800">
                             {totalNotifikasi}
                         </h2>
                     </div>
 
                     {/* Belum Dibaca */}
 
-                    <div className="rounded-xl border-t-4 border-red-500 bg-white p-4 shadow">
-                        <p className="text-xs font-medium text-gray-500">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-red-500 bg-white p-5 shadow-sm hover:shadow-md transition">
+                        <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                             BELUM DIBACA
                         </p>
 
-                        <h2 className="mt-1 text-2xl font-semibold">
+                        <h2 className="mt-1 text-2xl font-bold text-gray-800">
                             {belumDibaca}
                         </h2>
                     </div>
 
                     {/* Sudah Dibaca */}
 
-                    <div className="rounded-xl border-t-4 border-green-600 bg-white p-4 shadow">
-                        <p className="text-xs font-medium text-gray-500">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-green-600 bg-white p-5 shadow-sm hover:shadow-md transition">
+                        <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                             SUDAH DIBACA
                         </p>
 
-                        <h2 className="mt-1 text-2xl font-semibold">
+                        <h2 className="mt-1 text-2xl font-bold text-gray-800">
                             {sudahDibaca}
                         </h2>
                     </div>
@@ -197,8 +197,8 @@ export default function Notifikasi({ notifikasi = [] }) {
 
                 {/* Daftar Notifikasi */}
 
-                <div className="rounded-xl bg-white shadow">
-                    <div className="flex items-center justify-between border-b-2 border-[#ab3c3c]/60 px-5 py-4">
+                <div className="rounded-2xl bg-white shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="flex items-center justify-between border-b border-gray-100 bg-gradient-to-r from-white to-gray-50 px-5 py-4">
                         <div>
                             <h3 className="font-semibold">
                                 Notifikasi Terbaru
@@ -209,11 +209,11 @@ export default function Notifikasi({ notifikasi = [] }) {
                             </p>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
                             <button
                                 onClick={tandaiSemuaDibaca}
                                 disabled={belumDibaca === 0}
-                                className="text-xs text-[#992e2e] hover:underline disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:no-underline"
+                                className="rounded-full bg-white px-3 py-1 text-xs font-medium text-[#992e2e] ring-1 ring-[#AB3C3C]/20 shadow-sm transition hover:bg-[#AB3C3C] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Tandai semua dibaca
                             </button>
@@ -223,7 +223,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                             <button
                                 onClick={hapusSudahDibaca}
                                 disabled={sudahDibaca === 0}
-                                className="text-xs text-[#992e2e] hover:underline disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:no-underline"
+                                className="rounded-full bg-white px-3 py-1 text-xs font-medium text-[#992e2e] ring-1 ring-[#AB3C3C]/20 shadow-sm transition hover:bg-[#AB3C3C] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Hapus yang dibaca
                             </button>
@@ -236,8 +236,8 @@ export default function Notifikasi({ notifikasi = [] }) {
                         <>
                             {notifikasi.filter((item) => item.status === "belum_dibaca").length > 0 && (
                                 <>
-                                    <div className="bg-orange-400/20 px-5 py-2">
-                                        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                                    <div className="bg-gradient-to-r from-orange-50 to-transparent px-5 py-2.5 border-y border-orange-100">
+                                        <p className="text-[11px] font-semibold uppercase tracking-wide text-orange-700">
                                             Belum dibaca
                                         </p>
                                     </div>
@@ -249,8 +249,8 @@ export default function Notifikasi({ notifikasi = [] }) {
 
                             {notifikasi.filter((item) => item.status !== "belum_dibaca").length > 0 && (
                                 <>
-                                    <div className="bg-green-500/20 px-5 py-2">
-                                        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                                    <div className="bg-gradient-to-r from-emerald-50 to-transparent px-5 py-2.5 border-y border-emerald-100">
+                                        <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">
                                             Sudah dibaca
                                         </p>
                                     </div>
@@ -261,7 +261,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                             )}
                         </>
                     ) : (
-                        <div className="px-5 py-10 text-center">
+                        <div className="px-5 py-12 text-center border border-dashed border-gray-200 rounded-xl m-4 bg-gray-50/50">
                             <p className="text-sm text-gray-500">
                                 Belum ada notifikasi.
                             </p>

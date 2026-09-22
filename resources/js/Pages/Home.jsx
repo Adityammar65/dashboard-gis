@@ -119,14 +119,14 @@ export default function Dashboard() {
 
                 <div className="flex items-center gap-3">
 
-                    <div className="flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 shadow text-white">
-                        <span className="text-sm font-semibold">
+                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white">
+                        <span className="text-sm font-semibold tracking-wide">
                             Beranda
                         </span>
 
-                        <span className="mx-3">/</span>
+                        <span className="mx-3 opacity-60">/</span>
 
-                        <span className="text-xs font-light capitalize">
+                        <span className="text-xs font-light capitalize opacity-90">
                             {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
@@ -135,19 +135,19 @@ export default function Dashboard() {
 
                         <button
                             onClick={() => setOpenTambah(!openTambah)}
-                            className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white transition hover:bg-green-600"
+                            className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98]"
                         >
                             <FaPlus />
                             Tambah Aset
                         </button>
 
                         {openTambah && (
-                            <div className="absolute right-0 z-50 mt-2 w-48 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
+                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl">
 
                                 <a
                                     href={resolveHref("tambah-tiang")}
                                     onClick={() => setOpenTambah(false)}
-                                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100"
+                                    className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-blue-50 hover:text-blue-800"
                                 >
                                     <FaWifi className="text-blue-700" />
                                     Tambah Tiang
@@ -156,7 +156,7 @@ export default function Dashboard() {
                                 <a
                                     href={resolveHref("tambah-ont")}
                                     onClick={() => setOpenTambah(false)}
-                                    className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 transition hover:bg-gray-100"
+                                    className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-sky-50 hover:text-sky-700"
                                 >
                                     <MdRouter className="text-sky-500 text-lg" />
                                     Tambah ONT
@@ -175,29 +175,29 @@ export default function Dashboard() {
 
                     {/* Tiang */}
 
-                    <div className="rounded-xl border-t-4 border-blue-900 bg-white p-4 shadow transition-all duration-200 hover:scale-102 hover:shadow-lg">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-900 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-xs font-medium">
+                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                                     TOTAL TIANG
                                 </p>
-                                <h2 className="mt-1 text-2xl font-semibold">
+                                <h2 className="mt-1 text-2xl font-bold text-gray-800">
                                     {stats?.tiang?.total ?? 0}
                                 </h2>
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-900 text-white">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-900 text-white shadow-md ring-1 ring-white/10">
                                 <FaWifi className="text-2xl" />
                             </div>
                         </div>
 
                         <div className="mt-4 flex gap-4 text-xs">
-                            <span className="flex items-center gap-2">
+                            <span className="flex items-center gap-2 rounded-full bg-green-50 px-2 py-1 ring-1 ring-green-200">
                                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                 Aktif {stats?.tiang?.aktif ?? 0}
                             </span>
 
-                            <span className="flex items-center gap-2">
+                            <span className="flex items-center gap-2 rounded-full bg-red-50 px-2 py-1 ring-1 ring-red-200">
                                 <span className="h-2 w-2 rounded-full bg-red-500"></span>
                                 Nonaktif {stats?.tiang?.nonaktif ?? 0}
                             </span>
@@ -207,29 +207,29 @@ export default function Dashboard() {
 
                     {/* ONT */}
 
-                    <div className="rounded-xl border-t-4 border-sky-500 bg-white p-4 shadow transition-all duration-200 hover:scale-102 hover:shadow-lg">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-sky-500 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-xs font-medium">
+                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                                     TOTAL ONT
                                 </p>
-                                <h2 className="mt-1 text-2xl font-semibold">
+                                <h2 className="mt-1 text-2xl font-bold text-gray-800">
                                     {stats?.ont?.total ?? 0}
                                 </h2>
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-sky-500 text-white">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-sky-500 text-white shadow-md ring-1 ring-white/10">
                                 <MdRouter className="text-2xl" />
                             </div>
                         </div>
 
                         <div className="mt-4 flex gap-4 text-xs">
-                            <span className="flex items-center gap-2">
+                            <span className="flex items-center gap-2 rounded-full bg-green-50 px-2 py-1 ring-1 ring-green-200">
                                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                 Aktif {stats?.ont?.aktif ?? 0}
                             </span>
 
-                            <span className="flex items-center gap-2">
+                            <span className="flex items-center gap-2 rounded-full bg-red-50 px-2 py-1 ring-1 ring-red-200">
                                 <span className="h-2 w-2 rounded-full bg-red-500"></span>
                                 Nonaktif {stats?.ont?.nonaktif ?? 0}
                             </span>
@@ -238,25 +238,25 @@ export default function Dashboard() {
 
                     {/* Wilayah */}
 
-                    <div className="rounded-xl border-t-4 border-yellow-400 bg-white p-4 shadow transition-all duration-200 hover:scale-102 hover:shadow-lg">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-yellow-400 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-xs font-medium">
+                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                                     WILAYAH COVERAGE
                                 </p>
-                                <h2 className="mt-1 text-2xl font-semibold">
+                                <h2 className="mt-1 text-2xl font-bold text-gray-800">
                                     {stats?.wilayah?.total ?? 0} Wilayah
                                 </h2>
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-yellow-400 text-white">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-yellow-400 text-white shadow-md ring-1 ring-white/10">
                                 <FaMapMarkedAlt className="text-2xl" />
                             </div>
                         </div>
 
                         <a
                             href={resolveHref("wilayah")}
-                            className="mt-5 flex items-center justify-end gap-2 text-xs text-gray-600 transition hover:text-yellow-600"
+                            className="mt-5 flex items-center justify-end gap-2 text-xs font-medium text-gray-500 transition hover:text-yellow-600 hover:gap-3"
                         >
                             Lihat Sebaran Wilayah
                             <FaArrowRight />
@@ -265,25 +265,25 @@ export default function Dashboard() {
 
                     {/* Data Berkoordinat */}
 
-                    <div className="rounded-xl border-t-4 border-emerald-600 bg-white p-4 shadow transition-all duration-200 hover:scale-102 hover:shadow-lg">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-emerald-600 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
                         <div className="flex justify-between">
                             <div>
-                                <p className="text-xs font-medium">
+                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                                     DATA BERKOORDINAT
                                 </p>
-                                <h2 className="mt-1 text-2xl font-semibold">
+                                <h2 className="mt-1 text-2xl font-bold text-gray-800">
                                     {stats?.koordinat?.persen ?? 0}%
                                 </h2>
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-emerald-600 text-white">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md ring-1 ring-white/10">
                                 <MdStorage className="text-2xl" />
                             </div>
                         </div>
 
                         <a
                             href={resolveHref("peta-sebaran-aset")}
-                            className="mt-5 flex items-center justify-end gap-2 text-xs text-gray-600 transition hover:text-emerald-600"
+                            className="mt-5 flex items-center justify-end gap-2 text-xs font-medium text-gray-500 transition hover:text-emerald-600 hover:gap-3"
                         >
                             Lihat Sebaran Data
                             <FaArrowRight />
@@ -295,20 +295,20 @@ export default function Dashboard() {
 
                     {/* Peta */}
 
-                    <div className="xl:col-span-2 rounded-xl bg-white p-4 shadow">
-                        <div className="mb-3 flex items-center justify-between">
+                    <div className="xl:col-span-2 rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+                        <div className="mb-4 flex items-center justify-between">
                             <div>
-                                <h3 className="font-semibold">
+                                <h3 className="font-semibold text-gray-800">
                                     Peta Sebaran Aset GIS
                                 </h3>
 
                                 <div className="mt-2 flex gap-4 text-xs">
-                                    <span className="flex items-center gap-2">
+                                    <span className="flex items-center gap-2 rounded-full bg-green-50 px-2 py-0.5 ring-1 ring-green-200">
                                         <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                         Aktif
                                     </span>
 
-                                    <span className="flex items-center gap-2">
+                                    <span className="flex items-center gap-2 rounded-full bg-red-50 px-2 py-0.5 ring-1 ring-red-200">
                                         <span className="h-2 w-2 rounded-full bg-red-500"></span>
                                         Nonaktif
                                     </span>
@@ -317,24 +317,24 @@ export default function Dashboard() {
 
                             <a
                                 href={resolveHref("peta-sebaran-aset")}
-                                className="rounded-lg bg-blue-100 px-3 py-2 text-xs text-blue-800 hover:bg-blue-200">
+                                className="rounded-xl bg-blue-50 px-3.5 py-2 text-xs font-medium text-blue-700 ring-1 ring-blue-200 transition hover:bg-blue-100 hover:shadow-sm">
                                 Buka Peta Penuh
                             </a>
                         </div>
 
                         {hasWilayah ? (
-                            <div className="h-85 overflow-hidden rounded-lg">
+                            <div className="h-[340px] overflow-hidden rounded-xl border border-gray-100 shadow-inner">
                                 <MapView markers={markers} wilayah={activeWilayah} wilayahCenter={wilayahCenter} />
                             </div>
                         ) : (
                             <a
                                 href={resolveHref("pengaturan")}
-                                className="flex h-85 flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 text-center transition hover:border-[#AB3C3C] hover:bg-red-50/50"
+                                className="flex h-[340px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gradient-to-b from-gray-50 to-white text-center transition hover:border-[#AB3C3C]/50 hover:bg-red-50/30 hover:shadow-sm"
                             >
                                 <FaMapMarkedAlt className="mb-2 text-3xl text-gray-400" />
                                 <p className="text-sm font-semibold text-gray-700">Wilayah Belum Ditentukan</p>
                                 <p className="mt-1 text-xs text-gray-500">Klik untuk mengatur wilayah</p>
-                                <span className="mt-3 inline-flex items-center gap-1 rounded-md bg-[#AB3C3C] px-3 py-1 text-xs font-medium text-white">
+                                <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#AB3C3C] px-3.5 py-1.5 text-xs font-medium text-white shadow-md">
                                     Buka Pengaturan <FaArrowRight size={10} />
                                 </span>
                             </a>
@@ -343,37 +343,37 @@ export default function Dashboard() {
 
                     {/* Pembaruan Aset */}
 
-                    <div className="rounded-xl border-t-4 border-blue-600 bg-white p-4 shadow hover:scale-102 transition-all duration-200">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-600 bg-white p-5 shadow-sm hover:scale-[1.02] transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 will-change-transform">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium">
+                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                                     PEMBARUAN ASET
                                 </p>
-                                <h3 className="text-sm font-medium">
+                                <h3 className="text-sm font-semibold text-gray-800">
                                     {recentAssets.length} Aset Diperbarui
                                 </h3>
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-600 text-white">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md ring-1 ring-white/10">
                                 <FaSyncAlt className="text-2xl" />
                             </div>
                         </div>
 
-                        <div className="mt-5 space-y-4">
+                        <div className="mt-5 space-y-3">
                             {recentAssets.length > 0 ? (
                                 recentAssets.map((item) => (
                                     <div
                                         key={`${item.type}-${item.id}`}
-                                        className="flex items-center justify-between"
+                                        className="flex items-center justify-between rounded-xl px-2 py-2 -mx-2 hover:bg-gray-50 transition"
                                     >
                                         <div className="flex items-center gap-3">
                                             {item.type === "tiang" ? (
-                                                <FaWifi className="text-sm text-blue-900" />
+                                                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-800 ring-1 ring-blue-200"><FaWifi className="text-sm" /></span>
                                             ) : (
-                                                <MdRouter className="text-sm text-sky-500" />
+                                                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-50 text-sky-600 ring-1 ring-sky-200"><MdRouter className="text-sm" /></span>
                                             )}
                                             <div className="text-xs">
-                                                <p className="font-medium">{item.kode}</p>
+                                                <p className="font-semibold text-gray-800">{item.kode}</p>
                                                 <p className="text-gray-500 capitalize">
                                                     {item.wilayah}{item.area ? ` • ${item.area}` : ""}
                                                 </p>
@@ -381,7 +381,7 @@ export default function Dashboard() {
                                         </div>
                                         <div className="text-right">
                                             <span
-                                                className={`rounded-full px-2 py-1 text-[10px] text-white capitalize ${String(item.status).toLowerCase() === "aktif" ? "bg-green-500" : "bg-red-500"}`}
+                                                className={`rounded-full px-2.5 py-1 text-[10px] font-medium text-white capitalize shadow-sm ring-1 ring-white/20 ${String(item.status).toLowerCase() === "aktif" ? "bg-green-500" : "bg-red-500"}`}
                                             >
                                                 {item.status}
                                             </span>
@@ -392,17 +392,17 @@ export default function Dashboard() {
                                     </div>
                                 ))
                             ) : (
-                                <p className="py-6 text-center text-xs text-gray-400">Belum ada pembaruan</p>
+                                <p className="py-8 text-center text-xs text-gray-400 rounded-xl border border-dashed border-gray-200 bg-gray-50/60">Belum ada pembaruan</p>
                             )}
                         </div>
 
-                        <div className="mt-6 flex items-center justify-between mx-2 text-xs">
-                            <a href={resolveHref("data-tiang")} className="flex items-center gap-2 text-black transition hover:text-blue-500">
+                        <div className="mt-6 flex items-center justify-between mx-1 text-xs font-medium">
+                            <a href={resolveHref("data-tiang")} className="flex items-center gap-2 rounded-full bg-gray-50 px-3 py-1.5 text-gray-700 ring-1 ring-gray-200 transition hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-200">
                                 Lihat Data Tiang
                                 <FaArrowRight />
                             </a>
 
-                            <a href={resolveHref("data-ont")} className="flex items-center gap-2 text-black transition hover:text-blue-500">
+                            <a href={resolveHref("data-ont")} className="flex items-center gap-2 rounded-full bg-gray-50 px-3 py-1.5 text-gray-700 ring-1 ring-gray-200 transition hover:bg-sky-50 hover:text-sky-600 hover:ring-sky-200">
                                 Lihat Data ONT
                                 <FaArrowRight />
                             </a>

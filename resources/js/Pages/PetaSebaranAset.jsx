@@ -85,20 +85,20 @@ export default function Peta() {
                 {/* Header */}
 
                 <div className="flex items-center gap-3">
-                    <div className="flex-1 rounded-xl bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-4 py-3 text-white shadow">
-                        <span className="text-sm font-semibold">
+                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10">
+                        <span className="text-sm font-semibold tracking-wide">
                             Peta Sebaran Aset
                         </span>
 
-                        <span className="mx-3">/</span>
+                        <span className="mx-3 opacity-60">/</span>
 
-                        <span className="text-xs font-light capitalize">
+                        <span className="text-xs font-light capitalize opacity-90">
                             {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
                 </div>
 
-                <div className="relative h-[calc(100vh-180px)] min-h-[500px] overflow-hidden rounded-xl bg-white shadow-md">
+                <div className="relative h-[calc(100vh-180px)] min-h-[500px] overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
 
                     {/* Map */}
 
@@ -106,8 +106,8 @@ export default function Peta() {
                         <MapView markers={markers} wilayah={wilayah} wilayahCenter={wilayahCenter} />
                     </div>
 
-                    <div className="absolute left-15 top-4 z-10">
-                        <div className="rounded-lg bg-white/95 px-4 py-3 shadow-md backdrop-blur-sm">
+                    <div className="absolute left-4 top-4 z-10">
+                        <div className="rounded-xl bg-white/90 px-4 py-3 shadow-lg backdrop-blur-md border border-white/60">
 
                             <h2 className="text-sm font-semibold text-gray-800">
                                 Legenda
@@ -141,11 +141,11 @@ export default function Peta() {
                         </div>
                     </div>
 
-                    <div className="absolute right-4 top-4 z-10 w-[260px] space-y-3">
+                    <div className="absolute right-4 top-4 z-10 w-[280px] max-w-[calc(100vw-2rem)] space-y-3">
 
                         {/* Filter */}
 
-                        <div className="rounded-lg bg-white/95 px-3.5 py-4 shadow-md backdrop-blur-sm border border-gray-100">
+                        <div className="rounded-xl bg-white/90 px-3.5 py-4 shadow-lg backdrop-blur-md border border-white/60">
 
                             <h2 className="mb-3 text-sm font-bold tracking-wide text-gray-800">
                                 FILTER
@@ -214,31 +214,31 @@ export default function Peta() {
 
                             {/* Statistik */}
 
-                            <div className="mt-3 grid grid-cols-3 gap-3">
+                            <div className="mt-3 grid grid-cols-3 gap-2.5">
 
-                                <div className="flex h-[52px] flex-col items-center justify-center rounded-md border-2 border-[#1e3a8a] bg-blue-50/60">
+                                <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-[#1e3a8a]/20 bg-blue-50 shadow-sm">
                                     <span className="flex items-center gap-1 text-[11px] font-bold text-[#1e3a8a]">
                                         <FaWifi size={10} /> {totalTiang}
                                     </span>
-                                    <span className="text-[10px] font-medium text-[#1e3a8a]">
+                                    <span className="text-[10px] font-medium text-[#1e3a8a]/70">
                                         Tiang
                                     </span>
                                 </div>
 
-                                <div className="flex h-[52px] flex-col items-center justify-center rounded-md border-2 border-sky-500 bg-sky-50/60">
+                                <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-sky-500/20 bg-sky-50 shadow-sm">
                                     <span className="flex items-center gap-1 text-[11px] font-bold text-sky-600">
                                         <MdRouter size={12} /> {totalOnt}
                                     </span>
-                                    <span className="text-[10px] font-medium text-sky-600">
+                                    <span className="text-[10px] font-medium text-sky-600/70">
                                         ONT
                                     </span>
                                 </div>
 
-                                <div className="flex h-[52px] flex-col items-center justify-center rounded-md border-2 border-gray-800 bg-gray-50">
+                                <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-gray-200 bg-gray-50 shadow-sm">
                                     <span className="text-[11px] font-bold text-gray-800">
                                         {markers.length}
                                     </span>
-                                    <span className="text-[10px] font-medium text-gray-600">
+                                    <span className="text-[10px] font-medium text-gray-500">
                                         Tampil
                                     </span>
                                 </div>

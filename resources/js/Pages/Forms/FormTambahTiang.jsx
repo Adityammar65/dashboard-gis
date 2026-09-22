@@ -45,7 +45,7 @@ export default function FormTambahTiang({ wilayah }) {
 
     return (
         <MainLayout>
-            <div className="p-6">
+            <div className="space-y-4">
 
                 {/* Header */}
 
@@ -54,14 +54,14 @@ export default function FormTambahTiang({ wilayah }) {
                         <button
                             type="button"
                             onClick={() => window.history.back()}
-                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-400 transition"
+                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] transition"
                         >
                             <FaArrowLeft size={14} />
                             Kembali
                         </button>
 
                         <div>
-                            <h1 className="text-xl font-semibold text-gray-800">
+                            <h1 className="text-xl font-bold text-gray-800 tracking-tight">
                                 Form Tambah Tiang
                             </h1>
 
@@ -74,7 +74,7 @@ export default function FormTambahTiang({ wilayah }) {
 
                 {/* Form */}
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-7">
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -92,7 +92,7 @@ export default function FormTambahTiang({ wilayah }) {
                                     onChange={handleChange}
                                     placeholder="Masukkan kode tiang"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
+                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                 />
                             </div>
 
@@ -108,7 +108,7 @@ export default function FormTambahTiang({ wilayah }) {
                                     value={form.wilayah}
                                     onChange={handleChange}
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
+                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm"
                                 >
                                     <option value="" disabled>
                                         {wilayah?.length === 0
@@ -142,7 +142,7 @@ export default function FormTambahTiang({ wilayah }) {
                                     onChange={handleChange}
                                     placeholder="Masukkan area tiang"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
+                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                 />
                             </div>
 
@@ -160,7 +160,7 @@ export default function FormTambahTiang({ wilayah }) {
                                     onChange={handleChange}
                                     placeholder="Masukkan nama petugas"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
+                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                 />
                             </div>
 
@@ -176,7 +176,7 @@ export default function FormTambahTiang({ wilayah }) {
                                     value={form.status}
                                     onChange={handleChange}
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
+                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm"
                                 >
                                     <option value="" disabled>
                                         Pilih Status
@@ -207,7 +207,7 @@ export default function FormTambahTiang({ wilayah }) {
                                         onChange={handleChange}
                                         placeholder="Masukkan latitude"
                                         required
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700"
+                                        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                     />
                                 </div>
 
@@ -223,7 +223,7 @@ export default function FormTambahTiang({ wilayah }) {
                                         onChange={handleChange}
                                         placeholder="Masukkan longitude"
                                         required
-                                        className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none focus:border-red-700 focus:ring-1 focus:ring-red-700"
+                                        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                     />
                                 </div>
                             </div>
@@ -250,7 +250,7 @@ export default function FormTambahTiang({ wilayah }) {
                                             accept="image/*"
                                             required
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
@@ -267,7 +267,7 @@ export default function FormTambahTiang({ wilayah }) {
                                             accept="image/*"
                                             required
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
@@ -284,7 +284,7 @@ export default function FormTambahTiang({ wilayah }) {
                                             accept="image/*"
                                             required
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
                                 </div>
@@ -304,7 +304,7 @@ export default function FormTambahTiang({ wilayah }) {
                                 onChange={handleChange}
                                 rows="4"
                                 placeholder="Masukkan deskripsi tiang..."
-                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none resize-none focus:border-red-700 focus:ring-1 focus:ring-red-700 transition"
+                                className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none resize-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                             />
                         </div>
 
@@ -313,7 +313,7 @@ export default function FormTambahTiang({ wilayah }) {
                         <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100">
                             <button
                                 type="submit"
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#00c853] text-white hover:bg-[#00b34a] transition"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-green-700 active:scale-[0.98] transition"
                             >
                                 <FaSave size={14} />
                                 Simpan Data
