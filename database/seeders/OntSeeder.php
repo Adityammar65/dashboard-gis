@@ -55,6 +55,8 @@ class OntSeeder extends Seeder
                     'foto_ont_1' => 'ont/dummy.jpg',
                     'foto_ont_2' => 'ont/dummy.jpg',
                     'foto_ont_3' => 'ont/dummy.jpg',
+                    'foto_ont_4' => 'ont/dummy.jpg',
+                    'foto_ont_5' => 'ont/dummy.jpg',
                     'latitude' => number_format($lat, 6, '.', ''),
                     'longitude' => number_format($lng, 6, '.', ''),
                     'nama_petugas' => $petugas[array_rand($petugas)],

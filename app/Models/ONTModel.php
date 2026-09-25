@@ -17,6 +17,8 @@ class ONTModel extends Model
         'foto_ont_1',
         'foto_ont_2',
         'foto_ont_3',
+        'foto_ont_4',
+        'foto_ont_5',
         'latitude',
         'longitude',
         'nama_petugas',

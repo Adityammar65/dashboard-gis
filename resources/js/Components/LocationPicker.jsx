@@ -98,15 +98,43 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
     useEffect(() => () => timer.current && clearTimeout(timer.current), []);
 
     const useMyLocation = () => {
-        if (!navigator.geolocation) return;
+        if (!navigator.geolocation) {
+            const msg = "Browser tidak mendukung geolokasi.";
+            setSearchNote(msg);
+            window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
+            return;
+        }
+        if (!window.isSecureContext) {
+            const msg = "Lokasi membutuhkan HTTPS — buka via https:// atau http://localhost.";
+            setSearchNote(msg);
+            window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
+            return;
+        }
         setLocating(true);
+        setSearchNote("");
+        const onSuccess = (p) => {
+            emit(p.coords.latitude, p.coords.longitude);
+            setLocating(false);
+        };
+        const onError = (err) => {
+            let msg = "Gagal mendapatkan lokasi.";
+            if (err && err.code === 1) msg = "Izin lokasi ditolak — aktifkan di ikon gembok → Site settings → Location → Allow.";
+            else if (err && err.code === 3) msg = "Timeout mencari GPS — coba lagi di dekat jendela/luar atau klik peta manual.";
+            else if (err && err.code === 2) msg = "Posisi tidak tersedia — coba lagi atau klik peta manual.";
+            setSearchNote(msg);
+            window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
+            setLocating(false);
+        };
         navigator.geolocation.getCurrentPosition(
-            (p) => {
-                emit(p.coords.latitude, p.coords.longitude);
-                setLocating(false);
+            onSuccess,
+            (err) => {
+                if (err && err.code === 3) {
+                    navigator.geolocation.getCurrentPosition(onSuccess, onError, { enableHighAccuracy: false, timeout: 15000, maximumAge: 0 });
+                } else {
+                    onError(err);
+                }
             },
-            () => setLocating(false),
-            { enableHighAccuracy: true, timeout: 8000 }
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
         );
     };
 

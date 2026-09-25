@@ -14,6 +14,8 @@ export default function FormTambahONT({ wilayah }) {
         foto_ont_1: null,
         foto_ont_2: null,
         foto_ont_3: null,
+        foto_ont_4: null,
+        foto_ont_5: null,
         latitude: "",
         longitude: "",
         nama_petugas: "",
@@ -178,7 +180,7 @@ export default function FormTambahONT({ wilayah }) {
     };
 
     const setCoords = (lat, lng) => {
-        setForm({ ...form, latitude: lat, longitude: lng });
+        setForm((prev) => ({ ...prev, latitude: lat, longitude: lng }));
     };
 
     const handleSubmit = (e) => {
@@ -528,6 +530,40 @@ export default function FormTambahONT({ wilayah }) {
 
                                         <input
                                             name="foto_ont_3"
+                                            type="file"
+                                            accept="image/*"
+                                            required
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                        />
+                                    </div>
+
+                                    {/* Foto 4 */}
+
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">
+                                            Foto 4
+                                        </label>
+
+                                        <input
+                                            name="foto_ont_4"
+                                            type="file"
+                                            accept="image/*"
+                                            required
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                        />
+                                    </div>
+
+                                    {/* Foto 5 */}
+
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">
+                                            Foto 5
+                                        </label>
+
+                                        <input
+                                            name="foto_ont_5"
                                             type="file"
                                             accept="image/*"
                                             required

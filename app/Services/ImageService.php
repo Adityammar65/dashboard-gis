@@ -15,13 +15,6 @@ class ImageService
     private const MAX_LONGEST_SIDE = 1600;
     private const WEBP_QUALITY = 82;
 
-    /**
-     * Convert uploaded image (jpg/jpeg/png/webp) to WebP.
-     * Resize only when longest side > 1600 px, preserving aspect ratio.
-     * Quality 82, preserves transparency.
-     * Throws on failure - never silently falls back to original.
-     * Priority: Imagick PHP extension > GD (WebP) > cwebp CLI > ImageMagick CLI.
-     */
     public function storeOptimizedWebP(UploadedFile $file, string $directory): string
     {
         $realPath = $file->getRealPath();
@@ -42,7 +35,6 @@ class ImageService
             mkdir($absoluteDir, 0755, true);
         }
 
-        // 1. Try Imagick PHP extension via Intervention (best quality + transparency)
         if (extension_loaded('imagick')) {
             try {
                 return $this->storeViaIntervention($realPath, $storagePath, new ImagickDriver());
@@ -51,11 +43,9 @@ class ImageService
                     'original' => $file->getClientOriginalName(),
                     'directory' => $directory,
                 ]);
-                // fall through to GD
             }
         }
 
-        // 2. Try GD via Intervention when WebP supported
         if (self::isWebPSupported()) {
             try {
                 return $this->storeViaIntervention($realPath, $storagePath, new GdDriver());
@@ -73,7 +63,6 @@ class ImageService
             }
         }
 
-        // 3. cwebp CLI works without PHP image extensions or ImageMagick WebP delegates.
         if ($this->isCwebpAvailable()) {
             try {
                 return $this->storeViaCwebp($realPath, $storagePath, $absolutePath);
@@ -85,7 +74,6 @@ class ImageService
             }
         }
 
-        // 4. CLI fallback using ImageMagick (magick/convert)
         if ($this->isMagickAvailable()) {
             try {
                 return $this->storeViaMagickCli($realPath, $storagePath, $absolutePath);
@@ -131,7 +119,6 @@ class ImageService
 
     private function isMagickAvailable(): bool
     {
-        // Check for magick (IM7) or convert (IM6)
         $candidates = ['magick', 'convert'];
         foreach ($candidates as $bin) {
             $out = [];
@@ -140,13 +127,11 @@ class ImageService
             if ($code === 0 && !empty($out)) {
                 return true;
             }
-            // Also try which
             @exec('which ' . escapeshellarg($bin) . ' 2>&1', $out, $code);
             if ($code === 0 && !empty($out)) {
                 return true;
             }
         }
-        // Direct path check
         if (is_executable('/usr/bin/magick') || is_executable('/usr/bin/convert') || is_executable('/opt/lampp/bin/magick')) {
             return true;
         }
@@ -253,9 +238,6 @@ class ImageService
         $bin = $this->detectMagickBinary();
         $isMagick7 = str_contains($bin, 'magick') && !str_contains($bin, 'convert');
 
-        // Build command: resize longest side >1600, preserve aspect, quality 82, auto handle transparency
-        // For IM7: magick input -resize "1600x1600>" -quality 82 output.webp
-        // For IM6: convert input -resize "1600x1600>" -quality 82 output.webp
         if ($isMagick7) {
             $cmd = sprintf(
                 '%s %s -auto-orient -resize "1600x1600>" -quality %d %s 2>&1',
@@ -285,15 +267,9 @@ class ImageService
         if (!is_file($absolutePath) || filesize($absolutePath) === 0) {
             throw new \RuntimeException('ImageMagick CLI tidak menghasilkan file WebP.');
         }
-
-        // Verify it's WebP by checking file header if possible
         return $storagePath;
     }
 
-    /**
-     * Confirm at least one encoder is available (Imagick/GD WebP/cwebp/ImageMagick CLI).
-     * Throws if none supported.
-     */
     public function ensureWebPSupport(): void
     {
         if (extension_loaded('imagick')) {
@@ -328,9 +304,6 @@ class ImageService
         }
     }
 
-    /**
-     * Static helper for health checks / deployment verification.
-     */
     public static function isWebPSupported(): bool
     {
         if (!function_exists('gd_info') || !function_exists('imagewebp')) {

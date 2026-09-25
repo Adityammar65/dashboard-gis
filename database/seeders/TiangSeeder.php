@@ -56,6 +56,8 @@ class TiangSeeder extends Seeder
                     'foto_tiang_1' => 'tiang/dummy.jpg',
                     'foto_tiang_2' => 'tiang/dummy.jpg',
                     'foto_tiang_3' => 'tiang/dummy.jpg',
+                    'foto_tiang_4' => 'tiang/dummy.jpg',
+                    'foto_tiang_5' => 'tiang/dummy.jpg',
                     'latitude' => number_format($lat, 6, '.', ''),
                     'longitude' => number_format($lng, 6, '.', ''),
                     'nama_petugas' => $petugas[array_rand($petugas)],

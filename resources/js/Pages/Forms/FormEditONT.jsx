@@ -20,6 +20,8 @@ export default function FormEditONT({ ont, wilayah }) {
         foto_ont_1: null,
         foto_ont_2: null,
         foto_ont_3: null,
+        foto_ont_4: null,
+        foto_ont_5: null,
         latitude: ont?.latitude ?? "",
         longitude: ont?.longitude ?? "",
         nama_petugas: ont?.nama_petugas ?? "",
@@ -113,12 +115,16 @@ export default function FormEditONT({ ont, wilayah }) {
         foto_ont_1: getFotoUrl(ont?.foto_ont_1),
         foto_ont_2: getFotoUrl(ont?.foto_ont_2),
         foto_ont_3: getFotoUrl(ont?.foto_ont_3),
+        foto_ont_4: getFotoUrl(ont?.foto_ont_4),
+        foto_ont_5: getFotoUrl(ont?.foto_ont_5),
     });
 
     const [hapusFoto, setHapusFoto] = useState({
         foto_ont_1: false,
         foto_ont_2: false,
         foto_ont_3: false,
+        foto_ont_4: false,
+        foto_ont_5: false,
     });
 
     const toggleHapusFoto = (name) => {
@@ -204,6 +210,8 @@ export default function FormEditONT({ ont, wilayah }) {
                 hapus_foto_1: hapusFoto.foto_ont_1 ? 1 : 0,
                 hapus_foto_2: hapusFoto.foto_ont_2 ? 1 : 0,
                 hapus_foto_3: hapusFoto.foto_ont_3 ? 1 : 0,
+                hapus_foto_4: hapusFoto.foto_ont_4 ? 1 : 0,
+                hapus_foto_5: hapusFoto.foto_ont_5 ? 1 : 0,
             },
             {
                 forceFormData: true,
@@ -671,6 +679,110 @@ export default function FormEditONT({ ont, wilayah }) {
 
                                         <input
                                             name="foto_ont_3"
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                        />
+                                    </div>
+
+                                    {/* Foto 4 */}
+
+                                    <div>
+                                        <div className="mb-2 flex items-center justify-between">
+                                            <label className="block text-xs text-gray-500">
+                                                Foto 4
+                                            </label>
+
+                                            {(preview.foto_ont_4 || ont?.foto_ont_4) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleHapusFoto("foto_ont_4")}
+                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_ont_4 ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100" : "bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100"}`}
+                                                >
+                                                    {hapusFoto.foto_ont_4 ? (<><FaUndo size={10} /> Batal</>) : (<><FaTrash size={10} /> Hapus</>)}
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {hapusFoto.foto_ont_4 ? (
+                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 bg-amber-50">
+                                                <span className="px-3 text-center text-xs text-amber-700">
+                                                    Akan dihapus saat disimpan
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+                                                {preview.foto_ont_4 ? (
+                                                    <img
+                                                        src={preview.foto_ont_4}
+                                                        alt="Foto ONT 4"
+                                                        className="h-40 w-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-40 items-center justify-center">
+                                                        <span className="text-xs text-gray-400">
+                                                            Belum ada foto
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        <input
+                                            name="foto_ont_4"
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                        />
+                                    </div>
+
+                                    {/* Foto 5 */}
+
+                                    <div>
+                                        <div className="mb-2 flex items-center justify-between">
+                                            <label className="block text-xs text-gray-500">
+                                                Foto 5
+                                            </label>
+
+                                            {(preview.foto_ont_5 || ont?.foto_ont_5) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleHapusFoto("foto_ont_5")}
+                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_ont_5 ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100" : "bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100"}`}
+                                                >
+                                                    {hapusFoto.foto_ont_5 ? (<><FaUndo size={10} /> Batal</>) : (<><FaTrash size={10} /> Hapus</>)}
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {hapusFoto.foto_ont_5 ? (
+                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 bg-amber-50">
+                                                <span className="px-3 text-center text-xs text-amber-700">
+                                                    Akan dihapus saat disimpan
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+                                                {preview.foto_ont_5 ? (
+                                                    <img
+                                                        src={preview.foto_ont_5}
+                                                        alt="Foto ONT 5"
+                                                        className="h-40 w-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-40 items-center justify-center">
+                                                        <span className="text-xs text-gray-400">
+                                                            Belum ada foto
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        <input
+                                            name="foto_ont_5"
                                             type="file"
                                             accept="image/*"
                                             onChange={handleChange}

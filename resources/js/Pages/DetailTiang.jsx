@@ -22,11 +22,27 @@ export default function DetailTiang({ tiang }) {
         tiang?.foto_tiang_1,
         tiang?.foto_tiang_2,
         tiang?.foto_tiang_3,
+        tiang?.foto_tiang_4,
+        tiang?.foto_tiang_5,
     ].filter(Boolean);
 
     const [activeImage, setActiveImage] = useState(
         images.length > 0 ? getFotoUrl(images[0]) : null
     );
+
+    const gmapsUrl = useMemo(() => {
+        const parse = (v) => {
+            if (v === null || v === undefined || v === "") return null;
+            const n = parseFloat(String(v).trim().replace(",", "."));
+            if (isNaN(n) || !isFinite(n)) return null;
+            return n;
+        };
+        const lat = parse(tiang?.latitude);
+        const lng = parse(tiang?.longitude);
+        if (lat === null || lng === null) return null;
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+        return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+    }, [tiang?.latitude, tiang?.longitude]);
 
     return (
 
@@ -96,7 +112,7 @@ export default function DetailTiang({ tiang }) {
 
                         {/* Thumbnail Foto 1, 2, 3 */}
 
-                        <div className="mt-3 grid grid-cols-3 gap-3">
+                        <div className="mt-3 grid grid-cols-5 gap-3">
                             {images.length > 0 ? (
                                 images.map((image, index) => {
                                     const imageUrl = getFotoUrl(image);
@@ -127,7 +143,7 @@ export default function DetailTiang({ tiang }) {
                                     );
                                 })
                             ) : (
-                                <div className="col-span-3 flex h-24 items-center justify-center rounded-xl bg-gray-50 border border-dashed border-gray-200">
+                                <div className="col-span-5 flex h-24 items-center justify-center rounded-xl bg-gray-50 border border-dashed border-gray-200">
                                     <span className="text-[10px] text-gray-400">
                                         Belum ada foto
                                     </span>
@@ -300,14 +316,27 @@ export default function DetailTiang({ tiang }) {
                                 longitude={tiang?.longitude}
                             />
 
-                            <button
-                                type="button"
-                                className="absolute right-3 top-3 z-[1000] flex h-8 w-8 items-center justify-center rounded-lg bg-white/90 backdrop-blur shadow-md ring-1 ring-gray-200 transition hover:bg-white"
-                            >
-
-                                <FaExternalLinkAlt className="text-sm text-gray-700" />
-
-                            </button>
+                            {gmapsUrl ? (
+                                <a
+                                    href={gmapsUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    title="Buka di Google Maps"
+                                    className="absolute right-3 top-3 z-[1000] flex h-8 w-8 items-center justify-center rounded-lg bg-white/90 backdrop-blur shadow-md ring-1 ring-gray-200 transition hover:bg-white"
+                                >
+                                    <FaExternalLinkAlt className="text-sm text-gray-700" />
+                                </a>
+                            ) : (
+                                <button
+                                    type="button"
+                                    disabled
+                                    title="Koordinat tidak tersedia"
+                                    aria-disabled="true"
+                                    className="absolute right-3 top-3 z-[1000] flex h-8 w-8 items-center justify-center rounded-lg bg-white/90 backdrop-blur shadow-md ring-1 ring-gray-200 transition opacity-50 cursor-not-allowed"
+                                >
+                                    <FaExternalLinkAlt className="text-sm text-gray-700" />
+                                </button>
+                            )}
 
                         </div>
 

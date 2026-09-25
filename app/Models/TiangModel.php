@@ -17,6 +17,8 @@ class TiangModel extends Model
         'foto_tiang_1',
         'foto_tiang_2',
         'foto_tiang_3',
+        'foto_tiang_4',
+        'foto_tiang_5',
         'latitude',
         'longitude',
         'nama_petugas',

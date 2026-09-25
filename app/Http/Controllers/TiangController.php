@@ -28,6 +28,8 @@ class TiangController extends Controller
                 'foto_tiang_1'    => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
                 'foto_tiang_2'    => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
                 'foto_tiang_3'    => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+                'foto_tiang_4'    => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+                'foto_tiang_5'    => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
                 'latitude'        => 'required|numeric',
                 'longitude'       => 'required|numeric',
                 'nama_petugas'    => 'required|string|max:255',
@@ -42,9 +44,13 @@ class TiangController extends Controller
                 'foto_tiang_1.required' => 'Foto Tiang 1 wajib diisi.',
                 'foto_tiang_2.required' => 'Foto Tiang 2 wajib diisi.',
                 'foto_tiang_3.required' => 'Foto Tiang 3 wajib diisi.',
+                'foto_tiang_4.required' => 'Foto Tiang 4 wajib diisi.',
+                'foto_tiang_5.required' => 'Foto Tiang 5 wajib diisi.',
                 'foto_tiang_1.image' => 'Foto Tiang 1 harus berupa gambar.',
                 'foto_tiang_2.image' => 'Foto Tiang 2 harus berupa gambar.',
                 'foto_tiang_3.image' => 'Foto Tiang 3 harus berupa gambar.',
+                'foto_tiang_4.image' => 'Foto Tiang 4 harus berupa gambar.',
+                'foto_tiang_5.image' => 'Foto Tiang 5 harus berupa gambar.',
                 'latitude.required' => 'Latitude wajib diisi.',
                 'latitude.numeric' => 'Latitude harus berupa angka.',
                 'longitude.required' => 'Longitude wajib diisi.',
@@ -79,6 +85,16 @@ class TiangController extends Controller
             if ($request->hasFile('foto_tiang_3')) {
                 $path = $this->storeOptimizedImage($request->file('foto_tiang_3'), 'tiang');
                 $data['foto_tiang_3'] = $path;
+                $storedFiles[] = $path;
+            }
+            if ($request->hasFile('foto_tiang_4')) {
+                $path = $this->storeOptimizedImage($request->file('foto_tiang_4'), 'tiang');
+                $data['foto_tiang_4'] = $path;
+                $storedFiles[] = $path;
+            }
+            if ($request->hasFile('foto_tiang_5')) {
+                $path = $this->storeOptimizedImage($request->file('foto_tiang_5'), 'tiang');
+                $data['foto_tiang_5'] = $path;
                 $storedFiles[] = $path;
             }
             TiangModel::create($data);
@@ -116,9 +132,13 @@ class TiangController extends Controller
                 'foto_tiang_1'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
                 'foto_tiang_2'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
                 'foto_tiang_3'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+                'foto_tiang_4'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+                'foto_tiang_5'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
                 'hapus_foto_1'    => 'nullable|boolean',
                 'hapus_foto_2'    => 'nullable|boolean',
                 'hapus_foto_3'    => 'nullable|boolean',
+                'hapus_foto_4'    => 'nullable|boolean',
+                'hapus_foto_5'    => 'nullable|boolean',
                 'latitude'        => 'required|numeric',
                 'longitude'       => 'required|numeric',
                 'nama_petugas'    => 'required|string|max:255',
@@ -177,6 +197,24 @@ class TiangController extends Controller
                 if ($tiang->foto_tiang_3) $oldFilesToDelete[] = $tiang->foto_tiang_3;
                 $data['foto_tiang_3'] = null;
             }
+            if ($request->hasFile('foto_tiang_4')) {
+                $path = $this->storeOptimizedImage($request->file('foto_tiang_4'), 'tiang');
+                $data['foto_tiang_4'] = $path;
+                $newFiles[] = $path;
+                if ($tiang->foto_tiang_4) $oldFilesToDelete[] = $tiang->foto_tiang_4;
+            } elseif ($request->boolean('hapus_foto_4')) {
+                if ($tiang->foto_tiang_4) $oldFilesToDelete[] = $tiang->foto_tiang_4;
+                $data['foto_tiang_4'] = null;
+            }
+            if ($request->hasFile('foto_tiang_5')) {
+                $path = $this->storeOptimizedImage($request->file('foto_tiang_5'), 'tiang');
+                $data['foto_tiang_5'] = $path;
+                $newFiles[] = $path;
+                if ($tiang->foto_tiang_5) $oldFilesToDelete[] = $tiang->foto_tiang_5;
+            } elseif ($request->boolean('hapus_foto_5')) {
+                if ($tiang->foto_tiang_5) $oldFilesToDelete[] = $tiang->foto_tiang_5;
+                $data['foto_tiang_5'] = null;
+            }
             $lama = $tiang->toArray();
             $tiang->update($data);
             $this->cleanupFiles($oldFilesToDelete);
@@ -204,7 +242,7 @@ class TiangController extends Controller
         $tiang = TiangModel::findOrFail($id);
         $kode = $tiang->kode_tiang;
         $lama = $tiang->toArray();
-        $files = array_filter([$tiang->foto_tiang_1, $tiang->foto_tiang_2, $tiang->foto_tiang_3]);
+        $files = array_filter([$tiang->foto_tiang_1, $tiang->foto_tiang_2, $tiang->foto_tiang_3, $tiang->foto_tiang_4, $tiang->foto_tiang_5]);
         $tiang->delete();
         $this->cleanupFiles($files);
         NotifikasiHelper::push('Data Tiang Dihapus', 'tiang', NotifikasiHelper::detailPesan('dihapus', 'tiang', $lama, []));
@@ -219,7 +257,7 @@ class TiangController extends Controller
         if (str_contains($msg, 'cannot be null') || str_contains($msg, "doesn't have a default value") || str_contains($msg, '1048') || str_contains($msg, '1364') || preg_match("/(Column|Field) '[^']+' (cannot be null|doesn't have a default value)/", $msg)) {
             if (preg_match("/(?:Column|Field) '([^']+)'/", $msg, $m)) {
                 $col = $m[1];
-                $labels = ['kode_tiang' => 'Kode Tiang', 'wilayah' => 'Wilayah', 'kecamatan' => 'Kecamatan', 'kelurahan' => 'Kelurahan', 'deskripsi_tiang' => 'Deskripsi Tiang', 'foto_tiang_1' => 'Foto Tiang 1', 'foto_tiang_2' => 'Foto Tiang 2', 'foto_tiang_3' => 'Foto Tiang 3', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
+                $labels = ['kode_tiang' => 'Kode Tiang', 'wilayah' => 'Wilayah', 'kecamatan' => 'Kecamatan', 'kelurahan' => 'Kelurahan', 'deskripsi_tiang' => 'Deskripsi Tiang', 'foto_tiang_1' => 'Foto Tiang 1', 'foto_tiang_2' => 'Foto Tiang 2', 'foto_tiang_3' => 'Foto Tiang 3', 'foto_tiang_4' => 'Foto Tiang 4', 'foto_tiang_5' => 'Foto Tiang 5', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
                 return [$col => ($labels[$col] ?? $col) . ' wajib diisi.'];
             }
             return ['error' => 'Ada field wajib yang belum diisi.'];
