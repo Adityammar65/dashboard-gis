@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import { FaCrosshairs, FaMapMarkerAlt, FaSearch, FaSpinner } from "react-icons/fa";
+import { FaMapMarkerAlt, FaSearch, FaSpinner } from "react-icons/fa";
 
 const DEFAULT_CENTER = [-7.717, 110.355];
 
@@ -32,16 +32,19 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
     const lat = parseCoord(latitude);
     const lng = parseCoord(longitude);
     const hasPos = lat !== null && lng !== null;
-    const position = hasPos ? [lat, lng] : DEFAULT_CENTER;
-
+    const initialPos = hasPos ? [lat, lng] : DEFAULT_CENTER;
+    const [pendingPos, setPendingPos] = useState(initialPos);
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [searching, setSearching] = useState(false);
     const [open, setOpen] = useState(false);
-    const [locating, setLocating] = useState(false);
     const [searchNote, setSearchNote] = useState("");
     const timer = useRef(null);
     const cache = useRef(new Map());
+
+    useEffect(() => {
+        if (hasPos) setPendingPos([lat, lng]);
+    }, [lat, lng]);
 
     const emit = (la, ln) => {
         onChange?.(Number(la.toFixed(6)), Number(ln.toFixed(6)));
@@ -97,77 +100,7 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
 
     useEffect(() => () => timer.current && clearTimeout(timer.current), []);
 
-    const useIpLocation = async () => {
-        setLocating(true);
-        setSearchNote("");
-        try {
-            const r = await fetch("http://ip-api.com/json/?fields=status,lat,lon,query");
-            const j = await r.json();
-            if (j.status === "success" && Number.isFinite(j.lat) && Number.isFinite(j.lon)) {
-                emit(j.lat, j.lon);
-                setSearchNote(`Lokasi kasar via IP (${j.query}) — geser pin untuk presisi.`);
-            } else {
-                const msg = "Lokasi kasar gagal — klik peta / cari alamat manual.";
-                setSearchNote(msg);
-                window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
-            }
-        } catch {
-            const msg = "Koneksi IP lokasi gagal — klik peta manual.";
-            setSearchNote(msg);
-            window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
-        } finally {
-            setLocating(false);
-        }
-    };
-
-    const useMyLocation = () => {
-        if (!navigator.geolocation) {
-            const msg = "Browser tidak mendukung geolokasi.";
-            setSearchNote(msg);
-            window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
-            return;
-        }
-        if (!window.isSecureContext) {
-            useIpLocation();
-            return;
-        }
-        setLocating(true);
-        setSearchNote("");
-        const onSuccess = (p) => {
-            emit(p.coords.latitude, p.coords.longitude);
-            setLocating(false);
-        };
-        const onError = (err) => {
-            let msg = "Gagal mendapatkan lokasi.";
-            if (err && err.code === 1) msg = "Izin lokasi ditolak — aktifkan di ikon gembok → Site settings → Location → Allow.";
-            else if (err && err.code === 3) msg = "Timeout mencari GPS — coba lagi di dekat jendela/luar atau klik peta manual.";
-            else if (err && err.code === 2) msg = "Posisi tidak tersedia — coba lagi atau klik peta manual.";
-            const blocked = err && err.message && String(err.message).includes("BLOCKED_BY_CLIENT");
-            if (blocked) msg = "Lokasi diblokir Adblock/Brave — matikan untuk situs ini atau gunakan lokasi kasar.";
-            setSearchNote(msg);
-            window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
-            setLocating(false);
-            if (err && (err.code === 1 || err.code === 2 || blocked)) {
-                setTimeout(() => useIpLocation(), 600);
-            }
-        };
-        navigator.geolocation.getCurrentPosition(
-            onSuccess,
-            (err) => {
-                const blocked = err && err.message && String(err.message).includes("BLOCKED_BY_CLIENT");
-                if (err && err.code === 3) {
-                    navigator.geolocation.getCurrentPosition(onSuccess, onError, { enableHighAccuracy: false, timeout: 15000, maximumAge: 0 });
-                } else if (blocked || (err && (err.code === 1 || err.code === 2))) {
-                    onError(err);
-                } else {
-                    onError(err);
-                }
-            },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-        );
-    };
-
-    const flyTarget = useMemo(() => (hasPos ? position : null), [hasPos, lat, lng]);
+    const flyTarget = useMemo(() => pendingPos, [pendingPos]);
 
     return (
         <div className="relative z-0 isolate space-y-2">
@@ -195,7 +128,7 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
                                 <button
                                     type="button"
                                     onMouseDown={() => {
-                                        emit(parseFloat(r.lat), parseFloat(r.lon));
+                                        setPendingPos([parseFloat(r.lat), parseFloat(r.lon)]);
                                         setQuery(r.display_name.split(",").slice(0, 2).join(","));
                                         setOpen(false);
                                     }}
@@ -211,21 +144,21 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
             </div>
 
             <div className="relative z-0 isolate overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-                <MapContainer center={position} zoom={hasPos ? 16 : 12} scrollWheelZoom={true} className="relative z-0 h-[300px] w-full">
+                <MapContainer center={initialPos} zoom={hasPos ? 16 : 12} scrollWheelZoom={true} className="relative z-0 h-[300px] w-full">
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         maxZoom={19}
                     />
-                    <ClickSetter onPick={emit} />
+                    <ClickSetter onPick={(la, ln) => setPendingPos([la, ln])} />
                     <FlyTo center={flyTarget} />
                     <Marker
-                        position={position}
+                        position={pendingPos}
                         draggable
                         eventHandlers={{
                             dragend: (e) => {
                                 const p = e.target.getLatLng();
-                                emit(p.lat, p.lng);
+                                setPendingPos([p.lat, p.lng]);
                             },
                         }}
                     />
@@ -235,15 +168,14 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
             <div className="flex flex-wrap items-center gap-2">
                 <button
                     type="button"
-                    onClick={useMyLocation}
-                    disabled={locating}
-                    className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-60"
+                    onClick={() => emit(pendingPos[0], pendingPos[1])}
+                    className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50"
                 >
-                    {locating ? <FaSpinner className="animate-spin" size={12} /> : <FaCrosshairs size={12} />}
-                    {locating ? "Mencari…" : "Pilih di Maps"}
+                    <FaMapMarkerAlt size={12} />
+                    Tentukan Lokasi
                 </button>
                 <span className="rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 ring-1 ring-gray-200">
-                    {hasPos ? `${lat.toFixed(6)}, ${lng.toFixed(6)}` : "Klik peta / cari alamat untuk tentukan titik"}
+                    {`${pendingPos[0].toFixed(6)}, ${pendingPos[1].toFixed(6)}`}
                 </span>
             </div>
             {searchNote && (

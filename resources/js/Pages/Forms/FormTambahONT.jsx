@@ -143,12 +143,21 @@ export default function FormTambahONT({ wilayah }) {
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
+        if (name === "kode_ont") setKodeEdited(true);
         if (name === "wilayah") {
-            setForm((prev) => ({ ...prev, wilayah: value, kecamatan: "", kelurahan: "" }));
+            const wil = wilayah?.find((w) => w.nama_wilayah === value);
+            const kodeWil = wil?.kode_wilayah;
+            const prefix = kodeWil ? `SIMS-${kodeWil}-` : "";
+            if (!kodeEdited && prefix) {
+                setForm((prev) => ({ ...prev, wilayah: value, kecamatan: "", kelurahan: "", kode_ont: prefix }));
+            } else {
+                setForm((prev) => ({ ...prev, wilayah: value, kecamatan: "", kelurahan: "" }));
+            }
             setKelurahanOptions([]);
             setKelurahanManual(false);
             setKecFocused(false);
             setKelFocused(false);
+            return;
         }
         if (name === "kecamatan") {
             setForm({ ...form, kecamatan: value, kelurahan: "" });
@@ -160,7 +169,6 @@ export default function FormTambahONT({ wilayah }) {
             setForm({ ...form, kelurahan: value });
             return;
         }
-        if (name === "kode_ont") setKodeEdited(true);
         setForm({
             ...form,
             [name]: files ? files[0] : value,

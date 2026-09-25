@@ -175,13 +175,21 @@ export default function FormTambahTiang({ wilayah }) {
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
+        if (name === "kode_tiang") setKodeEdited(true);
         if (name === "wilayah") {
-            setForm((prev) => ({ ...prev, wilayah: value, kecamatan: "", kelurahan: "" }));
+            const wil = wilayah?.find((w) => w.nama_wilayah === value);
+            const kodeWil = wil?.kode_wilayah;
+            const prefix = kodeWil ? `SIMS-${kodeWil}-` : "";
+            if (!kodeEdited && prefix) {
+                setForm((prev) => ({ ...prev, wilayah: value, kecamatan: "", kelurahan: "", kode_tiang: prefix }));
+            } else {
+                setForm((prev) => ({ ...prev, wilayah: value, kecamatan: "", kelurahan: "" }));
+            }
             setKelurahanOptions([]);
             setKelurahanManual(false);
             setKecFocused(false);
             setKelFocused(false);
-            // let useEffect load kecamatan for new wilayah, handle kode separately below
+            return;
         }
         if (name === "kecamatan") {
             setForm({ ...form, kecamatan: value, kelurahan: "" });
@@ -193,7 +201,6 @@ export default function FormTambahTiang({ wilayah }) {
             setForm({ ...form, kelurahan: value });
             return;
         }
-        if (name === "kode_tiang") setKodeEdited(true);
         setForm({
             ...form,
             [name]: files ? files[0] : value,
