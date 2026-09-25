@@ -240,7 +240,7 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
                     className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-60"
                 >
                     {locating ? <FaSpinner className="animate-spin" size={12} /> : <FaCrosshairs size={12} />}
-                    {locating ? "Mencari…" : "Pakai lokasi saya"}
+                    {locating ? "Mencari…" : "Pilih di Maps"}
                 </button>
                 <span className="rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 ring-1 ring-gray-200">
                     {hasPos ? `${lat.toFixed(6)}, ${lng.toFixed(6)}` : "Klik peta / cari alamat untuk tentukan titik"}
