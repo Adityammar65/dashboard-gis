@@ -97,6 +97,29 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
 
     useEffect(() => () => timer.current && clearTimeout(timer.current), []);
 
+    const useIpLocation = async () => {
+        setLocating(true);
+        setSearchNote("");
+        try {
+            const r = await fetch("http://ip-api.com/json/?fields=status,lat,lon,query");
+            const j = await r.json();
+            if (j.status === "success" && Number.isFinite(j.lat) && Number.isFinite(j.lon)) {
+                emit(j.lat, j.lon);
+                setSearchNote(`Lokasi kasar via IP (${j.query}) — geser pin untuk presisi.`);
+            } else {
+                const msg = "Lokasi kasar gagal — klik peta / cari alamat manual.";
+                setSearchNote(msg);
+                window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
+            }
+        } catch {
+            const msg = "Koneksi IP lokasi gagal — klik peta manual.";
+            setSearchNote(msg);
+            window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
+        } finally {
+            setLocating(false);
+        }
+    };
+
     const useMyLocation = () => {
         if (!navigator.geolocation) {
             const msg = "Browser tidak mendukung geolokasi.";
@@ -105,9 +128,7 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
             return;
         }
         if (!window.isSecureContext) {
-            const msg = "Lokasi membutuhkan HTTPS — buka via https:// atau http://localhost.";
-            setSearchNote(msg);
-            window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
+            useIpLocation();
             return;
         }
         setLocating(true);
@@ -121,15 +142,23 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
             if (err && err.code === 1) msg = "Izin lokasi ditolak — aktifkan di ikon gembok → Site settings → Location → Allow.";
             else if (err && err.code === 3) msg = "Timeout mencari GPS — coba lagi di dekat jendela/luar atau klik peta manual.";
             else if (err && err.code === 2) msg = "Posisi tidak tersedia — coba lagi atau klik peta manual.";
+            const blocked = err && err.message && String(err.message).includes("BLOCKED_BY_CLIENT");
+            if (blocked) msg = "Lokasi diblokir Adblock/Brave — matikan untuk situs ini atau gunakan lokasi kasar.";
             setSearchNote(msg);
             window.dispatchEvent(new CustomEvent("layout:error", { detail: msg }));
             setLocating(false);
+            if (err && (err.code === 1 || err.code === 2 || blocked)) {
+                setTimeout(() => useIpLocation(), 600);
+            }
         };
         navigator.geolocation.getCurrentPosition(
             onSuccess,
             (err) => {
+                const blocked = err && err.message && String(err.message).includes("BLOCKED_BY_CLIENT");
                 if (err && err.code === 3) {
                     navigator.geolocation.getCurrentPosition(onSuccess, onError, { enableHighAccuracy: false, timeout: 15000, maximumAge: 0 });
+                } else if (blocked || (err && (err.code === 1 || err.code === 2))) {
+                    onError(err);
                 } else {
                     onError(err);
                 }
@@ -217,6 +246,9 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
                     {hasPos ? `${lat.toFixed(6)}, ${lng.toFixed(6)}` : "Klik peta / cari alamat untuk tentukan titik"}
                 </span>
             </div>
+            {searchNote && (
+                <p className="text-xs text-gray-500">{searchNote}</p>
+            )}
         </div>
     );
 }

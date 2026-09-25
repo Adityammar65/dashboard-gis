@@ -22,6 +22,11 @@ export default function FormTambahTiang({ wilayah }) {
         status: "",
     });
     const [kodeEdited, setKodeEdited] = useState(false);
+    const placeholderKode = useMemo(() => {
+        const wil = wilayah?.find((w) => w.nama_wilayah === form.wilayah);
+        const kode = wil?.kode_wilayah;
+        return kode ? `SIMS-${kode}-` : "SIMS-YGY-";
+    }, [form.wilayah, wilayah]);
     const { settings } = usePage().props;
     const [kecamatanOptions, setKecamatanOptions] = useState([]);
     const [kelurahanOptions, setKelurahanOptions] = useState([]);
@@ -189,25 +194,6 @@ export default function FormTambahTiang({ wilayah }) {
             return;
         }
         if (name === "kode_tiang") setKodeEdited(true);
-        if (name === "wilayah" && !kodeEdited) {
-            const wil = wilayah?.find((w) => w.nama_wilayah === value);
-            const kodeWil = wil?.kode_wilayah;
-            const prefix = kodeWil ? `SIMS-${kodeWil}-` : "";
-            // try fetch next kode, fallback to 001
-            if (kodeWil) {
-                fetch(`${window.location.pathname.split('/').filter(Boolean)[0] ? '/' + window.location.pathname.split('/').filter(Boolean)[0] : ''}/api/next-kode?kode_wilayah=${kodeWil}&type=tiang`.replace(/\/+/g, '/'))
-                    .then((r) => r.json())
-                    .then((d) => {
-                        if (d?.kode && !kodeEdited) setForm((prev) => ({ ...prev, wilayah: value, kode_tiang: d.kode }));
-                    })
-                    .catch(() => {
-                        if (!kodeEdited) setForm((prev) => ({ ...prev, wilayah: value, kode_tiang: `${prefix}001` }));
-                    });
-                // optimistic immediate
-                setForm({ ...form, [name]: value, kode_tiang: `${prefix}001` });
-                return;
-            }
-        }
         setForm({
             ...form,
             [name]: files ? files[0] : value,
@@ -281,7 +267,7 @@ export default function FormTambahTiang({ wilayah }) {
                                     type="text"
                                     value={form.kode_tiang}
                                     onChange={handleChange}
-                                    placeholder="Masukkan kode tiang"
+                                    placeholder={placeholderKode}
                                     required
                                     className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                 />
