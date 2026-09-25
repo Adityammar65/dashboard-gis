@@ -22,8 +22,9 @@ class TiangController extends Controller
         try {
             $validated = $request->validate([
                 'kode_tiang'      => 'required|string|max:255|unique:tiang,kode_tiang',
-                'area'            => 'required|string|max:255',
                 'wilayah'         => 'required|string|max:255',
+                'kecamatan'       => 'required|string|max:255',
+                'kelurahan'       => 'required|string|max:255',
                 'deskripsi_tiang' => 'required|string',
                 'foto_tiang_1'    => 'required|image|mimes:jpg,jpeg,png|max:5120',
                 'foto_tiang_2'    => 'required|image|mimes:jpg,jpeg,png|max:5120',
@@ -35,8 +36,9 @@ class TiangController extends Controller
             ], [
                 'kode_tiang.required' => 'Kode Tiang wajib diisi.',
                 'kode_tiang.unique' => 'Kode Tiang sudah digunakan.',
-                'area.required' => 'Kecamatan wajib diisi.',
-                'wilayah.required' => 'Wilayah/Kabupaten wajib diisi.',
+                'kecamatan.required' => 'Kecamatan wajib diisi.',
+                'kelurahan.required' => 'Kelurahan wajib diisi.',
+                'wilayah.required' => 'Wilayah wajib diisi.',
                 'deskripsi_tiang.required' => 'Deskripsi Tiang wajib diisi.',
                 'foto_tiang_1.required' => 'Foto Tiang 1 wajib diisi.',
                 'foto_tiang_2.required' => 'Foto Tiang 2 wajib diisi.',
@@ -55,8 +57,9 @@ class TiangController extends Controller
             $validated['status'] = strtolower($validated['status']);
             $data = [
                 'kode_tiang'      => $validated['kode_tiang'],
-                'area'            => $validated['area'],
                 'wilayah'         => $validated['wilayah'],
+                'kecamatan'       => $validated['kecamatan'],
+                'kelurahan'       => $validated['kelurahan'],
                 'deskripsi_tiang' => $validated['deskripsi_tiang'],
                 'latitude'        => $validated['latitude'],
                 'longitude'       => $validated['longitude'],
@@ -107,8 +110,9 @@ class TiangController extends Controller
             $tiang = TiangModel::findOrFail($id);
             $validated = $request->validate([
                 'kode_tiang'      => 'required|string|max:255|unique:tiang,kode_tiang,' . $id,
-                'area'            => 'required|string|max:255',
                 'wilayah'         => 'required|string|max:255',
+                'kecamatan'       => 'required|string|max:255',
+                'kelurahan'       => 'required|string|max:255',
                 'deskripsi_tiang' => 'required|string',
                 'foto_tiang_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
                 'foto_tiang_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
@@ -123,8 +127,9 @@ class TiangController extends Controller
             ], [
                 'kode_tiang.required' => 'Kode Tiang wajib diisi.',
                 'kode_tiang.unique' => 'Kode Tiang sudah digunakan.',
-                'area.required' => 'Kecamatan wajib diisi.',
-                'wilayah.required' => 'Wilayah/Kabupaten wajib diisi.',
+                'kecamatan.required' => 'Kecamatan wajib diisi.',
+                'kelurahan.required' => 'Kelurahan wajib diisi.',
+                'wilayah.required' => 'Wilayah wajib diisi.',
                 'deskripsi_tiang.required' => 'Deskripsi Tiang wajib diisi.',
                 'latitude.required' => 'Latitude wajib diisi.',
                 'latitude.numeric' => 'Latitude harus berupa angka.',
@@ -137,7 +142,8 @@ class TiangController extends Controller
             $data = [
                 'kode_tiang'      => $validated['kode_tiang'],
                 'wilayah'         => $validated['wilayah'],
-                'area'            => $validated['area'],
+                'kecamatan'       => $validated['kecamatan'],
+                'kelurahan'       => $validated['kelurahan'],
                 'deskripsi_tiang' => $validated['deskripsi_tiang'],
                 'latitude'        => $validated['latitude'],
                 'longitude'       => $validated['longitude'],
@@ -214,7 +220,7 @@ class TiangController extends Controller
         if (str_contains($msg, 'cannot be null') || str_contains($msg, "doesn't have a default value") || str_contains($msg, '1048') || str_contains($msg, '1364') || preg_match("/(Column|Field) '[^']+' (cannot be null|doesn't have a default value)/", $msg)) {
             if (preg_match("/(?:Column|Field) '([^']+)'/", $msg, $m)) {
                 $col = $m[1];
-                $labels = ['kode_tiang' => 'Kode Tiang', 'area' => 'Kecamatan', 'wilayah' => 'Wilayah/Kabupaten', 'deskripsi_tiang' => 'Deskripsi Tiang', 'foto_tiang_1' => 'Foto Tiang 1', 'foto_tiang_2' => 'Foto Tiang 2', 'foto_tiang_3' => 'Foto Tiang 3', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
+                $labels = ['kode_tiang' => 'Kode Tiang', 'wilayah' => 'Wilayah', 'kecamatan' => 'Kecamatan', 'kelurahan' => 'Kelurahan', 'deskripsi_tiang' => 'Deskripsi Tiang', 'foto_tiang_1' => 'Foto Tiang 1', 'foto_tiang_2' => 'Foto Tiang 2', 'foto_tiang_3' => 'Foto Tiang 3', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
                 return [$col => ($labels[$col] ?? $col) . ' wajib diisi.'];
             }
             return ['error' => 'Ada field wajib yang belum diisi.'];

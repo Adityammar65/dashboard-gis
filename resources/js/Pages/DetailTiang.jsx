@@ -240,11 +240,23 @@ export default function DetailTiang({ tiang }) {
                             <div>
 
                                 <p className="font-semibold text-gray-800">
-                                    Area
+                                    Kecamatan
                                 </p>
 
                                 <p className="mt-1 text-gray-600">
-                                    {tiang?.area || "-"}
+                                    {tiang?.kecamatan || tiang?.area || "-"}
+                                </p>
+
+                            </div>
+
+                            <div>
+
+                                <p className="font-semibold text-gray-800">
+                                    Kelurahan
+                                </p>
+
+                                <p className="mt-1 text-gray-600">
+                                    {tiang?.kelurahan || "-"}
                                 </p>
 
                             </div>

@@ -17,6 +17,7 @@ class OntSeeder extends Seeder
     public function run(): void
     {
         $areas = ['Area A', 'Area B', 'Area C', 'Kawasan 1', 'Kawasan 2', 'Blok Utara', 'Blok Selatan'];
+        $kelurahan = ['Kel. A', 'Kel. B', 'Kelurahan C', 'Kelurahan 1', 'Kelurahan 2', 'Kel. Utara', 'Kel. Selatan'];
         $lorems = [
             'Lorem ipsum dolor sit amet',
             'Consectetur adipiscing elit sed do',
@@ -29,13 +30,13 @@ class OntSeeder extends Seeder
         $petugas = ['John Doe', 'Jane Doe'];
 
         $wilayahData = [
-            ['nama' => 'yogyakarta', 'kode' => 'YOG', 'bbox' => [-7.825, -7.770, 110.330, 110.390]],
+            ['nama' => 'yogyakarta', 'kode' => 'YGY', 'bbox' => [-7.825, -7.770, 110.330, 110.390]],
             ['nama' => 'sleman', 'kode' => 'SLM', 'bbox' => [-7.760, -7.680, 110.300, 110.450]],
-            ['nama' => 'bantul', 'kode' => 'BNT', 'bbox' => [-7.930, -7.860, 110.300, 110.450]],
-            ['nama' => 'kulon progo', 'kode' => 'KPR', 'bbox' => [-7.950, -7.710, 110.050, 110.250]],
-            ['nama' => 'gunungkidul', 'kode' => 'GNK', 'bbox' => [-8.120, -7.850, 110.450, 110.750]],
+            ['nama' => 'bantul', 'kode' => 'BTL', 'bbox' => [-7.930, -7.860, 110.300, 110.450]],
+            ['nama' => 'kulon progo', 'kode' => 'KPG', 'bbox' => [-7.950, -7.710, 110.050, 110.250]],
+            ['nama' => 'gunungkidul', 'kode' => 'GKL', 'bbox' => [-8.120, -7.850, 110.450, 110.750]],
             ['nama' => 'jepara', 'kode' => 'JPR', 'bbox' => [-6.750, -6.450, 110.600, 110.900]],
-            ['nama' => 'sukoharjo', 'kode' => 'SHJ', 'bbox' => [-7.820, -7.620, 110.750, 110.950]],
+            ['nama' => 'sukoharjo', 'kode' => 'SKH', 'bbox' => [-7.820, -7.620, 110.750, 110.950]],
             ['nama' => 'magelang', 'kode' => 'MGL', 'bbox' => [-7.620, -7.400, 110.100, 110.300]],
         ];
 
@@ -46,9 +47,10 @@ class OntSeeder extends Seeder
                 $lng = $lngMin + (mt_rand() / mt_getrandmax()) * ($lngMax - $lngMin);
 
                 ONTModel::create([
-                    'kode_ont' => "O-{$w['kode']}-{$n}",
-                    'area' => $areas[array_rand($areas)],
+                    'kode_ont' => sprintf("SIMS-%s-%03d", $w['kode'], $n),
                     'wilayah' => $w['nama'],
+                    'kecamatan' => $areas[array_rand($areas)],
+                    'kelurahan' => $kelurahan[array_rand($kelurahan)],
                     'deskripsi_ont' => Str::words($lorems[array_rand($lorems)], 5, ''),
                     'foto_ont_1' => 'ont/dummy.jpg',
                     'foto_ont_2' => 'ont/dummy.jpg',

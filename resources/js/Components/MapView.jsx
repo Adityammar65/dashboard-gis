@@ -187,7 +187,8 @@ const MapView = memo(function MapView({ latitude, longitude, markers = null, wil
                                     </p>
                                     <p style={{ fontSize: 12.5, color: "#1f2937", fontWeight: 500, textTransform: "capitalize", marginBottom: 3 }}>
                                         {m.wilayah ? m.wilayah : "-"}
-                                        {m.area ? ` / ${m.area}` : ""}
+                                        {m.kecamatan ? ` / ${m.kecamatan}` : (m.area ? ` / ${m.area}` : "")}
+                                        {m.kelurahan ? ` / ${m.kelurahan}` : ""}
                                     </p>
                                     <p style={{ fontSize: 11.5, color: "#111827", fontWeight: 600, marginBottom: 6 }}>
                                         {m.position[0].toFixed(6)}, {m.position[1].toFixed(6)}

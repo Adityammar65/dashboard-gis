@@ -186,10 +186,19 @@ export default function DetailONT({ ont }) {
 
                             <div>
                                 <p className="font-semibold text-gray-800">
-                                    Area
+                                    Kecamatan
                                 </p>
                                 <p className="mt-1 text-gray-600">
-                                    {ont?.area || "-"}
+                                    {ont?.kecamatan || ont?.area || "-"}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p className="font-semibold text-gray-800">
+                                    Kelurahan
+                                </p>
+                                <p className="mt-1 text-gray-600">
+                                    {ont?.kelurahan || "-"}
                                 </p>
                             </div>
 

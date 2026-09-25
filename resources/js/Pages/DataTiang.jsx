@@ -28,6 +28,16 @@ export default function DataTiang({
         filter.status ?? ""
     );
 
+    const [filterKecamatan, setFilterKecamatan] = useState(filter.kecamatan ?? "");
+    const [filterKelurahan, setFilterKelurahan] = useState(filter.kelurahan ?? "");
+
+    const [kecamatanOptions, setKecamatanOptions] = useState([]);
+    const [kelurahanOptions, setKelurahanOptions] = useState([]);
+    const [kecamatanLoading, setKecamatanLoading] = useState(false);
+    const [kelurahanLoading, setKelurahanLoading] = useState(false);
+    const [kecFocused, setKecFocused] = useState(false);
+    const [kelFocused, setKelFocused] = useState(false);
+
     const listTiang = useMemo(() => (Array.isArray(dataTiang) ? dataTiang : (dataTiang?.data ?? [])), [dataTiang]);
     const totalTiang = useMemo(() => dataTiang?.total ?? listTiang.length, [dataTiang, listTiang]);
     const tiangAktif = useMemo(() => listTiang.filter((tiang) => tiang.status?.toLowerCase() === "aktif").length, [listTiang]);
@@ -51,13 +61,88 @@ export default function DataTiang({
         }
     }, [filter.status]);
 
-    const handleFilter = useCallback((wilayahValue, statusValue) => {
+    useEffect(() => {
+        if ((filter.kecamatan ?? "") !== filterKecamatan) {
+            setFilterKecamatan(filter.kecamatan ?? "");
+        }
+    }, [filter.kecamatan]);
+
+    useEffect(() => {
+        if ((filter.kelurahan ?? "") !== filterKelurahan) {
+            setFilterKelurahan(filter.kelurahan ?? "");
+        }
+    }, [filter.kelurahan]);
+
+    // MARK: Kecamatan
+    useEffect(() => {
+        if (!filterWilayah) { setKecamatanOptions([]); return; }
+        const wil = wilayah.find((w) => String(w.id) === String(filterWilayah));
+        const kode = wil?.kode_wilayah || "";
+        if (!kode) { setKecamatanOptions([]); return; }
+        let cancelled = false;
+        setKecamatanLoading(true);
+        const baseSeg = window.location.pathname.split('/').filter(Boolean)[0];
+        const known = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont','hapus-tiang','hapus-ont'];
+        const base = (baseSeg && !known.includes(baseSeg)) ? `/${baseSeg}` : '';
+        fetch(`${base}/api/regions/kabupaten/${kode}/kecamatan`.replace(/\/+/g,'/'))
+            .then((r) => r.json())
+            .then((j) => {
+                if (cancelled) return;
+                const data = Array.isArray(j?.data) ? j.data : [];
+                setKecamatanOptions(data);
+            })
+            .catch(() => { if (!cancelled) setKecamatanOptions([]); })
+            .finally(() => { if (!cancelled) setKecamatanLoading(false); });
+        return () => { cancelled = true; };
+    }, [filterWilayah, wilayah]);
+
+    useEffect(() => {
+        if (!filterKecamatan) { setKelurahanOptions([]); return; }
+        const opt = kecamatanOptions.find((o) => o.name.toLowerCase() === filterKecamatan.toLowerCase().trim());
+        const code = opt?.code;
+        if (!code) { setKelurahanOptions([]); return; }
+        let cancelled = false;
+        setKelurahanLoading(true);
+        const baseSeg = window.location.pathname.split('/').filter(Boolean)[0];
+        const known = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont','hapus-tiang','hapus-ont'];
+        const base = (baseSeg && !known.includes(baseSeg)) ? `/${baseSeg}` : '';
+        fetch(`${base}/api/regions/kecamatan/${code}/kelurahan`.replace(/\/+/g,'/'))
+            .then((r) => r.json())
+            .then((j) => {
+                if (cancelled) return;
+                const data = Array.isArray(j?.data) ? j.data : [];
+                setKelurahanOptions(data);
+            })
+            .catch(() => { if (!cancelled) setKelurahanOptions([]); })
+            .finally(() => { if (!cancelled) setKelurahanLoading(false); });
+        return () => { cancelled = true; };
+    }, [filterKecamatan, kecamatanOptions]);
+
+    const filteredKecamatan = useMemo(() => {
+        const q = (filterKecamatan || "").trim().toLowerCase();
+        if (q.length < 1 || kecamatanOptions.length === 0) return [];
+        if (kecamatanOptions.some((o) => o.name.toLowerCase() === q)) return [];
+        return kecamatanOptions.filter((o) => o.name.toLowerCase().includes(q)).slice(0, 6);
+    }, [filterKecamatan, kecamatanOptions]);
+
+    const filteredKelurahan = useMemo(() => {
+        const q = (filterKelurahan || "").trim().toLowerCase();
+        if (q.length < 1 || kelurahanOptions.length === 0) return [];
+        if (kelurahanOptions.some((o) => o.name.toLowerCase() === q)) return [];
+        return kelurahanOptions.filter((o) => o.name.toLowerCase().includes(q)).slice(0, 6);
+    }, [filterKelurahan, kelurahanOptions]);
+
+    const handleFilter = useCallback((wilayahValue, kecamatanValue, statusValue, kelurahanValue) => {
         setFilterWilayah(wilayahValue);
+        setFilterKecamatan(kecamatanValue);
         setFilterStatus(statusValue);
+        setFilterKelurahan(kelurahanValue);
         router.get(
             window.location.pathname,
             {
                 wilayah: wilayahValue,
+                kecamatan: kecamatanValue,
+                kelurahan: kelurahanValue,
                 status: statusValue,
             },
             {
@@ -198,16 +283,18 @@ export default function DataTiang({
                         </div>
 
 
-                        <div className="space-y-3">
+                        <div className="grid grid-cols-2 gap-3">
 
-                            {/* Wilayah */}
+                            {/* 1 Wilayah */}
 
                             <select
                                 value={filterWilayah}
                                 onChange={(e) =>
                                     handleFilter(
                                         e.target.value,
-                                        filterStatus
+                                        filterKecamatan,
+                                        filterStatus,
+                                        filterKelurahan
                                     )
                                 }
                                 className="capitalize w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
@@ -229,15 +316,58 @@ export default function DataTiang({
 
                             </select>
 
+                            {/* Kecamatan */}
 
-                            {/* Status */}
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={filterKecamatan}
+                                    onChange={(e) => {
+                                        const v = e.target.value;
+                                        setFilterKecamatan(v);
+                                    }}
+                                    onFocus={() => setKecFocused(true)}
+                                    onBlur={() => setTimeout(() => setKecFocused(false), 180)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleFilter(filterWilayah, e.target.value, filterStatus, filterKelurahan);
+                                        }
+                                    }}
+                                    placeholder={kecamatanLoading ? "Memuat..." : "Kecamatan"}
+                                    autoComplete="off"
+                                    className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition placeholder:text-gray-400"
+                                />
+                                {kecFocused && filteredKecamatan.length > 0 && (
+                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                                        {filteredKecamatan.map((opt) => (
+                                            <button
+                                                key={opt.code}
+                                                type="button"
+                                                onMouseDown={(e) => e.preventDefault()}
+                                                onClick={() => {
+                                                    setFilterKecamatan(opt.name);
+                                                    setKecFocused(false);
+                                                    handleFilter(filterWilayah, opt.name, filterStatus, filterKelurahan);
+                                                }}
+                                                className="w-full px-3 py-2 text-left text-xs hover:bg-gray-50 transition"
+                                            >
+                                                {opt.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* 3 Status */}
 
                             <select
                                 value={filterStatus}
                                 onChange={(e) =>
                                     handleFilter(
                                         filterWilayah,
-                                        e.target.value
+                                        filterKecamatan,
+                                        e.target.value,
+                                        filterKelurahan
                                     )
                                 }
                                 className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
@@ -257,6 +387,64 @@ export default function DataTiang({
 
                             </select>
 
+                            {/* Kelurahan */}
+
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={filterKelurahan}
+                                    onChange={(e) => {
+                                        const v = e.target.value;
+                                        setFilterKelurahan(v);
+                                    }}
+                                    onFocus={() => setKelFocused(true)}
+                                    onBlur={() => setTimeout(() => setKelFocused(false), 180)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleFilter(filterWilayah, filterKecamatan, filterStatus, e.target.value);
+                                        }
+                                    }}
+                                    placeholder={kelurahanLoading ? "Memuat..." : "Kelurahan"}
+                                    autoComplete="off"
+                                    className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition placeholder:text-gray-400"
+                                />
+                                {kelFocused && filteredKelurahan.length > 0 && (
+                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                                        {filteredKelurahan.map((opt) => (
+                                            <button
+                                                key={opt.code}
+                                                type="button"
+                                                onMouseDown={(e) => e.preventDefault()}
+                                                onClick={() => {
+                                                    setFilterKelurahan(opt.name);
+                                                    setKelFocused(false);
+                                                    handleFilter(filterWilayah, filterKecamatan, filterStatus, opt.name);
+                                                }}
+                                                className="w-full px-3 py-2 text-left text-xs hover:bg-gray-50 transition"
+                                            >
+                                                {opt.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                        </div>
+                        <div className="mt-3 flex gap-2">
+                            <button
+                                type="button"
+                                onClick={() => handleFilter(filterWilayah, filterKecamatan, filterStatus, filterKelurahan)}
+                                className="flex-1 rounded-xl bg-[#AB3C3C] px-3 py-2 text-xs font-medium text-white shadow-sm hover:bg-[#6F2424] transition"
+                            >
+                                Terapkan
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => handleFilter("", "", "", "")}
+                                className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50 transition"
+                            >
+                                Reset
+                            </button>
                         </div>
 
                     </div>
@@ -270,7 +458,7 @@ export default function DataTiang({
 
                     <div className="overflow-x-auto">
 
-                        <table className="w-full min-w-[700px] border-collapse text-xs">
+                        <table className="w-full min-w-[900px] border-collapse text-xs">
 
                             {/* Header Tabel */}
 
@@ -291,7 +479,15 @@ export default function DataTiang({
                                     </th>
 
                                     <th className="px-4 py-3 font-medium">
-                                        Area
+                                        Wilayah
+                                    </th>
+
+                                    <th className="px-4 py-3 font-medium">
+                                        Kecamatan
+                                    </th>
+
+                                    <th className="px-4 py-3 font-medium">
+                                        Kelurahan
                                     </th>
 
                                     <th className="px-4 py-3 font-medium">
@@ -377,27 +573,34 @@ export default function DataTiang({
                                             </td>
 
 
-                                            {/* Area */}
+                                            {/* Wilayah */}
 
                                             <td className="px-4 py-2">
-
-                                                {tiang.wilayah || tiang.area ? (
-
-                                                    <>
-                                                        {tiang.wilayah}
-
-                                                        {tiang.area &&
-                                                            ` - ${tiang.area}`}
-                                                    </>
-
+                                                {tiang.wilayah || tiang.kabupaten ? (
+                                                    tiang.wilayah || tiang.kabupaten
                                                 ) : (
-
-                                                    <span className="text-gray-400">
-                                                        Belum ada data
-                                                    </span>
-
+                                                    <span className="text-gray-400">Belum ada data</span>
                                                 )}
+                                            </td>
 
+                            {/* Kecamatan */}
+
+                                            <td className="px-4 py-2">
+                                                {tiang.kecamatan || tiang.area ? (
+                                                    tiang.kecamatan || tiang.area
+                                                ) : (
+                                                    <span className="text-gray-400">Belum ada data</span>
+                                                )}
+                                            </td>
+
+                            {/* Kelurahan */}
+
+                                            <td className="px-4 py-2">
+                                                {tiang.kelurahan ? (
+                                                    tiang.kelurahan
+                                                ) : (
+                                                    <span className="text-gray-400">-</span>
+                                                )}
                                             </td>
                                             {/* Petugas */}
 
@@ -500,7 +703,7 @@ export default function DataTiang({
                                     <tr>
 
                                         <td
-                                            colSpan="7"
+                                            colSpan="9"
                                             className="px-4 py-12 text-center"
                                         >
 

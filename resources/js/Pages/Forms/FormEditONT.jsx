@@ -1,8 +1,8 @@
 import MainLayout from "../../Layouts/MainLayout";
 import LocationPicker from "../../Components/LocationPicker";
 import { FaArrowLeft, FaSave, FaTrash, FaUndo } from "react-icons/fa";
-import { router } from "@inertiajs/react";
-import { useState } from "react";
+import { router, usePage } from "@inertiajs/react";
+import { useState, useEffect, useMemo } from "react";
 
 export default function FormEditONT({ ont, wilayah }) {
     const getFotoUrl = (foto) => {
@@ -13,8 +13,9 @@ export default function FormEditONT({ ont, wilayah }) {
 
     const [form, setForm] = useState({
         kode_ont: ont?.kode_ont ?? "",
-        wilayah: ont?.wilayah ?? "",
-        area: ont?.area ?? "",
+        wilayah: ont?.wilayah ?? ont?.kabupaten ?? "",
+        kecamatan: ont?.kecamatan ?? ont?.area ?? "",
+        kelurahan: ont?.kelurahan ?? "",
         deskripsi_ont: ont?.deskripsi_ont ?? "",
         foto_ont_1: null,
         foto_ont_2: null,
@@ -24,7 +25,90 @@ export default function FormEditONT({ ont, wilayah }) {
         nama_petugas: ont?.nama_petugas ?? "",
         status: ont?.status?.toLowerCase() ?? "",
     });
-
+    const [kodeEdited, setKodeEdited] = useState(false);
+    const { settings } = usePage().props;
+    const [kecamatanOptions, setKecamatanOptions] = useState([]);
+    const [kelurahanOptions, setKelurahanOptions] = useState([]);
+    const [kecamatanLoading, setKecamatanLoading] = useState(false);
+    const [kelurahanLoading, setKelurahanLoading] = useState(false);
+    const [kelurahanManual, setKelurahanManual] = useState(false);
+    const [kecFocused, setKecFocused] = useState(false);
+    const [kelFocused, setKelFocused] = useState(false);
+    const base = useMemo(() => {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
+        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
+        return '';
+    }, []);
+    const resolveUrl = (path) => `${base}/${path}`.replace(/\/+/g, '/');
+    useEffect(() => {
+        let cancelled = false;
+        setKecamatanLoading(true);
+        fetch(resolveUrl(`api/regions/kabupaten/${(wilayah?.find((w) => w.nama_wilayah === (form.wilayah || ont?.wilayah || ont?.kabupaten || settings?.nama_wilayah))?.kode_wilayah || form.wilayah || ont?.wilayah || settings?.nama_wilayah || '')}/kecamatan`))
+            .then((r) => r.json())
+            .then((j) => {
+                if (cancelled) return;
+                const data = Array.isArray(j?.data) ? j.data : [];
+                setKecamatanOptions(data);
+                const currentKec = form.kecamatan || ont?.kecamatan || ont?.area;
+                if (currentKec) {
+                    const opt = data.find((o) => o.name === currentKec);
+                    const code = opt?.code;
+                    if (!code) { setKelurahanManual(true); }
+                    else {
+                        setKelurahanLoading(true);
+                        fetch(resolveUrl(`api/regions/kecamatan/${code}/kelurahan`))
+                            .then((r2) => r2.json())
+                            .then((j2) => {
+                                const d2 = Array.isArray(j2?.data) ? j2.data : [];
+                                if (d2.length === 0) { setKelurahanManual(true); setKelurahanOptions([]); }
+                                else { setKelurahanManual(false); setKelurahanOptions(d2); }
+                            })
+                            .catch(() => { setKelurahanManual(true); })
+                            .finally(() => setKelurahanLoading(false));
+                    }
+                }
+            })
+            .catch(() => { if (!cancelled) setKecamatanOptions([]); })
+            .finally(() => { if (!cancelled) setKecamatanLoading(false); });
+        return () => { cancelled = true; };
+    }, [form.wilayah, settings?.nama_wilayah, wilayah, base]);
+    const handleKecamatanChange = (val) => {
+        setForm((prev) => ({ ...prev, kecamatan: val, kelurahan: "" }));
+        setKelurahanOptions([]);
+        setKelurahanManual(false);
+        if (!val) return;
+        const opt = kecamatanOptions.find((o) => o.name === val);
+        const code = opt?.code;
+        if (!code) { setKelurahanManual(true); return; }
+        setKelurahanLoading(true);
+        fetch(resolveUrl(`api/regions/kecamatan/${code}/kelurahan`))
+            .then((r) => r.json())
+            .then((j) => {
+                const data = Array.isArray(j?.data) ? j.data : [];
+                if (data.length === 0) { setKelurahanManual(true); setKelurahanOptions([]); }
+                else { setKelurahanManual(false); setKelurahanOptions(data); }
+            })
+            .catch(() => { setKelurahanManual(true); setKelurahanOptions([]); })
+            .finally(() => setKelurahanLoading(false));
+    };
+    useEffect(() => {
+        if (!form.kecamatan || kecamatanOptions.length === 0) return;
+        const exact = kecamatanOptions.find((o) => o.name.toLowerCase() === form.kecamatan.toLowerCase().trim());
+        if (exact && kelurahanOptions.length === 0 && !kelurahanLoading && !kelurahanManual) {
+            const code = exact.code;
+            setKelurahanLoading(true);
+            fetch(resolveUrl(`api/regions/kecamatan/${code}/kelurahan`))
+                .then((r) => r.json())
+                .then((j) => {
+                    const d = Array.isArray(j?.data) ? j.data : [];
+                    if (d.length === 0) { setKelurahanManual(true); setKelurahanOptions([]); }
+                    else { setKelurahanManual(false); setKelurahanOptions(d); }
+                })
+                .catch(() => { setKelurahanManual(true); })
+                .finally(() => setKelurahanLoading(false));
+        }
+    }, [form.kecamatan]);
     const [preview, setPreview] = useState({
         foto_ont_1: getFotoUrl(ont?.foto_ont_1),
         foto_ont_2: getFotoUrl(ont?.foto_ont_2),
@@ -50,6 +134,37 @@ export default function FormEditONT({ ont, wilayah }) {
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
+
+        if (name === "wilayah") {
+            setForm((prev) => ({ ...prev, wilayah: value, kecamatan: "", kelurahan: "" }));
+            setKelurahanOptions([]);
+            setKelurahanManual(false);
+            setKecFocused(false);
+            setKelFocused(false);
+        }
+        if (name === "kecamatan") {
+            setForm((prev) => ({ ...prev, kecamatan: value, kelurahan: "" }));
+            setKelurahanOptions([]);
+            setKelurahanManual(false);
+            return;
+        }
+        if (name === "kelurahan") {
+            setForm((prev) => ({ ...prev, kelurahan: value }));
+            return;
+        }
+        if (name === "kode_ont") setKodeEdited(true);
+        if (name === "wilayah" && !kodeEdited) {
+            const wil = wilayah?.find((w) => w.nama_wilayah === value);
+            const kodeWil = wil?.kode_wilayah;
+            if (kodeWil) {
+                fetch(`${window.location.pathname.split('/').filter(Boolean)[0] ? '/' + window.location.pathname.split('/').filter(Boolean)[0] : ''}/api/next-kode?kode_wilayah=${kodeWil}&type=ont`.replace(/\/+/g, '/'))
+                    .then((r) => r.json())
+                    .then((d) => {
+                        if (d?.kode && !kodeEdited) setForm((prev) => ({ ...prev, wilayah: value, kode_ont: d.kode }));
+                    })
+                    .catch(() => { });
+            }
+        }
 
         if (files && files[0]) {
             setForm((prev) => ({
@@ -165,11 +280,11 @@ export default function FormEditONT({ ont, wilayah }) {
                                 />
                             </div>
 
-                            {/* Wilayah/Kabupaten */}
+                            {/* Wilayah */}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Wilayah/Kabupaten
+                                    Wilayah
                                 </label>
 
                                 <select
@@ -195,22 +310,112 @@ export default function FormEditONT({ ont, wilayah }) {
                                 </select>
                             </div>
 
-                            {/* Kecamatan/Area */}
+                            {/* Kecamatan */}
 
-                            <div>
+                            <div className="relative">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Kecamatan
                                 </label>
 
                                 <input
-                                    name="area"
+                                    name="kecamatan"
                                     type="text"
-                                    value={form.area}
+                                    value={form.kecamatan}
                                     onChange={handleChange}
-                                    placeholder="Masukkan kecamatan/area"
+                                    onFocus={() => setKecFocused(true)}
+                                    onBlur={() => setTimeout(() => setKecFocused(false), 180)}
+                                    placeholder={kecamatanLoading ? "Memuat kecamatan..." : "Ketik kecamatan"}
                                     required
+                                    autoComplete="off"
                                     className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                 />
+                                {kecFocused && (() => {
+                                    const input = (form.kecamatan || "").trim().toLowerCase();
+                                    if (input.length < 1) return null;
+                                    const filtered = kecamatanOptions.filter((opt) => opt.name.toLowerCase().includes(input)).slice(0, 6);
+                                    if (filtered.length === 0 || filtered.some((o) => o.name.toLowerCase() === input)) return null;
+                                    return (
+                                        <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                                            {filtered.map((opt) => (
+                                                <button
+                                                    key={opt.code}
+                                                    type="button"
+                                                    onMouseDown={(e) => e.preventDefault()}
+                                                    onClick={() => {
+                                                        setForm((prev) => ({ ...prev, kecamatan: opt.name, kelurahan: "" }));
+                                                        setKecFocused(false);
+                                                        const code = opt.code;
+                                                        setKelurahanLoading(true);
+                                                        fetch(`${window.location.pathname.split('/').filter(Boolean)[0] ? '/' + window.location.pathname.split('/').filter(Boolean)[0] : ''}/api/regions/kecamatan/${code}/kelurahan`.replace(/\/+/g, '/'))
+                                                            .then((r) => r.json())
+                                                            .then((j) => {
+                                                                const d = Array.isArray(j?.data) ? j.data : [];
+                                                                if (d.length === 0) { setKelurahanManual(true); setKelurahanOptions([]); }
+                                                                else { setKelurahanManual(false); setKelurahanOptions(d); }
+                                                            })
+                                                            .catch(() => { setKelurahanManual(true); })
+                                                            .finally(() => setKelurahanLoading(false));
+                                                    }}
+                                                    className="w-full px-4 py-2.5 text-left text-sm hover:bg-[#AB3C3C]/10 hover:text-[#AB3C3C] transition"
+                                                >
+                                                    <span className="font-medium">{opt.name}</span>
+
+                                                </button>
+                                            ))}
+                                        </div>
+                                    );
+                                })()}
+                                {kecamatanLoading && <p className="mt-1 text-[11px] text-gray-400">Memuat kecamatan...</p>}
+                            </div>
+
+                            {/* Kelurahan */}
+
+                            <div className="relative">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Kelurahan
+                                </label>
+
+                                <input
+                                    name="kelurahan"
+                                    type="text"
+                                    value={form.kelurahan}
+                                    onChange={handleChange}
+                                    onFocus={() => setKelFocused(true)}
+                                    onBlur={() => setTimeout(() => setKelFocused(false), 180)}
+                                    placeholder={kelurahanLoading ? "Memuat..." : kelurahanManual && kelurahanOptions.length === 0 ? "Kelurahan tidak terdeteksi – isi manual" : "Ketik kelurahan"}
+                                    required
+                                    autoComplete="off"
+                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 disabled:bg-gray-50"
+                                />
+                                {kelFocused && (() => {
+                                    const input = (form.kelurahan || "").trim().toLowerCase();
+                                    if (input.length < 1 || kelurahanOptions.length === 0 || kelurahanManual) return null;
+                                    const filtered = kelurahanOptions.filter((opt) => opt.name.toLowerCase().includes(input)).slice(0, 6);
+                                    if (filtered.length === 0 || filtered.some((o) => o.name.toLowerCase() === input)) return null;
+                                    return (
+                                        <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                                            {filtered.map((opt) => (
+                                                <button
+                                                    key={opt.code}
+                                                    type="button"
+                                                    onMouseDown={(e) => e.preventDefault()}
+                                                    onClick={() => {
+                                                        setForm((prev) => ({ ...prev, kelurahan: opt.name }));
+                                                        setKelFocused(false);
+                                                    }}
+                                                    className="w-full px-4 py-2.5 text-left text-sm hover:bg-[#AB3C3C]/10 hover:text-[#AB3C3C] transition"
+                                                >
+                                                    <span className="font-medium">{opt.name}</span>
+
+                                                </button>
+                                            ))}
+                                        </div>
+                                    );
+                                })()}
+                                {kelurahanManual && (
+                                    <p className="mt-1 text-[11px] text-amber-600">Kelurahan tidak terdeteksi – silakan isi manual.</p>
+                                )}
+                                {kelurahanLoading && <p className="mt-1 text-[11px] text-gray-400">Memuat kelurahan...</p>}
                             </div>
 
                             {/* Petugas */}
@@ -343,21 +548,21 @@ export default function FormEditONT({ ont, wilayah }) {
                                                 </span>
                                             </div>
                                         ) : (
-                                        <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
-                                            {preview.foto_ont_1 ? (
-                                                <img
-                                                    src={preview.foto_ont_1}
-                                                    alt="Foto ONT 1"
-                                                    className="h-40 w-full object-cover"
-                                                />
-                                            ) : (
-                                                <div className="flex h-40 items-center justify-center">
-                                                    <span className="text-xs text-gray-400">
-                                                        Belum ada foto
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </div>
+                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+                                                {preview.foto_ont_1 ? (
+                                                    <img
+                                                        src={preview.foto_ont_1}
+                                                        alt="Foto ONT 1"
+                                                        className="h-40 w-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-40 items-center justify-center">
+                                                        <span className="text-xs text-gray-400">
+                                                            Belum ada foto
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
                                         )}
 
                                         <input
@@ -395,21 +600,21 @@ export default function FormEditONT({ ont, wilayah }) {
                                                 </span>
                                             </div>
                                         ) : (
-                                        <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
-                                            {preview.foto_ont_2 ? (
-                                                <img
-                                                    src={preview.foto_ont_2}
-                                                    alt="Foto ONT 2"
-                                                    className="h-40 w-full object-cover"
-                                                />
-                                            ) : (
-                                                <div className="flex h-40 items-center justify-center">
-                                                    <span className="text-xs text-gray-400">
-                                                        Belum ada foto
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </div>
+                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+                                                {preview.foto_ont_2 ? (
+                                                    <img
+                                                        src={preview.foto_ont_2}
+                                                        alt="Foto ONT 2"
+                                                        className="h-40 w-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-40 items-center justify-center">
+                                                        <span className="text-xs text-gray-400">
+                                                            Belum ada foto
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
                                         )}
 
                                         <input
@@ -447,21 +652,21 @@ export default function FormEditONT({ ont, wilayah }) {
                                                 </span>
                                             </div>
                                         ) : (
-                                        <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
-                                            {preview.foto_ont_3 ? (
-                                                <img
-                                                    src={preview.foto_ont_3}
-                                                    alt="Foto ONT 3"
-                                                    className="h-40 w-full object-cover"
-                                                />
-                                            ) : (
-                                                <div className="flex h-40 items-center justify-center">
-                                                    <span className="text-xs text-gray-400">
-                                                        Belum ada foto
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </div>
+                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+                                                {preview.foto_ont_3 ? (
+                                                    <img
+                                                        src={preview.foto_ont_3}
+                                                        alt="Foto ONT 3"
+                                                        className="h-40 w-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-40 items-center justify-center">
+                                                        <span className="text-xs text-gray-400">
+                                                            Belum ada foto
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
                                         )}
 
                                         <input

@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('tiang', function (Blueprint $table) {
             $table->id();
             $table->string('kode_tiang')->unique();
-            $table->string('area');
             $table->string('wilayah');
+            $table->string('kecamatan');
+            $table->string('kelurahan');
             $table->text('deskripsi_tiang');
             $table->string('foto_tiang_1');
             $table->string('foto_tiang_2');

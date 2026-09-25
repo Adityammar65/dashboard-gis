@@ -22,8 +22,9 @@ class NotifikasiHelper
         $deskripsi = $tipe === 'ont' ? 'deskripsi_ont' : 'deskripsi_tiang';
         return [
             $kode => 'Kode',
-            'area' => 'Kecamatan',
-            'wilayah' => 'Wilayah/Kabupaten',
+            'wilayah' => 'Wilayah',
+            'kecamatan' => 'Kecamatan',
+            'kelurahan' => 'Kelurahan',
             $deskripsi => 'Deskripsi',
             'latitude' => 'Latitude',
             'longitude' => 'Longitude',

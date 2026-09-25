@@ -51,6 +51,8 @@ export default function Dashboard() {
             kode: t.kode_tiang,
             status: t.status,
             wilayah: t.wilayah,
+            kecamatan: t.kecamatan ?? t.area,
+            kelurahan: t.kelurahan,
             area: t.area,
             latitude: t.latitude,
             longitude: t.longitude,
@@ -61,6 +63,8 @@ export default function Dashboard() {
             kode: o.kode_ont,
             status: o.status,
             wilayah: o.wilayah,
+            kecamatan: o.kecamatan ?? o.area,
+            kelurahan: o.kelurahan,
             area: o.area,
             latitude: o.latitude,
             longitude: o.longitude,
@@ -323,7 +327,7 @@ export default function Dashboard() {
                         </div>
 
                         {hasWilayah ? (
-                            <div className="h-[340px] overflow-hidden rounded-xl border border-gray-100 shadow-inner">
+                            <div className="h-[450px] overflow-hidden rounded-xl border border-gray-100 shadow-inner">
                                 <MapView markers={markers} wilayah={activeWilayah} wilayahCenter={wilayahCenter} />
                             </div>
                         ) : (
@@ -366,41 +370,41 @@ export default function Dashboard() {
                                         ? Math.abs(new Date(item.updated_at).getTime() - new Date(item.created_at).getTime()) < 60000
                                         : false;
                                     return (
-                                    <div
-                                        key={`${item.type}-${item.id}`}
-                                        className="flex items-center justify-between rounded-xl px-2 py-2 -mx-2 hover:bg-gray-50 transition"
-                                    >
-                                        <div className="flex items-center gap-3 min-w-0">
-                                            {item.type === "tiang" ? (
-                                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-800 ring-1 ring-blue-200"><FaWifi className="text-sm" /></span>
-                                            ) : (
-                                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-600 ring-1 ring-sky-200"><MdRouter className="text-sm" /></span>
-                                            )}
-                                            <div className="text-xs min-w-0">
-                                                <p className="font-semibold text-gray-800 truncate">{item.kode}</p>
-                                                <p className="text-gray-500 capitalize truncate">
-                                                    {item.wilayah}{item.area ? ` • ${item.area}` : ""}
-                                                </p>
-                                                <p className="mt-0.5 flex items-center gap-1 truncate text-gray-500">
-                                                    <FaUser size={9} className="shrink-0 text-gray-400" />
-                                                    <span className="truncate">{item.nama_petugas || "—"}</span>
-                                                    <span className={`ml-1 shrink-0 text-[9px] font-semibold ${isBaru ? "text-emerald-600" : "text-amber-600"}`}>
-                                                        {isBaru ? "Ditambahkan" : "Diperbarui"}
-                                                    </span>
+                                        <div
+                                            key={`${item.type}-${item.id}`}
+                                            className="flex items-center justify-between rounded-xl px-2 py-2 -mx-2 hover:bg-gray-50 transition"
+                                        >
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                {item.type === "tiang" ? (
+                                                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-800 ring-1 ring-blue-200"><FaWifi className="text-sm" /></span>
+                                                ) : (
+                                                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-600 ring-1 ring-sky-200"><MdRouter className="text-sm" /></span>
+                                                )}
+                                                <div className="text-xs min-w-0">
+                                                    <p className="font-semibold text-gray-800 truncate">{item.kode}</p>
+                                                    <p className="text-gray-500 capitalize truncate">
+                                                        {item.wilayah}{(item.kecamatan || item.area) ? ` • ${item.kecamatan || item.area}` : ""}{item.kelurahan ? ` • ${item.kelurahan}` : ""}
+                                                    </p>
+                                                    <p className="mt-0.5 flex items-center gap-1 truncate text-gray-500">
+                                                        <FaUser size={9} className="shrink-0 text-gray-400" />
+                                                        <span className="truncate">{item.nama_petugas || "—"}</span>
+                                                        <span className={`ml-1 shrink-0 text-[9px] font-semibold ${isBaru ? "text-emerald-600" : "text-amber-600"}`}>
+                                                            {isBaru ? "Ditambahkan" : "Diperbarui"}
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="text-right shrink-0">
+                                                <span
+                                                    className={`rounded-full px-2.5 py-1 text-[10px] font-medium text-white capitalize shadow-sm ring-1 ring-white/20 ${String(item.status).toLowerCase() === "aktif" ? "bg-green-500" : "bg-red-500"}`}
+                                                >
+                                                    {item.status}
+                                                </span>
+                                                <p className="mt-1 text-[10px] text-gray-500">
+                                                    {formatRelative(item.updated_at)}
                                                 </p>
                                             </div>
                                         </div>
-                                        <div className="text-right shrink-0">
-                                            <span
-                                                className={`rounded-full px-2.5 py-1 text-[10px] font-medium text-white capitalize shadow-sm ring-1 ring-white/20 ${String(item.status).toLowerCase() === "aktif" ? "bg-green-500" : "bg-red-500"}`}
-                                            >
-                                                {item.status}
-                                            </span>
-                                            <p className="mt-1 text-[10px] text-gray-500">
-                                                {formatRelative(item.updated_at)}
-                                            </p>
-                                        </div>
-                                    </div>
                                     );
                                 })
                             ) : (

@@ -16,7 +16,7 @@ class WilayahSeeder extends Seeder
         $wilayah = [
             [
                 'nama_wilayah' => 'yogyakarta',
-                'kode_wilayah' => 'YOG'
+                'kode_wilayah' => 'YGY'
             ],
             [
                 'nama_wilayah' => 'sleman',
@@ -24,15 +24,15 @@ class WilayahSeeder extends Seeder
             ],
             [
                 'nama_wilayah' => 'bantul',
-                'kode_wilayah' => 'BNT'
+                'kode_wilayah' => 'BTL'
             ],
             [
                 'nama_wilayah' => 'kulon progo',
-                'kode_wilayah' => 'KPR'
+                'kode_wilayah' => 'KPG'
             ],
             [
                 'nama_wilayah' => 'gunungkidul',
-                'kode_wilayah' => 'GNK'
+                'kode_wilayah' => 'GKL'
             ],
             [
                 'nama_wilayah' => 'jepara',
@@ -40,7 +40,7 @@ class WilayahSeeder extends Seeder
             ],
             [
                 'nama_wilayah' => 'sukoharjo',
-                'kode_wilayah' => 'SHJ'
+                'kode_wilayah' => 'SKH'
             ],
             [
                 'nama_wilayah' => 'magelang',

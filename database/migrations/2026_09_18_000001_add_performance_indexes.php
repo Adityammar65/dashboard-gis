@@ -12,14 +12,16 @@ return new class extends Migration
             $table->index('wilayah');
             $table->index('status');
             $table->index(['wilayah', 'status']);
-            $table->index('area');
+            $table->index('kecamatan');
+            $table->index('kelurahan');
         });
 
         Schema::table('ont', function (Blueprint $table) {
             $table->index('wilayah');
             $table->index('status');
             $table->index(['wilayah', 'status']);
-            $table->index('area');
+            $table->index('kecamatan');
+            $table->index('kelurahan');
         });
 
         Schema::table('user', function (Blueprint $table) {
@@ -43,13 +45,15 @@ return new class extends Migration
             $table->dropIndex(['wilayah']);
             $table->dropIndex(['status']);
             $table->dropIndex(['wilayah', 'status']);
-            $table->dropIndex(['area']);
+            $table->dropIndex(['kecamatan']);
+            $table->dropIndex(['kelurahan']);
         });
         Schema::table('ont', function (Blueprint $table) {
             $table->dropIndex(['wilayah']);
             $table->dropIndex(['status']);
             $table->dropIndex(['wilayah', 'status']);
-            $table->dropIndex(['area']);
+            $table->dropIndex(['kecamatan']);
+            $table->dropIndex(['kelurahan']);
         });
         Schema::table('user', function (Blueprint $table) {
             try {

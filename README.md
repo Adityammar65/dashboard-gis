@@ -303,3 +303,9 @@ Halaman Pengaturan digunakan untuk mengatur konfigurasi yang berkaitan dengan wi
 Aditya Ammar Al Haqqi
 
 Luthfi Fajar Prasetyo
+
+### Revisi:
+
+- Perubahan sistem wilayah: menambahkan field baru (kecamatan dan kelurahan)
+- Penyesuaian Edit Gambar (gambar sekarang dapat dihapus)
+- Perbaikan beberapa fitur

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ONTController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\RegionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TiangController;
 use App\Http\Controllers\WilayahController;
@@ -25,6 +26,10 @@ Route::middleware('cek_login')->group(function () {
     Route::get('/data-tiang', [PageController::class, 'DataTiang']);
     Route::get('/data-ont', [PageController::class, 'DataONT']);
     Route::get('/api/search', [PageController::class, 'Search']);
+    Route::get('/api/next-kode', [PageController::class, 'NextKode']);
+    Route::get('/api/regions/current/kecamatan', [RegionController::class, 'currentKecamatan']);
+    Route::get('/api/regions/kabupaten/{kode}/kecamatan', [RegionController::class, 'kecamatanByKabupaten']);
+    Route::get('/api/regions/kecamatan/{code}/kelurahan', [RegionController::class, 'kelurahanByKecamatan']);
     Route::get('/Peta', [PageController::class, 'Peta']);
     Route::get('/wilayah', [PageController::class, 'Wilayah']);
     Route::get('/peta-sebaran-aset', [PageController::class, 'PetaSebaranAset']);

@@ -36,7 +36,7 @@ class GenerateSettings extends Command
         $settings = [
             'id' => 1,
             'nama_wilayah' => 'yogyakarta',
-            'kode_wilayah' => 'YOG',
+            'kode_wilayah' => 'YGY',
         ];
 
         File::put(

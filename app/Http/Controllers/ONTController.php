@@ -21,8 +21,9 @@ class ONTController extends Controller
         try {
             $validated = $request->validate([
                 'kode_ont'      => 'required|string|max:255|unique:ont,kode_ont',
-                'area'            => 'required|string|max:255',
                 'wilayah'         => 'required|string|max:255',
+                'kecamatan'       => 'required|string|max:255',
+                'kelurahan'       => 'required|string|max:255',
                 'deskripsi_ont' => 'required|string',
                 'foto_ont_1'    => 'required|image|mimes:jpg,jpeg,png|max:5120',
                 'foto_ont_2'    => 'required|image|mimes:jpg,jpeg,png|max:5120',
@@ -34,8 +35,9 @@ class ONTController extends Controller
             ], [
                 'kode_ont.required' => 'Kode ONT wajib diisi.',
                 'kode_ont.unique' => 'Kode ONT sudah digunakan.',
-                'area.required' => 'Kecamatan wajib diisi.',
-                'wilayah.required' => 'Wilayah/Kabupaten wajib diisi.',
+                'wilayah.required' => 'Wilayah wajib diisi.',
+                'kecamatan.required' => 'Kecamatan wajib diisi.',
+                'kelurahan.required' => 'Kelurahan wajib diisi.',
                 'deskripsi_ont.required' => 'Deskripsi ONT wajib diisi.',
                 'foto_ont_1.required' => 'Foto ONT 1 wajib diisi.',
                 'foto_ont_2.required' => 'Foto ONT 2 wajib diisi.',
@@ -53,8 +55,9 @@ class ONTController extends Controller
             ]);
             $data = [
                 'kode_ont'      => $validated['kode_ont'],
-                'area'            => $validated['area'],
                 'wilayah'         => $validated['wilayah'],
+                'kecamatan'       => $validated['kecamatan'],
+                'kelurahan'       => $validated['kelurahan'],
                 'deskripsi_ont' => $validated['deskripsi_ont'],
                 'latitude'        => $validated['latitude'],
                 'longitude'       => $validated['longitude'],
@@ -105,8 +108,9 @@ class ONTController extends Controller
             $ont = ONTModel::findOrFail($id);
             $validated = $request->validate([
                 'kode_ont'      => 'required|string|max:255|unique:ont,kode_ont,' . $id,
-                'area'            => 'required|string|max:255',
                 'wilayah'         => 'required|string|max:255',
+                'kecamatan'       => 'required|string|max:255',
+                'kelurahan'       => 'required|string|max:255',
                 'deskripsi_ont' => 'required|string',
                 'foto_ont_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
                 'foto_ont_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
@@ -121,8 +125,9 @@ class ONTController extends Controller
             ], [
                 'kode_ont.required' => 'Kode ONT wajib diisi.',
                 'kode_ont.unique' => 'Kode ONT sudah digunakan.',
-                'area.required' => 'Kecamatan wajib diisi.',
-                'wilayah.required' => 'Wilayah/Kabupaten wajib diisi.',
+                'wilayah.required' => 'Wilayah wajib diisi.',
+                'kecamatan.required' => 'Kecamatan wajib diisi.',
+                'kelurahan.required' => 'Kelurahan wajib diisi.',
                 'deskripsi_ont.required' => 'Deskripsi ONT wajib diisi.',
                 'latitude.required' => 'Latitude wajib diisi.',
                 'latitude.numeric' => 'Latitude harus berupa angka.',
@@ -135,7 +140,8 @@ class ONTController extends Controller
             $data = [
                 'kode_ont'      => $validated['kode_ont'],
                 'wilayah'         => $validated['wilayah'],
-                'area'            => $validated['area'],
+                'kecamatan'       => $validated['kecamatan'],
+                'kelurahan'       => $validated['kelurahan'],
                 'deskripsi_ont' => $validated['deskripsi_ont'],
                 'latitude'        => $validated['latitude'],
                 'longitude'       => $validated['longitude'],
@@ -212,7 +218,7 @@ class ONTController extends Controller
         if (str_contains($msg, 'cannot be null') || str_contains($msg, "doesn't have a default value") || str_contains($msg, '1048') || str_contains($msg, '1364') || preg_match("/(Column|Field) '[^']+' (cannot be null|doesn't have a default value)/", $msg)) {
             if (preg_match("/(?:Column|Field) '([^']+)'/", $msg, $m)) {
                 $col = $m[1];
-                $labels = ['kode_ont' => 'Kode ONT', 'area' => 'Kecamatan', 'wilayah' => 'Wilayah/Kabupaten', 'deskripsi_ont' => 'Deskripsi ONT', 'foto_ont_1' => 'Foto ONT 1', 'foto_ont_2' => 'Foto ONT 2', 'foto_ont_3' => 'Foto ONT 3', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
+                $labels = ['kode_ont' => 'Kode ONT', 'wilayah' => 'Wilayah', 'kecamatan' => 'Kecamatan', 'kelurahan' => 'Kelurahan', 'deskripsi_ont' => 'Deskripsi ONT', 'foto_ont_1' => 'Foto ONT 1', 'foto_ont_2' => 'Foto ONT 2', 'foto_ont_3' => 'Foto ONT 3', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
                 return [$col => ($labels[$col] ?? $col) . ' wajib diisi.'];
             }
             return ['error' => 'Ada field wajib yang belum diisi.'];

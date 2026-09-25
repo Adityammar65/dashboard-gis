@@ -10,8 +10,9 @@ class ONTModel extends Model
 
     protected $fillable = [
         'kode_ont',
-        'area',
         'wilayah',
+        'kecamatan',
+        'kelurahan',
         'deskripsi_ont',
         'foto_ont_1',
         'foto_ont_2',
