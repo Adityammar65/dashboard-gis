@@ -8,8 +8,7 @@ use App\Helpers\NotifikasiHelper;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
+use App\Services\ImageService;
 
 class ONTController extends Controller
 {
@@ -25,9 +24,9 @@ class ONTController extends Controller
                 'kecamatan'       => 'required|string|max:255',
                 'kelurahan'       => 'required|string|max:255',
                 'deskripsi_ont' => 'required|string',
-                'foto_ont_1'    => 'required|image|mimes:jpg,jpeg,png|max:5120',
-                'foto_ont_2'    => 'required|image|mimes:jpg,jpeg,png|max:5120',
-                'foto_ont_3'    => 'required|image|mimes:jpg,jpeg,png|max:5120',
+                'foto_ont_1'    => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+                'foto_ont_2'    => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+                'foto_ont_3'    => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
                 'latitude'        => 'required|numeric',
                 'longitude'       => 'required|numeric',
                 'nama_petugas'    => 'required|string|max:255',
@@ -112,9 +111,9 @@ class ONTController extends Controller
                 'kecamatan'       => 'required|string|max:255',
                 'kelurahan'       => 'required|string|max:255',
                 'deskripsi_ont' => 'required|string',
-                'foto_ont_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
-                'foto_ont_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
-                'foto_ont_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+                'foto_ont_1'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+                'foto_ont_2'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+                'foto_ont_3'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
                 'hapus_foto_1'    => 'nullable|boolean',
                 'hapus_foto_2'    => 'nullable|boolean',
                 'hapus_foto_3'    => 'nullable|boolean',
@@ -248,26 +247,12 @@ class ONTController extends Controller
         return array_values($this->parseQueryError($e))[0];
     }
 
-    // Handle Image Optimize
-
+    // Handle Image Optimize - shared service (GD with WebP quality 82, max 1600px, preserve alpha)
     private function storeOptimizedImage($file, string $dir): string
     {
-        try {
-            $manager = new ImageManager(new Driver());
-            $image = $manager->read($file);
-            if ($image->width() > 1024) $image->scale(width: 1024);
-            $ext = strtolower($file->getClientOriginalExtension());
-            $isPng = $ext === 'png';
-            $encoded = $isPng ? $image->encodeByExtension('png') : $image->encodeByExtension('jpg', quality: 75);
-            $filename = uniqid() . '.' . ($isPng ? 'png' : 'jpg');
-            Storage::disk('public')->put($dir . '/' . $filename, (string) $encoded);
-            return $dir . '/' . $filename;
-        } catch (\Throwable $e) {
-            Log::warning('Image optimize failed, fallback to store: ' . $e->getMessage());
-            $path = $file->store($dir, 'public');
-            if (!$path) throw new \Exception('Gagal menyimpan gambar: storage gagal.');
-            return $path;
-        }
+        /** @var ImageService $service */
+        $service = app(ImageService::class);
+        return $service->storeOptimizedWebP($file, $dir);
     }
 
     // Handle Delete File
