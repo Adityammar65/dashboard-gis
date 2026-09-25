@@ -1,4 +1,5 @@
 import MainLayout from "../../Layouts/MainLayout";
+import LocationPicker from "../../Components/LocationPicker";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import { useState } from "react";
@@ -25,6 +26,10 @@ export default function FormTambahONT({ wilayah }) {
             ...form,
             [name]: files ? files[0] : value,
         });
+    };
+
+    const setCoords = (lat, lng) => {
+        setForm({ ...form, latitude: lat, longitude: lng });
     };
 
     const handleSubmit = (e) => {
@@ -96,11 +101,11 @@ export default function FormTambahONT({ wilayah }) {
                                 />
                             </div>
 
-                            {/* Wilayah */}
+                            {/* Wilayah/Kabupaten */}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Wilayah
+                                    Wilayah/Kabupaten
                                 </label>
 
                                 <select
@@ -128,11 +133,11 @@ export default function FormTambahONT({ wilayah }) {
                                 </select>
                             </div>
 
-                            {/* Area */}
+                            {/* Kecamatan/Area */}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Area
+                                    Kecamatan
                                 </label>
 
                                 <input
@@ -140,7 +145,7 @@ export default function FormTambahONT({ wilayah }) {
                                     type="text"
                                     value={form.area}
                                     onChange={handleChange}
-                                    placeholder="Masukkan area ont"
+                                    placeholder="Masukkan kecamatan/area"
                                     required
                                     className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                 />
@@ -190,6 +195,20 @@ export default function FormTambahONT({ wilayah }) {
                                         Nonaktif
                                     </option>
                                 </select>
+                            </div>
+
+                            {/* Lokasi */}
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Titik Lokasi <span className="font-normal text-gray-400">(klik peta / cari alamat)</span>
+                                </label>
+
+                                <LocationPicker
+                                    latitude={form.latitude}
+                                    longitude={form.longitude}
+                                    onChange={setCoords}
+                                />
                             </div>
 
                             {/* Koordinat */}

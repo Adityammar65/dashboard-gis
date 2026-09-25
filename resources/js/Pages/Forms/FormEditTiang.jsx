@@ -1,5 +1,6 @@
 import MainLayout from "../../Layouts/MainLayout";
-import { FaArrowLeft, FaSave } from "react-icons/fa";
+import LocationPicker from "../../Components/LocationPicker";
+import { FaArrowLeft, FaSave, FaTrash, FaUndo } from "react-icons/fa";
 import { router } from "@inertiajs/react";
 import { useState } from "react";
 
@@ -30,6 +31,25 @@ export default function FormEditTiang({ tiang, wilayah }) {
         foto_tiang_3: getFotoUrl(tiang?.foto_tiang_3),
     });
 
+    const [hapusFoto, setHapusFoto] = useState({
+        foto_tiang_1: false,
+        foto_tiang_2: false,
+        foto_tiang_3: false,
+    });
+
+    const toggleHapusFoto = (name) => {
+        const willDelete = !hapusFoto[name];
+        setHapusFoto((prev) => ({ ...prev, [name]: willDelete }));
+        if (willDelete) {
+            setForm((prev) => ({ ...prev, [name]: null }));
+            setPreview((prev) => ({ ...prev, [name]: null }));
+        } else {
+            setPreview((prev) => ({ ...prev, [name]: getFotoUrl(tiang?.[name]) }));
+        }
+    };
+
+    const slotFoto = (name) => (name === "foto_tiang_1" ? 1 : name === "foto_tiang_2" ? 2 : 3);
+
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
@@ -44,6 +64,10 @@ export default function FormEditTiang({ tiang, wilayah }) {
                 [name]: URL.createObjectURL(files[0]),
             }));
 
+            if (name in hapusFoto) {
+                setHapusFoto((prev) => ({ ...prev, [name]: false }));
+            }
+
             return;
         }
 
@@ -53,12 +77,21 @@ export default function FormEditTiang({ tiang, wilayah }) {
         }));
     };
 
+    const setCoords = (lat, lng) => {
+        setForm((prev) => ({ ...prev, latitude: lat, longitude: lng }));
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
         router.post(
             `../update-tiang/${tiang.id}`,
-            form,
+            {
+                ...form,
+                hapus_foto_1: hapusFoto.foto_tiang_1 ? 1 : 0,
+                hapus_foto_2: hapusFoto.foto_tiang_2 ? 1 : 0,
+                hapus_foto_3: hapusFoto.foto_tiang_3 ? 1 : 0,
+            },
             {
                 forceFormData: true,
 
@@ -134,11 +167,11 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                 />
                             </div>
 
-                            {/* Wilayah */}
+                            {/* Wilayah/Kabupaten */}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Wilayah
+                                    Wilayah/Kabupaten
                                 </label>
 
                                 <select
@@ -164,11 +197,11 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                 </select>
                             </div>
 
-                            {/* Area */}
+                            {/* Kecamatan/Area */}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Area
+                                    Kecamatan
                                 </label>
 
                                 <input
@@ -176,7 +209,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     type="text"
                                     value={form.area}
                                     onChange={handleChange}
-                                    placeholder="Masukkan area tiang"
+                                    placeholder="Masukkan kecamatan/area"
                                     required
                                     className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                 />
@@ -228,6 +261,20 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                 </select>
                             </div>
 
+                            {/* Lokasi */}
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Titik Lokasi <span className="font-normal text-gray-400">(klik peta / cari alamat)</span>
+                                </label>
+
+                                <LocationPicker
+                                    latitude={form.latitude}
+                                    longitude={form.longitude}
+                                    onChange={setCoords}
+                                />
+                            </div>
+
                             {/* Koordinat */}
 
                             <div>
@@ -275,10 +322,29 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     {/* Foto 1 */}
 
                                     <div>
-                                        <label className="block text-xs text-gray-500 mb-2">
-                                            Foto 1
-                                        </label>
+                                        <div className="mb-2 flex items-center justify-between">
+                                            <label className="block text-xs text-gray-500">
+                                                Foto 1
+                                            </label>
 
+                                            {(preview.foto_tiang_1 || tiang?.foto_tiang_1) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleHapusFoto("foto_tiang_1")}
+                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_1 ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100" : "bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100"}`}
+                                                >
+                                                    {hapusFoto.foto_tiang_1 ? <><FaUndo size={10} /> Batal</> : <><FaTrash size={10} /> Hapus</>}
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {hapusFoto.foto_tiang_1 ? (
+                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 bg-amber-50">
+                                                <span className="px-3 text-center text-xs text-amber-700">
+                                                    Akan dihapus saat disimpan
+                                                </span>
+                                            </div>
+                                        ) : (
                                         <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
                                             {preview.foto_tiang_1 ? (
                                                 <img
@@ -294,6 +360,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                 </div>
                                             )}
                                         </div>
+                                        )}
 
                                         <input
                                             name="foto_tiang_1"
@@ -307,10 +374,29 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     {/* Foto 2 */}
 
                                     <div>
-                                        <label className="block text-xs text-gray-500 mb-2">
-                                            Foto 2
-                                        </label>
+                                        <div className="mb-2 flex items-center justify-between">
+                                            <label className="block text-xs text-gray-500">
+                                                Foto 2
+                                            </label>
 
+                                            {(preview.foto_tiang_2 || tiang?.foto_tiang_2) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleHapusFoto("foto_tiang_2")}
+                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_2 ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100" : "bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100"}`}
+                                                >
+                                                    {hapusFoto.foto_tiang_2 ? <><FaUndo size={10} /> Batal</> : <><FaTrash size={10} /> Hapus</>}
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {hapusFoto.foto_tiang_2 ? (
+                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 bg-amber-50">
+                                                <span className="px-3 text-center text-xs text-amber-700">
+                                                    Akan dihapus saat disimpan
+                                                </span>
+                                            </div>
+                                        ) : (
                                         <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
                                             {preview.foto_tiang_2 ? (
                                                 <img
@@ -326,6 +412,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                 </div>
                                             )}
                                         </div>
+                                        )}
 
                                         <input
                                             name="foto_tiang_2"
@@ -339,10 +426,29 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     {/* Foto 3 */}
 
                                     <div>
-                                        <label className="block text-xs text-gray-500 mb-2">
-                                            Foto 3
-                                        </label>
+                                        <div className="mb-2 flex items-center justify-between">
+                                            <label className="block text-xs text-gray-500">
+                                                Foto 3
+                                            </label>
 
+                                            {(preview.foto_tiang_3 || tiang?.foto_tiang_3) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => toggleHapusFoto("foto_tiang_3")}
+                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_3 ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100" : "bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100"}`}
+                                                >
+                                                    {hapusFoto.foto_tiang_3 ? <><FaUndo size={10} /> Batal</> : <><FaTrash size={10} /> Hapus</>}
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {hapusFoto.foto_tiang_3 ? (
+                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 bg-amber-50">
+                                                <span className="px-3 text-center text-xs text-amber-700">
+                                                    Akan dihapus saat disimpan
+                                                </span>
+                                            </div>
+                                        ) : (
                                         <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
                                             {preview.foto_tiang_3 ? (
                                                 <img
@@ -358,6 +464,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                 </div>
                                             )}
                                         </div>
+                                        )}
 
                                         <input
                                             name="foto_tiang_3"

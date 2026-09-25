@@ -34,8 +34,8 @@ class ONTController extends Controller
             ], [
                 'kode_ont.required' => 'Kode ONT wajib diisi.',
                 'kode_ont.unique' => 'Kode ONT sudah digunakan.',
-                'area.required' => 'Area wajib diisi.',
-                'wilayah.required' => 'Wilayah wajib diisi.',
+                'area.required' => 'Kecamatan wajib diisi.',
+                'wilayah.required' => 'Wilayah/Kabupaten wajib diisi.',
                 'deskripsi_ont.required' => 'Deskripsi ONT wajib diisi.',
                 'foto_ont_1.required' => 'Foto ONT 1 wajib diisi.',
                 'foto_ont_2.required' => 'Foto ONT 2 wajib diisi.',
@@ -111,6 +111,9 @@ class ONTController extends Controller
                 'foto_ont_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
                 'foto_ont_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
                 'foto_ont_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+                'hapus_foto_1'    => 'nullable|boolean',
+                'hapus_foto_2'    => 'nullable|boolean',
+                'hapus_foto_3'    => 'nullable|boolean',
                 'latitude'        => 'required|numeric',
                 'longitude'       => 'required|numeric',
                 'nama_petugas'    => 'required|string|max:255',
@@ -118,8 +121,8 @@ class ONTController extends Controller
             ], [
                 'kode_ont.required' => 'Kode ONT wajib diisi.',
                 'kode_ont.unique' => 'Kode ONT sudah digunakan.',
-                'area.required' => 'Area wajib diisi.',
-                'wilayah.required' => 'Wilayah wajib diisi.',
+                'area.required' => 'Kecamatan wajib diisi.',
+                'wilayah.required' => 'Wilayah/Kabupaten wajib diisi.',
                 'deskripsi_ont.required' => 'Deskripsi ONT wajib diisi.',
                 'latitude.required' => 'Latitude wajib diisi.',
                 'latitude.numeric' => 'Latitude harus berupa angka.',
@@ -145,18 +148,27 @@ class ONTController extends Controller
                 $data['foto_ont_1'] = $path;
                 $newFiles[] = $path;
                 if ($ont->foto_ont_1) $oldFilesToDelete[] = $ont->foto_ont_1;
+            } elseif ($request->boolean('hapus_foto_1')) {
+                if ($ont->foto_ont_1) $oldFilesToDelete[] = $ont->foto_ont_1;
+                $data['foto_ont_1'] = null;
             }
             if ($request->hasFile('foto_ont_2')) {
                 $path = $this->storeOptimizedImage($request->file('foto_ont_2'), 'ont');
                 $data['foto_ont_2'] = $path;
                 $newFiles[] = $path;
                 if ($ont->foto_ont_2) $oldFilesToDelete[] = $ont->foto_ont_2;
+            } elseif ($request->boolean('hapus_foto_2')) {
+                if ($ont->foto_ont_2) $oldFilesToDelete[] = $ont->foto_ont_2;
+                $data['foto_ont_2'] = null;
             }
             if ($request->hasFile('foto_ont_3')) {
                 $path = $this->storeOptimizedImage($request->file('foto_ont_3'), 'ont');
                 $data['foto_ont_3'] = $path;
                 $newFiles[] = $path;
                 if ($ont->foto_ont_3) $oldFilesToDelete[] = $ont->foto_ont_3;
+            } elseif ($request->boolean('hapus_foto_3')) {
+                if ($ont->foto_ont_3) $oldFilesToDelete[] = $ont->foto_ont_3;
+                $data['foto_ont_3'] = null;
             }
             $lama = $ont->toArray();
             $ont->update($data);
@@ -200,7 +212,7 @@ class ONTController extends Controller
         if (str_contains($msg, 'cannot be null') || str_contains($msg, "doesn't have a default value") || str_contains($msg, '1048') || str_contains($msg, '1364') || preg_match("/(Column|Field) '[^']+' (cannot be null|doesn't have a default value)/", $msg)) {
             if (preg_match("/(?:Column|Field) '([^']+)'/", $msg, $m)) {
                 $col = $m[1];
-                $labels = ['kode_ont' => 'Kode ONT', 'area' => 'Area', 'wilayah' => 'Wilayah', 'deskripsi_ont' => 'Deskripsi ONT', 'foto_ont_1' => 'Foto ONT 1', 'foto_ont_2' => 'Foto ONT 2', 'foto_ont_3' => 'Foto ONT 3', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
+                $labels = ['kode_ont' => 'Kode ONT', 'area' => 'Kecamatan', 'wilayah' => 'Wilayah/Kabupaten', 'deskripsi_ont' => 'Deskripsi ONT', 'foto_ont_1' => 'Foto ONT 1', 'foto_ont_2' => 'Foto ONT 2', 'foto_ont_3' => 'Foto ONT 3', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
                 return [$col => ($labels[$col] ?? $col) . ' wajib diisi.'];
             }
             return ['error' => 'Ada field wajib yang belum diisi.'];

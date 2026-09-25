@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import { FaChevronDown, FaWifi } from "react-icons/fa";
-import { MdRouter } from "react-icons/md";
 import { usePage } from "@inertiajs/react";
 
 import MainLayout from "../Layouts/MainLayout";
@@ -118,12 +117,12 @@ export default function Peta() {
                             <div className="mt-2 flex items-center gap-4 text-xs text-gray-800">
 
                                 <span className="flex items-center gap-2">
-                                    <FaWifi size={25} className="p-1 rounded-full text-white bg-blue-900" />
+                                    <span className="inline-block h-[20px] w-[20px] rounded-full bg-blue-900 ring-2 ring-white shadow" />
                                     Tiang
                                 </span>
 
                                 <span className="flex items-center gap-2">
-                                    <MdRouter size={25} className="text-white p-1 rounded-full bg-sky-500" />
+                                    <FaWifi size={20} className="text-white p-1 rounded-full bg-sky-500" />
                                     ONT
                                 </span>
 
@@ -155,8 +154,8 @@ export default function Peta() {
 
                                 {[
                                     { label: "Semua", icon: null, active: "bg-gray-900 text-white border-gray-900 shadow", idle: "bg-white text-gray-700 border-gray-300 hover:bg-gray-50" },
-                                    { label: "Tiang", icon: FaWifi, active: "bg-[#1e3a8a] text-white border-[#1e3a8a] shadow", idle: "bg-white text-[#1e3a8a] border-[#1e3a8a]/30 hover:bg-blue-50" },
-                                    { label: "ONT", icon: MdRouter, active: "bg-sky-500 text-white border-sky-500 shadow", idle: "bg-white text-sky-600 border-sky-500/30 hover:bg-sky-50" },
+                                    { label: "Tiang", icon: null, active: "bg-[#1e3a8a] text-white border-[#1e3a8a] shadow", idle: "bg-white text-[#1e3a8a] border-[#1e3a8a]/30 hover:bg-blue-50" },
+                                    { label: "ONT", icon: FaWifi, active: "bg-sky-500 text-white border-sky-500 shadow", idle: "bg-white text-sky-600 border-sky-500/30 hover:bg-sky-50" },
                                 ].map(({ label, icon: Icon, active, idle }) => {
                                     const isActive = assetType === label;
                                     return (
@@ -218,7 +217,7 @@ export default function Peta() {
 
                                 <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-[#1e3a8a]/20 bg-blue-50 shadow-sm">
                                     <span className="flex items-center gap-1 text-[11px] font-bold text-[#1e3a8a]">
-                                        <FaWifi size={10} /> {totalTiang}
+                                        <span className="inline-block h-[10px] w-[10px] rounded-full bg-[#1e3a8a]" /> {totalTiang}
                                     </span>
                                     <span className="text-[10px] font-medium text-[#1e3a8a]/70">
                                         Tiang
@@ -227,7 +226,7 @@ export default function Peta() {
 
                                 <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-sky-500/20 bg-sky-50 shadow-sm">
                                     <span className="flex items-center gap-1 text-[11px] font-bold text-sky-600">
-                                        <MdRouter size={12} /> {totalOnt}
+                                        <FaWifi size={12} /> {totalOnt}
                                     </span>
                                     <span className="text-[10px] font-medium text-sky-600/70">
                                         ONT

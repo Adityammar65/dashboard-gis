@@ -93,15 +93,13 @@ class PageController extends Controller
             ],
         ];
 
-        // Pembaruan Aset - latest 5 added or updated (by updated_at desc)
+        // Pembaruan Aset - latest 5 added or updated globally (by updated_at desc)
         $recentTiang = TiangModel::query()
-            ->select(['id', 'kode_tiang as kode', 'wilayah', 'area', 'status', 'created_at', 'updated_at'])
-            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->select(['id', 'kode_tiang as kode', 'wilayah', 'area', 'status', 'nama_petugas', 'created_at', 'updated_at'])
             ->orderByDesc('updated_at')->orderByDesc('id')->limit(5)->get()
             ->map(fn($r) => array_merge($r->toArray(), ['type' => 'tiang']));
         $recentOnt = ONTModel::query()
-            ->select(['id', 'kode_ont as kode', 'wilayah', 'area', 'status', 'created_at', 'updated_at'])
-            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->select(['id', 'kode_ont as kode', 'wilayah', 'area', 'status', 'nama_petugas', 'created_at', 'updated_at'])
             ->orderByDesc('updated_at')->orderByDesc('id')->limit(5)->get()
             ->map(fn($r) => array_merge($r->toArray(), ['type' => 'ont']));
         $recentAssets = $recentTiang->concat($recentOnt)->sortByDesc('updated_at')->take(5)->values();

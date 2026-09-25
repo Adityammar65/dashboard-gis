@@ -35,8 +35,8 @@ class TiangController extends Controller
             ], [
                 'kode_tiang.required' => 'Kode Tiang wajib diisi.',
                 'kode_tiang.unique' => 'Kode Tiang sudah digunakan.',
-                'area.required' => 'Area wajib diisi.',
-                'wilayah.required' => 'Wilayah wajib diisi.',
+                'area.required' => 'Kecamatan wajib diisi.',
+                'wilayah.required' => 'Wilayah/Kabupaten wajib diisi.',
                 'deskripsi_tiang.required' => 'Deskripsi Tiang wajib diisi.',
                 'foto_tiang_1.required' => 'Foto Tiang 1 wajib diisi.',
                 'foto_tiang_2.required' => 'Foto Tiang 2 wajib diisi.',
@@ -113,6 +113,9 @@ class TiangController extends Controller
                 'foto_tiang_1'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
                 'foto_tiang_2'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
                 'foto_tiang_3'    => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+                'hapus_foto_1'    => 'nullable|boolean',
+                'hapus_foto_2'    => 'nullable|boolean',
+                'hapus_foto_3'    => 'nullable|boolean',
                 'latitude'        => 'required|numeric',
                 'longitude'       => 'required|numeric',
                 'nama_petugas'    => 'required|string|max:255',
@@ -120,8 +123,8 @@ class TiangController extends Controller
             ], [
                 'kode_tiang.required' => 'Kode Tiang wajib diisi.',
                 'kode_tiang.unique' => 'Kode Tiang sudah digunakan.',
-                'area.required' => 'Area wajib diisi.',
-                'wilayah.required' => 'Wilayah wajib diisi.',
+                'area.required' => 'Kecamatan wajib diisi.',
+                'wilayah.required' => 'Wilayah/Kabupaten wajib diisi.',
                 'deskripsi_tiang.required' => 'Deskripsi Tiang wajib diisi.',
                 'latitude.required' => 'Latitude wajib diisi.',
                 'latitude.numeric' => 'Latitude harus berupa angka.',
@@ -147,18 +150,27 @@ class TiangController extends Controller
                 $data['foto_tiang_1'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_1) $oldFilesToDelete[] = $tiang->foto_tiang_1;
+            } elseif ($request->boolean('hapus_foto_1')) {
+                if ($tiang->foto_tiang_1) $oldFilesToDelete[] = $tiang->foto_tiang_1;
+                $data['foto_tiang_1'] = null;
             }
             if ($request->hasFile('foto_tiang_2')) {
                 $path = $this->storeOptimizedImage($request->file('foto_tiang_2'), 'tiang');
                 $data['foto_tiang_2'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_2) $oldFilesToDelete[] = $tiang->foto_tiang_2;
+            } elseif ($request->boolean('hapus_foto_2')) {
+                if ($tiang->foto_tiang_2) $oldFilesToDelete[] = $tiang->foto_tiang_2;
+                $data['foto_tiang_2'] = null;
             }
             if ($request->hasFile('foto_tiang_3')) {
                 $path = $this->storeOptimizedImage($request->file('foto_tiang_3'), 'tiang');
                 $data['foto_tiang_3'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_3) $oldFilesToDelete[] = $tiang->foto_tiang_3;
+            } elseif ($request->boolean('hapus_foto_3')) {
+                if ($tiang->foto_tiang_3) $oldFilesToDelete[] = $tiang->foto_tiang_3;
+                $data['foto_tiang_3'] = null;
             }
             $lama = $tiang->toArray();
             $tiang->update($data);
@@ -202,7 +214,7 @@ class TiangController extends Controller
         if (str_contains($msg, 'cannot be null') || str_contains($msg, "doesn't have a default value") || str_contains($msg, '1048') || str_contains($msg, '1364') || preg_match("/(Column|Field) '[^']+' (cannot be null|doesn't have a default value)/", $msg)) {
             if (preg_match("/(?:Column|Field) '([^']+)'/", $msg, $m)) {
                 $col = $m[1];
-                $labels = ['kode_tiang' => 'Kode Tiang', 'area' => 'Area', 'wilayah' => 'Wilayah', 'deskripsi_tiang' => 'Deskripsi Tiang', 'foto_tiang_1' => 'Foto Tiang 1', 'foto_tiang_2' => 'Foto Tiang 2', 'foto_tiang_3' => 'Foto Tiang 3', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
+                $labels = ['kode_tiang' => 'Kode Tiang', 'area' => 'Kecamatan', 'wilayah' => 'Wilayah/Kabupaten', 'deskripsi_tiang' => 'Deskripsi Tiang', 'foto_tiang_1' => 'Foto Tiang 1', 'foto_tiang_2' => 'Foto Tiang 2', 'foto_tiang_3' => 'Foto Tiang 3', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
                 return [$col => ($labels[$col] ?? $col) . ' wajib diisi.'];
             }
             return ['error' => 'Ada field wajib yang belum diisi.'];
