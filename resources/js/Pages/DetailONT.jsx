@@ -191,14 +191,16 @@ export default function DetailONT({ ont }) {
                                 </div>
                             </div>
 
-                            <div>
-                                <p className="font-semibold text-gray-800">
-                                    Petugas
-                                </p>
-                                <p className="mt-1 text-gray-600">
-                                    {ont?.nama_petugas || "-"}
-                                </p>
-                            </div>
+                            {ont?.updated_by && (
+                                <div>
+                                    <p className="font-semibold text-gray-800">
+                                        Diperbarui oleh
+                                    </p>
+                                    <p className="mt-1 text-gray-600">
+                                        {ont.updated_by}
+                                    </p>
+                                </div>
+                            )}
 
                             <div>
                                 <p className="font-semibold text-gray-800">

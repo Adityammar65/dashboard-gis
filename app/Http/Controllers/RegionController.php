@@ -10,7 +10,7 @@ use App\Models\WilayahModel;
 
 class RegionController extends Controller
 {
-    // Get Wilayah Saat ini
+    // Ambil Wilayah Saat Ini
 
     private function getCurrentWilayah(): ?WilayahModel
     {
@@ -31,7 +31,7 @@ class RegionController extends Controller
         return WilayahModel::first();
     }
 
-    // Get Wilayah
+    // Resolve Kode Kemendagri
 
     private function resolveKemendagriCode(WilayahModel $wil): ?string
     {
@@ -52,7 +52,7 @@ class RegionController extends Controller
         return $map[$key] ?? null;
     }
 
-    // Kecamatan
+    // Kecamatan Berdasarkan Kabupaten
 
     public function kecamatanByKabupaten(Request $request, $kode)
     {
@@ -131,6 +131,8 @@ class RegionController extends Controller
         ]);
     }
 
+    // Format Kode untuk Wilayah.id
+
     private function formatForWilayahId(string $code, string $level): string
     {
         $digits = preg_replace('/[^0-9]/', '', $code);
@@ -142,7 +144,7 @@ class RegionController extends Controller
         return $code;
     }
 
-    // Detect Kecamatan
+    // Kecamatan Wilayah Aktif
 
     public function currentKecamatan(Request $request)
     {
@@ -217,7 +219,7 @@ class RegionController extends Controller
         ]);
     }
 
-    // Detect Kelurahan by Kecamatan
+    // Kelurahan Berdasarkan Kecamatan
 
     public function kelurahanByKecamatan(Request $request, $code)
     {

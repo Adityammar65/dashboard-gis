@@ -43,7 +43,6 @@ class PageController extends Controller
                 ->orderByDesc('id')->limit(2000)->get();
         }
 
-        // Statistik - scoped to active wilayah if set, otherwise global
         $tiangAgg = TiangModel::query()
             ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
             ->selectRaw("COUNT(*) as total, SUM(CASE WHEN LOWER(status)='aktif' THEN 1 ELSE 0 END) as aktif, SUM(CASE WHEN LOWER(status)='nonaktif' THEN 1 ELSE 0 END) as nonaktif")
@@ -93,13 +92,12 @@ class PageController extends Controller
             ],
         ];
 
-        // Pembaruan Aset - latest 5 added or updated globally (by updated_at desc)
         $recentTiang = TiangModel::query()
-            ->select(['id', 'kode_tiang as kode', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'nama_petugas', 'created_at', 'updated_at'])
+            ->select(['id', 'kode_tiang as kode', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'nama_petugas', 'updated_by', 'created_at', 'updated_at'])
             ->orderByDesc('updated_at')->orderByDesc('id')->limit(5)->get()
             ->map(fn($r) => array_merge($r->toArray(), ['type' => 'tiang']));
         $recentOnt = ONTModel::query()
-            ->select(['id', 'kode_ont as kode', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'nama_petugas', 'created_at', 'updated_at'])
+            ->select(['id', 'kode_ont as kode', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'nama_petugas', 'updated_by', 'created_at', 'updated_at'])
             ->orderByDesc('updated_at')->orderByDesc('id')->limit(5)->get()
             ->map(fn($r) => array_merge($r->toArray(), ['type' => 'ont']));
         $recentAssets = $recentTiang->concat($recentOnt)->sortByDesc('updated_at')->take(5)->values();

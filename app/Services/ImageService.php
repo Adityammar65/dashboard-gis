@@ -9,16 +9,10 @@ use Illuminate\Support\Str;
 
 class ImageService
 {
-    /**
-     * Resolved encoder binary paths, keyed by encoder name.
-     *
-     * @var array<string, string|null>|null
-     */
     private static ?array $binaries = null;
 
-    /**
-     * Store an uploaded image resized and re-encoded as WebP.
-     */
+    // Simpan WebP Teroptimasi
+
     public function storeOptimizedWebP(UploadedFile $file, string $directory): string
     {
         $realPath = $file->getRealPath();
@@ -32,7 +26,7 @@ class ImageService
             Storage::disk($disk)->makeDirectory($directory);
         }
 
-        $storagePath = $directory.'/'.Str::uuid()->toString().'.webp';
+        $storagePath = $directory . '/' . Str::uuid()->toString() . '.webp';
         $absolutePath = Storage::disk($disk)->path($storagePath);
 
         $absoluteDir = dirname($absolutePath);
@@ -54,9 +48,9 @@ class ImageService
 
                 return $storagePath;
             } catch (\Throwable $e) {
-                $failures[] = $encoder.': '.$e->getMessage();
+                $failures[] = $encoder . ': ' . $e->getMessage();
 
-                Log::error('ImageService '.$encoder.' conversion failed: '.$e->getMessage(), [
+                Log::error('ImageService ' . $encoder . ' conversion failed: ' . $e->getMessage(), [
                     'original' => $file->getClientOriginalName(),
                     'directory' => $directory,
                 ]);
@@ -71,16 +65,12 @@ class ImageService
 
         throw new \RuntimeException(
             'Gagal mengoptimalkan gambar: tidak ada encoder WebP yang tersedia.'
-            .($failures ? ' ('.implode('; ', $failures).')' : '')
+                . ($failures ? ' (' . implode('; ', $failures) . ')' : '')
         );
     }
 
-    /**
-     * Run the configured encoder, resizing as a side effect of encoding.
-     *
-     * @return array{0: int, 1: int} dimensions to verify the output against,
-     *                                  or an empty array when unknown
-     */
+    // Encode Gambar
+
     private function encode(string $encoder, string $realPath, string $absolutePath): array
     {
         $size = $this->targetSize($realPath);
@@ -98,11 +88,8 @@ class ImageService
         return [];
     }
 
-    /**
-     * Compute the target dimensions, preserving aspect ratio.
-     *
-     * @return array{0: int, 1: int}
-     */
+    // Hitung Ukuran Target
+
     private function targetSize(string $realPath): array
     {
         $dimensions = @getimagesize($realPath);
@@ -131,9 +118,8 @@ class ImageService
         ];
     }
 
-    /**
-     * Encode with cwebp.
-     */
+    // Encode via Cwebp
+
     private function encodeViaCwebp(
         string $realPath,
         string $absolutePath,
@@ -173,13 +159,12 @@ class ImageService
         exec($cmd, $output, $code);
 
         if ($code !== 0) {
-            throw new \RuntimeException('cwebp gagal: '.trim(implode("\n", $output)));
+            throw new \RuntimeException('cwebp gagal: ' . trim(implode("\n", $output)));
         }
     }
 
-    /**
-     * Encode with the ImageMagick CLI.
-     */
+    // Encode via ImageMagick
+
     private function encodeViaMagick(string $realPath, string $absolutePath, int $quality): void
     {
         $bin = $this->binary('magick');
@@ -207,27 +192,26 @@ class ImageService
         exec($cmd, $output, $code);
 
         if ($code !== 0) {
-            throw new \RuntimeException('ImageMagick CLI gagal: '.trim(implode("\n", $output)));
+            throw new \RuntimeException('ImageMagick CLI gagal: ' . trim(implode("\n", $output)));
         }
     }
 
-    /**
-     * Assert the encoder produced a usable WebP file.
-     */
+    // Validasi WebP
+
     private function validateWebP(string $absolutePath, string $encoder, array $expected = []): void
     {
         if (! is_file($absolutePath) || filesize($absolutePath) === 0) {
-            throw new \RuntimeException('Encoder '.$encoder.' tidak menghasilkan file.');
+            throw new \RuntimeException('Encoder ' . $encoder . ' tidak menghasilkan file.');
         }
 
         $header = file_get_contents($absolutePath, false, null, 0, 12);
         if ($header === false || substr($header, 0, 4) !== 'RIFF' || substr($header, 8, 4) !== 'WEBP') {
-            throw new \RuntimeException('Output '.$encoder.' bukan file WebP yang valid.');
+            throw new \RuntimeException('Output ' . $encoder . ' bukan file WebP yang valid.');
         }
 
         $size = @getimagesize($absolutePath);
         if ($size === false || ($size[0] ?? 0) < 1 || ($size[1] ?? 0) < 1) {
-            throw new \RuntimeException('Output '.$encoder.' tidak dapat didekode.');
+            throw new \RuntimeException('Output ' . $encoder . ' tidak dapat didekode.');
         }
 
         if ($expected !== [] && ((int) $size[0] !== $expected[0] || (int) $size[1] !== $expected[1])) {
@@ -242,23 +226,23 @@ class ImageService
         }
     }
 
+    // Cek Encoder Tersedia
+
     private function encoderAvailable(string $encoder): bool
     {
         return in_array($encoder, ['cwebp', 'magick'], true)
             && $this->binary($encoder) !== null;
     }
 
-    /**
-     * Whether the named encoder can be used on this host.
-     */
+    // Cek Encoder Publik
+
     public function hasEncoder(string $encoder): bool
     {
         return $this->encoderAvailable($encoder);
     }
 
-    /**
-     * Resolve an encoder binary, memoized for the process lifetime.
-     */
+    // Ambil Binary Encoder
+
     private function binary(string $encoder): ?string
     {
         if (self::$binaries === null) {
@@ -270,6 +254,8 @@ class ImageService
 
         return self::$binaries[$encoder] ?? null;
     }
+
+    // Cari Binary Cwebp
 
     private function locateCwebpBinary(): ?string
     {
@@ -293,6 +279,8 @@ class ImageService
         return null;
     }
 
+    // Cari Binary ImageMagick
+
     private function locateMagickBinary(): ?string
     {
         $candidates = ['/opt/lampp/bin/magick', '/usr/bin/magick', '/usr/local/bin/magick', 'magick', 'convert'];
@@ -315,9 +303,8 @@ class ImageService
         return null;
     }
 
-    /**
-     * Locate an executable on PATH without shelling out when possible.
-     */
+    // Cari di PATH
+
     private function which(string $bin): ?string
     {
         $path = getenv('PATH');
@@ -330,7 +317,7 @@ class ImageService
                 continue;
             }
 
-            $candidate = rtrim($dir, '/').'/'.$bin;
+            $candidate = rtrim($dir, '/') . '/' . $bin;
             if (is_file($candidate) && is_executable($candidate)) {
                 return $candidate;
             }
@@ -339,9 +326,8 @@ class ImageService
         return null;
     }
 
-    /**
-     * Fail loudly when no WebP encoder can be used at all.
-     */
+    // Pastikan Dukungan WebP
+
     public function ensureWebPSupport(): void
     {
         if ($this->encoderAvailable('cwebp')) {
@@ -354,13 +340,12 @@ class ImageService
 
         throw new \RuntimeException(
             'Tidak ada encoder WebP yang tersedia. Diperlukan cwebp atau ImageMagick CLI. '
-            .'Ekstensi Imagick dan WebP pada GD tidak digunakan oleh aplikasi ini.'
+                . 'Ekstensi Imagick dan WebP pada GD tidak digunakan oleh aplikasi ini.'
         );
     }
 
-    /**
-     * Whether at least one usable WebP encoder is present.
-     */
+    // Cek Dukungan WebP Statis
+
     public static function isWebPSupported(): bool
     {
         $service = new self;

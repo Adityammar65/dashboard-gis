@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('latitude');
             $table->string('longitude');
             $table->string('nama_petugas');
+            $table->string('updated_by')->nullable();
             $table->enum(
                 'status',
                 [

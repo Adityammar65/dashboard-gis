@@ -366,42 +366,50 @@ export default function Dashboard() {
                         <div className="mt-5 space-y-3">
                             {recentAssets.length > 0 ? (
                                 recentAssets.map((item) => {
-                                    const isBaru = item.created_at && item.updated_at
-                                        ? Math.abs(new Date(item.updated_at).getTime() - new Date(item.created_at).getTime()) < 60000
+                                    const createdMs = item.created_at ? new Date(item.created_at).getTime() : null;
+                                    const updatedMs = item.updated_at ? new Date(item.updated_at).getTime() : null;
+                                    const isBaru = createdMs !== null && updatedMs !== null
+                                        ? Math.abs(updatedMs - createdMs) <= 1000
                                         : false;
+                                    const displayTime = isBaru ? item.created_at : item.updated_at;
                                     return (
                                         <div
                                             key={`${item.type}-${item.id}`}
                                             className="flex items-center justify-between rounded-xl px-2 py-2 -mx-2 hover:bg-gray-50 transition"
                                         >
-                                            <div className="flex items-center gap-3 min-w-0">
+                                            <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
                                                 {item.type === "tiang" ? (
                                                     <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-800 ring-1 ring-blue-200"><FaWifi className="text-sm" /></span>
                                                 ) : (
                                                     <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-600 ring-1 ring-sky-200"><MdRouter className="text-sm" /></span>
                                                 )}
-                                                <div className="text-xs min-w-0">
+                                                <div className="text-xs min-w-0 flex-1 overflow-hidden">
                                                     <p className="font-semibold text-gray-800 truncate">{item.kode}</p>
-                                                    <p className="text-gray-500 capitalize truncate">
+                                                    <p
+                                                        className="text-gray-500 capitalize truncate block max-w-full"
+                                                        title={`${item.wilayah ?? ""}${(item.kecamatan || item.area) ? ` • ${item.kecamatan || item.area}` : ""}${item.kelurahan ? ` • ${item.kelurahan}` : ""}`}
+                                                    >
                                                         {item.wilayah}{(item.kecamatan || item.area) ? ` • ${item.kecamatan || item.area}` : ""}{item.kelurahan ? ` • ${item.kelurahan}` : ""}
                                                     </p>
-                                                    <p className="mt-0.5 flex items-center gap-1 truncate text-gray-500">
-                                                        <FaUser size={9} className="shrink-0 text-gray-400" />
-                                                        <span className="truncate">{item.nama_petugas || "—"}</span>
-                                                        <span className={`ml-1 shrink-0 text-[9px] font-semibold ${isBaru ? "text-emerald-600" : "text-amber-600"}`}>
-                                                            {isBaru ? "Ditambahkan" : "Diperbarui"}
-                                                        </span>
-                                                    </p>
+                                                    {item.updated_by && (
+                                                        <p className="mt-0.5 flex items-center gap-1 truncate text-gray-500">
+                                                            <FaUser size={9} className="shrink-0 text-gray-400" />
+                                                            <span className="truncate max-w-[140px] inline-block align-bottom">{item.updated_by}</span>
+                                                            <span className={`ml-1 shrink-0 text-[10px] font-semibold ${isBaru ? "text-emerald-600" : "text-amber-600"}`}>
+                                                                {isBaru ? "Ditambahkan" : "Diperbarui"}
+                                                            </span>
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
-                                            <div className="text-right shrink-0">
+                                            <div className="text-right shrink-0 ml-3">
                                                 <span
                                                     className={`rounded-full px-2.5 py-1 text-[10px] font-medium text-white capitalize shadow-sm ring-1 ring-white/20 ${String(item.status).toLowerCase() === "aktif" ? "bg-green-500" : "bg-red-500"}`}
                                                 >
                                                     {item.status}
                                                 </span>
                                                 <p className="mt-1 text-[10px] text-gray-500">
-                                                    {formatRelative(item.updated_at)}
+                                                    {formatRelative(displayTime)}
                                                 </p>
                                             </div>
                                         </div>

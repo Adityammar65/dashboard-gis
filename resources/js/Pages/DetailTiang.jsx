@@ -241,17 +241,19 @@ export default function DetailTiang({ tiang }) {
 
                             </div>
 
-                            <div>
+                            {tiang?.updated_by && (
+                                <div>
 
-                                <p className="font-semibold text-gray-800">
-                                    Petugas
-                                </p>
+                                    <p className="font-semibold text-gray-800">
+                                        Diperbarui oleh
+                                    </p>
 
-                                <p className="mt-1 text-gray-600">
-                                    {tiang?.nama_petugas || "-"}
-                                </p>
+                                    <p className="mt-1 text-gray-600">
+                                        {tiang.updated_by}
+                                    </p>
 
-                            </div>
+                                </div>
+                            )}
 
                             <div>
 

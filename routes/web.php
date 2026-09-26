@@ -23,6 +23,7 @@ Route::middleware('cek_login')->group(function () {
 
     // Navigasi
 
+    Route::get('/', fn() => redirect('home'));
     Route::get('/home', [PageController::class, 'Index']);
     Route::get('/data-tiang', [PageController::class, 'DataTiang']);
     Route::get('/data-ont', [PageController::class, 'DataONT']);

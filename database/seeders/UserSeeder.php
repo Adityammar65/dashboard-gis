@@ -14,10 +14,20 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        UserModel::create([
-            'username' => 'admin',
-            'password' => Hash::make('password'),
-            'remember_token' => null,
-        ]);
+        UserModel::firstOrCreate(
+            ['username' => 'admin'],
+            [
+                'password' => Hash::make('password'),
+                'remember_token' => null,
+            ]
+        );
+
+        UserModel::firstOrCreate(
+            ['username' => 'admin2'],
+            [
+                'password' => Hash::make('password2'),
+                'remember_token' => null,
+            ]
+        );
     }
 }
