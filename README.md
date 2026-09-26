@@ -159,7 +159,7 @@ Setelah login, verifikasi:
 - **Notifikasi** — audit trail tiap CRUD (Dibuat/Diperbarui/Dihapus), status `belum_dibaca/dibaca`, tandai semua dibaca & hapus yang sudah dibaca.
 - **Pengaturan Wilayah Operasi** — pemilihan wilayah via `storage/app/settings.json` (`php artisan settings:generate`), berpengaruh ke filter peta & statistik Home.
 - **Autentikasi** — login session + cookie `gis_remember` 30 hari & remember-me, middleware `cek_login`.
-- **Manajemen File** — upload 3 foto `jpg/jpeg/png` max 5MB, optimasi Intervention Image (scale 1024px, compress 75%), cleanup saat gagal/hapus.
+- **Manajemen File** — upload 5 foto `jpg/jpeg/png/webp` max 5MB, dikonversi ke WebP via `cwebp` (quality 85, sisi terpanjang maks 1600px, rasio aspek dipertahankan, EXIF orientasi dipertahankan), output divalidasi (header RIFF/WEBP + decode), cleanup saat gagal/hapus. Diatur lewat `IMAGE_WEBP_QUALITY`, `IMAGE_MAX_LONGEST_SIDE`, `IMAGE_SHARP_YUV` (`config/image.php`).
 
 ### 10. Dokumentasi Antarmuka
 

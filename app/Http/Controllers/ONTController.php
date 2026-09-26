@@ -71,27 +71,27 @@ class ONTController extends Controller
             ];
             if (!Storage::disk('public')->exists('ont')) Storage::disk('public')->makeDirectory('ont');
             if ($request->hasFile('foto_ont_1')) {
-                $path = $this->storeOptimizedImage($request->file('foto_ont_1'), 'ont');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_ont_1'), 'ont');
                 $data['foto_ont_1'] = $path;
                 $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_ont_2')) {
-                $path = $this->storeOptimizedImage($request->file('foto_ont_2'), 'ont');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_ont_2'), 'ont');
                 $data['foto_ont_2'] = $path;
                 $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_ont_3')) {
-                $path = $this->storeOptimizedImage($request->file('foto_ont_3'), 'ont');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_ont_3'), 'ont');
                 $data['foto_ont_3'] = $path;
                 $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_ont_4')) {
-                $path = $this->storeOptimizedImage($request->file('foto_ont_4'), 'ont');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_ont_4'), 'ont');
                 $data['foto_ont_4'] = $path;
                 $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_ont_5')) {
-                $path = $this->storeOptimizedImage($request->file('foto_ont_5'), 'ont');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_ont_5'), 'ont');
                 $data['foto_ont_5'] = $path;
                 $storedFiles[] = $path;
             }
@@ -169,7 +169,7 @@ class ONTController extends Controller
             ];
             if (!Storage::disk('public')->exists('ont')) Storage::disk('public')->makeDirectory('ont');
             if ($request->hasFile('foto_ont_1')) {
-                $path = $this->storeOptimizedImage($request->file('foto_ont_1'), 'ont');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_ont_1'), 'ont');
                 $data['foto_ont_1'] = $path;
                 $newFiles[] = $path;
                 if ($ont->foto_ont_1) $oldFilesToDelete[] = $ont->foto_ont_1;
@@ -178,7 +178,7 @@ class ONTController extends Controller
                 $data['foto_ont_1'] = null;
             }
             if ($request->hasFile('foto_ont_2')) {
-                $path = $this->storeOptimizedImage($request->file('foto_ont_2'), 'ont');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_ont_2'), 'ont');
                 $data['foto_ont_2'] = $path;
                 $newFiles[] = $path;
                 if ($ont->foto_ont_2) $oldFilesToDelete[] = $ont->foto_ont_2;
@@ -187,7 +187,7 @@ class ONTController extends Controller
                 $data['foto_ont_2'] = null;
             }
             if ($request->hasFile('foto_ont_3')) {
-                $path = $this->storeOptimizedImage($request->file('foto_ont_3'), 'ont');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_ont_3'), 'ont');
                 $data['foto_ont_3'] = $path;
                 $newFiles[] = $path;
                 if ($ont->foto_ont_3) $oldFilesToDelete[] = $ont->foto_ont_3;
@@ -196,7 +196,7 @@ class ONTController extends Controller
                 $data['foto_ont_3'] = null;
             }
             if ($request->hasFile('foto_ont_4')) {
-                $path = $this->storeOptimizedImage($request->file('foto_ont_4'), 'ont');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_ont_4'), 'ont');
                 $data['foto_ont_4'] = $path;
                 $newFiles[] = $path;
                 if ($ont->foto_ont_4) $oldFilesToDelete[] = $ont->foto_ont_4;
@@ -205,7 +205,7 @@ class ONTController extends Controller
                 $data['foto_ont_4'] = null;
             }
             if ($request->hasFile('foto_ont_5')) {
-                $path = $this->storeOptimizedImage($request->file('foto_ont_5'), 'ont');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_ont_5'), 'ont');
                 $data['foto_ont_5'] = $path;
                 $newFiles[] = $path;
                 if ($ont->foto_ont_5) $oldFilesToDelete[] = $ont->foto_ont_5;
@@ -283,14 +283,6 @@ class ONTController extends Controller
     private function formatQueryError(QueryException $e): string
     {
         return array_values($this->parseQueryError($e))[0];
-    }
-
-    // Handle Image Optimize - shared service (GD with WebP quality 82, max 1600px, preserve alpha)
-    private function storeOptimizedImage($file, string $dir): string
-    {
-        /** @var ImageService $service */
-        $service = app(ImageService::class);
-        return $service->storeOptimizedWebP($file, $dir);
     }
 
     // Handle Delete File

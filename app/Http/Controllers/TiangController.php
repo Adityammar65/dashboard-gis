@@ -73,27 +73,27 @@ class TiangController extends Controller
             ];
             if (!Storage::disk('public')->exists('tiang')) Storage::disk('public')->makeDirectory('tiang');
             if ($request->hasFile('foto_tiang_1')) {
-                $path = $this->storeOptimizedImage($request->file('foto_tiang_1'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_1'), 'tiang');
                 $data['foto_tiang_1'] = $path;
                 $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_tiang_2')) {
-                $path = $this->storeOptimizedImage($request->file('foto_tiang_2'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_2'), 'tiang');
                 $data['foto_tiang_2'] = $path;
                 $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_tiang_3')) {
-                $path = $this->storeOptimizedImage($request->file('foto_tiang_3'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_3'), 'tiang');
                 $data['foto_tiang_3'] = $path;
                 $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_tiang_4')) {
-                $path = $this->storeOptimizedImage($request->file('foto_tiang_4'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_4'), 'tiang');
                 $data['foto_tiang_4'] = $path;
                 $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_tiang_5')) {
-                $path = $this->storeOptimizedImage($request->file('foto_tiang_5'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_5'), 'tiang');
                 $data['foto_tiang_5'] = $path;
                 $storedFiles[] = $path;
             }
@@ -171,7 +171,7 @@ class TiangController extends Controller
             ];
             if (!Storage::disk('public')->exists('tiang')) Storage::disk('public')->makeDirectory('tiang');
             if ($request->hasFile('foto_tiang_1')) {
-                $path = $this->storeOptimizedImage($request->file('foto_tiang_1'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_1'), 'tiang');
                 $data['foto_tiang_1'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_1) $oldFilesToDelete[] = $tiang->foto_tiang_1;
@@ -180,7 +180,7 @@ class TiangController extends Controller
                 $data['foto_tiang_1'] = null;
             }
             if ($request->hasFile('foto_tiang_2')) {
-                $path = $this->storeOptimizedImage($request->file('foto_tiang_2'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_2'), 'tiang');
                 $data['foto_tiang_2'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_2) $oldFilesToDelete[] = $tiang->foto_tiang_2;
@@ -189,7 +189,7 @@ class TiangController extends Controller
                 $data['foto_tiang_2'] = null;
             }
             if ($request->hasFile('foto_tiang_3')) {
-                $path = $this->storeOptimizedImage($request->file('foto_tiang_3'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_3'), 'tiang');
                 $data['foto_tiang_3'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_3) $oldFilesToDelete[] = $tiang->foto_tiang_3;
@@ -198,7 +198,7 @@ class TiangController extends Controller
                 $data['foto_tiang_3'] = null;
             }
             if ($request->hasFile('foto_tiang_4')) {
-                $path = $this->storeOptimizedImage($request->file('foto_tiang_4'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_4'), 'tiang');
                 $data['foto_tiang_4'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_4) $oldFilesToDelete[] = $tiang->foto_tiang_4;
@@ -207,7 +207,7 @@ class TiangController extends Controller
                 $data['foto_tiang_4'] = null;
             }
             if ($request->hasFile('foto_tiang_5')) {
-                $path = $this->storeOptimizedImage($request->file('foto_tiang_5'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_5'), 'tiang');
                 $data['foto_tiang_5'] = $path;
                 $newFiles[] = $path;
                 if ($tiang->foto_tiang_5) $oldFilesToDelete[] = $tiang->foto_tiang_5;
@@ -287,13 +287,6 @@ class TiangController extends Controller
         return array_values($this->parseQueryError($e))[0];
     }
 
-    // Handle Image Optimize - shared service (GD with WebP quality 82, max 1600px, preserve alpha)
-    private function storeOptimizedImage($file, string $dir): string
-    {
-        /** @var ImageService $service */
-        $service = app(ImageService::class);
-        return $service->storeOptimizedWebP($file, $dir);
-    }
     // Handle Delete File
 
     private function cleanupFiles(array $paths): void
