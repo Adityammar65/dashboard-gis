@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ONTController;
 use App\Http\Controllers\PageController;
@@ -69,4 +70,10 @@ Route::middleware('cek_login')->group(function () {
 
     Route::post('/simpan-wilayah', [WilayahController::class, 'SimpanWilayah']);
     Route::get('/hapus-wilayah/{id}', [WilayahController::class, 'HapusWilayah']);
+
+    // Export
+
+    Route::get('/export/aset/{type}/{format}', [ExportController::class, 'aset'])
+        ->whereIn('type', ['tiang', 'ont'])
+        ->whereIn('format', ['pdf', 'excel']);
 });

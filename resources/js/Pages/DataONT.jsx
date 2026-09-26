@@ -1,9 +1,25 @@
 import MainLayout from "../Layouts/MainLayout";
 
 import { usePage, router } from "@inertiajs/react";
-import { useState, useMemo, useCallback, useEffect } from "react";
-import { FaPlus, FaFilter, FaEye, FaEdit } from "react-icons/fa";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { FaPlus, FaFilter, FaEye, FaEdit, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import { MdDelete, MdRouter } from "react-icons/md";
+
+const ambilNamaBerkas = (contentDisposition, cadangan) => {
+    if (!contentDisposition) return cadangan;
+
+    const cocokUtf8 = /filename\*=UTF-8''([^;]+)/i.exec(contentDisposition);
+    const cocokNormal = /filename="?([^";]+)"?/i.exec(contentDisposition);
+    const sumber = cocokUtf8 ? cocokUtf8[1] : cocokNormal ? cocokNormal[1] : null;
+
+    if (!sumber) return cadangan;
+
+    try {
+        return decodeURIComponent(sumber.trim());
+    } catch (error) {
+        return sumber.trim();
+    }
+};
 
 export default function DataONT({
     dataONT = [],
@@ -30,6 +46,11 @@ export default function DataONT({
 
     const [filterKecamatan, setFilterKecamatan] = useState(filter.kecamatan ?? "");
     const [filterKelurahan, setFilterKelurahan] = useState(filter.kelurahan ?? "");
+
+    const [openExport, setOpenExport] = useState(false);
+    const [sedangExport, setSedangExport] = useState("");
+    const [notifExport, setNotifExport] = useState(null);
+    const exportRef = useRef(null);
 
     const [kecamatanOptions, setKecamatanOptions] = useState([]);
     const [kelurahanOptions, setKelurahanOptions] = useState([]);
@@ -153,6 +174,98 @@ export default function DataONT({
         );
     }, []);
 
+    // Export
+
+    useEffect(() => {
+        if (!openExport) return;
+
+        const tutupKlikLuar = (event) => {
+            if (exportRef.current && !exportRef.current.contains(event.target)) {
+                setOpenExport(false);
+            }
+        };
+
+        const tutupEscape = (event) => {
+            if (event.key === "Escape") setOpenExport(false);
+        };
+
+        document.addEventListener("mousedown", tutupKlikLuar);
+        document.addEventListener("keydown", tutupEscape);
+
+        return () => {
+            document.removeEventListener("mousedown", tutupKlikLuar);
+            document.removeEventListener("keydown", tutupEscape);
+        };
+    }, [openExport]);
+
+    useEffect(() => {
+        if (!notifExport) return;
+
+        const timer = setTimeout(() => setNotifExport(null), 6000);
+
+        return () => clearTimeout(timer);
+    }, [notifExport]);
+
+    const handleExport = useCallback(async (format) => {
+        if (sedangExport) return;
+
+        const params = new URLSearchParams();
+
+        if (filterWilayah) params.set("wilayah", filterWilayah);
+        if (filterStatus) params.set("status", filterStatus);
+        if (filterKecamatan) params.set("kecamatan", filterKecamatan);
+        if (filterKelurahan) params.set("kelurahan", filterKelurahan);
+        params.set("page", String(dataONT?.current_page ?? 1));
+
+        const url = `${resolveHref(`export/aset/ont/${format}`)}?${params.toString()}`;
+
+        setOpenExport(false);
+        setSedangExport(format);
+
+        try {
+            const response = await fetch(url, {
+                credentials: "same-origin",
+                headers: { Accept: "application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/json" },
+            });
+
+            const contentType = response.headers.get("content-type") || "";
+
+            if (!response.ok) {
+                let pesan = "Export gagal. Silakan coba lagi.";
+
+                if (contentType.includes("application/json")) {
+                    const data = await response.json().catch(() => null);
+                    if (data?.message) pesan = data.message;
+                }
+
+                setNotifExport({ tipe: "error", pesan });
+
+                return;
+            }
+
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            const namaBerkas = ambilNamaBerkas(
+                response.headers.get("content-disposition"),
+                `Data-ONT.${format}`
+            );
+
+            link.href = objectUrl;
+            link.download = namaBerkas;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(objectUrl);
+
+            setNotifExport({ tipe: "sukses", pesan: `Berkas ${namaBerkas} berhasil diunduh.` });
+        } catch (error) {
+            setNotifExport({ tipe: "error", pesan: "Export gagal. Periksa koneksi internet Anda." });
+        } finally {
+            setSedangExport("");
+        }
+    }, [sedangExport, filterWilayah, filterStatus, filterKecamatan, filterKelurahan, dataONT, resolveHref]);
+
     return (
         <MainLayout>
             <div className="space-y-4">
@@ -187,7 +300,77 @@ export default function DataONT({
                         Form ONT
                     </a>
 
+                    {/* Export PDF / Excel */}
+
+                    <div ref={exportRef} className="relative">
+
+                        <button
+                            type="button"
+                            onClick={() => setOpenExport(!openExport)}
+                            disabled={listONT.length === 0}
+                            className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25"
+                        >
+                            <FaFileExport />
+                            Export
+                            <FaChevronDown className={`text-[10px] transition-transform ${openExport ? "rotate-180" : ""}`} />
+                        </button>
+
+                        {openExport && (
+                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl">
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleExport("pdf")}
+                                    disabled={sedangExport !== ""}
+                                    className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    <FaFilePdf className="text-red-600" />
+                                    Export PDF
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleExport("excel")}
+                                    disabled={sedangExport !== ""}
+                                    className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    <FaFileExcel className="text-green-600" />
+                                    Export Excel
+                                </button>
+
+                            </div>
+                        )}
+
+                    </div>
+
                 </div>
+
+                {/* Notifikasi Export */}
+
+                {notifExport && (
+                    <div
+                        className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium shadow-sm ring-1 ${notifExport.tipe === "sukses"
+                            ? "bg-green-50 text-green-700 ring-green-200"
+                            : "bg-red-50 text-red-700 ring-red-200"
+                            }`}
+                    >
+                        {notifExport.tipe === "sukses" ? (
+                            <FaFileExcel className="shrink-0 text-green-600" />
+                        ) : (
+                            <FaFilePdf className="shrink-0 text-red-600" />
+                        )}
+
+                        <span className="flex-1">{notifExport.pesan}</span>
+
+                        <button
+                            type="button"
+                            onClick={() => setNotifExport(null)}
+                            className="shrink-0 rounded px-1 font-bold opacity-60 transition hover:opacity-100"
+                        >
+                            &times;
+                        </button>
+                    </div>
+                )}
 
                 {/* Statistik */}
 
