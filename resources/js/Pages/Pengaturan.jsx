@@ -22,9 +22,9 @@ export default function Pengaturan({ wilayah }) {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Kepala */}
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 max-md:flex-col max-md:items-stretch">
                     <div className="flex flex-1 items-center rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10">
                         <span className="text-sm font-semibold tracking-wide">
                             Pengaturan
@@ -34,7 +34,7 @@ export default function Pengaturan({ wilayah }) {
 
                 {/* Wilayah Operasi */}
 
-                <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+                <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:p-4">
 
                     <div className="mb-5 flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F8EAEA] text-[#AB3C3C]">
@@ -56,7 +56,7 @@ export default function Pengaturan({ wilayah }) {
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
-                        {/* Wilayah Saat Ini */}
+                        {/* Wilayah Aktif */}
 
                         <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-gray-50 to-white p-5 shadow-sm">
                             <p className="mb-1 text-xs font-semibold tracking-widest text-gray-500">
@@ -72,7 +72,7 @@ export default function Pengaturan({ wilayah }) {
                             </p>
                         </div>
 
-                        {/* Pilih Wilayah Baru */}
+                        {/* Pilih Wilayah */}
 
                         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
                             <label
@@ -117,14 +117,14 @@ export default function Pengaturan({ wilayah }) {
 
                     </div>
 
-                    {/* Tombol Simpan */}
+                    {/* Simpan */}
 
-                    <div className="mt-6 flex justify-end">
+                    <div className="mt-6 flex justify-end max-md:justify-stretch">
                         <button
                             type="button"
                             onClick={handleSimpan}
                             disabled={!selectedWilayah}
-                            className="flex items-center gap-2 rounded-xl bg-[#AB3C3C] px-5 py-2.5 text-sm font-medium text-white shadow-md transition hover:bg-[#8f3030] hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
+                            className="flex items-center gap-2 rounded-xl bg-[#AB3C3C] px-5 py-2.5 text-sm font-medium text-white shadow-md transition hover:bg-[#8f3030] hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none max-md:w-full max-md:justify-center"
                         >
                             <FaSave />
                             Simpan

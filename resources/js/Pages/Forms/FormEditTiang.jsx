@@ -42,7 +42,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
     }, []);
     const resolveUrl = (path) => `${base}/${path}`.replace(/\/+/g, '/');
 
-    // Handle Kecamatan & Kelurahan
+    // Kecamatan Kelurahan
 
     useEffect(() => {
         const targetWilayah = form.wilayah || tiang?.wilayah || tiang?.kabupaten || settings?.nama_wilayah;
@@ -286,10 +286,10 @@ export default function FormEditTiang({ tiang, wilayah }) {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Kepala */}
 
-                <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between mb-5 max-md:flex-col max-md:items-start max-md:gap-3">
+                    <div className="flex items-center gap-3 max-md:flex-wrap">
 
                         <button
                             type="button"
@@ -301,7 +301,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                         </button>
 
                         <div>
-                            <h1 className="text-xl font-bold text-gray-800 tracking-tight">
+                            <h1 className="text-xl font-bold text-gray-800 tracking-tight max-md:text-lg">
                                 Form Edit Tiang
                             </h1>
 
@@ -313,9 +313,9 @@ export default function FormEditTiang({ tiang, wilayah }) {
                     </div>
                 </div>
 
-                {/* Form */}
+                {/* Formulir */}
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-7">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-7 max-md:p-4">
 
                     <form onSubmit={handleSubmit}>
 
@@ -400,7 +400,6 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                     setKecFocused(false);
                                                     setKelurahanOptions([]);
                                                     setKelurahanManual(false);
-                                                    // fetch kelurahan directly with known code
                                                     setKelurahanLoading(true);
                                                     fetch(resolveUrl(`api/regions/kecamatan/${opt.code}/kelurahan`))
                                                         .then((r) => r.json())
@@ -561,7 +560,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                 />
                             </div>
 
-                            {/* Foto Tiang */}
+                            {/* Foto */}
 
                             <div className="md:col-span-2">
 
@@ -854,13 +853,13 @@ export default function FormEditTiang({ tiang, wilayah }) {
 
                         </div>
 
-                        {/* Submit */}
+                        {/* Simpan */}
 
-                        <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100">
+                        <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100 max-md:flex-col-reverse max-md:items-stretch">
 
                             <button
                                 type="submit"
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-green-700 active:scale-[0.98] transition"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-green-700 active:scale-[0.98] transition max-md:w-full max-md:justify-center"
                             >
                                 <FaSave size={14} />
                                 Simpan Perubahan

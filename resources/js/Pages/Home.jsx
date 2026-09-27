@@ -1,5 +1,3 @@
-{/* Import Main Layout */ }
-
 import MainLayout from "../Layouts/MainLayout";
 
 import { usePage } from "@inertiajs/react";
@@ -110,7 +108,7 @@ export default function Dashboard() {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Kepala */}
 
                 <div className="mb-4">
                     <h1 className="text-xl font-bold text-gray-800">
@@ -122,7 +120,7 @@ export default function Dashboard() {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 max-md:flex-col max-md:items-stretch">
 
                     <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white">
                         <span className="text-sm font-semibold tracking-wide">
@@ -140,14 +138,14 @@ export default function Dashboard() {
 
                         <button
                             onClick={() => setOpenTambah(!openTambah)}
-                            className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98]"
+                            className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:w-full max-md:justify-center"
                         >
                             <FaPlus />
                             Tambah Aset
                         </button>
 
                         {openTambah && (
-                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl">
+                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl max-md:left-0 max-md:right-auto max-md:w-full">
 
                                 <a
                                     href={resolveHref("tambah-tiang")}
@@ -196,7 +194,7 @@ export default function Dashboard() {
                             </div>
                         </div>
 
-                        <div className="mt-4 flex gap-4 text-xs">
+                        <div className="mt-4 flex gap-4 text-xs max-md:flex-wrap max-md:gap-2">
                             <span className="flex items-center gap-2 rounded-full bg-green-50 px-2 py-1 ring-1 ring-green-200">
                                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                 Aktif {stats?.tiang?.aktif ?? 0}
@@ -227,7 +225,7 @@ export default function Dashboard() {
                             </div>
                         </div>
 
-                        <div className="mt-4 flex gap-4 text-xs">
+                        <div className="mt-4 flex gap-4 text-xs max-md:flex-wrap max-md:gap-2">
                             <span className="flex items-center gap-2 rounded-full bg-green-50 px-2 py-1 ring-1 ring-green-200">
                                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                 Aktif {stats?.ont?.aktif ?? 0}
@@ -267,7 +265,7 @@ export default function Dashboard() {
                         </a>
                     </div>
 
-                    {/* Data Berkoordinat */}
+                    {/* Data Koordinat */}
 
                     <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-emerald-600 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
                         <div className="flex justify-between">
@@ -299,14 +297,14 @@ export default function Dashboard() {
 
                     {/* Peta */}
 
-                    <div className="xl:col-span-2 rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
-                        <div className="mb-4 flex items-center justify-between">
+                    <div className="xl:col-span-2 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:p-4">
+                        <div className="mb-4 flex items-center justify-between max-md:flex-col max-md:items-start max-md:gap-3">
                             <div>
                                 <h3 className="font-semibold text-gray-800">
                                     Peta Sebaran Aset GIS
                                 </h3>
 
-                                <div className="mt-2 flex gap-4 text-xs">
+                                <div className="mt-2 flex gap-4 text-xs max-md:flex-wrap max-md:gap-2">
                                     <span className="flex items-center gap-2 rounded-full bg-green-50 px-2 py-0.5 ring-1 ring-green-200">
                                         <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                         Aktif
@@ -327,7 +325,7 @@ export default function Dashboard() {
                         </div>
 
                         {hasWilayah ? (
-                            <div className="h-[450px] overflow-hidden rounded-xl border border-gray-100 shadow-inner">
+                            <div className="h-[450px] overflow-hidden rounded-xl border border-gray-100 shadow-inner max-md:h-[300px]">
                                 <MapView markers={markers} wilayah={activeWilayah} wilayahCenter={wilayahCenter} />
                             </div>
                         ) : (
@@ -345,7 +343,7 @@ export default function Dashboard() {
                         )}
                     </div>
 
-                    {/* Pembaruan Aset */}
+                    {/* Pembaruan */}
 
                     <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-600 bg-white p-5 shadow-sm hover:scale-[1.02] transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 will-change-transform">
                         <div className="flex items-center justify-between">
@@ -420,13 +418,13 @@ export default function Dashboard() {
                             )}
                         </div>
 
-                        <div className="mt-6 flex items-center justify-between mx-1 text-xs font-medium">
-                            <a href={resolveHref("data-tiang")} className="flex items-center gap-2 rounded-full bg-gray-50 px-3 py-1.5 text-gray-700 ring-1 ring-gray-200 transition hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-200">
+                        <div className="mt-6 flex items-center justify-between mx-1 text-xs font-medium max-md:flex-col max-md:items-stretch max-md:gap-2">
+                            <a href={resolveHref("data-tiang")} className="flex items-center gap-2 rounded-full bg-gray-50 px-3 py-1.5 text-gray-700 ring-1 ring-gray-200 transition hover:bg-blue-50 hover:text-blue-600 hover:ring-blue-200 max-md:justify-center">
                                 Lihat Data Tiang
                                 <FaArrowRight />
                             </a>
 
-                            <a href={resolveHref("data-ont")} className="flex items-center gap-2 rounded-full bg-gray-50 px-3 py-1.5 text-gray-700 ring-1 ring-gray-200 transition hover:bg-sky-50 hover:text-sky-600 hover:ring-sky-200">
+                            <a href={resolveHref("data-ont")} className="flex items-center gap-2 rounded-full bg-gray-50 px-3 py-1.5 text-gray-700 ring-1 ring-gray-200 transition hover:bg-sky-50 hover:text-sky-600 hover:ring-sky-200 max-md:justify-center">
                                 Lihat Data ONT
                                 <FaArrowRight />
                             </a>

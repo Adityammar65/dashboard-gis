@@ -72,7 +72,7 @@ function RecenterWilayah({ wilayah, wilayahCenter }) {
     return null;
 }
 
-// Koordinat Real-time
+// Koordinat
 
 function LiveCoords() {
     const map = useMap();

@@ -1,5 +1,5 @@
 import { memo, useMemo, useState, useEffect, useRef, useCallback } from "react";
-import { FaSearch, FaWifi } from "react-icons/fa";
+import { FaSearch, FaWifi, FaTimes } from "react-icons/fa";
 import { MdRouter } from "react-icons/md";
 import { IoMdArrowDropdown, IoMdNotifications } from "react-icons/io";
 import { usePage, router } from "@inertiajs/react";
@@ -20,6 +20,8 @@ const Header = memo(function Header() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [focused, setFocused] = useState(false);
+    const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+    const mobileWrapperRef = useRef(null);
     const wrapperRef = useRef(null);
     const abortRef = useRef(null);
 
@@ -73,6 +75,9 @@ const Header = memo(function Header() {
             if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
                 setOpen(false);
             }
+            if (mobileWrapperRef.current && !mobileWrapperRef.current.contains(e.target)) {
+                setMobileSearchOpen(false);
+            }
         };
         document.addEventListener('mousedown', handler);
         return () => document.removeEventListener('mousedown', handler);
@@ -80,22 +85,23 @@ const Header = memo(function Header() {
 
     const handleResultClick = useCallback((item) => {
         setOpen(false);
+        setMobileSearchOpen(false);
         setQuery("");
         const href = `${base}/${item.href}`.replace(/\/+/g, '/');
         router.get(href);
     }, [base]);
 
     return (
-        <header className="sticky top-0 z-50 flex h-18 items-center justify-between bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-6 py-2">
+        <header className="sticky top-0 z-50 flex h-18 items-center justify-between bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-6 py-2 max-md:gap-2 max-md:px-3 max-md:h-[60px] max-md:min-h-[60px] max-md:max-h-[60px] max-md:py-0">
 
-            {/* Logo + Judul */}
+            {/* Logo */}
 
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-5 max-md:gap-3">
                 <div>
                     <img
                         src={`${base}/public/Assets/Logo.png`.replace(/\/+/g, '/')}
                         alt="Logo"
-                        className="w-10"
+                        className="w-10 max-md:w-8"
                         width="40"
                         height="40"
                         loading="lazy"
@@ -103,14 +109,14 @@ const Header = memo(function Header() {
                     />
                 </div>
 
-                <h1 className="text-xl font-bold text-white">
+                <h1 className="text-xl font-bold text-white max-md:text-base">
                     GIS Dashboard
                 </h1>
             </div>
 
-            {/* Search Bar */}
+            {/* Pencarian */}
 
-            <div ref={wrapperRef} className="absolute left-1/2 w-[400px] -translate-x-1/2 flex gap-3">
+            <div ref={wrapperRef} className="absolute left-1/2 w-[400px] -translate-x-1/2 flex gap-3 max-md:hidden">
                 <div className="relative flex-1">
                     <input
                         type="text"
@@ -127,7 +133,7 @@ const Header = memo(function Header() {
 
                     <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-black transition hover:text-[#ab3c3c]" />
 
-                    {/* Popover Data yang Dicari */}
+                    {/* Hasil Pencarian */}
 
                     {open && (
                         <div className="absolute left-0 top-full mt-2 w-full max-h-[320px] overflow-auto rounded-xl bg-white shadow-xl border border-gray-200 z-[100]">
@@ -177,14 +183,85 @@ const Header = memo(function Header() {
                 </div>
             </div>
 
-            <a href={`${base}/notifikasi`.replace(/\/+/g, '/')} className="relative">
-                <IoMdNotifications size={50} className="px-3 text-white/65 hover:text-white transition-all duration-200" />
+            {/* Aksi Kepala */}
+            <div className="flex items-center gap-2 max-md:gap-1">
+            {/* Cari Seluler */}
+            <div ref={mobileWrapperRef} className="relative hidden max-md:block md:hidden">
+                <button
+                    type="button"
+                    onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+                    aria-label={mobileSearchOpen ? "Tutup pencarian" : "Buka pencarian"}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25"
+                >
+                    {mobileSearchOpen ? <FaTimes size={16} /> : <FaSearch size={16} />}
+                </button>
+
+                {mobileSearchOpen && (
+                    <div className="absolute right-0 top-full z-[100] mt-2 w-[calc(100vw-6rem)] max-w-[320px] rounded-2xl border border-white/20 bg-[#6F2424] p-3 shadow-xl">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                onFocus={() => {
+                                    setFocused(true);
+                                    if (results.length > 0 && query.trim().length >= 2) setOpen(true);
+                                }}
+                                onBlur={() => setTimeout(() => setFocused(false), 150)}
+                                placeholder="Cari Aset..."
+                                className="w-full rounded-full bg-white px-4 py-2.5 pr-10 text-sm text-black outline-none"
+                            />
+                            <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-black" />
+                            {open && (
+                                <div className="absolute left-0 top-full z-[100] mt-2 max-h-[50vh] w-full overflow-auto rounded-xl border border-gray-200 bg-white shadow-xl">
+                                    {loading ? (
+                                        <div className="px-4 py-3 text-xs text-gray-500">Mencari...</div>
+                                    ) : results.length > 0 ? (
+                                        results.map((item) => {
+                                            const isKode = item.match === 'kode';
+                                            const Icon = item.type === 'tiang' ? FaWifi : MdRouter;
+                                            return (
+                                                <button
+                                                    key={`${item.type}-${item.id}-${item.match}-${item.href}`}
+                                                    type="button"
+                                                    onMouseDown={(e) => e.preventDefault()}
+                                                    onClick={() => handleResultClick(item)}
+                                                    className="flex w-full items-center gap-3 border-b border-gray-100 px-4 py-3 text-left transition last:border-0 hover:bg-gray-50"
+                                                >
+                                                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${item.type === 'tiang' ? 'bg-blue-100 text-blue-600' : 'bg-sky-100 text-sky-600'}`}>
+                                                        <Icon size={14} />
+                                                    </span>
+                                                    <span className="min-w-0 flex-1 truncate text-xs font-medium text-gray-800">
+                                                        {isKode ? item.kode : item.label}
+                                                    </span>
+                                                </button>
+                                            );
+                                        })
+                                    ) : null}
+                                </div>
+                            )}
+                        </div>
+                        <div className="mt-2 flex items-center justify-between rounded-full bg-white px-3 py-1">
+                            <select value={asetFilter === "tiang" ? "Tiang" : asetFilter === "ont" ? "ONT" : ""} onChange={handleSelectChange} className="w-full appearance-none bg-transparent px-1 py-1.5 text-xs outline-none">
+                                <option value="">Pilih Aset</option>
+                                <option value="Tiang">Tiang</option>
+                                <option value="ONT">ONT</option>
+                            </select>
+                            <IoMdArrowDropdown className="shrink-0" />
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <a href={`${base}/notifikasi`.replace(/\/+/g, '/')} className="relative max-md:shrink-0">
+                <IoMdNotifications size={50} className="px-3 text-white/65 hover:text-white transition-all duration-200 max-md:h-10 max-md:w-10 max-md:px-2 max-md:scale-100" />
                 {unreadCount > 0 && (
-                    <span className="absolute right-2 top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                    <span className="absolute right-2 top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white max-md:h-4 max-md:min-w-4 max-md:px-0.5 max-md:text-[8px] max-md:leading-none max-md:right-1 max-md:top-1">
                         {unreadCount > 99 ? "99+" : unreadCount}
                     </span>
                 )}
             </a>
+            </div>
         </header>
     );
 });

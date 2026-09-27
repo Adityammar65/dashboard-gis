@@ -68,10 +68,10 @@ export default function Notifikasi({ notifikasi = [] }) {
         const { Icon, circle } = getNotifikasiVisual(item);
 
         return (
-            <div
-                key={item.id}
-                className={`flex items-center gap-4 border-b border-gray-100 px-5 py-4 transition hover:bg-gray-50/60 ${isUnread ? "bg-red-50/50 border-l-4 border-l-red-500" : ""}`}
-            >
+                <div
+                    key={item.id}
+                    className={`flex items-center gap-4 border-b border-gray-100 px-5 py-4 transition hover:bg-gray-50/60 max-md:flex-wrap max-md:gap-3 max-md:px-4 ${isUnread ? "bg-red-50/50 border-l-4 border-l-red-500" : ""}`}
+                >
                 <div
                     className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${circle || (isUnread
                         ? "bg-red-100 text-red-600"
@@ -144,7 +144,7 @@ export default function Notifikasi({ notifikasi = [] }) {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Kepala */}
 
                 <div className="flex items-center gap-3">
                     <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white">
@@ -195,10 +195,10 @@ export default function Notifikasi({ notifikasi = [] }) {
                     </div>
                 </div>
 
-                {/* Daftar Notifikasi */}
+                {/* Daftar */}
 
                 <div className="rounded-2xl bg-white shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="flex items-center justify-between border-b border-gray-100 bg-gradient-to-r from-white to-gray-50 px-5 py-4">
+                    <div className="flex items-center justify-between border-b border-gray-100 bg-gradient-to-r from-white to-gray-50 px-5 py-4 max-md:flex-col max-md:items-stretch max-md:gap-3 max-md:px-4">
                         <div>
                             <h3 className="font-semibold">
                                 Notifikasi Terbaru
@@ -209,7 +209,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                             </p>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 max-md:flex-wrap">
                             <button
                                 onClick={tandaiSemuaDibaca}
                                 disabled={belumDibaca === 0}
@@ -230,7 +230,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                         </div>
                     </div>
 
-                    {/* Data Notifikasi */}
+                    {/* Data */}
 
                     {notifikasi.length > 0 ? (
                         <>

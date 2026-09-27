@@ -106,7 +106,12 @@
         <p class="kop-sub">
             Wilayah: {{ $meta['namaWilayah'] }}
             &nbsp;|&nbsp; Dicetak: {{ $meta['waktu'] }}
-            &nbsp;|&nbsp; Halaman {{ $meta['halaman'] }} dari {{ $meta['totalHalaman'] }}
+            &nbsp;|&nbsp;
+            @if (($meta['cakupan'] ?? 'halaman') === 'semua')
+                Semua data
+            @else
+                Halaman {{ $meta['halaman'] }} dari {{ $meta['totalHalaman'] }}
+            @endif
             &nbsp;|&nbsp; Total data: {{ $meta['totalData'] }} data
         </p>
 

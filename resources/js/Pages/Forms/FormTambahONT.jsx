@@ -64,7 +64,7 @@ export default function FormTambahONT({ wilayah }) {
         return 1 - dist / Math.max(al.length, bl.length);
     };
 
-    // Handle Kecamatan & Kelurahan
+    // Kecamatan Kelurahan
 
     useEffect(() => {
         const targetWilayah = form.wilayah || settings?.nama_wilayah;
@@ -199,10 +199,10 @@ export default function FormTambahONT({ wilayah }) {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Kepala */}
 
-                <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between mb-5 max-md:flex-col max-md:items-start max-md:gap-3">
+                    <div className="flex items-center gap-3 max-md:flex-wrap">
                         <button
                             type="button"
                             onClick={() => window.history.back()}
@@ -213,7 +213,7 @@ export default function FormTambahONT({ wilayah }) {
                         </button>
 
                         <div>
-                            <h1 className="text-xl font-bold text-gray-800 tracking-tight">
+                            <h1 className="text-xl font-bold text-gray-800 tracking-tight max-md:text-lg">
                                 Form Tambah ONT
                             </h1>
 
@@ -224,9 +224,9 @@ export default function FormTambahONT({ wilayah }) {
                     </div>
                 </div>
 
-                {/* Form */}
+                {/* Formulir */}
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-7">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-7 max-md:p-4">
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -311,7 +311,6 @@ export default function FormTambahONT({ wilayah }) {
                                                     setKecFocused(false);
                                                     setKelurahanOptions([]);
                                                     setKelurahanManual(false);
-                                                    // fetch kelurahan directly with known code
                                                     setKelurahanLoading(true);
                                                     fetch(resolveUrl(`api/regions/kecamatan/${opt.code}/kelurahan`))
                                                         .then((r) => r.json())
@@ -378,7 +377,7 @@ export default function FormTambahONT({ wilayah }) {
                                 {kelurahanLoading && <p className="mt-1 text-[11px] text-gray-400">Memuat kelurahan...</p>}
                             </div>
 
-                            {/* Nama Petugas */}
+                            {/* Petugas */}
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -440,7 +439,7 @@ export default function FormTambahONT({ wilayah }) {
 
                             {/* Koordinat */}
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
                                 <div>
                                     <label className="block mb-2 text-sm font-medium text-gray-700">
                                         Latitude
@@ -474,7 +473,7 @@ export default function FormTambahONT({ wilayah }) {
                                 </div>
                             </div>
 
-                            {/* Foto ONT */}
+                            {/* Foto */}
 
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -588,12 +587,12 @@ export default function FormTambahONT({ wilayah }) {
                             />
                         </div>
 
-                        {/* Submit */}
+                        {/* Simpan */}
 
-                        <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100">
+                        <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100 max-md:flex-col-reverse max-md:items-stretch">
                             <button
                                 type="submit"
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-green-700 active:scale-[0.98] transition"
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-green-700 active:scale-[0.98] transition max-md:w-full max-md:justify-center"
                             >
                                 <FaSave size={14} />
                                 Simpan Data

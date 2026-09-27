@@ -80,9 +80,9 @@ export default function DetailNotifikasi({ notifikasi }) {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Kepala */}
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between max-md:flex-col max-md:items-stretch max-md:gap-3">
                     <div className="w-full rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10">
                         <h1 className="text-sm font-semibold tracking-wide">
                             Detail Notifikasi
@@ -110,7 +110,7 @@ export default function DetailNotifikasi({ notifikasi }) {
 
                         {/* Ringkasan */}
 
-                        <div className="flex items-center gap-4 rounded-2xl bg-white px-5 py-5 shadow-sm border border-gray-100">
+                        <div className="flex items-center gap-4 rounded-2xl bg-white px-5 py-5 shadow-sm border border-gray-100 max-md:flex-col max-md:items-start max-md:gap-3 max-md:px-4">
                             <div
                                 className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${circle || (belumDibaca
                                     ? "bg-red-100 text-red-600"

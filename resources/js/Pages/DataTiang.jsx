@@ -1,4 +1,5 @@
 import MainLayout from "../Layouts/MainLayout";
+import MobileDataCard from "../Components/MobileDataCard";
 
 import { usePage, router } from "@inertiajs/react";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
@@ -50,6 +51,7 @@ export default function DataTiang({
     const [openExport, setOpenExport] = useState(false);
     const [sedangExport, setSedangExport] = useState("");
     const [notifExport, setNotifExport] = useState(null);
+    const [konfirmasiEkspor, setKonfirmasiEkspor] = useState(null);
     const exportRef = useRef(null);
 
     const [kecamatanOptions, setKecamatanOptions] = useState([]);
@@ -174,10 +176,10 @@ export default function DataTiang({
         );
     }, []);
 
-    // Export
+    // Ekspor
 
     useEffect(() => {
-        if (!openExport) return;
+        if (!openExport && !konfirmasiEkspor) return;
 
         const tutupKlikLuar = (event) => {
             if (exportRef.current && !exportRef.current.contains(event.target)) {
@@ -186,7 +188,10 @@ export default function DataTiang({
         };
 
         const tutupEscape = (event) => {
-            if (event.key === "Escape") setOpenExport(false);
+            if (event.key === "Escape") {
+                setOpenExport(false);
+                if (!sedangExport) setKonfirmasiEkspor(null);
+            }
         };
 
         document.addEventListener("mousedown", tutupKlikLuar);
@@ -196,7 +201,7 @@ export default function DataTiang({
             document.removeEventListener("mousedown", tutupKlikLuar);
             document.removeEventListener("keydown", tutupEscape);
         };
-    }, [openExport]);
+    }, [openExport, konfirmasiEkspor, sedangExport]);
 
     useEffect(() => {
         if (!notifExport) return;
@@ -206,7 +211,7 @@ export default function DataTiang({
         return () => clearTimeout(timer);
     }, [notifExport]);
 
-    const handleExport = useCallback(async (format) => {
+    const handleExport = useCallback(async (format, cakupan = "halaman") => {
         if (sedangExport) return;
 
         const params = new URLSearchParams();
@@ -215,11 +220,16 @@ export default function DataTiang({
         if (filterStatus) params.set("status", filterStatus);
         if (filterKecamatan) params.set("kecamatan", filterKecamatan);
         if (filterKelurahan) params.set("kelurahan", filterKelurahan);
-        params.set("page", String(dataTiang?.current_page ?? 1));
+        if (cakupan === "semua") {
+            params.set("scope", "all");
+        } else {
+            params.set("page", String(dataTiang?.current_page ?? 1));
+        }
 
         const url = `${resolveHref(`export/aset/tiang/${format}`)}?${params.toString()}`;
 
         setOpenExport(false);
+        setKonfirmasiEkspor(null);
         setSedangExport(format);
 
         try {
@@ -270,9 +280,9 @@ export default function DataTiang({
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Kepala */}
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 max-md:flex-col max-md:items-stretch">
 
                     <div className="items-center flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white">
 
@@ -290,25 +300,25 @@ export default function DataTiang({
 
                     </div>
 
-                    {/* Form Tiang */}
+                    {/* Formulir */}
 
                     <a
                         href={resolveHref("tambah-tiang")}
-                        className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98]"
+                        className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:w-full max-md:justify-center"
                     >
                         <FaPlus />
                         Form Tiang
                     </a>
 
-                    {/* Export PDF / Excel */}
+                    {/* Ekspor */}
 
-                    <div ref={exportRef} className="relative">
+                    <div ref={exportRef} className="relative max-md:w-full">
 
                         <button
                             type="button"
                             onClick={() => setOpenExport(!openExport)}
                             disabled={listTiang.length === 0}
-                            className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25"
+                            className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:w-full max-md:justify-center"
                         >
                             <FaFileExport />
                             Export
@@ -316,11 +326,14 @@ export default function DataTiang({
                         </button>
 
                         {openExport && (
-                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl">
+                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl max-md:left-0 max-md:right-auto max-md:w-full">
 
                                 <button
                                     type="button"
-                                    onClick={() => handleExport("pdf")}
+                                    onClick={() => {
+                                        setOpenExport(false);
+                                        setKonfirmasiEkspor({ format: "pdf" });
+                                    }}
                                     disabled={sedangExport !== ""}
                                     className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
                                 >
@@ -330,7 +343,10 @@ export default function DataTiang({
 
                                 <button
                                     type="button"
-                                    onClick={() => handleExport("excel")}
+                                    onClick={() => {
+                                        setOpenExport(false);
+                                        setKonfirmasiEkspor({ format: "excel" });
+                                    }}
                                     disabled={sedangExport !== ""}
                                     className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-green-700 disabled:cursor-not-allowed disabled:opacity-50"
                                 >
@@ -345,7 +361,64 @@ export default function DataTiang({
 
                 </div>
 
-                {/* Notifikasi Export */}
+                {/* Konfirmasi */}
+
+                {konfirmasiEkspor && (
+                    <div
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
+                        onClick={() => {
+                            if (!sedangExport) setKonfirmasiEkspor(null);
+                        }}
+                    >
+                        <div
+                            className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <h3 className="text-sm font-semibold text-gray-800">
+                                Export {konfirmasiEkspor.format === "pdf" ? "PDF" : "Excel"}
+                            </h3>
+
+                            <p className="mt-1 text-xs text-gray-500">
+                                Halaman {dataTiang?.current_page ?? 1} dari {dataTiang?.last_page ?? 1} &bull; {listTiang.length} data halaman ini &bull; {dataTiang?.total ?? listTiang.length} total data
+                            </p>
+
+                            <p className="mt-3 text-xs text-gray-600">
+                                Cetak halaman ini saja atau semua data sesuai filter?
+                            </p>
+
+                            <div className="mt-4 flex flex-col gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => handleExport(konfirmasiEkspor.format, "halaman")}
+                                    disabled={sedangExport !== ""}
+                                    className="w-full rounded-xl bg-[#AB3C3C] px-4 py-2.5 text-xs font-medium text-white shadow-sm transition hover:bg-[#6F2424] disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    {sedangExport ? "Menyiapkan berkas..." : `Halaman Ini Saja (${listTiang.length} data)`}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleExport(konfirmasiEkspor.format, "semua")}
+                                    disabled={sedangExport !== ""}
+                                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    Semua Data ({dataTiang?.total ?? listTiang.length} data)
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setKonfirmasiEkspor(null)}
+                                    disabled={sedangExport !== ""}
+                                    className="w-full rounded-xl px-4 py-2 text-xs font-medium text-gray-400 transition hover:text-gray-600 disabled:opacity-50"
+                                >
+                                    Batal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Notifikasi */}
 
                 {notifExport && (
                     <div
@@ -407,7 +480,7 @@ export default function DataTiang({
                     </div>
 
 
-                    {/* Aktif & Nonaktif */}
+                    {/* Aktif Nonaktif */}
 
                     <div className="flex min-h-[136px] flex-col gap-4">
 
@@ -466,9 +539,9 @@ export default function DataTiang({
                         </div>
 
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
 
-                            {/* 1 Wilayah */}
+                            {/* Wilayah */}
 
                             <select
                                 value={filterWilayah}
@@ -541,7 +614,7 @@ export default function DataTiang({
                                 )}
                             </div>
 
-                            {/* 3 Status */}
+                            {/* Status */}
 
                             <select
                                 value={filterStatus}
@@ -639,11 +712,11 @@ export default function DataTiang({
 
                 <div className="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
 
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto hidden md:block">
 
                         <table className="w-full min-w-[900px] border-collapse text-xs">
 
-                            {/* Header Tabel */}
+                            {/* Kepala Tabel */}
 
                             <thead>
 
@@ -690,7 +763,7 @@ export default function DataTiang({
                             </thead>
 
 
-                            {/* Body Tabel */}
+                            {/* Isi Tabel */}
 
                             <tbody className="text-center capitalize divide-y divide-gray-100">
 
@@ -703,7 +776,7 @@ export default function DataTiang({
                                             className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/80 transition-colors"
                                         >
 
-                                            {/* No */}
+                                            {/* Nomor */}
 
                                             <td className="px-4 py-2">
                                                 {String(index + 1).padStart(2, "0")}
@@ -843,7 +916,7 @@ export default function DataTiang({
                                                     </a>
 
 
-                                                    {/* Edit */}
+                                                    {/* Ubah */}
 
                                                     <a
                                                         href={resolveHref(`edit-tiang/${tiang.id}`)}
@@ -881,7 +954,7 @@ export default function DataTiang({
 
                                 ) : (
 
-                                    /* Placeholder ketika tidak ada data */
+                                    /* Kosong */
 
                                     <tr>
 
@@ -917,8 +990,47 @@ export default function DataTiang({
                         </table>
 
                     </div>
+                    {/* Kartu Seluler */}
+                    <div className="space-y-3 p-4 md:hidden">
+                        {listTiang.length > 0 ? (
+                            listTiang.map((tiang, index) => (
+                                <MobileDataCard
+                                    key={tiang.id ?? index}
+                                    title={tiang.kode_tiang}
+                                    subtitle={`${tiang.wilayah || tiang.kabupaten || ""}${(tiang.kecamatan || tiang.area) ? ` • ${tiang.kecamatan || tiang.area}` : ""}`}
+                                    imageSrc={tiang.foto_tiang_1 ? `${base}/public/storage/${tiang.foto_tiang_1}`.replace(/\/+/g, '/') : null}
+                                    imageAlt={`Foto ${tiang.kode_tiang || "tiang"}`}
+                                    status={tiang.status}
+                                    meta={[
+                                        { label: "Kelurahan", value: tiang.kelurahan },
+                                        { label: "Petugas", value: tiang.nama_petugas },
+                                    ]}
+                                    actions={
+                                        <>
+                                            <a
+                                                href={resolveHref(`detail-tiang/${tiang.id}`)}
+                                                className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-blue-500 px-2 py-2 text-xs font-medium text-white"
+                                            >
+                                                <FaEye className="text-[14px]" /> Detail
+                                            </a>
+                                            <a
+                                                href={resolveHref(`edit-tiang/${tiang.id}`)}
+                                                className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-amber-400 px-2 py-2 text-xs font-medium text-white"
+                                            >
+                                                <FaEdit className="text-[14px]" /> Edit
+                                            </a>
+                                        </>
+                                    }
+                                />
+                            ))
+                        ) : (
+                            <p className="rounded-xl border border-dashed border-gray-200 bg-gray-50/60 py-8 text-center text-xs text-gray-400">
+                                Belum ada data
+                            </p>
+                        )}
+                    </div>
                     {dataTiang?.links && dataTiang.links.length > 3 && (
-                        <div className="flex flex-wrap gap-1.5 justify-center mt-4 pb-3">
+                        <div className="flex flex-wrap gap-1.5 justify-center mt-4 pb-3 max-md:px-2">
                             {dataTiang.links.map((link, i) => (
                                 <button key={i} disabled={!link.url} onClick={() => link.url && router.get(link.url, {}, { preserveState: true, preserveScroll: true })} className={`px-3 py-1.5 text-xs font-medium rounded-full shadow-sm ring-1 transition ${link.active ? 'bg-[#AB3C3C] text-white ring-[#AB3C3C]' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`} dangerouslySetInnerHTML={{ __html: link.label }} />
                             ))}

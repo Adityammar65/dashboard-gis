@@ -42,10 +42,10 @@ export default function Login() {
 
     return (
         <AuthLayout errorMessage={errorMessage}>
-            <div className="flex p-6">
-                <form className="space-y-5" onSubmit={handleSubmit}>
+            <div className="flex p-6 max-md:w-full max-md:max-w-md max-md:p-4">
+                <form className="space-y-5 max-md:w-full" onSubmit={handleSubmit}>
 
-                    {/* Username */}
+                    {/* Nama Pengguna */}
 
                     <div>
                         <label
@@ -66,7 +66,7 @@ export default function Login() {
                         />
                     </div>
 
-                    {/* Password */}
+                    {/* Kata Sandi */}
 
                     <div>
                         <label
@@ -101,9 +101,9 @@ export default function Login() {
                         </div>
                     </div>
 
-                    {/* Remember Me + Forgot Password */}
+                    {/* Ingat Saya */}
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between max-md:flex-wrap max-md:gap-2">
                         <label
                             htmlFor="remember"
                             className="flex cursor-pointer select-none items-center gap-2"
@@ -131,7 +131,7 @@ export default function Login() {
                         </a>
                     </div>
 
-                    {/* Button */}
+                    {/* Tombol */}
 
                     <button
                         type="submit"

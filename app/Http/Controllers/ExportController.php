@@ -31,11 +31,49 @@ class ExportController extends Controller
     const WARNA_HEADER = '6F2424';
     const WARNA_BORDER = 'D9D9D9';
 
-    // Export
+    // Ekspor
 
     public function aset(Request $request, string $type, string $format)
     {
         $config = $this->assetConfig($type);
+
+        // Cakupan
+
+        $cakupan = strtolower(trim((string) $request->query('scope', 'halaman')));
+        $semua = in_array($cakupan, ['all', 'semua', 'semua-data', 'semua_data'], true);
+
+        if ($semua) {
+            $items = $this->buildQuery($type, $request)->latest('id')->get();
+
+            if ($items->isEmpty()) {
+                return response()->json(['message' => 'Tidak ada data yang dapat diexpor pada filter saat ini.'], 422);
+            }
+
+            $rows = $items
+                ->values()
+                ->map(fn($item, $index) => $this->mapRow($item, $config, $index + 1))
+                ->all();
+
+            $meta = [
+                'judul' => $config['judul'],
+                'label' => $config['label'],
+                'namaWilayah' => $this->wilayahEkspor($request),
+                'waktu' => now()->format('d-m-Y H:i'),
+                'halaman' => 1,
+                'totalHalaman' => 1,
+                'totalData' => $items->count(),
+                'cakupan' => 'semua',
+                'filter' => $this->filterLabels($request),
+            ];
+
+            $filename = $this->filenameSemua($config['label']);
+
+            if ($format === 'excel') {
+                return $this->excel($rows, $config, $meta, $filename);
+            }
+
+            return $this->pdf($rows, $config, $meta, $filename);
+        }
 
         $page = max(1, $request->integer('page', 1));
 
@@ -50,20 +88,23 @@ class ExportController extends Controller
             return response()->json(['message' => 'Tidak ada data yang dapat diexpor pada filter saat ini.'], 422);
         }
 
+        $offset = ($paginator->currentPage() - 1) * self::PER_PAGE;
+
         $rows = $paginator
             ->getCollection()
             ->values()
-            ->map(fn($item, $index) => $this->mapRow($item, $config, $index + 1))
+            ->map(fn($item, $index) => $this->mapRow($item, $config, $offset + $index + 1))
             ->all();
 
         $meta = [
             'judul' => $config['judul'],
             'label' => $config['label'],
-            'namaWilayah' => $this->namaWilayah(),
+            'namaWilayah' => $this->wilayahEkspor($request),
             'waktu' => now()->format('d-m-Y H:i'),
             'halaman' => $paginator->currentPage(),
             'totalHalaman' => $paginator->lastPage(),
             'totalData' => $paginator->total(),
+            'cakupan' => 'halaman',
             'filter' => $this->filterLabels($request),
         ];
 
@@ -196,17 +237,16 @@ class ExportController extends Controller
 
     // Nama Wilayah
 
-    private function namaWilayah(): string
+    private function wilayahEkspor(Request $request): string
     {
-        $settings = Cache::remember('settings', 3600, function () {
-            $path = storage_path('app/settings.json');
-            if (!file_exists($path)) return [];
-            return json_decode(file_get_contents($path), true) ?? [];
-        });
+        if ($request->filled('wilayah')) {
+            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
+            if ($wilayah) {
+                return ucfirst($wilayah->nama_wilayah);
+            }
+        }
 
-        $nama = trim((string) ($settings['nama_wilayah'] ?? ''));
-
-        return $nama !== '' ? ucfirst($nama) : 'Semua Wilayah';
+        return 'Semua';
     }
 
     // Filter Laporan
@@ -214,13 +254,6 @@ class ExportController extends Controller
     private function filterLabels(Request $request): array
     {
         $labels = [];
-
-        if ($request->filled('wilayah')) {
-            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
-            if ($wilayah) {
-                $labels[] = 'Wilayah: ' . $wilayah->nama_wilayah;
-            }
-        }
 
         if ($request->filled('kecamatan')) {
             $labels[] = 'Kecamatan: ' . trim((string) $request->kecamatan);
@@ -248,6 +281,13 @@ class ExportController extends Controller
         $suffix = $page > 1 ? '-Hal' . $page : '';
 
         return 'Data-' . $label . $suffix . '-' . now()->format('Y-m-d');
+    }
+
+    // Nama Berkas Semua
+
+    private function filenameSemua(string $label): string
+    {
+        return 'Data-' . $label . '-Semua-' . now()->format('Y-m-d');
     }
 
     // Header Kolom
@@ -330,7 +370,10 @@ class ExportController extends Controller
         // Kop
 
         $sheet->mergeCells('A2:' . $kolomTerakhir . '2');
-        $sheet->setCellValue('A2', 'Wilayah: ' . $meta['namaWilayah'] . '  |  Dicetak: ' . $meta['waktu'] . '  |  Halaman ' . $meta['halaman'] . ' dari ' . $meta['totalHalaman'] . '  |  Total data: ' . $meta['totalData']);
+        $cakupanKop = ($meta['cakupan'] ?? 'halaman') === 'semua'
+            ? 'Semua data'
+            : 'Halaman ' . $meta['halaman'] . ' dari ' . $meta['totalHalaman'];
+        $sheet->setCellValue('A2', 'Wilayah: ' . $meta['namaWilayah'] . '  |  Dicetak: ' . $meta['waktu'] . '  |  ' . $cakupanKop . '  |  Total data: ' . $meta['totalData']);
         $sheet->getStyle('A2:' . $kolomTerakhir . '2')->applyFromArray([
             'font' => ['size' => 9, 'color' => ['rgb' => '555555']],
             'alignment' => ['horizontal' => 'center', 'vertical' => 'center'],

@@ -62,15 +62,20 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
     return (
         <aside
             className={`
+                gis-rail
                 fixed h-screen top-15 left-0 z-40
                 bg-slate-100
                 transition-all duration-300
+                max-md:top-0 max-md:h-screen max-md:pt-[60px] max-md:w-16 max-md:min-w-16 max-md:shrink-0
                 ${isOpen ? "w-64" : "w-20"}
             `}
         >
             {/* Navigasi */}
 
-            <nav className="relative z-10 space-y-2 px-3 py-5">
+            <nav className="relative z-10 space-y-2 px-3 py-5 max-md:flex max-md:h-full max-md:flex-col max-md:justify-between max-md:gap-2 max-md:space-y-0 max-md:px-2 max-md:py-4">
+
+                {/* Atas */}
+                <div className="contents max-md:flex max-md:flex-col max-md:gap-2">
 
                 {menuItems.map((item) => {
                     const isActive = item.activePaths.some(
@@ -88,6 +93,7 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
                                 text-sm font-medium
                                 cursor-pointer
                                 transition-all duration-200
+                                max-md:justify-center max-md:gap-0 max-md:px-2
                                 ${isActive
                                     ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
                                     : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C]"
@@ -95,7 +101,7 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
                                 ${!isOpen ? "justify-center" : ""}
                             `}
                         >
-                            {/* Indicator Active */}
+                            {/* Penanda */}
 
                             {isActive && (
                                 <span
@@ -113,15 +119,26 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
                                     shrink-0
                                     transition-transform duration-200
                                     group-hover:scale-110
+                                    max-md:hidden
                                 "
                             >
                                 {item.icon}
                             </span>
 
+                            {/* Ikon Seluler */}
+                            <a
+                                href={resolveHref(item.href)}
+                                title={item.label}
+                                aria-label={item.label}
+                                className="hidden max-md:flex max-md:items-center max-md:justify-center"
+                            >
+                                {item.icon}
+                            </a>
+
                             {isOpen && (
                                 <a
                                     href={resolveHref(item.href)}
-                                    className="flex-1 whitespace-nowrap"
+                                    className="flex-1 whitespace-nowrap max-md:hidden"
                                 >
                                     {item.label}
                                 </a>
@@ -130,11 +147,16 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
                     );
                 })}
 
-                {/* Separator */}
+                {/* Pemisah */}
 
-                <div className="py-2">
+                <div className="py-2 max-md:py-1">
                     <hr className="border-0 border-t-2 border-[#AB3C3C]/50 rounded-full" />
                 </div>
+
+                </div>
+
+                {/* Bawah */}
+                <div className="contents max-md:flex max-md:flex-col max-md:gap-2 max-md:pb-1">
 
                 {/* Pengaturan */}
 
@@ -145,6 +167,7 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
         text-sm font-medium
         cursor-pointer
         transition-all duration-200
+        max-md:justify-center max-md:gap-0 max-md:px-2
         ${currentPath === "/pengaturan" ||
                             currentPath.endsWith("/pengaturan")
                             ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
@@ -173,20 +196,31 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
             shrink-0
             transition-transform duration-200
             group-hover:rotate-45
+            max-md:hidden
         "
                     />
+
+                    {/* Ikon Seluler */}
+                    <a
+                        href={resolveHref("pengaturan")}
+                        title="Pengaturan"
+                        aria-label="Pengaturan"
+                        className="hidden max-md:flex max-md:items-center max-md:justify-center"
+                    >
+                        <IoIosSettings size={20} />
+                    </a>
 
                     {isOpen && (
                         <a
                             href={resolveHref("pengaturan")}
-                            className="flex-1 whitespace-nowrap"
+                            className="flex-1 whitespace-nowrap max-md:hidden"
                         >
                             Pengaturan
                         </a>
                     )}
                 </div>
 
-                {/* Logout */}
+                {/* Keluar */}
 
                 <div
                     className="
@@ -198,6 +232,7 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
                         transition-all duration-200
                         hover:bg-[#F3DADA]
                         hover:text-[#AB3C3C]
+                        max-md:justify-center max-md:gap-0 max-md:px-2
                     "
                 >
                     <IoIosLogOut
@@ -206,13 +241,14 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
                             shrink-0
                             transition-transform duration-200
                             group-hover:translate-x-1
+                            max-md:hidden
                         "
                     />
 
                     {isOpen && (
                         <a
                             href={resolveHref("logout")}
-                            className="flex-1"
+                            className="flex-1 max-md:hidden"
                             onClick={(e) => {
                                 if (!confirm("Kembali ke Halaman Login?")) {
                                     e.preventDefault();
@@ -222,6 +258,21 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
                             Keluar
                         </a>
                     )}
+                    {/* Ikon Seluler */}
+                    <a
+                        href={resolveHref("logout")}
+                        title="Keluar"
+                        aria-label="Keluar"
+                        onClick={(e) => {
+                            if (!confirm("Kembali ke Halaman Login?")) {
+                                e.preventDefault();
+                            }
+                        }}
+                        className="hidden max-md:flex max-md:items-center max-md:justify-center"
+                    >
+                        <IoIosLogOut size={20} />
+                    </a>
+                </div>
                 </div>
             </nav>
 
@@ -231,6 +282,7 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
                     absolute bottom-0 left-0
                     h-72 w-full
                     overflow-hidden
+                    max-md:hidden
                 "
             >
                 <div

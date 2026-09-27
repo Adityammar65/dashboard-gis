@@ -1,0 +1,61 @@
+/* Seluler */
+
+@media (max-width: 767px) {
+    html,
+    body {
+        overflow-x: clip;
+    }
+
+    /* Notifikasi */
+    .font-poppins .fixed.left-1\/2.top-5 {
+        width: calc(100vw - 2rem);
+        max-width: 100vw;
+    }
+
+    /* Tabel */
+    .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+
+    /* Peta */
+    .leaflet-popup-content {
+        max-width: calc(100vw - 4rem) !important;
+        margin: 12px 14px !important;
+    }
+
+    /* Koordinat */
+    .leaflet-control .rounded-md.bg-white\/90 {
+        font-size: 10px;
+    }
+
+    /* Filter */
+    .gis-mobile-filter button,
+    .gis-mobile-filter select {
+        min-height: 40px;
+    }
+
+    /* Kartu */
+    .gis-mobile-card p,
+    .gis-mobile-card span {
+        overflow-wrap: anywhere;
+    }
+
+    /* Rel Ikon */
+    :root {
+        --gis-rail: 4rem;
+    }
+
+    .gis-rail a {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .gis-rail nav {
+        scrollbar-width: none;
+    }
+
+    .gis-rail nav::-webkit-scrollbar {
+        display: none;
+    }
+}

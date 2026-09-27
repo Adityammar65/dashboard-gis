@@ -14,7 +14,10 @@ export function useLayoutError() {
 }
 
 export default function MainLayout({ children, errorMessage }) {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(() => {
+        if (typeof window !== "undefined" && window.innerWidth < 768) return false;
+        return true;
+    });
     const [localError, setLocalError] = useState(null);
     const [dismissed, setDismissed] = useState(false);
 
@@ -84,9 +87,9 @@ export default function MainLayout({ children, errorMessage }) {
 
     return (
         <LayoutErrorContext.Provider value={{ error: displayError, showError, setError: showError, clearError }}>
-            <div className="relative min-h-screen font-poppins">
+            <div className="relative min-h-screen font-poppins max-md:overflow-x-clip">
                 {displayError && (
-                    <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2">
+                    <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2 max-md:w-[calc(100vw-2rem)] max-md:max-w-md">
                         <div className="flex items-center gap-3 rounded-lg bg-red-500 px-4 py-2 text-xs font-medium text-white shadow-lg">
                             <span>{displayError}</span>
                             <button
@@ -102,7 +105,7 @@ export default function MainLayout({ children, errorMessage }) {
                 )}
 
                 {!displayError && !dismissed && flashSuccess && (
-                    <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2">
+                    <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2 max-md:w-[calc(100vw-2rem)] max-md:max-w-md">
                         <div className="flex items-center gap-3 rounded-lg bg-green-600 px-4 py-2 text-xs font-medium text-white shadow-lg">
                             <span>{flashSuccess}</span>
                             <button
@@ -117,15 +120,15 @@ export default function MainLayout({ children, errorMessage }) {
                     </div>
                 )}
 
-                {/* Sidebar */}
+                {/* Bilah Sisi */}
 
                 <Sidebar isOpen={isOpen} />
 
-                {/* Header */}
+                {/* Kepala */}
 
                 <Header />
 
-                {/* Tombol Toggle Sidebar */}
+                {/* Alihan */}
 
                 <button
                     onClick={() => setIsOpen(!isOpen)}
@@ -139,7 +142,9 @@ export default function MainLayout({ children, errorMessage }) {
                     transition-all duration-300
                     hover:scale-105
                     hover:bg-[#8f3030]
-                    ${isOpen ? "left-[15rem]" : "left-[4rem]"}`}
+                    max-md:hidden
+                    max-md:top-20 max-md:h-7 max-md:w-7
+                    ${isOpen ? "left-[15rem]" : "left-[4rem]"} max-md:left-[4.25rem]`}
                     title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
                 >
                     {isOpen ? (
@@ -149,11 +154,12 @@ export default function MainLayout({ children, errorMessage }) {
                     )}
                 </button>
 
-                {/* Isi halaman */}
+                {/* Isi */}
 
                 <main
                     className={`min-h-[calc(100vh-72px)] p-6
                     transition-all duration-300
+                    max-md:p-4 max-md:min-w-0 max-md:ml-16 max-md:min-h-[calc(100vh-60px)]
                     ${isOpen ? "ml-64" : "ml-20"}`}
                 >
                     {children}

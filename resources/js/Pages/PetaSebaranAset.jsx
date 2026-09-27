@@ -12,6 +12,10 @@ export default function Peta() {
     const [assetType, setAssetType] = useState("Semua");
     const [status, setStatus] = useState("Semua");
     const [wilayah, setWilayah] = useState("Semua");
+    const [mobileFilterOpen, setMobileFilterOpen] = useState(() => {
+        if (typeof window !== "undefined" && window.innerWidth < 768) return false;
+        return true;
+    });
 
     const wilayahOptions = useMemo(
         () => (Array.isArray(wilayahList) ? wilayahList.map((w) => w.nama_wilayah).filter(Boolean) : []),
@@ -59,7 +63,7 @@ export default function Peta() {
         return [...tiangMarkers, ...ontMarkers];
     }, [tiang, ont, assetType, status, wilayah]);
 
-    // Derived center for selected wilayah (Option A: average of all assets in that wilayah, independent of other filters)
+    // Pusat Wilayah
     const wilayahCenter = useMemo(() => {
         if (wilayah === "Semua") return null;
         const all = [...tiang, ...ont].filter((it) => String(it.wilayah || "") === wilayah);
@@ -85,7 +89,7 @@ export default function Peta() {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Kepala */}
 
                 <div className="flex items-center gap-3">
                     <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10">
@@ -101,15 +105,15 @@ export default function Peta() {
                     </div>
                 </div>
 
-                <div className="relative h-[calc(100vh-180px)] min-h-[500px] overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
+                <div className="relative h-[calc(100vh-180px)] min-h-[500px] overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100 max-md:h-[68vh] max-md:min-h-[360px]">
 
-                    {/* Map */}
+                    {/* Peta */}
 
                     <div className="absolute inset-0 z-0">
                         <MapView markers={markers} wilayah={wilayah} wilayahCenter={wilayahCenter} />
                     </div>
 
-                    <div className="absolute left-4 top-4 z-10">
+                    <div className="absolute left-4 top-4 z-10 max-md:left-2 max-md:top-2 max-md:max-w-[calc(100vw-6rem)]">
                         <div className="rounded-xl bg-white/90 px-4 py-3 shadow-lg backdrop-blur-md border border-white/60">
 
                             <h2 className="text-sm font-semibold text-gray-800">
@@ -118,7 +122,7 @@ export default function Peta() {
 
                             {/* Legenda */}
 
-                            <div className="mt-2 flex items-center gap-4 text-xs text-gray-800">
+                            <div className="mt-2 flex items-center gap-4 text-xs text-gray-800 max-md:flex-wrap max-md:gap-2 max-md:text-[11px]">
 
                                 <span className="flex items-center gap-2">
                                     <span className="inline-block h-[20px] w-[20px] rounded-full bg-blue-900 ring-2 ring-white shadow" />
@@ -144,15 +148,29 @@ export default function Peta() {
                         </div>
                     </div>
 
-                    <div className="absolute right-4 top-4 z-10 w-[280px] max-w-[calc(100vw-2rem)] space-y-3">
+                    <div className="gis-mobile-filter absolute right-4 top-4 z-10 w-[280px] max-w-[calc(100vw-2rem)] space-y-3 max-md:right-2 max-md:top-auto max-md:bottom-2 max-md:w-[calc(100vw-5rem)] max-md:max-w-[260px]">
 
                         {/* Filter */}
 
-                        <div className="rounded-xl bg-white/90 px-3.5 py-4 shadow-lg backdrop-blur-md border border-white/60">
+                        <div className="rounded-xl bg-white/90 px-3.5 py-4 shadow-lg backdrop-blur-md border border-white/60 max-md:px-3 max-md:py-3">
 
-                            <h2 className="mb-3 text-sm font-bold tracking-wide text-gray-800">
-                                FILTER
-                            </h2>
+                            <div className="mb-3 flex items-center justify-between">
+                                <h2 className="text-sm font-bold tracking-wide text-gray-800">
+                                    FILTER
+                                </h2>
+                                {/* Alihan */}
+                                <button
+                                    type="button"
+                                    onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
+                                    aria-label={mobileFilterOpen ? "Sembunyikan filter" : "Tampilkan filter"}
+                                    className="hidden rounded-lg bg-gray-100 px-2 py-1 text-[11px] font-semibold text-gray-700 max-md:flex max-md:items-center max-md:gap-1 md:hidden"
+                                >
+                                    {mobileFilterOpen ? "Tutup" : "Buka"}
+                                    <FaChevronDown className={`text-[10px] transition-transform ${mobileFilterOpen ? "rotate-180" : ""}`} />
+                                </button>
+                            </div>
+
+                            <div className={`${mobileFilterOpen ? "" : "max-md:hidden"} md:block`}>
 
                             <div className="grid grid-cols-3 gap-2">
 
@@ -245,6 +263,8 @@ export default function Peta() {
                                         Tampil
                                     </span>
                                 </div>
+
+                            </div>
 
                             </div>
 

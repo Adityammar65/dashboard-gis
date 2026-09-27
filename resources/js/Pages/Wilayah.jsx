@@ -1,6 +1,5 @@
-{/* Import Main Layout */ }
-
 import MainLayout from "../Layouts/MainLayout";
+import MobileDataCard from "../Components/MobileDataCard";
 import { usePage, router } from "@inertiajs/react";
 import { useState, useMemo, useCallback } from "react";
 
@@ -81,9 +80,9 @@ export default function Tiang({
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Kepala */}
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 max-md:flex-col max-md:items-stretch">
                     <div className="items-center flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] text-white px-4 py-3.5 shadow-md border border-white/10">
                         <span className="text-sm font-semibold tracking-wide">
                             Data Wilayah
@@ -96,11 +95,11 @@ export default function Tiang({
                         </span>
                     </div>
 
-                    {/* Form Wilayah */}
+                    {/* Formulir */}
 
                     <a
                         href={resolveHref("tambah-wilayah")}
-                        className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98]"
+                        className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:w-full max-md:justify-center"
                     >
                         <FaPlus />
                         Form Wilayah
@@ -147,7 +146,7 @@ export default function Tiang({
                                     {totalAset}
                                 </h2>
 
-                                <div className="flex items-center gap-2 text-xs mt-2">
+                                <div className="flex items-center gap-2 text-xs mt-2 max-md:flex-wrap">
                                     <span className="flex items-center gap-1.5 rounded-full bg-green-50 px-2 py-0.5 ring-1 ring-green-200">
                                         <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                         Aktif {asetAktif}
@@ -224,7 +223,7 @@ export default function Tiang({
                 {/* Tabel */}
 
                 <div className="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto hidden md:block">
                         <table className="w-full min-w-[700px] border-collapse text-xs">
 
                             <thead>
@@ -342,8 +341,44 @@ export default function Tiang({
 
                         </table>
                     </div>
+                    {/* Kartu Seluler */}
+                    <div className="space-y-3 p-4 md:hidden">
+                        {listWilayah.length > 0 ? (
+                            listWilayah.map((row, index) => (
+                                <MobileDataCard
+                                    key={row.id ?? row.nama_wilayah ?? index}
+                                    title={row.nama_wilayah}
+                                    subtitle={`Total ${row.total_aset ?? 0} aset • Tiang ${row.total_tiang ?? 0} • ONT ${row.total_ont ?? 0}`}
+                                    imageSrc={null}
+                                    fallbackLabel={String(row.nama_wilayah || "W").slice(0, 1).toUpperCase()}
+                                    status={null}
+                                    meta={[
+                                        { label: "Aktif", value: String(row.aset_aktif ?? 0) },
+                                        { label: "Nonaktif", value: String(row.aset_nonaktif ?? 0) },
+                                    ]}
+                                    actions={
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                if (window.confirm(`Apakah kamu yakin ingin menghapus wilayah ${row.nama_wilayah}?`)) {
+                                                    window.location.href = `${base}/hapus-wilayah/${row.id}`.replace(/\/+/g, '/');
+                                                }
+                                            }}
+                                            className="flex w-full items-center justify-center gap-1 rounded-lg bg-red-500 px-2 py-2 text-xs font-medium text-white"
+                                        >
+                                            <MdDelete className="text-[14px]" /> Hapus
+                                        </button>
+                                    }
+                                />
+                            ))
+                        ) : (
+                            <p className="rounded-xl border border-dashed border-gray-200 bg-gray-50/60 py-8 text-center text-xs text-gray-400">
+                                Belum ada data
+                            </p>
+                        )}
+                    </div>
                     {dataWilayah?.links && dataWilayah.links.length > 3 && (
-                        <div className="flex flex-wrap gap-1.5 justify-center mt-4 pb-3">
+                        <div className="flex flex-wrap gap-1.5 justify-center mt-4 pb-3 max-md:px-2">
                             {dataWilayah.links.map((link, i) => (
                                 <button
                                     key={i}

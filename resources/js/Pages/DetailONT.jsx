@@ -47,9 +47,9 @@ export default function DetailONT({ ont }) {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Kepala */}
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between max-md:flex-col max-md:items-stretch max-md:gap-3">
                     <div className="w-full rounded-2xl bg-gradient-to-br text-white from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10">
                         <h1 className="text-sm font-semibold tracking-wide">
                             Detail ONT
@@ -67,9 +67,9 @@ export default function DetailONT({ ont }) {
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                    <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+                    <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:p-4">
 
-                        {/* Foto utama */}
+                        {/* Foto Utama */}
 
                         <div className="mb-3">
                             <p className="mb-2 text-xs font-semibold tracking-wide text-gray-700">
@@ -80,12 +80,12 @@ export default function DetailONT({ ont }) {
                                     <img
                                         src={activeImage}
                                         alt={`Foto ${ont?.kode_ont ?? "ONT"}`}
-                                        className="h-[330px] w-full object-cover transition duration-300 hover:scale-[1.01]"
+                                        className="h-[330px] w-full object-cover transition duration-300 hover:scale-[1.01] max-md:h-[220px]"
                                         loading="lazy"
                                         decoding="async"
                                     />
                                 ) : (
-                                    <div className="flex h-[330px] w-full items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100">
+                                    <div className="flex h-[330px] w-full items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 max-md:h-[220px]">
                                         <span className="text-xs text-gray-400">
                                             Belum ada foto ONT
                                         </span>
@@ -94,9 +94,9 @@ export default function DetailONT({ ont }) {
                             </div>
                         </div>
 
-                        {/* Thumbnail Foto 1, 2, 3 */}
+                        {/* Miniatur */}
 
-                        <div className="mt-3 grid grid-cols-5 gap-3">
+                        <div className="mt-3 grid grid-cols-5 gap-3 max-md:grid-cols-3 max-md:gap-2">
                             {images.length > 0 ? (
                                 images.map((image, index) => {
                                     const imageUrl = getFotoUrl(image);
@@ -116,7 +116,7 @@ export default function DetailONT({ ont }) {
                                                 <img
                                                     src={imageUrl}
                                                     alt={`Foto ${index + 1}`}
-                                                    className="h-24 w-full object-cover"
+                                                    className="h-24 w-full object-cover max-md:h-20"
                                                     loading="lazy"
                                                     decoding="async"
                                                 />
@@ -135,9 +135,9 @@ export default function DetailONT({ ont }) {
 
                     </div>
 
-                    <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+                    <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:p-4">
 
-                        {/* Judul + badge */}
+                        {/* Judul */}
 
                         <div className="flex items-start justify-between">
                             <div>
@@ -149,7 +149,7 @@ export default function DetailONT({ ont }) {
 
                         {/* Informasi */}
 
-                        <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-5 text-xs">
+                        <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-5 text-xs max-sm:grid-cols-1 max-sm:gap-y-4">
 
                             <div>
                                 <p className="font-semibold text-gray-800">
@@ -231,7 +231,7 @@ export default function DetailONT({ ont }) {
 
                         </div>
 
-                        {/* Edit */}
+                        {/* Ubah */}
 
                         <button
                             type="button"
@@ -242,7 +242,7 @@ export default function DetailONT({ ont }) {
                             Edit Data
                         </button>
 
-                        {/* Map */}
+                        {/* Peta */}
 
                         <div className="relative mt-4 h-[220px] overflow-hidden rounded-xl bg-gray-100 border border-gray-200 shadow-inner">
 
