@@ -37,10 +37,13 @@ export default function AuthLayout({ children, errorMessage }) {
                     backgroundPosition: "center",
                 }}
             >
-                {/* Tint merek seluler di atas foto */}
+
+                {/* Tint merek mobile di atas foto */}
+
                 <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden bg-gradient-to-br from-[#6F2424]/95 via-[#6F2424]/70 to-[#AB3C3C]/75 max-md:block" />
 
-                {/* Dekorasi seluler */}
+                {/* Dekorasi mobile */}
+
                 <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-16 hidden h-48 w-48 rounded-full border-[10px] border-white/10 max-md:block" />
                 <div aria-hidden="true" className="pointer-events-none absolute -bottom-20 -left-16 hidden h-56 w-56 rounded-full border-[12px] border-white/10 max-md:block" />
 

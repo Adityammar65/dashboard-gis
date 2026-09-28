@@ -4,9 +4,10 @@ import GoogleMapsButton from "../Components/GoogleMapsButton";
 import DeleteDataButton from "../Components/DeleteDataButton";
 import { FaArrowLeft, FaPen } from "react-icons/fa";
 import { useState, useMemo } from "react";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 export default function DetailTiang({ tiang }) {
+    const { settings } = usePage().props;
 
     const base = useMemo(() => {
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
@@ -38,22 +39,30 @@ export default function DetailTiang({ tiang }) {
 
             <div className="space-y-4">
 
-                {/* Kepala */}
+                {/* Header */}
 
-                <div className="flex items-center justify-between max-md:flex-col max-md:items-stretch max-md:gap-3">
+                <div className="flex items-stretch justify-between gap-4 max-md:flex-row max-md:items-center max-md:gap-2">
 
-                    <div className="w-full rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] text-white px-4 py-3.5 shadow-md border border-white/10">
+                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] text-white px-4 py-3.5 shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
 
-                        <h1 className="text-sm font-semibold tracking-wide">
+                        <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
                             Detail Tiang
-                        </h1>
+                        </span>
+
+                        <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">
+                            /
+                        </span>
+
+                        <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
+                            {tiang?.wilayah ?? settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                        </span>
 
                     </div>
 
                     <button
                         type="button"
                         onClick={() => window.history.back()}
-                        className="ml-3 flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98]"
+                        className="ml-3 flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:ml-0 max-md:rounded-lg max-md:px-3 max-md:py-2"
                     >
 
                         <FaArrowLeft />

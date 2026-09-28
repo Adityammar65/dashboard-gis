@@ -3,7 +3,7 @@ import MainLayout from "../Layouts/MainLayout";
 import { FaWifi, FaChevronRight, FaMap } from "react-icons/fa";
 import { MdRouter } from "react-icons/md";
 import { useMemo } from "react";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 const getIconByKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
@@ -38,6 +38,7 @@ const getNotifikasiVisual = (item) => {
 };
 
 export default function Notifikasi({ notifikasi = [] }) {
+    const { settings } = usePage().props;
     const base = useMemo(() => {
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
         const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
@@ -144,52 +145,78 @@ export default function Notifikasi({ notifikasi = [] }) {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Kepala */}
+                {/* Header */}
 
-                <div className="flex items-center gap-3">
-                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white">
-                        <span className="text-sm font-semibold tracking-wide">
+                <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-center max-md:gap-2">
+                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
+                        <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
                             Notifikasi
                         </span>
+
+                        <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">
+                            /
+                        </span>
+
+                        <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                        </span>
                     </div>
+
+                    <button
+                        type="button"
+                        onClick={tandaiSemuaDibaca}
+                        disabled={belumDibaca === 0}
+                        className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
+                    >
+                        Tandai semua dibaca
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={hapusSudahDibaca}
+                        disabled={sudahDibaca === 0}
+                        className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
+                    >
+                        Hapus yang dibaca
+                    </button>
                 </div>
 
                 {/* Statistik */}
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 max-md:grid-cols-2 max-md:gap-3">
 
                     {/* Total */}
 
-                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-600 bg-white p-5 shadow-sm hover:shadow-md transition">
-                        <p className="text-[11px] font-semibold tracking-widest text-gray-500">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-600 bg-white p-5 shadow-sm hover:shadow-md transition max-md:p-3.5">
+                        <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
                             TOTAL NOTIFIKASI
                         </p>
 
-                        <h2 className="mt-1 text-2xl font-bold text-gray-800">
+                        <h2 className="mt-1 text-2xl font-bold text-gray-800 max-md:text-xl">
                             {totalNotifikasi}
                         </h2>
                     </div>
 
                     {/* Belum Dibaca */}
 
-                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-red-500 bg-white p-5 shadow-sm hover:shadow-md transition">
-                        <p className="text-[11px] font-semibold tracking-widest text-gray-500">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-red-500 bg-white p-5 shadow-sm hover:shadow-md transition max-md:p-3.5">
+                        <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
                             BELUM DIBACA
                         </p>
 
-                        <h2 className="mt-1 text-2xl font-bold text-gray-800">
+                        <h2 className="mt-1 text-2xl font-bold text-gray-800 max-md:text-xl">
                             {belumDibaca}
                         </h2>
                     </div>
 
                     {/* Sudah Dibaca */}
 
-                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-green-600 bg-white p-5 shadow-sm hover:shadow-md transition">
-                        <p className="text-[11px] font-semibold tracking-widest text-gray-500">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-green-600 bg-white p-5 shadow-sm hover:shadow-md transition max-md:p-3.5">
+                        <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
                             SUDAH DIBACA
                         </p>
 
-                        <h2 className="mt-1 text-2xl font-bold text-gray-800">
+                        <h2 className="mt-1 text-2xl font-bold text-gray-800 max-md:text-xl">
                             {sudahDibaca}
                         </h2>
                     </div>
@@ -198,7 +225,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                 {/* Daftar */}
 
                 <div className="rounded-2xl bg-white shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="flex items-center justify-between border-b border-gray-100 bg-gradient-to-r from-white to-gray-50 px-5 py-4 max-md:flex-col max-md:items-stretch max-md:gap-3 max-md:px-4">
+                    <div className="flex items-center justify-between border-b border-gray-100 bg-gradient-to-r from-white to-gray-50 px-5 py-4 max-md:px-4">
                         <div>
                             <h3 className="font-semibold">
                                 Notifikasi Terbaru
@@ -207,26 +234,6 @@ export default function Notifikasi({ notifikasi = [] }) {
                             <p className="mt-1 text-xs text-gray-500">
                                 Informasi terbaru dari sistem GIS
                             </p>
-                        </div>
-
-                        <div className="flex items-center gap-2 max-md:flex-wrap">
-                            <button
-                                onClick={tandaiSemuaDibaca}
-                                disabled={belumDibaca === 0}
-                                className="rounded-full bg-white px-3 py-1 text-xs font-medium text-[#992e2e] ring-1 ring-[#AB3C3C]/20 shadow-sm transition hover:bg-[#AB3C3C] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                            >
-                                Tandai semua dibaca
-                            </button>
-
-                            <span className="h-4 w-px bg-gray-200" />
-
-                            <button
-                                onClick={hapusSudahDibaca}
-                                disabled={sudahDibaca === 0}
-                                className="rounded-full bg-white px-3 py-1 text-xs font-medium text-[#992e2e] ring-1 ring-[#AB3C3C]/20 shadow-sm transition hover:bg-[#AB3C3C] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                            >
-                                Hapus yang dibaca
-                            </button>
                         </div>
                     </div>
 

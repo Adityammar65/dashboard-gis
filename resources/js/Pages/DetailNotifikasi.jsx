@@ -2,6 +2,7 @@ import MainLayout from "../Layouts/MainLayout";
 import { FaArrowLeft, FaWifi, FaMap } from "react-icons/fa";
 import { MdRouter } from "react-icons/md";
 import { useMemo } from "react";
+import { usePage } from "@inertiajs/react";
 
 const getIconByKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
@@ -71,6 +72,7 @@ const parsePesan = (pesan = "") => {
 };
 
 export default function DetailNotifikasi({ notifikasi }) {
+    const { settings } = usePage().props;
     const item = useMemo(() => (Array.isArray(notifikasi) ? notifikasi[0] : notifikasi) || null, [notifikasi]);
     const { Icon, circle } = getNotifikasiVisual(item || {});
     const { summary, changes, details } = useMemo(() => parsePesan(item?.pesan), [item]);
@@ -80,19 +82,27 @@ export default function DetailNotifikasi({ notifikasi }) {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Kepala */}
+                {/* Header */}
 
-                <div className="flex items-center justify-between max-md:flex-col max-md:items-stretch max-md:gap-3">
-                    <div className="w-full rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10">
-                        <h1 className="text-sm font-semibold tracking-wide">
+                <div className="flex items-stretch justify-between gap-4 max-md:flex-row max-md:items-center max-md:gap-2">
+                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
+                        <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
                             Detail Notifikasi
-                        </h1>
+                        </span>
+
+                        <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">
+                            /
+                        </span>
+
+                        <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                        </span>
                     </div>
 
                     <button
                         type="button"
                         onClick={() => window.history.back()}
-                        className="ml-3 flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98]"
+                        className="flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:rounded-lg max-md:px-3 max-md:py-2"
                     >
                         <FaArrowLeft />
                         Kembali

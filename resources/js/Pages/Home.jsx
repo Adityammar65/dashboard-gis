@@ -108,7 +108,7 @@ export default function Dashboard() {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Kepala */}
+                {/* Header */}
 
                 <div className="mb-4">
                     <h1 className="text-xl font-bold text-gray-800">
@@ -120,32 +120,32 @@ export default function Dashboard() {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-3 max-md:flex-col max-md:items-stretch">
+                <div className="flex items-stretch gap-3 max-md:flex-row max-md:items-center max-md:gap-2">
 
-                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white">
-                        <span className="text-sm font-semibold tracking-wide">
+                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
+                        <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
                             Beranda
                         </span>
 
-                        <span className="mx-3 opacity-60">/</span>
+                        <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">/</span>
 
-                        <span className="text-xs font-light capitalize opacity-90">
+                        <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
                             {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 
-                    <div className="relative">
+                    <div className="relative max-md:shrink-0">
 
                         <button
                             onClick={() => setOpenTambah(!openTambah)}
-                            className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:w-full max-md:justify-center"
+                            className="flex h-full w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
                         >
                             <FaPlus />
                             Tambah Aset
                         </button>
 
                         {openTambah && (
-                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl max-md:left-0 max-md:right-auto max-md:w-full">
+                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl max-md:right-0 max-md:w-52">
 
                                 <a
                                     href={resolveHref("tambah-tiang")}
@@ -174,33 +174,33 @@ export default function Dashboard() {
 
                 {/* Statistik */}
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 max-md:grid-cols-2 max-md:gap-3">
 
                     {/* Tiang */}
 
-                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-900 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
-                        <div className="flex justify-between">
-                            <div>
-                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-900 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
+                        <div className="flex justify-between max-md:gap-2">
+                            <div className="min-w-0">
+                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
                                     TOTAL TIANG
                                 </p>
-                                <h2 className="mt-1 text-2xl font-bold text-gray-800">
+                                <h2 className="mt-1 text-2xl font-bold text-gray-800 max-md:text-xl">
                                     {stats?.tiang?.total ?? 0}
                                 </h2>
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-900 text-white shadow-md ring-1 ring-white/10">
-                                <FaWifi className="text-2xl" />
+                            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-900 text-white shadow-md ring-1 ring-white/10 max-md:h-11 max-md:w-11">
+                                <FaWifi className="text-2xl max-md:text-lg" />
                             </div>
                         </div>
 
-                        <div className="mt-4 flex gap-4 text-xs max-md:flex-wrap max-md:gap-2">
-                            <span className="flex items-center gap-2 rounded-full bg-green-50 px-2 py-1 ring-1 ring-green-200">
+                        <div className="mt-4 flex gap-4 text-xs max-md:mt-3 max-md:flex-wrap max-md:gap-1.5">
+                            <span className="flex items-center gap-2 rounded-full bg-green-50 px-2 py-1 ring-1 ring-green-200 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
                                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                 Aktif {stats?.tiang?.aktif ?? 0}
                             </span>
 
-                            <span className="flex items-center gap-2 rounded-full bg-red-50 px-2 py-1 ring-1 ring-red-200">
+                            <span className="flex items-center gap-2 rounded-full bg-red-50 px-2 py-1 ring-1 ring-red-200 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
                                 <span className="h-2 w-2 rounded-full bg-red-500"></span>
                                 Nonaktif {stats?.tiang?.nonaktif ?? 0}
                             </span>
@@ -209,29 +209,29 @@ export default function Dashboard() {
 
                     {/* ONT */}
 
-                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-sky-500 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
-                        <div className="flex justify-between">
-                            <div>
-                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
+                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-sky-500 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
+                        <div className="flex justify-between max-md:gap-2">
+                            <div className="min-w-0">
+                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
                                     TOTAL ONT
                                 </p>
-                                <h2 className="mt-1 text-2xl font-bold text-gray-800">
+                                <h2 className="mt-1 text-2xl font-bold text-gray-800 max-md:text-xl">
                                     {stats?.ont?.total ?? 0}
                                 </h2>
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-sky-500 text-white shadow-md ring-1 ring-white/10">
-                                <MdRouter className="text-2xl" />
+                            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-sky-500 text-white shadow-md ring-1 ring-white/10 max-md:h-11 max-md:w-11">
+                                <MdRouter className="text-2xl max-md:text-lg" />
                             </div>
                         </div>
 
-                        <div className="mt-4 flex gap-4 text-xs max-md:flex-wrap max-md:gap-2">
-                            <span className="flex items-center gap-2 rounded-full bg-green-50 px-2 py-1 ring-1 ring-green-200">
+                        <div className="mt-4 flex gap-4 text-xs max-md:mt-3 max-md:flex-wrap max-md:gap-1.5">
+                            <span className="flex items-center gap-2 rounded-full bg-green-50 px-2 py-1 ring-1 ring-green-200 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
                                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                 Aktif {stats?.ont?.aktif ?? 0}
                             </span>
 
-                            <span className="flex items-center gap-2 rounded-full bg-red-50 px-2 py-1 ring-1 ring-red-200">
+                            <span className="flex items-center gap-2 rounded-full bg-red-50 px-2 py-1 ring-1 ring-red-200 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
                                 <span className="h-2 w-2 rounded-full bg-red-500"></span>
                                 Nonaktif {stats?.ont?.nonaktif ?? 0}
                             </span>
@@ -240,25 +240,25 @@ export default function Dashboard() {
 
                     {/* Wilayah */}
 
-                    <div className="flex flex-col rounded-2xl border border-gray-100 border-t-[3px] border-t-yellow-400 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
-                        <div className="flex justify-between">
+                    <div className="flex flex-col rounded-2xl border border-gray-100 border-t-[3px] border-t-yellow-400 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
+                        <div className="flex justify-between max-md:gap-2">
                             <div className="min-w-0">
-                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
+                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
                                     WILAYAH COVERAGE
                                 </p>
-                                <h2 className="mt-1 truncate whitespace-nowrap text-2xl font-bold text-gray-800">
+                                <h2 className="mt-1 truncate whitespace-nowrap text-2xl font-bold text-gray-800 max-md:text-xl">
                                     {stats?.wilayah?.total ?? 0} Wilayah
                                 </h2>
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-yellow-400 text-white shadow-md ring-1 ring-white/10">
-                                <FaMapMarkedAlt className="text-2xl" />
+                            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-yellow-400 text-white shadow-md ring-1 ring-white/10 max-md:h-11 max-md:w-11">
+                                <FaMapMarkedAlt className="text-2xl max-md:text-lg" />
                             </div>
                         </div>
 
                         <a
                             href={resolveHref("wilayah")}
-                            className="mt-auto flex shrink-0 items-center justify-end gap-2 pt-5 text-xs font-medium text-gray-500 transition hover:text-yellow-600 hover:gap-3"
+                            className="mt-auto flex shrink-0 items-center justify-end gap-2 pt-5 text-xs font-medium text-gray-500 transition hover:text-yellow-600 hover:gap-3 max-md:justify-start max-md:pt-3"
                         >
                             Lihat Sebaran Wilayah
                             <FaArrowRight />
@@ -267,25 +267,25 @@ export default function Dashboard() {
 
                     {/* Data Koordinat */}
 
-                    <div className="flex flex-col rounded-2xl border border-gray-100 border-t-[3px] border-t-emerald-600 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
-                        <div className="flex justify-between">
-                            <div>
-                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
+                    <div className="flex flex-col rounded-2xl border border-gray-100 border-t-[3px] border-t-emerald-600 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
+                        <div className="flex justify-between max-md:gap-2">
+                            <div className="min-w-0">
+                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
                                     DATA BERKOORDINAT
                                 </p>
-                                <h2 className="mt-1 text-2xl font-bold text-gray-800">
+                                <h2 className="mt-1 text-2xl font-bold text-gray-800 max-md:text-xl">
                                     {stats?.koordinat?.persen ?? 0}%
                                 </h2>
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md ring-1 ring-white/10">
-                                <MdStorage className="text-2xl" />
+                            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md ring-1 ring-white/10 max-md:h-11 max-md:w-11">
+                                <MdStorage className="text-2xl max-md:text-lg" />
                             </div>
                         </div>
 
                         <a
                             href={resolveHref("peta-sebaran-aset")}
-                            className="mt-auto flex shrink-0 items-center justify-end gap-2 pt-5 text-xs font-medium text-gray-500 transition hover:text-emerald-600 hover:gap-3"
+                            className="mt-auto flex shrink-0 items-center justify-end gap-2 pt-5 text-xs font-medium text-gray-500 transition hover:text-emerald-600 hover:gap-3 max-md:justify-start max-md:pt-3"
                         >
                             Lihat Sebaran Data
                             <FaArrowRight />

@@ -1,5 +1,5 @@
 import { useState, createContext, useContext, useEffect, useCallback } from "react";
-import { Header, Sidebar } from "../Components";
+import { Header, Sidebar, MobileDrawer } from "../Components";
 import { FiX } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
 
@@ -18,9 +18,11 @@ export default function MainLayout({ children, errorMessage }) {
         if (typeof window !== "undefined" && window.innerWidth < 768) return false;
         return true;
     });
+    const [drawerOpen, setDrawerOpen] = useState(false);
     const [localError, setLocalError] = useState(null);
     const [dismissed, setDismissed] = useState(false);
 
+    const { url } = usePage();
     const { errors, flash } = usePage().props;
 
     const showError = useCallback((msg) => {
@@ -46,6 +48,10 @@ export default function MainLayout({ children, errorMessage }) {
             setDismissed(false);
         }
     }, [errors, flash, errorMessage]);
+
+    useEffect(() => {
+        setDrawerOpen(false);
+    }, [url]);
 
     useEffect(() => {
         const handler = (e) => showError(e.detail);
@@ -120,20 +126,26 @@ export default function MainLayout({ children, errorMessage }) {
                     </div>
                 )}
 
-                {/* Bilah Sisi */}
+                {/* Bilah Sisi (desktop saja) */}
 
-                <Sidebar isOpen={isOpen} onToggle={() => setIsOpen(!isOpen)} />
+                <div className="max-md:hidden">
+                    <Sidebar isOpen={isOpen} onToggle={() => setIsOpen(!isOpen)} />
+                </div>
 
-                {/* Kepala */}
+                {/* Laci Mobile */}
 
-                <Header />
+                <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+
+                {/* Header */}
+
+                <Header onMenu={() => setDrawerOpen(true)} />
 
                 {/* Isi */}
 
                 <main
                     className={`min-h-[calc(100vh-72px)] p-6
                     transition-all duration-300
-                    max-md:p-4 max-md:min-w-0 max-md:ml-16 max-md:min-h-[calc(100vh-60px)]
+                    max-md:p-4 max-md:min-w-0 max-md:ml-0 max-md:min-h-[calc(100vh-60px)]
                     ${isOpen ? "ml-64" : "ml-20"}`}
                 >
                     {children}

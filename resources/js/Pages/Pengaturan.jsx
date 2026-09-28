@@ -62,14 +62,20 @@ export default function Pengaturan({ wilayah }) {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Kepala */}
+                {/* Header */}
 
-                <div className="flex items-center gap-4 max-md:flex-col max-md:items-stretch">
-                    <div className="flex flex-1 items-center rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10">
-                        <span className="text-sm font-semibold tracking-wide">
-                            Pengaturan
-                        </span>
-                    </div>
+                <div className="rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
+                    <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
+                        Pengaturan
+                    </span>
+
+                    <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">
+                        /
+                    </span>
+
+                    <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
+                        {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                    </span>
                 </div>
 
                 {/* Profil Pengguna */}

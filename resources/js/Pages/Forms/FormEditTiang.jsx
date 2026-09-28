@@ -286,31 +286,31 @@ export default function FormEditTiang({ tiang, wilayah }) {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Kepala */}
+                {/* Header */}
 
-                <div className="flex items-center justify-between mb-5 max-md:flex-col max-md:items-start max-md:gap-3">
-                    <div className="flex items-center gap-3 max-md:flex-wrap">
+                <div className="flex items-stretch justify-between gap-4 max-md:flex-row max-md:items-center max-md:gap-2">
+                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
+                        <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
+                            Form Edit Tiang
+                        </span>
 
-                        <button
-                            type="button"
-                            onClick={() => window.history.back()}
-                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] transition"
-                        >
-                            <FaArrowLeft size={14} />
-                            Kembali
-                        </button>
+                        <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">
+                            /
+                        </span>
 
-                        <div>
-                            <h1 className="text-xl font-bold text-gray-800 tracking-tight max-md:text-lg">
-                                Form Edit Tiang
-                            </h1>
-
-                            <p className="text-sm text-gray-500">
-                                Edit data tiang
-                            </p>
-                        </div>
-
+                        <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                        </span>
                     </div>
+
+                    <button
+                        type="button"
+                        onClick={() => window.history.back()}
+                        className="flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:rounded-lg max-md:px-3 max-md:py-2"
+                    >
+                        <FaArrowLeft size={14} />
+                        Kembali
+                    </button>
                 </div>
 
                 {/* Formulir */}

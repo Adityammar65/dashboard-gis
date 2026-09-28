@@ -45,7 +45,7 @@ export default function Login() {
             <div className="flex p-6 max-md:w-full max-md:max-w-md max-md:rounded-3xl max-md:bg-white max-md:p-6 max-md:shadow-xl max-md:ring-1 max-md:ring-black/5">
                 <form className="space-y-5 max-md:w-full" onSubmit={handleSubmit}>
 
-                    {/* Judul seluler */}
+                    {/* Judul mobile */}
 
                     <div className="hidden max-md:block">
                         <h2 className="text-lg font-bold text-gray-800">

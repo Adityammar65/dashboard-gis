@@ -64,6 +64,7 @@ export default function Peta() {
     }, [tiang, ont, assetType, status, wilayah]);
 
     // Pusat Wilayah
+
     const wilayahCenter = useMemo(() => {
         if (wilayah === "Semua") return null;
         const all = [...tiang, ...ont].filter((it) => String(it.wilayah || "") === wilayah);
@@ -89,20 +90,18 @@ export default function Peta() {
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Kepala */}
+                {/* Header */}
 
-                <div className="flex items-center gap-3">
-                    <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10">
-                        <span className="text-sm font-semibold tracking-wide">
-                            Peta Sebaran Aset
-                        </span>
+                <div className="rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
+                    <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
+                        Peta Sebaran Aset
+                    </span>
 
-                        <span className="mx-3 opacity-60">/</span>
+                    <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">/</span>
 
-                        <span className="text-xs font-light capitalize opacity-90">
-                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
-                        </span>
-                    </div>
+                    <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
+                        {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                    </span>
                 </div>
 
                 <div className="gis-map-wrap relative h-[calc(100vh-180px)] min-h-[500px] overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100 max-md:h-[68vh] max-md:min-h-[360px]">
@@ -158,7 +157,9 @@ export default function Peta() {
                                 <h2 className="text-sm font-bold tracking-wide text-gray-800">
                                     FILTER
                                 </h2>
+
                                 {/* Alihan */}
+
                                 <button
                                     type="button"
                                     onClick={() => setMobileFilterOpen(!mobileFilterOpen)}

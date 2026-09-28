@@ -1,10 +1,10 @@
 import MainLayout from "../Layouts/MainLayout";
 import MobileDataCard from "../Components/MobileDataCard";
+import { TableActions, CardActions, TableEmpty, CardEmpty } from "../Components/DataActions";
 
 import { usePage, router } from "@inertiajs/react";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { FaPlus, FaFilter, FaEye, FaEdit, FaWifi, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
+import { FaPlus, FaFilter, FaWifi, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel } from "react-icons/fa";
 
 const ambilNamaBerkas = (contentDisposition, cadangan) => {
     if (!contentDisposition) return cadangan;
@@ -96,7 +96,8 @@ export default function DataTiang({
         }
     }, [filter.kelurahan]);
 
-    // MARK: Kecamatan
+    // Kecamatan
+
     useEffect(() => {
         if (!filterWilayah) { setKecamatanOptions([]); return; }
         const wil = wilayah.find((w) => String(w.id) === String(filterWilayah));
@@ -105,9 +106,9 @@ export default function DataTiang({
         let cancelled = false;
         setKecamatanLoading(true);
         const baseSeg = window.location.pathname.split('/').filter(Boolean)[0];
-        const known = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont','hapus-tiang','hapus-ont'];
+        const known = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
         const base = (baseSeg && !known.includes(baseSeg)) ? `/${baseSeg}` : '';
-        fetch(`${base}/api/regions/kabupaten/${kode}/kecamatan`.replace(/\/+/g,'/'))
+        fetch(`${base}/api/regions/kabupaten/${kode}/kecamatan`.replace(/\/+/g, '/'))
             .then((r) => r.json())
             .then((j) => {
                 if (cancelled) return;
@@ -127,9 +128,9 @@ export default function DataTiang({
         let cancelled = false;
         setKelurahanLoading(true);
         const baseSeg = window.location.pathname.split('/').filter(Boolean)[0];
-        const known = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont','hapus-tiang','hapus-ont'];
+        const known = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
         const base = (baseSeg && !known.includes(baseSeg)) ? `/${baseSeg}` : '';
-        fetch(`${base}/api/regions/kecamatan/${code}/kelurahan`.replace(/\/+/g,'/'))
+        fetch(`${base}/api/regions/kecamatan/${code}/kelurahan`.replace(/\/+/g, '/'))
             .then((r) => r.json())
             .then((j) => {
                 if (cancelled) return;
@@ -280,31 +281,31 @@ export default function DataTiang({
         <MainLayout>
             <div className="space-y-4">
 
-                {/* Kepala */}
+                {/* Header */}
 
-                <div className="flex items-center gap-4 max-md:flex-col max-md:items-stretch">
+                <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-center max-md:gap-2">
 
-                    <div className="items-center flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white">
+                    <div className="items-center flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
 
-                        <span className="text-sm font-semibold tracking-wide">
+                        <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
                             Data Tiang
                         </span>
 
-                        <span className="mx-3 opacity-60">
+                        <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">
                             /
                         </span>
 
-                        <span className="text-xs font-light capitalize opacity-90">
+                        <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
                             {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
 
                     </div>
 
-                    {/* Formulir */}
+                    {/* Form */}
 
                     <a
                         href={resolveHref("tambah-tiang")}
-                        className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:w-full max-md:justify-center"
+                        className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
                     >
                         <FaPlus />
                         Form Tiang
@@ -312,13 +313,13 @@ export default function DataTiang({
 
                     {/* Ekspor */}
 
-                    <div ref={exportRef} className="relative max-md:w-full">
+                    <div ref={exportRef} className="relative max-md:shrink-0">
 
                         <button
                             type="button"
                             onClick={() => setOpenExport(!openExport)}
                             disabled={listTiang.length === 0}
-                            className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:w-full max-md:justify-center"
+                            className="flex h-full items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
                         >
                             <FaFileExport />
                             Export
@@ -326,7 +327,7 @@ export default function DataTiang({
                         </button>
 
                         {openExport && (
-                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl max-md:left-0 max-md:right-auto max-md:w-full">
+                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl max-md:right-0 max-md:w-52">
 
                                 <button
                                     type="button"
@@ -447,32 +448,32 @@ export default function DataTiang({
 
                 {/* Statistik */}
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3 max-md:grid-cols-2 max-md:gap-3">
 
                     {/* Total Tiang */}
 
-                    <div className="hover:scale-[1.02] transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-900 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 will-change-transform">
+                    <div className="hover:scale-[1.02] transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-900 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:min-h-0 max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
 
-                        <div className="flex items-start justify-between">
+                        <div className="flex items-start justify-between max-md:gap-2">
 
-                            <div>
+                            <div className="min-w-0">
 
-                                <p className="text-xs font-medium">
+                                <p className="truncate text-xs font-medium max-md:text-[11px]">
                                     TOTAL TIANG
                                 </p>
 
-                                <p className="text-sm font-light capitalize text-gray-500 mt-1 truncate">
+                                <p className="text-sm font-light capitalize text-gray-500 mt-1 truncate max-md:text-xs">
                                     {selectedWilayahLabel}
                                 </p>
 
-                                <h2 className="mt-1 text-2xl font-semibold">
+                                <h2 className="mt-1 text-2xl font-semibold max-md:text-xl">
                                     {totalTiang}
                                 </h2>
 
                             </div>
 
-                            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-900 text-white">
-                                <FaWifi className="text-2xl" />
+                            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-blue-900 text-white max-md:h-11 max-md:w-11">
+                                <FaWifi className="text-2xl max-md:text-lg" />
                             </div>
 
                         </div>
@@ -480,21 +481,21 @@ export default function DataTiang({
                     </div>
 
 
-                    {/* Aktif Nonaktif */}
+                    {/* Status */}
 
-                    <div className="flex min-h-[136px] flex-col gap-4">
+                    <div className="flex min-h-[136px] flex-col gap-4 max-md:min-h-0 max-md:gap-3">
 
                         {/* Aktif */}
 
-                        <div className="hover:scale-[1.02] transition-all shadow-sm duration-200 flex flex-1 items-center rounded-2xl border border-gray-100 border-t-[3px] border-t-emerald-600 bg-white px-5 hover:shadow-md hover:-translate-y-0.5 will-change-transform">
+                        <div className="hover:scale-[1.02] transition-all shadow-sm duration-200 flex flex-1 items-center rounded-2xl border border-gray-100 border-t-[3px] border-t-emerald-600 bg-white px-5 hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:px-3.5 max-md:py-3 max-md:hover:scale-100 max-md:hover:translate-y-0">
 
-                            <div>
+                            <div className="min-w-0">
 
-                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
+                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
                                     TIANG AKTIF
                                 </p>
 
-                                <h2 className="mt-1 text-xl font-bold text-gray-800">
+                                <h2 className="mt-1 text-xl font-bold text-gray-800 max-md:text-lg">
                                     {tiangAktif}
                                 </h2>
 
@@ -505,15 +506,15 @@ export default function DataTiang({
 
                         {/* Nonaktif */}
 
-                        <div className="hover:scale-[1.02] duration-200 transition-all shadow-sm flex flex-1 items-center rounded-2xl border border-gray-100 border-t-[3px] border-t-red-500 bg-white px-5 hover:shadow-md hover:-translate-y-0.5 will-change-transform">
+                        <div className="hover:scale-[1.02] duration-200 transition-all shadow-sm flex flex-1 items-center rounded-2xl border border-gray-100 border-t-[3px] border-t-red-500 bg-white px-5 hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:px-3.5 max-md:py-3 max-md:hover:scale-100 max-md:hover:translate-y-0">
 
-                            <div>
+                            <div className="min-w-0">
 
-                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
+                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
                                     TIANG NONAKTIF
                                 </p>
 
-                                <h2 className="mt-1 text-xl font-bold text-gray-800">
+                                <h2 className="mt-1 text-xl font-bold text-gray-800 max-md:text-lg">
                                     {tiangNonaktif}
                                 </h2>
 
@@ -526,7 +527,7 @@ export default function DataTiang({
 
                     {/* Filter */}
 
-                    <div className="min-h-[136px] rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+                    <div className="min-h-[136px] rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:col-span-2 max-md:min-h-0 max-md:p-4">
 
                         <div className="mb-4 flex items-center gap-2">
 
@@ -716,7 +717,7 @@ export default function DataTiang({
 
                         <table className="w-full min-w-[900px] border-collapse text-xs">
 
-                            {/* Kepala Tabel */}
+                            {/* Header Tabel */}
 
                             <thead>
 
@@ -839,7 +840,7 @@ export default function DataTiang({
                                                 )}
                                             </td>
 
-                            {/* Kecamatan */}
+                                            {/* Kecamatan */}
 
                                             <td className="px-4 py-2">
                                                 {tiang.kecamatan || tiang.area ? (
@@ -849,7 +850,7 @@ export default function DataTiang({
                                                 )}
                                             </td>
 
-                            {/* Kelurahan */}
+                                            {/* Kelurahan */}
 
                                             <td className="px-4 py-2">
                                                 {tiang.kelurahan ? (
@@ -858,6 +859,7 @@ export default function DataTiang({
                                                     <span className="text-gray-400">-</span>
                                                 )}
                                             </td>
+
                                             {/* Petugas */}
 
                                             <td className="px-4 py-2">
@@ -904,47 +906,14 @@ export default function DataTiang({
 
                                             <td className="px-4 py-2.5">
 
-                                                <div className="flex items-center gap-1.5">
-
-                                                    {/* Detail */}
-
-                                                    <a
-                                                        href={resolveHref(`detail-tiang/${tiang.id}`)}
-                                                        className="rounded-lg bg-blue-500 px-2 py-1.5 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/10 transition hover:bg-blue-600 hover:shadow"
-                                                    >
-                                                        <FaEye className="text-[16px]" />
-                                                    </a>
-
-
-                                                    {/* Ubah */}
-
-                                                    <a
-                                                        href={resolveHref(`edit-tiang/${tiang.id}`)}
-                                                        className="rounded-lg bg-amber-400 px-2 py-1.5 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/10 transition hover:bg-amber-500 hover:shadow"
-                                                    >
-                                                        <FaEdit className="text-[16px]" />
-                                                    </a>
-
-
-                                                    {/* Hapus */}
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            if (
-                                                                window.confirm(
-                                                                    `Apakah kamu yakin ingin menghapus data tiang ${tiang.kode_tiang}?`
-                                                                )
-                                                            ) {
-                                                                window.location.href = `${base}/hapus-tiang/${tiang.id}`.replace(/\/+/g, '/');
-                                                            }
-                                                        }}
-                                                        className="rounded-lg bg-red-500 px-2 py-1.5 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/10 transition hover:bg-red-600 hover:shadow"
-                                                        title="Hapus Data"
-                                                    >
-                                                        <MdDelete className="text-[16px]" />
-                                                    </button>
-
-                                                </div>
+                                                <TableActions
+                                                    type="tiang"
+                                                    id={tiang.id}
+                                                    kode={tiang.kode_tiang}
+                                                    base={base}
+                                                    detailHref={resolveHref(`detail-tiang/${tiang.id}`)}
+                                                    editHref={resolveHref(`edit-tiang/${tiang.id}`)}
+                                                />
 
                                             </td>
 
@@ -956,32 +925,7 @@ export default function DataTiang({
 
                                     /* Kosong */
 
-                                    <tr>
-
-                                        <td
-                                            colSpan="9"
-                                            className="px-4 py-12 text-center"
-                                        >
-
-                                            <div className="flex flex-col items-center justify-center gap-2">
-
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                                                    <FaWifi className="text-xl text-gray-400" />
-                                                </div>
-
-                                                <p className="text-sm font-medium text-gray-500">
-                                                    Belum ada data
-                                                </p>
-
-                                                <p className="text-xs text-gray-400">
-                                                    Data tiang belum tersedia.
-                                                </p>
-
-                                            </div>
-
-                                        </td>
-
-                                    </tr>
+                                    <TableEmpty colSpan="9" icon={FaWifi} title="Belum ada data" hint="Data tiang belum tersedia." />
 
                                 )}
 
@@ -990,7 +934,9 @@ export default function DataTiang({
                         </table>
 
                     </div>
-                    {/* Kartu Seluler */}
+
+                    {/* Mobile Card */}
+
                     <div className="space-y-3 p-4 md:hidden">
                         {listTiang.length > 0 ? (
                             listTiang.map((tiang, index) => (
@@ -1006,27 +952,19 @@ export default function DataTiang({
                                         { label: "Petugas", value: tiang.nama_petugas },
                                     ]}
                                     actions={
-                                        <>
-                                            <a
-                                                href={resolveHref(`detail-tiang/${tiang.id}`)}
-                                                className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-blue-500 px-2 py-2 text-xs font-medium text-white"
-                                            >
-                                                <FaEye className="text-[14px]" /> Detail
-                                            </a>
-                                            <a
-                                                href={resolveHref(`edit-tiang/${tiang.id}`)}
-                                                className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-amber-400 px-2 py-2 text-xs font-medium text-white"
-                                            >
-                                                <FaEdit className="text-[14px]" /> Edit
-                                            </a>
-                                        </>
+                                        <CardActions
+                                            type="tiang"
+                                            id={tiang.id}
+                                            kode={tiang.kode_tiang}
+                                            base={base}
+                                            detailHref={resolveHref(`detail-tiang/${tiang.id}`)}
+                                            editHref={resolveHref(`edit-tiang/${tiang.id}`)}
+                                        />
                                     }
                                 />
                             ))
                         ) : (
-                            <p className="rounded-xl border border-dashed border-gray-200 bg-gray-50/60 py-8 text-center text-xs text-gray-400">
-                                Belum ada data
-                            </p>
+                            <CardEmpty />
                         )}
                     </div>
                     {dataTiang?.links && dataTiang.links.length > 3 && (

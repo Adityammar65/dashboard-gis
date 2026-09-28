@@ -1,4 +1,5 @@
-/* Kartu Seluler */
+/* Kartu Mobile */
+
 export default function MobileDataCard({
     title,
     subtitle,
