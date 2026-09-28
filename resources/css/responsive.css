@@ -46,6 +46,11 @@
         --gis-rail: 4rem;
     }
 
+    .gis-rail {
+        height: 100vh;
+        height: 100dvh;
+    }
+
     .gis-rail a {
         min-height: 44px;
         min-width: 44px;
@@ -53,6 +58,10 @@
 
     .gis-rail nav {
         scrollbar-width: none;
+        max-height: calc(100vh - 60px);
+        max-height: calc(100dvh - 60px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
     }
 
     .gis-rail nav::-webkit-scrollbar {

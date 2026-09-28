@@ -3,9 +3,10 @@ import { FaWifi, FaMap } from "react-icons/fa";
 import { FaLocationCrosshairs } from "react-icons/fa6";
 import { MdRouter } from "react-icons/md";
 import { IoIosLogOut, IoMdHome, IoIosSettings } from "react-icons/io";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
 
-const Sidebar = memo(function Sidebar({ isOpen }) {
+const Sidebar = memo(function Sidebar({ isOpen, onToggle }) {
     const { url } = usePage();
     const currentPath = useMemo(() => url.split('?')[0], [url]);
     const base = useMemo(() => {
@@ -66,13 +67,13 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
                 fixed h-screen top-15 left-0 z-40
                 bg-slate-100
                 transition-all duration-300
-                max-md:top-0 max-md:h-screen max-md:pt-[60px] max-md:w-16 max-md:min-w-16 max-md:shrink-0
+                max-md:top-0 max-md:h-[100vh] max-md:supports-[height:100dvh]:h-[100dvh] max-md:pt-[60px] max-md:w-16 max-md:min-w-16 max-md:shrink-0
                 ${isOpen ? "w-64" : "w-20"}
             `}
         >
             {/* Navigasi */}
 
-            <nav className="relative z-10 space-y-2 px-3 py-5 max-md:flex max-md:h-full max-md:flex-col max-md:justify-between max-md:gap-2 max-md:space-y-0 max-md:px-2 max-md:py-4">
+            <nav className="relative z-10 space-y-2 px-3 py-5 max-md:flex max-md:h-[calc(100vh-60px)] max-md:supports-[height:100dvh]:h-[calc(100dvh-60px)] max-md:flex-col max-md:justify-between max-md:gap-2 max-md:space-y-0 max-md:overflow-y-auto max-md:overscroll-contain max-md:px-2 max-md:py-4">
 
                 {/* Atas */}
                 <div className="contents max-md:flex max-md:flex-col max-md:gap-2">
@@ -147,16 +148,40 @@ const Sidebar = memo(function Sidebar({ isOpen }) {
                     );
                 })}
 
-                {/* Pemisah */}
+                {/* Pemisah + Alihan (desktop, selalu sejajar) */}
 
-                <div className="py-2 max-md:py-1">
+                <div className="relative overflow-visible py-2 max-md:py-1">
                     <hr className="border-0 border-t-2 border-[#AB3C3C]/50 rounded-full" />
+                    {onToggle && (
+                        <button
+                            type="button"
+                            onClick={onToggle}
+                            aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+                            aria-expanded={isOpen}
+                            title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+                            className="
+                                absolute left-full top-1/2 z-20
+                                -ml-1 flex h-8 w-8 -translate-y-1/2
+                                items-center justify-center
+                                rounded-full bg-[#ab3c3c] text-white shadow-lg
+                                transition-all duration-300
+                                hover:scale-105 hover:bg-[#8f3030]
+                                max-md:hidden
+                            "
+                        >
+                            {isOpen ? (
+                                <FiChevronLeft size={20} />
+                            ) : (
+                                <FiChevronRight size={20} />
+                            )}
+                        </button>
+                    )}
                 </div>
 
                 </div>
 
                 {/* Bawah */}
-                <div className="contents max-md:flex max-md:flex-col max-md:gap-2 max-md:pb-1">
+                <div className="contents max-md:flex max-md:flex-col max-md:gap-2 max-md:pb-[max(0.25rem,env(safe-area-inset-bottom))]">
 
                 {/* Pengaturan */}
 

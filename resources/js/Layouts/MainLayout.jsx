@@ -1,6 +1,6 @@
 import { useState, createContext, useContext, useEffect, useCallback } from "react";
 import { Header, Sidebar } from "../Components";
-import { FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
 
 export const LayoutErrorContext = createContext(null);
@@ -122,37 +122,11 @@ export default function MainLayout({ children, errorMessage }) {
 
                 {/* Bilah Sisi */}
 
-                <Sidebar isOpen={isOpen} />
+                <Sidebar isOpen={isOpen} onToggle={() => setIsOpen(!isOpen)} />
 
                 {/* Kepala */}
 
                 <Header />
-
-                {/* Alihan */}
-
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className={`
-                    fixed top-83 z-50
-                    flex h-8 w-8 items-center justify-center
-                    rounded-full
-                    bg-[#ab3c3c]
-                    text-white
-                    shadow-lg
-                    transition-all duration-300
-                    hover:scale-105
-                    hover:bg-[#8f3030]
-                    max-md:hidden
-                    max-md:top-20 max-md:h-7 max-md:w-7
-                    ${isOpen ? "left-[15rem]" : "left-[4rem]"} max-md:left-[4.25rem]`}
-                    title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
-                >
-                    {isOpen ? (
-                        <FiChevronLeft size={20} />
-                    ) : (
-                        <FiChevronRight size={20} />
-                    )}
-                </button>
 
                 {/* Isi */}
 
