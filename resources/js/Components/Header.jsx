@@ -22,7 +22,6 @@ const Header = memo(function Header({ onMenu }) {
     const [results, setResults] = useState([]);
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [focused, setFocused] = useState(false);
     const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
     const mobileWrapperRef = useRef(null);
@@ -62,7 +61,7 @@ const Header = memo(function Header({ onMenu }) {
                 const data = await res.json();
                 const list = Array.isArray(data.results) ? data.results : [];
                 setResults(list);
-                setOpen(focused && list.length > 0);
+                setOpen(list.length > 0);
             } catch (e) {
                 if (e.name !== 'AbortError') {
                     setResults([]);
@@ -73,7 +72,7 @@ const Header = memo(function Header({ onMenu }) {
             }
         }, 300);
         return () => clearTimeout(t);
-    }, [query, asetFilter, base, focused]);
+    }, [query, asetFilter, base]);
 
     useEffect(() => {
         const handler = (e) => {
@@ -154,10 +153,8 @@ const Header = memo(function Header({ onMenu }) {
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onFocus={() => {
-                            setFocused(true);
                             if (results.length > 0 && query.trim().length >= 2) setOpen(true);
                         }}
-                        onBlur={() => setTimeout(() => setFocused(false), 150)}
                         placeholder="Cari Aset..."
                         className="w-full rounded-full bg-white px-5 py-2 pr-10 text-sm text-black outline-none focus:bg-white"
                     />
@@ -238,13 +235,11 @@ const Header = memo(function Header({ onMenu }) {
                                     type="text"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
-                                    onFocus={() => {
-                                        setFocused(true);
-                                        if (results.length > 0 && query.trim().length >= 2) setOpen(true);
-                                    }}
-                                    onBlur={() => setTimeout(() => setFocused(false), 150)}
-                                    placeholder="Cari Aset..."
-                                    className="w-full rounded-full bg-white px-4 py-2.5 pr-10 text-sm text-black outline-none"
+                                onFocus={() => {
+                                    if (results.length > 0 && query.trim().length >= 2) setOpen(true);
+                                }}
+                                placeholder="Cari Aset..."
+                                className="w-full rounded-full bg-white px-4 py-2.5 pr-10 text-sm text-black outline-none"
                                 />
                                 <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-black" />
                             </div>
