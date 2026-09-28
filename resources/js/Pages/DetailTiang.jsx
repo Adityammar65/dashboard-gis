@@ -64,7 +64,7 @@ export default function DetailTiang({ tiang }) {
                         onClick={() => window.history.back()}
                         title="Kembali"
                         aria-label="Kembali"
-                        className="ml-3 flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:ml-0 max-md:rounded-lg max-md:px-3 max-md:py-2"
+                        className="ml-3 flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:ml-0 max-md:rounded-lg max-md:px-4 max-md:py-4"
                     >
 
                         <FaArrowLeft />

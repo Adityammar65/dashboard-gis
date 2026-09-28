@@ -101,7 +101,7 @@ export default function Tiang({
                         href={resolveHref("tambah-wilayah")}
                         title="Form Wilayah"
                         aria-label="Form Wilayah"
-                        className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
+                        className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:shrink-0 max-md:rounded-lg max-md:px-4 max-md:py-4 max-md:text-xs"
                     >
                         <FaPlus />
                         <span className="max-md:hidden">Form Wilayah</span>

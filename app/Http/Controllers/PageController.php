@@ -324,7 +324,8 @@ class PageController extends Controller
         return response()->json(['results' => $results]);
     }
 
-    // Next Kode for SIMS-{KODE}-001
+    // Next Kode
+
     public function NextKode(Request $request)
     {
         $kodeWil = trim((string) $request->query('kode_wilayah', ''));

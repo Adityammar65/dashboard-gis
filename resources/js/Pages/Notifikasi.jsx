@@ -168,7 +168,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                         disabled={belumDibaca === 0}
                         title="Tandai semua dibaca"
                         aria-label="Tandai semua dibaca"
-                        className="flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
+                        className="flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:shrink-0 max-md:rounded-lg max-md:px-4 max-md:py-4 max-md:text-xs"
                     >
                         <FaCheckDouble />
                         <span className="max-md:hidden">Tandai semua dibaca</span>
@@ -180,7 +180,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                         disabled={sudahDibaca === 0}
                         title="Hapus yang dibaca"
                         aria-label="Hapus yang dibaca"
-                        className="flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
+                        className="flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:shrink-0 max-md:rounded-lg max-md:px-4 max-md:py-4 max-md:text-xs"
                     >
                         <FaTrash />
                         <span className="max-md:hidden">Hapus yang dibaca</span>
