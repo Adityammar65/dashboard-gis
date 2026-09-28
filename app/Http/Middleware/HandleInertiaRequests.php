@@ -47,6 +47,10 @@ class HandleInertiaRequests extends Middleware
 
             'settings' => $settings,
 
+            'auth' => [
+                'username' => fn() => $request->session()->get('username'),
+            ],
+
             'errors' => fn() => $request->session()->get('errors')
                 ? $request->session()->get('errors')->getBag('default')->toArray()
                 : (object) [],

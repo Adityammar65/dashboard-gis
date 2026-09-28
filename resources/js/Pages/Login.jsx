@@ -42,8 +42,19 @@ export default function Login() {
 
     return (
         <AuthLayout errorMessage={errorMessage}>
-            <div className="flex p-6 max-md:w-full max-md:max-w-md max-md:p-4">
+            <div className="flex p-6 max-md:w-full max-md:max-w-md max-md:rounded-3xl max-md:bg-white max-md:p-6 max-md:shadow-xl max-md:ring-1 max-md:ring-black/5">
                 <form className="space-y-5 max-md:w-full" onSubmit={handleSubmit}>
+
+                    {/* Judul seluler */}
+
+                    <div className="hidden max-md:block">
+                        <h2 className="text-lg font-bold text-gray-800">
+                            Selamat Datang
+                        </h2>
+                        <p className="mt-1 text-sm text-gray-500">
+                            Masuk untuk mengelola aset GIS
+                        </p>
+                    </div>
 
                     {/* Nama Pengguna */}
 
@@ -62,7 +73,8 @@ export default function Login() {
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="Masukkan username"
-                            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#ab3c3c] focus:ring-2 focus:ring-[#7F1D32]/10"
+                            autoComplete="username"
+                            className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#ab3c3c] focus:ring-2 focus:ring-[#7F1D32]/10 max-md:rounded-xl max-md:py-3.5 max-md:text-base"
                         />
                     </div>
 
@@ -84,13 +96,15 @@ export default function Login() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Masukkan password"
-                                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 pr-12 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#ab3c3c] focus:ring-2 focus:ring-[#7F1D32]/10"
+                                autoComplete="current-password"
+                                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 pr-12 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#ab3c3c] focus:ring-2 focus:ring-[#7F1D32]/10 max-md:rounded-xl max-md:py-3.5 max-md:text-base"
                             />
 
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                                className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-gray-400 hover:text-gray-600"
                             >
                                 {showPassword ? (
                                     <FiEyeOff size={20} />
@@ -135,7 +149,7 @@ export default function Login() {
 
                     <button
                         type="submit"
-                        className="w-full rounded-lg bg-[#ab3c3c] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#68182A]"
+                        className="w-full rounded-xl bg-[#ab3c3c] px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-[#68182A] active:scale-[0.99] max-md:min-h-[48px] max-md:py-3.5"
                     >
                         Masuk
                     </button>

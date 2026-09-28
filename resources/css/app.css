@@ -12,3 +12,43 @@
 @theme {
     --font-poppins: 'Poppins', sans-serif;
 }
+
+/* Peta Leaflet selalu di bawah kepala lengket (z-50) */
+.gis-map-wrap {
+    position: relative;
+    z-index: 0;
+    isolation: isolate;
+}
+
+.gis-map-wrap .leaflet-container {
+    z-index: 0;
+}
+
+.gis-map-wrap .leaflet-tile-pane {
+    z-index: 1;
+}
+
+.gis-map-wrap .leaflet-overlay-pane {
+    z-index: 2;
+}
+
+.gis-map-wrap .leaflet-shadow-pane {
+    z-index: 3;
+}
+
+.gis-map-wrap .leaflet-marker-pane {
+    z-index: 4;
+}
+
+.gis-map-wrap .leaflet-tooltip-pane {
+    z-index: 5;
+}
+
+.gis-map-wrap .leaflet-popup-pane {
+    z-index: 6;
+}
+
+.gis-map-wrap .leaflet-top,
+.gis-map-wrap .leaflet-bottom {
+    z-index: 10;
+}

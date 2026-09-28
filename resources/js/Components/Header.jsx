@@ -1,12 +1,14 @@
 import { memo, useMemo, useState, useEffect, useRef, useCallback } from "react";
-import { FaSearch, FaWifi, FaTimes } from "react-icons/fa";
+import { FaSearch, FaWifi, FaTimes, FaUserCircle } from "react-icons/fa";
 import { MdRouter } from "react-icons/md";
 import { IoMdArrowDropdown, IoMdNotifications } from "react-icons/io";
+import { IoIosSettings, IoIosLogOut } from "react-icons/io";
 import { usePage, router } from "@inertiajs/react";
 
 const Header = memo(function Header() {
     const { url, props } = usePage();
     const unreadCount = Number(props?.unreadNotifikasi || 0);
+    const username = props?.auth?.username ?? "";
     const base = useMemo(() => {
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
         const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'api'];
@@ -21,7 +23,9 @@ const Header = memo(function Header() {
     const [loading, setLoading] = useState(false);
     const [focused, setFocused] = useState(false);
     const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+    const [profileOpen, setProfileOpen] = useState(false);
     const mobileWrapperRef = useRef(null);
+    const profileRef = useRef(null);
     const wrapperRef = useRef(null);
     const abortRef = useRef(null);
 
@@ -78,12 +82,28 @@ const Header = memo(function Header() {
             if (mobileWrapperRef.current && !mobileWrapperRef.current.contains(e.target)) {
                 setMobileSearchOpen(false);
             }
+            if (profileRef.current && !profileRef.current.contains(e.target)) {
+                setProfileOpen(false);
+            }
+        };
+        const escapeHandler = (e) => {
+            if (e.key === "Escape") {
+                setProfileOpen(false);
+                setMobileSearchOpen(false);
+            }
         };
         document.addEventListener('mousedown', handler);
-        return () => document.removeEventListener('mousedown', handler);
+        document.addEventListener('touchstart', handler);
+        document.addEventListener('keydown', escapeHandler);
+        return () => {
+            document.removeEventListener('mousedown', handler);
+            document.removeEventListener('touchstart', handler);
+            document.removeEventListener('keydown', escapeHandler);
+        };
     }, []);
 
     const handleResultClick = useCallback((item) => {
+        if (!item?.href) return;
         setOpen(false);
         setMobileSearchOpen(false);
         setQuery("");
@@ -224,16 +244,24 @@ const Header = memo(function Header() {
                                                 <button
                                                     key={`${item.type}-${item.id}-${item.match}-${item.href}`}
                                                     type="button"
-                                                    onMouseDown={(e) => e.preventDefault()}
+                                                    onPointerDown={(e) => e.preventDefault()}
                                                     onClick={() => handleResultClick(item)}
-                                                    className="flex w-full items-center gap-3 border-b border-gray-100 px-4 py-3 text-left transition last:border-0 hover:bg-gray-50"
+                                                    className="flex w-full items-center gap-3 border-b border-gray-100 px-4 py-3 text-left transition last:border-0 hover:bg-gray-50 active:bg-gray-100"
                                                 >
                                                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${item.type === 'tiang' ? 'bg-blue-100 text-blue-600' : 'bg-sky-100 text-sky-600'}`}>
                                                         <Icon size={14} />
                                                     </span>
-                                                    <span className="min-w-0 flex-1 truncate text-xs font-medium text-gray-800">
-                                                        {isKode ? item.kode : item.label}
-                                                    </span>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="flex items-center gap-2 truncate text-xs font-medium text-gray-800">
+                                                            <span className="truncate">{isKode ? item.kode : item.label}</span>
+                                                            <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[9px] text-white ${item.type === 'tiang' ? 'bg-blue-600' : 'bg-sky-500'}`}>{item.type.toUpperCase()}</span>
+                                                            {!isKode && <span className="shrink-0 text-[10px] text-gray-400">→ Filter</span>}
+                                                            {isKode && <span className="shrink-0 text-[10px] text-gray-400">→ Detail</span>}
+                                                        </p>
+                                                        <p className="truncate text-[11px] text-gray-500">
+                                                            {isKode ? `${item.match}: ${item.matchedValue} • ${item.label}` : `${item.match}: ${item.matchedValue}`}
+                                                        </p>
+                                                    </div>
                                                 </button>
                                             );
                                         })
@@ -261,6 +289,56 @@ const Header = memo(function Header() {
                     </span>
                 )}
             </a>
+
+            {/* Profil */}
+            <div ref={profileRef} className="relative max-md:shrink-0">
+                <button
+                    type="button"
+                    onClick={() => setProfileOpen(!profileOpen)}
+                    aria-label={profileOpen ? "Tutup menu profil" : "Buka menu profil"}
+                    aria-expanded={profileOpen}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25"
+                >
+                    <FaUserCircle size={20} className="max-md:text-lg" />
+                </button>
+
+                {profileOpen && (
+                    <div className="absolute right-0 top-full z-[100] mt-2 w-56 max-w-[calc(100vw-3rem)] overflow-hidden rounded-2xl border border-white/20 bg-[#6F2424] shadow-xl">
+                        <div className="truncate px-4 py-3">
+                            <p className="text-[10px] font-medium uppercase tracking-widest text-white/60">
+                                Pengguna
+                            </p>
+                            <p className="mt-0.5 truncate text-sm font-semibold text-white" title={username}>
+                                {username || "-"}
+                            </p>
+                        </div>
+                        <div className="bg-white py-1">
+                            <a
+                                href={`${base}/pengaturan`.replace(/\/+/g, '/')}
+                                onClick={() => setProfileOpen(false)}
+                                className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-[#AB3C3C]"
+                            >
+                                <IoIosSettings size={18} className="shrink-0 text-gray-400" />
+                                Pengaturan Profil
+                            </a>
+                            <a
+                                href={`${base}/logout`.replace(/\/+/g, '/')}
+                                onClick={(e) => {
+                                    if (!confirm("Kembali ke Halaman Login?")) {
+                                        e.preventDefault();
+                                    } else {
+                                        setProfileOpen(false);
+                                    }
+                                }}
+                                className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-[#AB3C3C]"
+                            >
+                                <IoIosLogOut size={18} className="shrink-0 text-gray-400" />
+                                Keluar
+                            </a>
+                        </div>
+                    </div>
+                )}
+            </div>
             </div>
         </header>
     );

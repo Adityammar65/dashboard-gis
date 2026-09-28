@@ -325,7 +325,7 @@ export default function Dashboard() {
                         </div>
 
                         {hasWilayah ? (
-                            <div className="h-[450px] overflow-hidden rounded-xl border border-gray-100 shadow-inner max-md:h-[300px]">
+                            <div className="gis-map-wrap relative z-0 h-[450px] overflow-hidden rounded-xl border border-gray-100 shadow-inner max-md:h-[300px]">
                                 <MapView markers={markers} wilayah={activeWilayah} wilayahCenter={wilayahCenter} />
                             </div>
                         ) : (

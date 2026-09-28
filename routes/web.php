@@ -6,6 +6,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ONTController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TiangController;
@@ -54,6 +55,11 @@ Route::middleware('cek_login')->group(function () {
     // Settings
 
     Route::post('/update-pengaturan', [SettingsController::class, 'updateWilayah']);
+
+    // Profil
+
+    Route::post('/update-profil/username', [ProfileController::class, 'updateUsername']);
+    Route::post('/update-profil/password', [ProfileController::class, 'updatePassword']);
 
     // CRUD Tiang
 

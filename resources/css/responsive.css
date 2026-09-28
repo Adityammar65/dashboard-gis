@@ -6,6 +6,12 @@
         overflow-x: clip;
     }
 
+    /* Masuk */
+    .gis-auth-hero {
+        border-bottom-left-radius: 1.75rem;
+        border-bottom-right-radius: 1.75rem;
+    }
+
     /* Notifikasi */
     .font-poppins .fixed.left-1\/2.top-5 {
         width: calc(100vw - 2rem);

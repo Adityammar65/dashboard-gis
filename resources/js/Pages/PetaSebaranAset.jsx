@@ -105,7 +105,7 @@ export default function Peta() {
                     </div>
                 </div>
 
-                <div className="relative h-[calc(100vh-180px)] min-h-[500px] overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100 max-md:h-[68vh] max-md:min-h-[360px]">
+                <div className="gis-map-wrap relative h-[calc(100vh-180px)] min-h-[500px] overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100 max-md:h-[68vh] max-md:min-h-[360px]">
 
                     {/* Peta */}
 
