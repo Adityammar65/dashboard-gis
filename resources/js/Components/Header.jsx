@@ -255,11 +255,10 @@ const Header = memo(function Header({ onMenu }) {
                                                 const isKode = item.match === 'kode';
                                                 const Icon = item.type === 'tiang' ? FaWifi : MdRouter;
                                                 return (
-                                                    <button
-                                                        key={`${item.type}-${item.id}-${item.match}-${item.href}`}
-                                                        type="button"
-                                                        onPointerDown={(e) => e.preventDefault()}
-                                                        onClick={() => handleResultClick(item)}
+                                                        <button
+                                                            key={`${item.type}-${item.id}-${item.match}-${item.href}`}
+                                                            type="button"
+                                                            onClick={() => handleResultClick(item)}
                                                         className="flex w-full items-center gap-3 border-b border-gray-100 px-4 py-3 text-left transition last:border-0 hover:bg-gray-50 active:bg-gray-100"
                                                     >
                                                         <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${item.type === 'tiang' ? 'bg-blue-100 text-blue-600' : 'bg-sky-100 text-sky-600'}`}>
