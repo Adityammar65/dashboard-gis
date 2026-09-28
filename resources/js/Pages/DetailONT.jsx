@@ -38,7 +38,7 @@ export default function DetailONT({ ont }) {
 
                 {/* Header */}
 
-                <div className="flex items-stretch justify-between gap-4 max-md:flex-row max-md:items-center max-md:gap-2">
+                <div className="flex items-stretch justify-between gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
                     <div className="flex-1 rounded-2xl bg-gradient-to-br text-white from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
                         <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
                             Detail ONT
@@ -56,10 +56,12 @@ export default function DetailONT({ ont }) {
                     <button
                         type="button"
                         onClick={() => window.history.back()}
-                        className="ml-3 flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:ml-0 max-md:rounded-lg max-md:px-3 max-md:py-2"
+                        title="Kembali"
+                        aria-label="Kembali"
+                        className="ml-3 flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:ml-0 max-md:rounded-lg max-md:px-3 max-md:py-2"
                     >
                         <FaArrowLeft />
-                        Kembali
+                        <span className="max-md:hidden">Kembali</span>
                     </button>
                 </div>
 

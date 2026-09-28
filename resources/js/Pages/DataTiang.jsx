@@ -283,7 +283,7 @@ export default function DataTiang({
 
                 {/* Header */}
 
-                <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-center max-md:gap-2">
+                <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
 
                     <div className="items-center flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
 
@@ -305,10 +305,12 @@ export default function DataTiang({
 
                     <a
                         href={resolveHref("tambah-tiang")}
-                        className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
+                        title="Form Tiang"
+                        aria-label="Form Tiang"
+                        className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
                     >
                         <FaPlus />
-                        Form Tiang
+                        <span className="max-md:hidden">Form Tiang</span>
                     </a>
 
                     {/* Ekspor */}
@@ -319,11 +321,13 @@ export default function DataTiang({
                             type="button"
                             onClick={() => setOpenExport(!openExport)}
                             disabled={listTiang.length === 0}
-                            className="flex h-full items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
+                            title="Export"
+                            aria-label="Export"
+                            className="flex h-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
                         >
                             <FaFileExport />
-                            Export
-                            <FaChevronDown className={`text-[10px] transition-transform ${openExport ? "rotate-180" : ""}`} />
+                            <span className="max-md:hidden">Export</span>
+                            <FaChevronDown className={`text-[10px] transition-transform max-md:hidden ${openExport ? "rotate-180" : ""}`} />
                         </button>
 
                         {openExport && (

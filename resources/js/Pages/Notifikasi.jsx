@@ -1,6 +1,6 @@
 
 import MainLayout from "../Layouts/MainLayout";
-import { FaWifi, FaChevronRight, FaMap } from "react-icons/fa";
+import { FaWifi, FaChevronRight, FaMap, FaCheckDouble, FaTrash } from "react-icons/fa";
 import { MdRouter } from "react-icons/md";
 import { useMemo } from "react";
 import { router, usePage } from "@inertiajs/react";
@@ -147,7 +147,7 @@ export default function Notifikasi({ notifikasi = [] }) {
 
                 {/* Header */}
 
-                <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-center max-md:gap-2">
+                <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
                     <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
                         <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
                             Notifikasi
@@ -166,18 +166,24 @@ export default function Notifikasi({ notifikasi = [] }) {
                         type="button"
                         onClick={tandaiSemuaDibaca}
                         disabled={belumDibaca === 0}
-                        className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
+                        title="Tandai semua dibaca"
+                        aria-label="Tandai semua dibaca"
+                        className="flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
                     >
-                        Tandai semua dibaca
+                        <FaCheckDouble />
+                        <span className="max-md:hidden">Tandai semua dibaca</span>
                     </button>
 
                     <button
                         type="button"
                         onClick={hapusSudahDibaca}
                         disabled={sudahDibaca === 0}
-                        className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
+                        title="Hapus yang dibaca"
+                        aria-label="Hapus yang dibaca"
+                        className="flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
                     >
-                        Hapus yang dibaca
+                        <FaTrash />
+                        <span className="max-md:hidden">Hapus yang dibaca</span>
                     </button>
                 </div>
 

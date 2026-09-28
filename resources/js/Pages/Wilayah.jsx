@@ -82,7 +82,7 @@ export default function Tiang({
 
                 {/* Header */}
 
-                <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-center max-md:gap-2">
+                <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
                     <div className="items-center flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] text-white px-4 py-3.5 shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
                         <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
                             Data Wilayah
@@ -99,10 +99,12 @@ export default function Tiang({
 
                     <a
                         href={resolveHref("tambah-wilayah")}
-                        className="flex items-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
+                        title="Form Wilayah"
+                        aria-label="Form Wilayah"
+                        className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:shrink-0 max-md:rounded-lg max-md:px-3 max-md:py-2 max-md:text-xs"
                     >
                         <FaPlus />
-                        Form Wilayah
+                        <span className="max-md:hidden">Form Wilayah</span>
                     </a>
 
                 </div>
