@@ -1,6 +1,7 @@
 import MainLayout from "../Layouts/MainLayout";
 import MapView from "../Components/MapView";
-import { FaArrowLeft, FaPen, FaExternalLinkAlt } from "react-icons/fa";
+import GoogleMapsButton from "../Components/GoogleMapsButton";
+import { FaArrowLeft, FaPen } from "react-icons/fa";
 import { useState, useMemo } from "react";
 import { router } from "@inertiajs/react";
 
@@ -29,20 +30,6 @@ export default function DetailTiang({ tiang }) {
     const [activeImage, setActiveImage] = useState(
         images.length > 0 ? getFotoUrl(images[0]) : null
     );
-
-    const gmapsUrl = useMemo(() => {
-        const parse = (v) => {
-            if (v === null || v === undefined || v === "") return null;
-            const n = parseFloat(String(v).trim().replace(",", "."));
-            if (isNaN(n) || !isFinite(n)) return null;
-            return n;
-        };
-        const lat = parse(tiang?.latitude);
-        const lng = parse(tiang?.longitude);
-        if (lat === null || lng === null) return null;
-        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
-        return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-    }, [tiang?.latitude, tiang?.longitude]);
 
     return (
 
@@ -296,17 +283,24 @@ export default function DetailTiang({ tiang }) {
 
                         {/* Ubah */}
 
-                        <button
-                            type="button"
-                            onClick={() => router.get(`${base}/edit-tiang/${tiang?.id}`.replace(/\/+/g, '/'))}
-                            className="mt-5 flex w-fit items-center gap-2 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-blue-700 hover:to-blue-800 active:scale-[0.98]"
-                        >
+                        <div className="mt-5 flex flex-wrap items-center gap-2 max-sm:flex-col max-sm:items-stretch">
+                            <button
+                                type="button"
+                                onClick={() => router.get(`${base}/edit-tiang/${tiang?.id}`.replace(/\/+/g, '/'))}
+                                className="flex w-fit items-center gap-2 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-blue-700 hover:to-blue-800 active:scale-[0.98] max-sm:w-full max-sm:justify-center"
+                            >
 
-                            <FaPen />
+                                <FaPen />
 
-                            Edit Data
+                                Edit Data
 
-                        </button>
+                            </button>
+
+                            <GoogleMapsButton
+                                latitude={tiang?.latitude}
+                                longitude={tiang?.longitude}
+                            />
+                        </div>
 
 
                         {/* Peta */}
@@ -317,28 +311,6 @@ export default function DetailTiang({ tiang }) {
                                 latitude={tiang?.latitude}
                                 longitude={tiang?.longitude}
                             />
-
-                            {gmapsUrl ? (
-                                <a
-                                    href={gmapsUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    title="Buka di Google Maps"
-                                    className="absolute right-3 top-3 z-[1000] flex h-8 w-8 items-center justify-center rounded-lg bg-white/90 backdrop-blur shadow-md ring-1 ring-gray-200 transition hover:bg-white"
-                                >
-                                    <FaExternalLinkAlt className="text-sm text-gray-700" />
-                                </a>
-                            ) : (
-                                <button
-                                    type="button"
-                                    disabled
-                                    title="Koordinat tidak tersedia"
-                                    aria-disabled="true"
-                                    className="absolute right-3 top-3 z-[1000] flex h-8 w-8 items-center justify-center rounded-lg bg-white/90 backdrop-blur shadow-md ring-1 ring-gray-200 transition opacity-50 cursor-not-allowed"
-                                >
-                                    <FaExternalLinkAlt className="text-sm text-gray-700" />
-                                </button>
-                            )}
 
                         </div>
 
