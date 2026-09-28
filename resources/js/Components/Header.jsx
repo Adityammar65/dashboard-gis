@@ -23,6 +23,8 @@ const Header = memo(function Header({ onMenu }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+    const [mobileBusy, setMobileBusy] = useState(false);
+    const [mobileNotice, setMobileNotice] = useState("");
     const [profileOpen, setProfileOpen] = useState(false);
     const mobileWrapperRef = useRef(null);
     const profileRef = useRef(null);
@@ -35,6 +37,19 @@ const Header = memo(function Header({ onMenu }) {
         else if (v === "ONT" || v === "ont") setAsetFilter("ont");
         else setAsetFilter("");
     }, []);
+
+    const fetchSearchResults = useCallback(async (q, type, signal) => {
+        const typeParam = type ? `&type=${encodeURIComponent(type)}` : "";
+        const searchUrl = `${base}/api/search`.replace(/\/+/g, '/') + `?q=${encodeURIComponent(q)}${typeParam}`;
+        const res = await fetch(searchUrl, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+            signal,
+            credentials: 'same-origin',
+        });
+        if (!res.ok) throw new Error('search failed');
+        const data = await res.json();
+        return Array.isArray(data.results) ? data.results : [];
+    }, [base]);
 
     useEffect(() => {
         if (abortRef.current) abortRef.current.abort();
@@ -50,16 +65,7 @@ const Header = memo(function Header({ onMenu }) {
             abortRef.current = controller;
             setLoading(true);
             try {
-                const typeParam = asetFilter ? `&type=${encodeURIComponent(asetFilter)}` : "";
-                const searchUrl = `${base}/api/search`.replace(/\/+/g, '/') + `?q=${encodeURIComponent(q)}${typeParam}`;
-                const res = await fetch(searchUrl, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
-                    signal: controller.signal,
-                    credentials: 'same-origin',
-                });
-                if (!res.ok) throw new Error('search failed');
-                const data = await res.json();
-                const list = Array.isArray(data.results) ? data.results : [];
+                const list = await fetchSearchResults(q, asetFilter, controller.signal);
                 setResults(list);
                 setOpen(list.length > 0);
             } catch (e) {
@@ -72,7 +78,7 @@ const Header = memo(function Header({ onMenu }) {
             }
         }, 300);
         return () => clearTimeout(t);
-    }, [query, asetFilter, base]);
+    }, [query, asetFilter, base, fetchSearchResults]);
 
     useEffect(() => {
         const handler = (e) => {
@@ -110,6 +116,50 @@ const Header = memo(function Header({ onMenu }) {
         const href = `${base}/${item.href}`.replace(/\/+/g, '/');
         router.get(href);
     }, [base]);
+
+    const resolveRedirect = useCallback((item, asetSpecified) => {
+        if (!item) return null;
+        if (item.match === 'kode' || item.match === 'petugas' || asetSpecified || !item.wilayahId) {
+            return item.href || null;
+        }
+        return `wilayah?wilayah=${item.wilayahId}`;
+    }, []);
+
+    const onMobileSubmit = useCallback(async (e) => {
+        e?.preventDefault();
+        const q = query.trim();
+        if (q.length < 2) {
+            setMobileNotice("Masukkan minimal 2 karakter");
+            return;
+        }
+        if (mobileBusy) return;
+        setMobileNotice("");
+        setMobileBusy(true);
+        try {
+            const controller = new AbortController();
+            const list = await fetchSearchResults(q, asetFilter, controller.signal);
+            const top = list[0];
+            if (!top) {
+                setMobileNotice("Tidak ditemukan, coba kata kunci lain");
+                return;
+            }
+            const target = resolveRedirect(top, !!asetFilter);
+            if (!target) {
+                setMobileNotice("Tidak ditemukan, coba kata kunci lain");
+                return;
+            }
+            setMobileSearchOpen(false);
+            setMobileNotice("");
+            setQuery("");
+            router.get(`${base}/${target}`.replace(/\/+/g, '/'));
+        } catch (err) {
+            if (err?.name !== 'AbortError') {
+                setMobileNotice("Pencarian gagal, coba lagi");
+            }
+        } finally {
+            setMobileBusy(false);
+        }
+    }, [query, asetFilter, base, mobileBusy, fetchSearchResults, resolveRedirect]);
 
     return (
         <header className="sticky top-0 z-50 flex h-18 items-center justify-between bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-6 py-2 max-md:gap-2 max-md:px-3 max-md:h-[60px] max-md:min-h-[60px] max-md:max-h-[60px] max-md:py-0">
@@ -220,7 +270,10 @@ const Header = memo(function Header({ onMenu }) {
                 <div ref={mobileWrapperRef} className="relative hidden max-md:block md:hidden">
                     <button
                         type="button"
-                        onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+                        onClick={() => {
+                        setMobileSearchOpen(!mobileSearchOpen);
+                        setMobileNotice("");
+                    }}
                         aria-label={mobileSearchOpen ? "Tutup pencarian" : "Buka pencarian"}
                         className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25"
                     >
@@ -229,56 +282,32 @@ const Header = memo(function Header({ onMenu }) {
 
                 {mobileSearchOpen && (
                     <div className="absolute right-0 top-full z-[100] mt-2 max-h-[70vh] w-[calc(100vw-6rem)] max-w-[320px] overflow-auto rounded-2xl border border-white/20 bg-[#6F2424] p-3 shadow-xl">
-                        <div>
+                        <form onSubmit={onMobileSubmit}>
                             <div className="relative">
                                 <input
-                                    type="text"
+                                    type="search"
+                                    enterKeyHint="search"
                                     value={query}
-                                    onChange={(e) => setQuery(e.target.value)}
-                                onFocus={() => {
-                                    if (results.length > 0 && query.trim().length >= 2) setOpen(true);
-                                }}
-                                placeholder="Cari Aset..."
-                                className="w-full rounded-full bg-white px-4 py-2.5 pr-10 text-sm text-black outline-none"
+                                    disabled={mobileBusy}
+                                    onChange={(e) => {
+                                        setQuery(e.target.value);
+                                        setMobileNotice("");
+                                    }}
+                                    placeholder="Cari Aset..."
+                                    className="w-full rounded-full bg-white px-4 py-2.5 pr-10 text-sm text-black outline-none disabled:opacity-70"
                                 />
                                 <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-black" />
                             </div>
-                            {open && (
-                                <div className="z-[100] mt-2 max-h-[40vh] w-full overflow-auto rounded-xl border border-gray-200 bg-white shadow-xl">
-                                    {loading ? (
-                                        <div className="px-4 py-3 text-xs text-gray-500">Mencari...</div>
-                                    ) : results.length > 0 ? (
-                                        results.map((item) => {
-                                            const isKode = item.match === 'kode';
-                                            const Icon = item.type === 'tiang' ? FaWifi : MdRouter;
-                                            return (
-                                                <button
-                                                    key={`${item.type}-${item.id}-${item.match}-${item.href}`}
-                                                    type="button"
-                                                    onClick={() => handleResultClick(item)}
-                                                    className="flex w-full touch-manipulation items-center gap-3 border-b border-gray-100 px-4 py-3 text-left transition last:border-0 hover:bg-gray-50 active:bg-gray-100"
-                                                >
-                                                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${item.type === 'tiang' ? 'bg-blue-100 text-blue-600' : 'bg-sky-100 text-sky-600'}`}>
-                                                        <Icon size={14} />
-                                                    </span>
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="flex items-center gap-2 truncate text-xs font-medium text-gray-800">
-                                                            <span className="truncate">{isKode ? item.kode : item.label}</span>
-                                                            <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[9px] text-white ${item.type === 'tiang' ? 'bg-blue-600' : 'bg-sky-500'}`}>{item.type.toUpperCase()}</span>
-                                                            {!isKode && <span className="shrink-0 text-[10px] text-gray-400">→ Filter</span>}
-                                                            {isKode && <span className="shrink-0 text-[10px] text-gray-400">→ Detail</span>}
-                                                        </p>
-                                                        <p className="truncate text-[11px] text-gray-500">
-                                                            {isKode ? `${item.match}: ${item.matchedValue} • ${item.label}` : `${item.match}: ${item.matchedValue}`}
-                                                        </p>
-                                                    </div>
-                                                </button>
-                                            );
-                                        })
-                                    ) : null}
-                                </div>
-                            )}
-                            </div>
+                        </form>
+                        {mobileBusy && (
+                            <p className="mt-2 px-1 text-xs text-white/80">Mencari...</p>
+                        )}
+                        {!mobileBusy && mobileNotice && (
+                            <p className="mt-2 px-1 text-xs text-white/90">{mobileNotice}</p>
+                        )}
+                        {!mobileBusy && !mobileNotice && (
+                            <p className="mt-2 px-1 text-[11px] text-white/60">Tekan cari pada keyboard untuk menemukan aset</p>
+                        )}
                             <div className="mt-2 flex items-center justify-between rounded-full bg-white px-3 py-1">
                                 <select value={asetFilter === "tiang" ? "Tiang" : asetFilter === "ont" ? "ONT" : ""} onChange={handleSelectChange} className="w-full appearance-none bg-transparent px-1 py-1.5 text-xs outline-none">
                                     <option value="">Pilih Aset</option>

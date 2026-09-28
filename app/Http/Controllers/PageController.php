@@ -274,14 +274,17 @@ class PageController extends Controller
                     $field = $r <= 5 ? 'wilayah' : ($r <= 8 ? 'kecamatan' : ($r <= 11 ? 'kelurahan' : 'petugas'));
                     $val = $field === 'wilayah' ? $row->wilayah : ($field === 'kecamatan' ? $row->kecamatan : ($field === 'kelurahan' ? $row->kelurahan : $row->nama_petugas));
                     $href = null;
+                    $parentWilayah = Cache::remember('wilayah:name:' . strtolower($row->wilayah ?? ''), 3600, fn() => WilayahModel::where('nama_wilayah', $row->wilayah)->first());
+                    $parentWilayahId = $parentWilayah ? $parentWilayah->id : null;
                     if ($field === 'wilayah') {
                         $wModel = Cache::remember('wilayah:name:' . strtolower($val), 3600, fn() => WilayahModel::where('nama_wilayah', $val)->first());
                         if ($wModel) $href = "data-tiang?wilayah={$wModel->id}";
                         else $href = "data-tiang?q=" . urlencode($val);
+                        $parentWilayahId = $wModel ? $wModel->id : $parentWilayahId;
                     } else {
                         $href = "data-tiang?q=" . urlencode($val);
                     }
-                    $results->push(['id' => $row->id, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'rank' => $r + 2]);
+                    $results->push(['id' => $row->id, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'wilayah' => $row->wilayah, 'wilayahId' => $parentWilayahId, 'rank' => $r + 2]);
                 }
             }
         }
@@ -302,14 +305,17 @@ class PageController extends Controller
                     $field = $r <= 5 ? 'wilayah' : ($r <= 8 ? 'kecamatan' : ($r <= 11 ? 'kelurahan' : 'petugas'));
                     $val = $field === 'wilayah' ? $row->wilayah : ($field === 'kecamatan' ? $row->kecamatan : ($field === 'kelurahan' ? $row->kelurahan : $row->nama_petugas));
                     $href = null;
+                    $parentWilayah = Cache::remember('wilayah:name:' . strtolower($row->wilayah ?? ''), 3600, fn() => WilayahModel::where('nama_wilayah', $row->wilayah)->first());
+                    $parentWilayahId = $parentWilayah ? $parentWilayah->id : null;
                     if ($field === 'wilayah') {
                         $wModel = Cache::remember('wilayah:name:' . strtolower($val), 3600, fn() => WilayahModel::where('nama_wilayah', $val)->first());
                         if ($wModel) $href = "data-ont?wilayah={$wModel->id}";
                         else $href = "data-ont?q=" . urlencode($val);
+                        $parentWilayahId = $wModel ? $wModel->id : $parentWilayahId;
                     } else {
                         $href = "data-ont?q=" . urlencode($val);
                     }
-                    $results->push(['id' => $row->id, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'rank' => $r + 2]);
+                    $results->push(['id' => $row->id, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'wilayah' => $row->wilayah, 'wilayahId' => $parentWilayahId, 'rank' => $r + 2]);
                 }
             }
         }
