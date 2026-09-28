@@ -240,13 +240,13 @@ export default function Dashboard() {
 
                     {/* Wilayah */}
 
-                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-yellow-400 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
+                    <div className="flex flex-col rounded-2xl border border-gray-100 border-t-[3px] border-t-yellow-400 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
                         <div className="flex justify-between">
-                            <div>
-                                <p className="text-[10px] font-semibold tracking-widest text-gray-500">
+                            <div className="min-w-0">
+                                <p className="text-[11px] font-semibold tracking-widest text-gray-500">
                                     WILAYAH COVERAGE
                                 </p>
-                                <h2 className="mt-1 text-xl font-bold text-gray-800">
+                                <h2 className="mt-1 truncate whitespace-nowrap text-2xl font-bold text-gray-800">
                                     {stats?.wilayah?.total ?? 0} Wilayah
                                 </h2>
                             </div>
@@ -258,7 +258,7 @@ export default function Dashboard() {
 
                         <a
                             href={resolveHref("wilayah")}
-                            className="mt-5 flex items-center justify-end gap-2 text-xs font-medium text-gray-500 transition hover:text-yellow-600 hover:gap-3"
+                            className="mt-auto flex shrink-0 items-center justify-end gap-2 pt-5 text-xs font-medium text-gray-500 transition hover:text-yellow-600 hover:gap-3"
                         >
                             Lihat Sebaran Wilayah
                             <FaArrowRight />
@@ -267,7 +267,7 @@ export default function Dashboard() {
 
                     {/* Data Koordinat */}
 
-                    <div className="rounded-2xl border border-gray-100 border-t-[3px] border-t-emerald-600 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
+                    <div className="flex flex-col rounded-2xl border border-gray-100 border-t-[3px] border-t-emerald-600 bg-white p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:-translate-y-0.5 will-change-transform">
                         <div className="flex justify-between">
                             <div>
                                 <p className="text-[11px] font-semibold tracking-widest text-gray-500">
@@ -285,7 +285,7 @@ export default function Dashboard() {
 
                         <a
                             href={resolveHref("peta-sebaran-aset")}
-                            className="mt-5 flex items-center justify-end gap-2 text-xs font-medium text-gray-500 transition hover:text-emerald-600 hover:gap-3"
+                            className="mt-auto flex shrink-0 items-center justify-end gap-2 pt-5 text-xs font-medium text-gray-500 transition hover:text-emerald-600 hover:gap-3"
                         >
                             Lihat Sebaran Data
                             <FaArrowRight />
