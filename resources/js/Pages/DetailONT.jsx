@@ -1,6 +1,7 @@
 import MainLayout from "../Layouts/MainLayout";
 import MapView from "../Components/MapView";
 import GoogleMapsButton from "../Components/GoogleMapsButton";
+import DeleteDataButton from "../Components/DeleteDataButton";
 import { FaArrowLeft, FaPen } from "react-icons/fa";
 import { useState, useMemo } from "react";
 import { router } from "@inertiajs/react";
@@ -8,7 +9,7 @@ import { router } from "@inertiajs/react";
 export default function DetailONT({ ont }) {
     const base = useMemo(() => {
         const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont'];
+        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont','hapus-tiang','hapus-ont'];
         if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
         return '';
     }, []);
@@ -233,6 +234,13 @@ export default function DetailONT({ ont }) {
                             <GoogleMapsButton
                                 latitude={ont?.latitude}
                                 longitude={ont?.longitude}
+                            />
+
+                            <DeleteDataButton
+                                type="ont"
+                                id={ont?.id}
+                                kode={ont?.kode_ont}
+                                base={base}
                             />
                         </div>
 

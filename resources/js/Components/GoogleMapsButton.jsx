@@ -22,7 +22,7 @@ export default function GoogleMapsButton({
     }, [latitude, longitude]);
 
     const baseClass =
-        "flex w-fit items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium text-white shadow-md transition active:scale-[0.98]";
+        "flex w-fit items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium ring-1 transition active:scale-[0.98] max-sm:w-full max-sm:justify-center";
 
     if (!gmapsUrl) {
         return (
@@ -31,7 +31,7 @@ export default function GoogleMapsButton({
                 disabled
                 title="Koordinat tidak tersedia"
                 aria-disabled="true"
-                className={`${baseClass} cursor-not-allowed bg-gradient-to-br from-gray-400 to-gray-500 opacity-50 ${className}`.trim()}
+                className={`${baseClass} cursor-not-allowed bg-gray-50 text-gray-400 ring-gray-200 opacity-60 ${className}`.trim()}
             >
                 <FaExternalLinkAlt />
                 {label}
@@ -45,7 +45,7 @@ export default function GoogleMapsButton({
             target="_blank"
             rel="noopener noreferrer"
             title={label}
-            className={`${baseClass} bg-gradient-to-br from-gray-600 to-gray-700 hover:shadow-lg hover:from-gray-700 hover:to-gray-800 ${className}`.trim()}
+            className={`${baseClass} bg-blue-50 text-blue-700 ring-blue-200 hover:bg-blue-100 hover:shadow-sm ${className}`.trim()}
         >
             <FaExternalLinkAlt />
             {label}
