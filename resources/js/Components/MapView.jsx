@@ -211,11 +211,7 @@ const MapView = memo(function MapView({ latitude, longitude, markers = null, wil
                     ))}
                 </>
             ) : (
-                <Marker position={singlePosition} icon={singleIcon}>
-                    <Popup>
-                        Contoh lokasi aset GIS
-                    </Popup>
-                </Marker>
+                <Marker position={singlePosition} icon={singleIcon} />
             )}
             <LiveCoords />
         </MapContainer>
