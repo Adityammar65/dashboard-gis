@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { FaChevronDown, FaWifi } from "react-icons/fa";
+import { LuUtilityPole } from "react-icons/lu";
 import { usePage } from "@inertiajs/react";
 
 import MainLayout from "../Layouts/MainLayout";
@@ -124,7 +125,7 @@ export default function Peta() {
                             <div className="mt-2 flex items-center gap-4 text-xs text-gray-800 max-md:flex-wrap max-md:gap-2 max-md:text-[11px]">
 
                                 <span className="flex items-center gap-2">
-                                    <span className="inline-block h-[20px] w-[20px] rounded-full bg-blue-900 ring-2 ring-white shadow" />
+                                    <span className="text-white p-2.5 rounded-full bg-blue-900" ></span>
                                     Tiang
                                 </span>
 
@@ -134,12 +135,12 @@ export default function Peta() {
                                 </span>
 
                                 <span className="flex items-center gap-2">
-                                    <span className="h-3 w-3 rounded-full bg-green-500" />
+                                    <span className="p-2.5 rounded-full bg-green-500" />
                                     Aktif
                                 </span>
 
                                 <span className="flex items-center gap-2">
-                                    <span className="h-3 w-3 rounded-full bg-red-500" />
+                                    <span className="p-2.5 rounded-full bg-red-500" />
                                     Nonaktif
                                 </span>
 
@@ -173,99 +174,99 @@ export default function Peta() {
 
                             <div className={`${mobileFilterOpen ? "" : "max-md:hidden"} md:block`}>
 
-                            <div className="grid grid-cols-3 gap-2">
+                                <div className="grid grid-cols-3 gap-2">
 
-                                {[
-                                    { label: "Semua", icon: null, active: "bg-gray-900 text-white border-gray-900 shadow", idle: "bg-white text-gray-700 border-gray-300 hover:bg-gray-50" },
-                                    { label: "Tiang", icon: null, active: "bg-[#1e3a8a] text-white border-[#1e3a8a] shadow", idle: "bg-white text-[#1e3a8a] border-[#1e3a8a]/30 hover:bg-blue-50" },
-                                    { label: "ONT", icon: FaWifi, active: "bg-sky-500 text-white border-sky-500 shadow", idle: "bg-white text-sky-600 border-sky-500/30 hover:bg-sky-50" },
-                                ].map(({ label, icon: Icon, active, idle }) => {
-                                    const isActive = assetType === label;
-                                    return (
-                                        <button
-                                            key={label}
-                                            type="button"
-                                            onClick={() => setAssetType(label)}
-                                            className={`h-8 rounded-md border px-2 text-[10px] font-semibold transition flex items-center justify-center gap-1 ${isActive ? active : idle}`}
+                                    {[
+                                        { label: "Semua", icon: null, active: "bg-gray-900 text-white border-gray-900 shadow", idle: "bg-white text-gray-700 border-gray-300 hover:bg-gray-50" },
+                                        { label: "Tiang", icon: LuUtilityPole, active: "bg-[#1e3a8a] text-white border-[#1e3a8a] shadow", idle: "bg-white text-[#1e3a8a] border-[#1e3a8a]/30 hover:bg-blue-50" },
+                                        { label: "ONT", icon: FaWifi, active: "bg-sky-500 text-white border-sky-500 shadow", idle: "bg-white text-sky-600 border-sky-500/30 hover:bg-sky-50" },
+                                    ].map(({ label, icon: Icon, active, idle }) => {
+                                        const isActive = assetType === label;
+                                        return (
+                                            <button
+                                                key={label}
+                                                type="button"
+                                                onClick={() => setAssetType(label)}
+                                                className={`h-8 rounded-md border px-2 text-[10px] font-semibold transition flex items-center justify-center gap-1 ${isActive ? active : idle}`}
+                                            >
+                                                {Icon && <Icon size={11} />}
+                                                {label}
+                                            </button>
+                                        );
+                                    })}
+
+                                </div>
+
+                                <div className="mt-3 grid grid-cols-2 gap-3">
+
+                                    {/* Status */}
+
+                                    <div className="relative">
+                                        <select
+                                            value={status}
+                                            onChange={(e) => setStatus(e.target.value)}
+                                            className={`capitalize h-8 w-full appearance-none rounded-md border bg-white pl-6 pr-7 text-[10px] font-medium outline-none transition ${status === "Aktif" ? "border-green-500 bg-green-50 text-green-700" : status === "Nonaktif" ? "border-red-500 bg-red-50 text-red-700" : "border-gray-300 hover:bg-gray-50"}`}
                                         >
-                                            {Icon && <Icon size={11} />}
-                                            {label}
-                                        </button>
-                                    );
-                                })}
+                                            <option>Semua</option>
+                                            <option>Aktif</option>
+                                            <option>Nonaktif</option>
+                                        </select>
+                                        <span className={`pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full ${status === "Aktif" ? "bg-green-500" : status === "Nonaktif" ? "bg-red-500" : "bg-gray-400"}`} />
+                                        <FaChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px] opacity-60" />
+                                    </div>
 
-                            </div>
+                                    {/* Wilayah */}
 
-                            <div className="mt-3 grid grid-cols-2 gap-3">
+                                    <div className="relative">
+                                        <select
+                                            value={wilayah}
+                                            onChange={(e) => setWilayah(e.target.value)}
+                                            className="capitalize h-8 w-full appearance-none rounded-md border border-gray-300 bg-white px-2 pr-6 text-[10px] font-medium outline-none hover:bg-gray-50"
+                                        >
+                                            <option value="Semua">Semua</option>
+                                            {wilayahOptions.map((nama) => (
+                                                <option key={nama} value={nama}>
+                                                    {nama}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <FaChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px] opacity-60" />
+                                    </div>
 
-                                {/* Status */}
-
-                                <div className="relative">
-                                    <select
-                                        value={status}
-                                        onChange={(e) => setStatus(e.target.value)}
-                                        className={`h-8 w-full appearance-none rounded-md border bg-white pl-6 pr-7 text-[10px] font-medium outline-none transition ${status === "Aktif" ? "border-green-500 bg-green-50 text-green-700" : status === "Nonaktif" ? "border-red-500 bg-red-50 text-red-700" : "border-gray-300 hover:bg-gray-50"}`}
-                                    >
-                                        <option>Semua</option>
-                                        <option>Aktif</option>
-                                        <option>Nonaktif</option>
-                                    </select>
-                                    <span className={`pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full ${status === "Aktif" ? "bg-green-500" : status === "Nonaktif" ? "bg-red-500" : "bg-gray-400"}`} />
-                                    <FaChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px] opacity-60" />
                                 </div>
 
-                                {/* Wilayah */}
+                                {/* Statistik */}
 
-                                <div className="relative">
-                                    <select
-                                        value={wilayah}
-                                        onChange={(e) => setWilayah(e.target.value)}
-                                        className="h-8 w-full appearance-none rounded-md border border-gray-300 bg-white px-2 pr-6 text-[10px] font-medium outline-none hover:bg-gray-50"
-                                    >
-                                        <option value="Semua">Semua</option>
-                                        {wilayahOptions.map((nama) => (
-                                            <option key={nama} value={nama}>
-                                                {nama}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <FaChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px] opacity-60" />
+                                <div className="mt-3 grid grid-cols-3 gap-2.5">
+
+                                    <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-[#1e3a8a]/20 bg-blue-50 shadow-sm">
+                                        <span className="flex items-center gap-1 text-[11px] font-bold text-[#1e3a8a]">
+                                            <LuUtilityPole size={12} /> {totalTiang}
+                                        </span>
+                                        <span className="text-[10px] font-medium text-[#1e3a8a]/70">
+                                            Tiang
+                                        </span>
+                                    </div>
+
+                                    <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-sky-500/20 bg-sky-50 shadow-sm">
+                                        <span className="flex items-center gap-1 text-[11px] font-bold text-sky-600">
+                                            <FaWifi size={12} /> {totalOnt}
+                                        </span>
+                                        <span className="text-[10px] font-medium text-sky-600/70">
+                                            ONT
+                                        </span>
+                                    </div>
+
+                                    <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-gray-200 bg-gray-50 shadow-sm">
+                                        <span className="text-[11px] font-bold text-gray-800">
+                                            {markers.length}
+                                        </span>
+                                        <span className="text-[10px] font-medium text-gray-500">
+                                            Tampil
+                                        </span>
+                                    </div>
+
                                 </div>
-
-                            </div>
-
-                            {/* Statistik */}
-
-                            <div className="mt-3 grid grid-cols-3 gap-2.5">
-
-                                <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-[#1e3a8a]/20 bg-blue-50 shadow-sm">
-                                    <span className="flex items-center gap-1 text-[11px] font-bold text-[#1e3a8a]">
-                                        <span className="inline-block h-[10px] w-[10px] rounded-full bg-[#1e3a8a]" /> {totalTiang}
-                                    </span>
-                                    <span className="text-[10px] font-medium text-[#1e3a8a]/70">
-                                        Tiang
-                                    </span>
-                                </div>
-
-                                <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-sky-500/20 bg-sky-50 shadow-sm">
-                                    <span className="flex items-center gap-1 text-[11px] font-bold text-sky-600">
-                                        <FaWifi size={12} /> {totalOnt}
-                                    </span>
-                                    <span className="text-[10px] font-medium text-sky-600/70">
-                                        ONT
-                                    </span>
-                                </div>
-
-                                <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-gray-200 bg-gray-50 shadow-sm">
-                                    <span className="text-[11px] font-bold text-gray-800">
-                                        {markers.length}
-                                    </span>
-                                    <span className="text-[10px] font-medium text-gray-500">
-                                        Tampil
-                                    </span>
-                                </div>
-
-                            </div>
 
                             </div>
 

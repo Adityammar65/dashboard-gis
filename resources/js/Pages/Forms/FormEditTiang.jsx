@@ -353,7 +353,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     value={form.wilayah}
                                     onChange={handleChange}
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="capitalize w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                 >
                                     <option value="" disabled>
                                         Pilih Wilayah
@@ -413,7 +413,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                         .catch(() => { setKelurahanManual(true); setKelurahanOptions([]); })
                                                         .finally(() => setKelurahanLoading(false));
                                                 }}
-                                                className="w-full px-4 py-2.5 text-left text-sm hover:bg-[#AB3C3C]/10 hover:text-[#AB3C3C] transition"
+                                                className="w-full px-4 py-2.5 text-left capitalize text-sm hover:bg-[#AB3C3C]/10 hover:text-[#AB3C3C] transition"
                                             >
                                                 <span className="font-medium">{opt.name}</span>
 
@@ -454,7 +454,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                     setForm((prev) => ({ ...prev, kelurahan: opt.name }));
                                                     setKelFocused(false);
                                                 }}
-                                                className="w-full px-4 py-2.5 text-left text-sm hover:bg-[#AB3C3C]/10 hover:text-[#AB3C3C] transition"
+                                                className="w-full px-4 py-2.5 text-left capitalize text-sm hover:bg-[#AB3C3C]/10 hover:text-[#AB3C3C] transition"
                                             >
                                                 <span className="font-medium">{opt.name}</span>
 
@@ -498,7 +498,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     value={form.status}
                                     onChange={handleChange}
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="capitalize w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
                                 >
                                     <option value="" disabled>
                                         Pilih Status

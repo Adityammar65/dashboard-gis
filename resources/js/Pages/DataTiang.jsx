@@ -4,7 +4,8 @@ import { TableActions, CardActions, TableEmpty, CardEmpty } from "../Components/
 
 import { usePage, router } from "@inertiajs/react";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { FaPlus, FaFilter, FaWifi, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel } from "react-icons/fa";
+import { FaPlus, FaFilter, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel } from "react-icons/fa";
+import { LuUtilityPole } from "react-icons/lu";
 
 const ambilNamaBerkas = (contentDisposition, cadangan) => {
     if (!contentDisposition) return cadangan;
@@ -477,7 +478,7 @@ export default function DataTiang({
                             </div>
 
                             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-blue-900 text-white max-md:h-11 max-md:w-11">
-                                <FaWifi className="text-2xl max-md:text-lg" />
+                                <LuUtilityPole className="text-2xl max-md:text-lg" />
                             </div>
 
                         </div>
@@ -610,7 +611,7 @@ export default function DataTiang({
                                                     setKecFocused(false);
                                                     handleFilter(filterWilayah, opt.name, filterStatus, filterKelurahan);
                                                 }}
-                                                className="w-full px-3 py-2 text-left text-xs hover:bg-gray-50 transition"
+                                                className="w-full px-3 py-2 text-left capitalize text-xs hover:bg-gray-50 transition"
                                             >
                                                 {opt.name}
                                             </button>
@@ -631,7 +632,7 @@ export default function DataTiang({
                                         filterKelurahan
                                     )
                                 }
-                                className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
+                                className="capitalize w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
 
                                 <option value="">
@@ -681,7 +682,7 @@ export default function DataTiang({
                                                     setKelFocused(false);
                                                     handleFilter(filterWilayah, filterKecamatan, filterStatus, opt.name);
                                                 }}
-                                                className="w-full px-3 py-2 text-left text-xs hover:bg-gray-50 transition"
+                                                className="w-full px-3 py-2 text-left capitalize text-xs hover:bg-gray-50 transition"
                                             >
                                                 {opt.name}
                                             </button>
@@ -929,7 +930,7 @@ export default function DataTiang({
 
                                     /* Kosong */
 
-                                    <TableEmpty colSpan="9" icon={FaWifi} title="Belum ada data" hint="Data tiang belum tersedia." />
+                                    <TableEmpty colSpan="9" icon={LuUtilityPole} title="Belum ada data" hint="Data tiang belum tersedia." />
 
                                 )}
 

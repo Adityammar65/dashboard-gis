@@ -108,13 +108,19 @@ function LiveCoords() {
     );
 }
 
-const MapView = memo(function MapView({ latitude, longitude, markers = null, wilayah = "Semua", wilayahCenter = null }) {
+const MapView = memo(function MapView({ latitude, longitude, markers = null, wilayah = "Semua", wilayahCenter = null, type = null, status = null }) {
     const singlePosition = useMemo(() => {
         const lat = parseCoord(latitude);
         const lng = parseCoord(longitude);
         if (isValidLatLng(lat, lng)) return [lat, lng];
         return [-7.7956, 110.3695];
     }, [latitude, longitude]);
+
+    const singleIcon = useMemo(() => {
+        const t = String(type || "").toLowerCase() === "ont" ? "ont" : "tiang";
+        const s = String(status || "").toLowerCase();
+        return buildDivIcon(t, s);
+    }, [type, status]);
 
     const validMarkers = useMemo(() => {
         if (!Array.isArray(markers)) return null;
@@ -205,7 +211,7 @@ const MapView = memo(function MapView({ latitude, longitude, markers = null, wil
                     ))}
                 </>
             ) : (
-                <Marker position={singlePosition}>
+                <Marker position={singlePosition} icon={singleIcon}>
                     <Popup>
                         Contoh lokasi aset GIS
                     </Popup>

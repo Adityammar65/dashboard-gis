@@ -75,14 +75,22 @@ class NotifikasiHelper
         return (string) $value;
     }
 
-    public static function push(string $jenis, string $kategori, string $pesan): ?NotifikasiModel
+    public static function push(string $jenis, string $kategori, string $pesan, ?string $updatedBy = null): ?NotifikasiModel
     {
         try {
+            if ($updatedBy === null || $updatedBy === '') {
+                try {
+                    $updatedBy = session('username');
+                } catch (\Throwable $e) {
+                    $updatedBy = null;
+                }
+            }
             return NotifikasiModel::create([
                 'jenis' => $jenis,
                 'kategori' => $kategori,
                 'status' => 'belum_dibaca',
                 'pesan' => $pesan,
+                'updated_by' => $updatedBy,
             ]);
         } catch (\Throwable $e) {
             Log::warning('Gagal membuat notifikasi: ' . $e->getMessage());

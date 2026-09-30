@@ -1,15 +1,15 @@
 
 import MainLayout from "../Layouts/MainLayout";
-import { FaWifi, FaChevronRight, FaMap, FaCheckDouble, FaTrash } from "react-icons/fa";
-import { MdRouter } from "react-icons/md";
-import { useMemo } from "react";
+import { FaWifi, FaChevronRight, FaMap, FaCheckDouble, FaTrash, FaUser } from "react-icons/fa";
+import { LuUtilityPole } from "react-icons/lu";
+import { useEffect, useMemo } from "react";
 import { router, usePage } from "@inertiajs/react";
 
 const getIconByKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
-    if (k === "ont") return MdRouter;
+    if (k === "ont") return FaWifi;
     if (k === "wilayah") return FaMap;
-    return FaWifi;
+    return LuUtilityPole;
 };
 
 const getNotifikasiVisual = (item) => {
@@ -50,6 +50,10 @@ export default function Notifikasi({ notifikasi = [] }) {
         router.get(`${base}/detail-notifikasi/${id}`.replace(/\/+/g, '/'));
     };
 
+    useEffect(() => {
+        router.reload({ only: ['notifikasi', 'unreadNotifikasi'] });
+    }, []);
+
     const tandaiSemuaDibaca = () => {
         router.post(`${base}/notifikasi/baca-semua`.replace(/\/+/g, '/'));
     };
@@ -67,11 +71,24 @@ export default function Notifikasi({ notifikasi = [] }) {
     const renderRow = (item) => {
         const isUnread = item.status === "belum_dibaca";
         const { Icon, circle } = getNotifikasiVisual(item);
+        const actor = item.updated_by || item.username || item.actor || null;
+        const aksiLabel = String(item.jenis || "").includes("Ditambahkan")
+            ? "Ditambahkan"
+            : String(item.jenis || "").includes("Dihapus")
+                ? "Dihapus"
+                : String(item.jenis || "").includes("Diperbarui")
+                    ? "Diperbarui"
+                    : null;
+        const aksiColor = aksiLabel === "Ditambahkan"
+            ? "text-emerald-600"
+            : aksiLabel === "Dihapus"
+                ? "text-rose-600"
+                : "text-amber-600";
 
         return (
                 <div
                     key={item.id}
-                    className={`flex items-center gap-4 border-b border-gray-100 px-5 py-4 transition hover:bg-gray-50/60 max-md:flex-wrap max-md:gap-3 max-md:px-4 ${isUnread ? "bg-red-50/50 border-l-4 border-l-red-500" : ""}`}
+                    className={`flex items-center gap-4 border-b border-gray-100 px-5 py-4 transition hover:bg-gray-50/60 max-md:flex-wrap max-md:gap-3 max-md:px-4 ${isUnread ? "bg-red-50/50 border-l-4 border-l-red-500" : "bg-green-50/40 border-l-4 border-l-green-500"}`}
                 >
                 <div
                     className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${circle || (isUnread
@@ -97,6 +114,23 @@ export default function Notifikasi({ notifikasi = [] }) {
                         {item.kategori}
                     </p>
 
+                    {actor ? (
+                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-gray-500">
+                            <FaUser size={9} className="shrink-0 text-gray-400" />
+                            <span className="truncate max-w-[140px] inline-block align-bottom">{actor}</span>
+                            {aksiLabel && (
+                                <span className={`ml-1 shrink-0 text-[10px] font-semibold ${aksiColor}`}>
+                                    {aksiLabel}
+                                </span>
+                            )}
+                        </p>
+                    ) : (
+                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-gray-400">
+                            <FaUser size={9} className="shrink-0 text-gray-300" />
+                            <span className="truncate">Tidak tercatat (data lama)</span>
+                        </p>
+                    )}
+
                     {item.pesan && (
                         <p className="mt-1 line-clamp-2 text-xs text-gray-700">
                             {String(item.pesan).split("\n")[0]}
@@ -113,8 +147,10 @@ export default function Notifikasi({ notifikasi = [] }) {
                     </p>
                 </div>
 
-                {isUnread && (
-                    <span className="h-2 w-2 rounded-full bg-red-500" />
+                {isUnread ? (
+                    <span title="Belum dibaca" className="h-2 w-2 rounded-full bg-red-500" />
+                ) : (
+                    <span title="Sudah dibaca" className="h-2 w-2 rounded-full bg-green-500" />
                 )}
 
                 <button

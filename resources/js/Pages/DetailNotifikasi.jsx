@@ -1,14 +1,14 @@
 import MainLayout from "../Layouts/MainLayout";
-import { FaArrowLeft, FaWifi, FaMap } from "react-icons/fa";
-import { MdRouter } from "react-icons/md";
+import { FaArrowLeft, FaWifi, FaMap, FaUser } from "react-icons/fa";
+import { LuUtilityPole } from "react-icons/lu";
 import { useMemo } from "react";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 const getIconByKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
-    if (k === "ont") return MdRouter;
+    if (k === "ont") return FaWifi;
     if (k === "wilayah") return FaMap;
-    return FaWifi;
+    return LuUtilityPole;
 };
 
 const getNotifikasiVisual = (item) => {
@@ -77,6 +77,28 @@ export default function DetailNotifikasi({ notifikasi }) {
     const { Icon, circle } = getNotifikasiVisual(item || {});
     const { summary, changes, details } = useMemo(() => parsePesan(item?.pesan), [item]);
     const belumDibaca = item?.status === "belum_dibaca";
+    const actor = item?.updated_by || item?.username || item?.actor || null;
+    const aksiLabel = String(item?.jenis || "").includes("Ditambahkan")
+        ? "Ditambahkan"
+        : String(item?.jenis || "").includes("Dihapus")
+            ? "Dihapus"
+            : String(item?.jenis || "").includes("Diperbarui")
+                ? "Diperbarui"
+                : null;
+    const aksiColor = aksiLabel === "Ditambahkan"
+        ? "text-emerald-600"
+        : aksiLabel === "Dihapus"
+            ? "text-rose-600"
+            : "text-amber-600";
+    const base = useMemo(() => {
+        const seg = window.location.pathname.split('/').filter(Boolean)[0];
+        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
+        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
+        return '';
+    }, []);
+    const handleBack = () => {
+        router.get(`${base}/notifikasi`.replace(/\/+/g, '/'));
+    };
 
     return (
         <MainLayout>
@@ -101,7 +123,7 @@ export default function DetailNotifikasi({ notifikasi }) {
 
                     <button
                         type="button"
-                        onClick={() => window.history.back()}
+                        onClick={handleBack}
                         title="Kembali"
                         aria-label="Kembali"
                         className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:rounded-lg max-md:px-4 max-md:py-4"
@@ -145,6 +167,22 @@ export default function DetailNotifikasi({ notifikasi }) {
                                 <p className="mt-1 text-xs text-gray-500">
                                     {item.kategori}
                                 </p>
+                                {actor ? (
+                                    <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-gray-500">
+                                        <FaUser size={9} className="shrink-0 text-gray-400" />
+                                        <span className="truncate max-w-[200px] inline-block align-bottom">{actor}</span>
+                                        {aksiLabel && (
+                                            <span className={`ml-1 shrink-0 text-[10px] font-semibold ${aksiColor}`}>
+                                                {aksiLabel}
+                                            </span>
+                                        )}
+                                    </p>
+                                ) : (
+                                    <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-gray-400">
+                                        <FaUser size={9} className="shrink-0 text-gray-300" />
+                                        <span className="truncate">Tidak tercatat (data lama)</span>
+                                    </p>
+                                )}
                                 <p className="mt-1 text-xs text-gray-700">
                                     {summary}
                                 </p>

@@ -12,6 +12,7 @@ class NotifikasiModel extends Model
         'jenis',
         'kategori',
         'status',
-        'pesan'
+        'pesan',
+        'updated_by'
     ];
 }

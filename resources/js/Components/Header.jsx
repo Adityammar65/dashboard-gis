@@ -1,6 +1,6 @@
 import { memo, useMemo, useState, useEffect, useRef, useCallback } from "react";
 import { FaSearch, FaWifi, FaTimes, FaUserCircle } from "react-icons/fa";
-import { MdRouter } from "react-icons/md";
+import { LuUtilityPole } from "react-icons/lu";
 import { IoMdArrowDropdown, IoMdNotifications } from "react-icons/io";
 import { IoIosSettings, IoIosLogOut } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
@@ -220,7 +220,7 @@ const Header = memo(function Header({ onMenu }) {
                             ) : results.length > 0 ? (
                                 results.map((item) => {
                                     const isKode = item.match === 'kode';
-                                    const Icon = item.type === 'tiang' ? FaWifi : MdRouter;
+                                    const Icon = item.type === 'tiang' ? LuUtilityPole : FaWifi;
                                     return (
                                         <button
                                             key={`${item.type}-${item.id}-${item.match}-${item.href}`}
@@ -251,7 +251,7 @@ const Header = memo(function Header({ onMenu }) {
                     )}
                 </div>
                 <div className="flex items-center bg-white rounded-full gap-2">
-                    <select value={asetFilter === "tiang" ? "Tiang" : asetFilter === "ont" ? "ONT" : ""} onChange={handleSelectChange} className="text-xs outline-none appearance-none px-3 py-2 bg-transparent">
+                    <select value={asetFilter === "tiang" ? "Tiang" : asetFilter === "ont" ? "ONT" : ""} onChange={handleSelectChange} className="capitalize text-xs outline-none appearance-none px-3 py-2 bg-transparent">
                         <option value="">Pilih Aset</option>
                         <option value="Tiang">Tiang</option>
                         <option value="ONT">ONT</option>
@@ -309,7 +309,7 @@ const Header = memo(function Header({ onMenu }) {
                             <p className="mt-2 px-1 text-[11px] text-white/60">Tekan cari pada keyboard untuk menemukan aset</p>
                         )}
                             <div className="mt-2 flex items-center justify-between rounded-full bg-white px-3 py-1">
-                                <select value={asetFilter === "tiang" ? "Tiang" : asetFilter === "ont" ? "ONT" : ""} onChange={handleSelectChange} className="w-full appearance-none bg-transparent px-1 py-1.5 text-xs outline-none">
+                                <select value={asetFilter === "tiang" ? "Tiang" : asetFilter === "ont" ? "ONT" : ""} onChange={handleSelectChange} className="capitalize w-full appearance-none bg-transparent px-1 py-1.5 text-xs outline-none">
                                     <option value="">Pilih Aset</option>
                                     <option value="Tiang">Tiang</option>
                                     <option value="ONT">ONT</option>

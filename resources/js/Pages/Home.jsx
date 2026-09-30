@@ -9,7 +9,8 @@ import {
     FaWifi,
     FaMapMarkedAlt,
 } from "react-icons/fa";
-import { MdRouter, MdStorage } from "react-icons/md";
+import { MdStorage } from "react-icons/md";
+import { LuUtilityPole } from "react-icons/lu";
 import MapView from "../Components/MapView";
 import { useState, useMemo, useCallback } from "react";
 
@@ -154,7 +155,7 @@ export default function Dashboard() {
                                     onClick={() => setOpenTambah(false)}
                                     className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-blue-50 hover:text-blue-800"
                                 >
-                                    <FaWifi className="text-blue-700" />
+                                    <LuUtilityPole className="text-blue-700" />
                                     Tambah Tiang
                                 </a>
 
@@ -163,7 +164,7 @@ export default function Dashboard() {
                                     onClick={() => setOpenTambah(false)}
                                     className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-sky-50 hover:text-sky-700"
                                 >
-                                    <MdRouter className="text-sky-500 text-lg" />
+                                    <FaWifi className="text-sky-500 text-lg" />
                                     Tambah ONT
                                 </a>
 
@@ -192,7 +193,7 @@ export default function Dashboard() {
                             </div>
 
                             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-900 text-white shadow-md ring-1 ring-white/10 max-md:h-11 max-md:w-11">
-                                <FaWifi className="text-2xl max-md:text-lg" />
+                                <LuUtilityPole className="text-2xl max-md:text-lg" />
                             </div>
                         </div>
 
@@ -223,7 +224,7 @@ export default function Dashboard() {
                             </div>
 
                             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-sky-500 text-white shadow-md ring-1 ring-white/10 max-md:h-11 max-md:w-11">
-                                <MdRouter className="text-2xl max-md:text-lg" />
+                                <FaWifi className="text-2xl max-md:text-lg" />
                             </div>
                         </div>
 
@@ -379,9 +380,9 @@ export default function Dashboard() {
                                         >
                                             <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
                                                 {item.type === "tiang" ? (
-                                                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-800 ring-1 ring-blue-200"><FaWifi className="text-sm" /></span>
+                                                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-800 ring-1 ring-blue-200"><LuUtilityPole className="text-sm" /></span>
                                                 ) : (
-                                                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-600 ring-1 ring-sky-200"><MdRouter className="text-sm" /></span>
+                                                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-600 ring-1 ring-sky-200"><FaWifi className="text-sm" /></span>
                                                 )}
                                                 <div className="text-xs min-w-0 flex-1 overflow-hidden">
                                                     <p className="font-semibold text-gray-800 truncate">{item.kode}</p>

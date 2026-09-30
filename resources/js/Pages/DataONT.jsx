@@ -5,8 +5,7 @@ import { usePage, router } from "@inertiajs/react";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { TableActions, CardActions, TableEmpty, CardEmpty } from "../Components/DataActions";
 
-import { FaPlus, FaFilter, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel } from "react-icons/fa";
-import { MdRouter } from "react-icons/md";
+import { FaPlus, FaFilter, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel, FaWifi } from "react-icons/fa";
 
 const ambilNamaBerkas = (contentDisposition, cadangan) => {
     if (!contentDisposition) return cadangan;
@@ -479,7 +478,7 @@ export default function DataONT({
                             </div>
 
                             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-sky-500 text-white max-md:h-11 max-md:w-11">
-                                <MdRouter className="text-2xl max-md:text-lg" />
+                                <FaWifi className="text-2xl max-md:text-lg" />
                             </div>
 
                         </div>
@@ -610,7 +609,7 @@ export default function DataONT({
                                                     setKecFocused(false);
                                                     handleFilter(filterWilayah, opt.name, filterStatus, filterKelurahan);
                                                 }}
-                                                className="w-full px-3 py-2 text-left text-xs hover:bg-gray-50 transition"
+                                                className="w-full px-3 py-2 text-left capitalize text-xs hover:bg-gray-50 transition"
                                             >
                                                 {opt.name}
                                             </button>
@@ -631,7 +630,7 @@ export default function DataONT({
                                         filterKelurahan
                                     )
                                 }
-                                className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
+                                className="capitalize w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
 
                                 <option value="">
@@ -681,7 +680,7 @@ export default function DataONT({
                                                     setKelFocused(false);
                                                     handleFilter(filterWilayah, filterKecamatan, filterStatus, opt.name);
                                                 }}
-                                                className="w-full px-3 py-2 text-left text-xs hover:bg-gray-50 transition"
+                                                className="w-full px-3 py-2 text-left capitalize text-xs hover:bg-gray-50 transition"
                                             >
                                                 {opt.name}
                                             </button>
@@ -929,7 +928,7 @@ export default function DataONT({
 
                                     /* Kosong */
 
-                                    <TableEmpty colSpan="9" icon={MdRouter} title="Belum ada data" hint="Data ont belum tersedia." />
+                                    <TableEmpty colSpan="9" icon={FaWifi} title="Belum ada data" hint="Data ont belum tersedia." />
 
                                 )}
 

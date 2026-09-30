@@ -20,6 +20,7 @@ return new class extends Migration
                 'belum_dibaca'
             ])->default('belum_dibaca');
             $table->text('pesan');
+            $table->string('updated_by')->nullable();
             $table->timestamps();
         });
     }

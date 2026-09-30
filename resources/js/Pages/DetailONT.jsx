@@ -262,6 +262,8 @@ export default function DetailONT({ ont }) {
                             <MapView
                                 latitude={ont?.latitude}
                                 longitude={ont?.longitude}
+                                type="ont"
+                                status={ont?.status}
                             />
 
                         </div>

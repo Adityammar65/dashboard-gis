@@ -1,6 +1,6 @@
 import { FaWifi, FaMap } from "react-icons/fa";
 import { FaLocationCrosshairs } from "react-icons/fa6";
-import { MdRouter } from "react-icons/md";
+import { LuUtilityPole } from "react-icons/lu";
 import { IoMdHome } from "react-icons/io";
 
 export const LOGOUT_CONFIRM = "Kembali ke Halaman Login?";
@@ -15,13 +15,13 @@ export const menuItems = [
     {
         label: "Data Tiang",
         href: "data-tiang",
-        icon: <FaWifi size={20} />,
+        icon: <LuUtilityPole size={20} />,
         activePaths: ["data-tiang", "tambah-tiang", "edit-tiang", "detail-tiang"],
     },
     {
         label: "Data ONT",
         href: "data-ont",
-        icon: <MdRouter size={20} />,
+        icon: <FaWifi size={20} />,
         activePaths: ["data-ont", "tambah-ont", "edit-ont", "detail-ont"],
     },
     {

@@ -186,7 +186,7 @@ export default function Tiang({
                             <select
                                 value={filterWilayah}
                                 onChange={(e) => handleFilter(e.target.value, filterAset)}
-                                className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
+                                className="capitalize w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
                                 <option value="">
                                     Semua Wilayah
@@ -203,7 +203,7 @@ export default function Tiang({
                             <select
                                 value={filterAset}
                                 onChange={(e) => handleFilter(filterWilayah, e.target.value)}
-                                className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
+                                className="capitalize w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
                                 <option value="">
                                     Semua Aset

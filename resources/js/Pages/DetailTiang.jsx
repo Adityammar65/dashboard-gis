@@ -329,6 +329,8 @@ export default function DetailTiang({ tiang }) {
                             <MapView
                                 latitude={tiang?.latitude}
                                 longitude={tiang?.longitude}
+                                type="tiang"
+                                status={tiang?.status}
                             />
 
                         </div>
