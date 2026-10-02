@@ -1,14 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import { FaMapMarkerAlt, FaSearch, FaSpinner } from "react-icons/fa";
+import { buildTypeIcon, parseCoord } from "./mapMarker";
 
 const DEFAULT_CENTER = [-7.717, 110.355];
-
-const parseCoord = (v) => {
-    if (v === null || v === undefined || v === "") return null;
-    const n = parseFloat(String(v).trim().replace(",", "."));
-    return Number.isFinite(n) ? n : null;
-};
 
 function ClickSetter({ onPick }) {
     const map = useMap();
@@ -28,7 +23,7 @@ function FlyTo({ center }) {
     return null;
 }
 
-export default function LocationPicker({ latitude, longitude, onChange }) {
+export default function LocationPicker({ latitude, longitude, onChange, type = "tiang", status = null }) {
     const lat = parseCoord(latitude);
     const lng = parseCoord(longitude);
     const hasPos = lat !== null && lng !== null;
@@ -102,6 +97,8 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
 
     const flyTarget = useMemo(() => pendingPos, [pendingPos]);
 
+    const markerIcon = useMemo(() => buildTypeIcon(type), [type]);
+
     return (
         <div className="relative z-0 isolate space-y-2">
             <div className="relative z-20">
@@ -154,6 +151,7 @@ export default function LocationPicker({ latitude, longitude, onChange }) {
                     <FlyTo center={flyTarget} />
                     <Marker
                         position={pendingPos}
+                        icon={markerIcon}
                         draggable
                         eventHandlers={{
                             dragend: (e) => {

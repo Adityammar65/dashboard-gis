@@ -470,6 +470,8 @@ export default function FormTambahTiang({ wilayah }) {
                                 <LocationPicker
                                     latitude={form.latitude}
                                     longitude={form.longitude}
+                                    type="tiang"
+                                    status={form.status}
                                     onChange={setCoords}
                                 />
                             </div>

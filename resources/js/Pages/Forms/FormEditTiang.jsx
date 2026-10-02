@@ -524,6 +524,8 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                 <LocationPicker
                                     latitude={form.latitude}
                                     longitude={form.longitude}
+                                    type="tiang"
+                                    status={form.status}
                                     onChange={setCoords}
                                 />
                             </div>

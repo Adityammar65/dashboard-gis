@@ -486,6 +486,8 @@ export default function FormEditONT({ ont, wilayah }) {
                                 <LocationPicker
                                     latitude={form.latitude}
                                     longitude={form.longitude}
+                                    type="ont"
+                                    status={form.status}
                                     onChange={setCoords}
                                 />
                             </div>

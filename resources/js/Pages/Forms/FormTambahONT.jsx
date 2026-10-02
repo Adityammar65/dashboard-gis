@@ -437,6 +437,8 @@ export default function FormTambahONT({ wilayah }) {
                                 <LocationPicker
                                     latitude={form.latitude}
                                     longitude={form.longitude}
+                                    type="ont"
+                                    status={form.status}
                                     onChange={setCoords}
                                 />
                             </div>
