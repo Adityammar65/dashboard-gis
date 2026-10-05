@@ -160,8 +160,10 @@ Setelah login, verifikasi:
 - **Form Aset** — `LocationPicker` (klik peta + pencarian koordinat) untuk latitude/longitude, upload 5 foto, dan autocomplete kecamatan/kelurahan.
 - **Pencarian Global** — `Header` search debounced (`/api/search`, `q≥2`) dengan ranking `exact/prefix/like` untuk `kode/wilayah/area/petugas`.
 - **Notifikasi** — audit trail tiap CRUD (Ditambahkan/Diperbarui/Dihapus) dengan kolom `updated_by` (username login pelaku), indikator hijau untuk sudah dibaca, status `belum_dibaca/dibaca` yang auto-refresh saat kembali dari detail, tandai semua dibaca & hapus yang sudah dibaca.
-- **Pengaturan** — pemilihan wilayah operasi via `storage/app/settings.json` (`php artisan settings:generate`) yang berpengaruh ke filter peta & statistik Home, plus manajemen profil (ubah username & password).
+- **Pengaturan** — pemilihan wilayah operasi via `storage/app/settings.json` (`php artisan settings:generate`) yang berpengaruh ke filter peta & statistik Home, manajemen profil (ubah username & password), tema tampilan Terang/Gelap, serta kartu **Persetujuan Reset Kata Sandi** (daftar permintaan menunggu + riwayat 5 terakhir).
 - **Autentikasi** — login session + cookie `gis_remember` 30 hari & remember-me, middleware `cek_login`.
+- **Mode Gelap** — tema Terang/Gelap manual (default Terang) via Tailwind class strategy, tersimpan per perangkat di `localStorage` (`gis_theme`) tanpa FOUC. Palet gelap maroon (`night-*` di `resources/css/app.css`) berlaku di semua halaman termasuk popup peta. Toggle tersedia di kartu **Tampilan** pada `/pengaturan` dan ikon kanan-atas halaman Login. Peta tetap memakai tile OSM yang digelapkan via filter CSS sehingga tidak butuh API key.
+- **Lupa Password + Persetujuan Reset** — halaman publik `/lupa-password` (tautan "Lupa password?" di Login): pemohon mengisi username terdaftar + kata sandi baru (min. 8 karakter, konfirmasi). Hanya hash bcrypt yang disimpan di tabel `password_reset_requests` (satu pending per username, throttle 5/menit). Setiap permintaan memicu lonceng notifikasi; admin yang sedang login menyetujui/menolak dari kartu Persetujuan di `/pengaturan` **atau langsung dari Detail Notifikasi** terkait (ikon kunci, tanpa pernah menampilkan kata sandi). Aturan: tidak bisa menyetujui permintaan akun sendiri; persetujuan menimpa hash via query builder, mematikan semua sesi/remember-me akun tersebut, dan mencatat penangan + waktu.
 - **Manajemen File** — upload 5 foto `jpg/jpeg/png/webp` max 5MB, dikonversi ke WebP via `cwebp` (quality 85, sisi terpanjang maks 1600px, rasio aspek dipertahankan, EXIF orientasi dipertahankan), output divalidasi (header RIFF/WEBP + decode), cleanup saat gagal/hapus. Diatur lewat `IMAGE_WEBP_QUALITY`, `IMAGE_MAX_LONGEST_SIDE`, `IMAGE_SHARP_YUV` (`config/image.php`).
 
 ### 10. Dokumentasi Antarmuka
@@ -289,6 +291,14 @@ Halaman Pengaturan digunakan untuk mengatur konfigurasi yang berkaitan dengan wi
 <p align="center">
   <img src="docs/screenshots/Pengaturan.png" width="900">
 </p>
+
+---
+
+### Lupa Password
+
+Halaman Lupa Password dapat dibuka tanpa login melalui tautan "Lupa password?" di halaman Login. Pengguna mengisi username terdaftar dan kata sandi baru, lalu permintaan menunggu persetujuan admin di kartu **Persetujuan Reset Kata Sandi** pada halaman Pengaturan (atau langsung dari Detail Notifikasi terkait) sebelum berlaku.
+
+---
 
 ### Tech Stack
 <p align="center">
