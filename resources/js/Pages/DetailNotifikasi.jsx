@@ -1,5 +1,5 @@
 import MainLayout from "../Layouts/MainLayout";
-import { FaArrowLeft, FaWifi, FaMap, FaUser } from "react-icons/fa";
+import { FaArrowLeft, FaWifi, FaMap, FaUser, FaKey, FaCheck, FaTimes } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import { useMemo } from "react";
 import { router, usePage } from "@inertiajs/react";
@@ -31,6 +31,12 @@ const getNotifikasiVisual = (item) => {
         return {
             Icon: getIconByKategori(kategori),
             circle: "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300",
+        };
+    }
+    if (jenis.includes("Reset")) {
+        return {
+            Icon: FaKey,
+            circle: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
         };
     }
     return { Icon: null, circle: "" };
@@ -71,7 +77,7 @@ const parsePesan = (pesan = "") => {
     return { summary, changes, details };
 };
 
-export default function DetailNotifikasi({ notifikasi }) {
+export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
     const { settings } = usePage().props;
     const item = useMemo(() => (Array.isArray(notifikasi) ? notifikasi[0] : notifikasi) || null, [notifikasi]);
     const { Icon, circle } = getNotifikasiVisual(item || {});
@@ -98,6 +104,36 @@ export default function DetailNotifikasi({ notifikasi }) {
     }, []);
     const handleBack = () => {
         router.get(`${base}/notifikasi`.replace(/\/+/g, '/'));
+    };
+
+    const handleApproveReset = () => {
+        if (!resetRequest) return;
+        if (!window.confirm(`Setujui reset kata sandi untuk akun "${resetRequest.username}"?`)) {
+            return;
+        }
+
+        router.post(`${base}/reset-requests/${resetRequest.id}/approve`.replace(/\/+/g, '/'));
+    };
+
+    const handleRejectReset = () => {
+        if (!resetRequest) return;
+        if (!window.confirm(`Tolak permintaan reset kata sandi untuk akun "${resetRequest.username}"?`)) {
+            return;
+        }
+
+        router.post(`${base}/reset-requests/${resetRequest.id}/reject`.replace(/\/+/g, '/'));
+    };
+
+    const formatWaktu = (value) => {
+        if (!value) return "-";
+        try {
+            return new Date(value).toLocaleString("id-ID", {
+                dateStyle: "medium",
+                timeStyle: "short",
+            });
+        } catch {
+            return String(value);
+        }
     };
 
     return (
@@ -200,6 +236,55 @@ export default function DetailNotifikasi({ notifikasi }) {
                                 <span className="h-2 w-2 rounded-full bg-red-500" />
                             )}
                         </div>
+
+                        {/* Persetujuan Reset Kata Sandi */}
+
+                        {resetRequest && (
+                            <div className="rounded-2xl bg-white dark:bg-night-900 px-5 py-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:px-4">
+                                <div className="mb-4 flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F8EAEA] text-[#AB3C3C] dark:bg-night-800 dark:text-night-200">
+                                        <FaKey />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-semibold text-gray-800 dark:text-night-200">
+                                            Persetujuan Reset Kata Sandi
+                                        </h3>
+                                        <p className="text-xs text-gray-500 dark:text-night-400">
+                                            Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username}</span> • diminta {formatWaktu(resetRequest.created_at)}
+                                        </p>
+                                    </div>
+                                    <span className={`ml-auto shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold ${resetRequest.status === "pending" ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300" : resetRequest.status === "approved" ? "bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300" : "bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300"}`}>
+                                        {resetRequest.status === "pending" ? "Menunggu" : resetRequest.status === "approved" ? "Disetujui" : "Ditolak"}
+                                    </span>
+                                </div>
+
+                                {resetRequest.status === "pending" ? (
+                                    <div className="flex items-center gap-2 max-md:flex-col max-md:items-stretch">
+                                        <button
+                                            type="button"
+                                            onClick={handleApproveReset}
+                                            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-600 px-4 py-2.5 text-xs font-medium text-white shadow-sm transition hover:bg-green-700 active:scale-[0.98]"
+                                        >
+                                            <FaCheck size={12} />
+                                            Setujui Reset
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={handleRejectReset}
+                                            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-gray-200 dark:border-night-600 bg-white dark:bg-night-800 px-4 py-2.5 text-xs font-medium text-gray-600 dark:text-night-200 shadow-sm transition hover:bg-gray-50 dark:hover:bg-night-700 active:scale-[0.98]"
+                                        >
+                                            <FaTimes size={12} />
+                                            Tolak
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <p className="text-xs text-gray-500 dark:text-night-400">
+                                        {resetRequest.handled_by ? `Ditindaklanjuti oleh ${resetRequest.handled_by}` : ""}
+                                        {resetRequest.handled_at ? ` • ${formatWaktu(resetRequest.handled_at)}` : ""}
+                                    </p>
+                                )}
+                            </div>
+                        )}
 
                         {/* Perubahan */}
 

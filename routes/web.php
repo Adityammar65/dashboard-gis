@@ -6,6 +6,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\ONTController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\SettingsController;
@@ -17,6 +18,8 @@ use App\Http\Controllers\WilayahController;
 Route::get('/login', [PageController::class, 'Login']);
 Route::post('/proses-login', [AuthController::class, 'ProsesLogin']);
 Route::get('/logout', [AuthController::class, 'Logout']);
+Route::get('/lupa-password', [PageController::class, 'LupaPassword']);
+Route::post('/reset-request', [PasswordResetController::class, 'request'])->middleware('throttle:5,1');
 
 // Protected Routes
 
@@ -60,6 +63,11 @@ Route::middleware('cek_login')->group(function () {
 
     Route::post('/update-profil/username', [ProfileController::class, 'updateUsername']);
     Route::post('/update-profil/password', [ProfileController::class, 'updatePassword']);
+
+    // Persetujuan Reset password
+
+    Route::post('/reset-requests/{id}/approve', [PasswordResetController::class, 'approve']);
+    Route::post('/reset-requests/{id}/reject', [PasswordResetController::class, 'reject']);
 
     // CRUD Tiang
 

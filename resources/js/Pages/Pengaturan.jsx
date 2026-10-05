@@ -1,11 +1,11 @@
 import MainLayout from "../Layouts/MainLayout";
 import ThemeToggle from "../Components/ThemeToggle";
-import { FaMapMarked, FaSave, FaUserCog, FaKey, FaMoon } from "react-icons/fa";
+import { FaMapMarked, FaSave, FaUserCog, FaKey, FaMoon, FaCheck, FaTimes, FaUserShield } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 
-export default function Pengaturan({ wilayah }) {
+export default function Pengaturan({ wilayah, resetRequests = [], resetHistory = [] }) {
     const { props } = usePage();
     const { settings, auth, errors = {} } = props;
     const currentUsername = auth?.username ?? "";
@@ -57,6 +57,34 @@ export default function Pengaturan({ wilayah }) {
                 setConfirmPassword("");
             },
         });
+    };
+
+    const handleApproveReset = (id, username) => {
+        if (!window.confirm(`Setujui reset kata sandi untuk akun "${username}"?`)) {
+            return;
+        }
+
+        router.post(`reset-requests/${id}/approve`);
+    };
+
+    const handleRejectReset = (id, username) => {
+        if (!window.confirm(`Tolak permintaan reset kata sandi untuk akun "${username}"?`)) {
+            return;
+        }
+
+        router.post(`reset-requests/${id}/reject`);
+    };
+
+    const formatWaktu = (value) => {
+        if (!value) return "-";
+        try {
+            return new Date(value).toLocaleString("id-ID", {
+                dateStyle: "medium",
+                timeStyle: "short",
+            });
+        } catch {
+            return String(value);
+        }
     };
 
     return (
@@ -413,6 +441,99 @@ export default function Pengaturan({ wilayah }) {
                             Simpan
                         </button>
                     </div>
+
+                </div>
+
+                {/* Persetujuan Reset Kata Sandi */}
+
+                <div className="rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:p-4">
+
+                    <div className="mb-5 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F8EAEA] text-[#AB3C3C] dark:bg-night-800 dark:text-night-200">
+                            <FaUserShield />
+                        </div>
+
+                        <div>
+                            <h2 className="text-sm font-semibold text-gray-800 dark:text-night-200">
+                                Persetujuan Reset Kata Sandi
+                            </h2>
+
+                            <p className="text-xs text-gray-500 dark:text-night-400">
+                                Setujui atau tolak permintaan reset dari pengguna lain ({resetRequests.length} menunggu)
+                            </p>
+                        </div>
+                    </div>
+
+                    {resetRequests.length > 0 ? (
+                        <div className="space-y-3">
+                            {resetRequests.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="flex items-center gap-3 rounded-xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 px-4 py-3 shadow-sm max-md:flex-wrap"
+                                >
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-semibold text-gray-800 dark:text-night-200" title={item.username}>
+                                            {item.username}
+                                        </p>
+                                        <p className="mt-0.5 text-xs text-gray-500 dark:text-night-400">
+                                            Diminta {formatWaktu(item.created_at)}
+                                        </p>
+                                    </div>
+
+                                    <div className="flex shrink-0 items-center gap-2 max-md:w-full">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleApproveReset(item.id, item.username)}
+                                            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-600 px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-green-700 active:scale-[0.98] max-md:py-2.5"
+                                        >
+                                            <FaCheck size={12} />
+                                            Setujui
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRejectReset(item.id, item.username)}
+                                            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-gray-200 dark:border-night-600 bg-white dark:bg-night-800 px-4 py-2 text-xs font-medium text-gray-600 dark:text-night-200 shadow-sm transition hover:bg-gray-50 dark:hover:bg-night-700 active:scale-[0.98] max-md:py-2.5"
+                                        >
+                                            <FaTimes size={12} />
+                                            Tolak
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="rounded-xl border border-dashed border-gray-200 dark:border-night-700 bg-gray-50/60 dark:bg-night-800/60 py-8 text-center text-xs text-gray-400 dark:text-night-500">
+                            Tidak ada permintaan reset yang menunggu.
+                        </p>
+                    )}
+
+                    {resetHistory.length > 0 && (
+                        <div className="mt-5">
+                            <p className="mb-2 text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400">
+                                Riwayat Terakhir
+                            </p>
+                            <div className="space-y-2">
+                                {resetHistory.map((item) => (
+                                    <div
+                                        key={item.id}
+                                        className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-xs max-md:flex-wrap max-md:gap-1"
+                                    >
+                                        <span className="truncate font-medium text-gray-700 dark:text-night-200" title={item.username}>
+                                            {item.username}
+                                        </span>
+                                        <span className="flex shrink-0 items-center gap-2 text-gray-500 dark:text-night-400">
+                                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${item.status === "approved" ? "bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300" : "bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300"}`}>
+                                                {item.status === "approved" ? "Disetujui" : "Ditolak"}
+                                            </span>
+                                            <span className="max-md:hidden">
+                                                {item.handled_by ? `oleh ${item.handled_by}` : ""}{item.handled_at ? ` • ${formatWaktu(item.handled_at)}` : ""}
+                                            </span>
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                 </div>
             </div>

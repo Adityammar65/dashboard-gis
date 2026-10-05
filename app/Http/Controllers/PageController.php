@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\TiangModel;
 use App\Models\ONTModel;
 use App\Models\NotifikasiModel;
+use App\Models\PasswordResetRequest;
 use App\Models\WilayahModel;
 use App\Models\UserModel;
 use Illuminate\Support\Facades\Storage;
@@ -559,6 +560,32 @@ class PageController extends Controller
         return Inertia::render('Login');
     }
 
+    // Lupa Password (publik)
+
+    public function LupaPassword(Request $request)
+    {
+        if ($request->session()->has('login')) {
+            return redirect('home');
+        }
+
+        $cookie = $request->cookie('gis_remember');
+        if ($cookie && str_contains($cookie, '|')) {
+            [$id, $plainToken] = explode('|', $cookie, 2);
+            $user = UserModel::find($id);
+            if ($user && $user->remember_token && hash_equals($user->remember_token, hash('sha256', $plainToken))) {
+                $request->session()->regenerate();
+                $request->session()->put([
+                    'login' => true,
+                    'user_id' => $user->id,
+                    'username' => $user->username,
+                ]);
+                return redirect('home');
+            }
+        }
+
+        return Inertia::render('LupaPassword');
+    }
+
     // Notifikasi
 
     public function Notifikasi()
@@ -578,8 +605,14 @@ class PageController extends Controller
             $notifikasi->update(['status' => 'dibaca']);
             $notifikasi->refresh();
         }
+        $resetRequest = null;
+        if ($notifikasi->reset_request_id) {
+            $resetRequest = PasswordResetRequest::where('id', $notifikasi->reset_request_id)
+                ->first(['id', 'username', 'status', 'handled_by', 'handled_at', 'created_at']);
+        }
         return Inertia::render('DetailNotifikasi', [
             'notifikasi' => $notifikasi,
+            'resetRequest' => $resetRequest,
         ]);
     }
 
@@ -613,6 +646,13 @@ class PageController extends Controller
         return Inertia::render('Pengaturan', [
             'wilayah' => $wilayah,
             'settings' => $settings,
+            'resetRequests' => PasswordResetRequest::where('status', 'pending')
+                ->orderByDesc('id')
+                ->get(['id', 'username', 'created_at']),
+            'resetHistory' => PasswordResetRequest::whereIn('status', ['approved', 'rejected'])
+                ->orderByDesc('id')
+                ->limit(5)
+                ->get(['id', 'username', 'status', 'handled_by', 'handled_at']),
         ]);
     }
 }

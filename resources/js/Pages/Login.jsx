@@ -142,7 +142,7 @@ export default function Login() {
                         </label>
 
                         <a
-                            href="#"
+                            href="lupa-password"
                             className="text-sm text-gray-500 dark:text-night-400 transition hover:text-[#ab3c3c]"
                         >
                             Lupa password?

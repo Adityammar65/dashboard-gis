@@ -1,6 +1,6 @@
 
 import MainLayout from "../Layouts/MainLayout";
-import { FaWifi, FaChevronRight, FaMap, FaCheckDouble, FaTrash, FaUser } from "react-icons/fa";
+import { FaWifi, FaChevronRight, FaMap, FaCheckDouble, FaTrash, FaUser, FaKey } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import { useEffect, useMemo } from "react";
 import { router, usePage } from "@inertiajs/react";
@@ -32,6 +32,12 @@ const getNotifikasiVisual = (item) => {
         return {
             Icon: getIconByKategori(kategori),
             circle: "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300",
+        };
+    }
+    if (jenis.includes("Reset")) {
+        return {
+            Icon: FaKey,
+            circle: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
         };
     }
     return { Icon: null, circle: "" };
