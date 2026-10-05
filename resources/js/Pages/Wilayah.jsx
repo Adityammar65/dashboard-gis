@@ -115,7 +115,7 @@ export default function Tiang({
 
                     {/* Total Wilayah */}
 
-                    <div className="hover:scale-[1.02] transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-2xl border border-gray-100 border-t-[3px] border-t-yellow-400 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:min-h-0 max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
+                    <div className="hover:scale-[1.02] transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-2xl border border-gray-100 dark:border-night-700 border-t-[3px] border-t-yellow-400 bg-white dark:bg-night-900 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:min-h-0 max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
                         <div className="flex items-start justify-between max-md:gap-2">
                             <div className="min-w-0">
                                 <p className="truncate text-xs font-medium max-md:text-[11px]">
@@ -135,26 +135,26 @@ export default function Tiang({
 
                     {/* Total Aset Terpetakan */}
 
-                    <div className="hover:scale-[1.02] transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-2xl border border-gray-100 border-t-[3px] border-t-blue-400 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:min-h-0 max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
+                    <div className="hover:scale-[1.02] transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-2xl border border-gray-100 dark:border-night-700 border-t-[3px] border-t-blue-400 bg-white dark:bg-night-900 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:min-h-0 max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
                         <div className="flex items-start justify-between max-md:gap-2">
                             <div className="min-w-0">
-                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
+                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 dark:text-night-400 max-md:tracking-normal">
                                     TOTAL ASET TERPETAKAN
                                 </p>
 
-                                <p className="text-xs font-medium my-1 capitalize text-gray-500 truncate">{namaAsetLabel}</p>
+                                <p className="text-xs font-medium my-1 capitalize text-gray-500 dark:text-night-400 truncate">{namaAsetLabel}</p>
 
-                                <h2 className="mt-1 text-2xl font-bold text-gray-800 max-md:text-xl">
+                                <h2 className="mt-1 text-2xl font-bold text-gray-800 dark:text-night-200 max-md:text-xl">
                                     {totalAset}
                                 </h2>
 
                                 <div className="flex items-center gap-2 text-xs mt-2 max-md:flex-wrap max-md:gap-1.5">
-                                    <span className="flex items-center gap-1.5 rounded-full bg-green-50 px-2 py-0.5 ring-1 ring-green-200 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
+                                    <span className="flex items-center gap-1.5 rounded-full bg-green-50 dark:bg-green-500/15 px-2 py-0.5 ring-1 ring-green-200 dark:ring-green-500/30 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
                                         <span className="h-2 w-2 rounded-full bg-green-500"></span>
                                         Aktif {asetAktif}
                                     </span>
 
-                                    <span className="flex items-center gap-1.5 rounded-full bg-red-50 px-2 py-0.5 ring-1 ring-red-200 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
+                                    <span className="flex items-center gap-1.5 rounded-full bg-red-50 dark:bg-red-500/15 px-2 py-0.5 ring-1 ring-red-200 dark:ring-red-500/30 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
                                         <span className="h-2 w-2 rounded-full bg-red-500"></span>
                                         Nonaktif {asetNonaktif}
                                     </span>
@@ -169,12 +169,12 @@ export default function Tiang({
 
                     {/* Filter */}
 
-                    <div className="min-h-[136px] rounded-2xl bg-white p-5 shadow-sm border border-gray-100 capitalize max-md:col-span-2 max-md:min-h-0 max-md:p-4">
+                    <div className="min-h-[136px] rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 capitalize max-md:col-span-2 max-md:min-h-0 max-md:p-4">
 
                         <div className="mb-4 flex items-center gap-2">
-                            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-50 ring-1 ring-gray-200"><FaFilter className="text-gray-600 text-xs" /></span>
+                            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-50 dark:bg-night-800/60 ring-1 ring-gray-200 dark:ring-night-700"><FaFilter className="text-gray-600 dark:text-night-300 text-xs" /></span>
 
-                            <span className="text-[11px] font-semibold tracking-widest text-gray-600">
+                            <span className="text-[11px] font-semibold tracking-widest text-gray-600 dark:text-night-300">
                                 FILTER DATA
                             </span>
                         </div>
@@ -186,7 +186,7 @@ export default function Tiang({
                             <select
                                 value={filterWilayah}
                                 onChange={(e) => handleFilter(e.target.value, filterAset)}
-                                className="capitalize w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
+                                className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
                                 <option value="">
                                     Semua Wilayah
@@ -203,7 +203,7 @@ export default function Tiang({
                             <select
                                 value={filterAset}
                                 onChange={(e) => handleFilter(filterWilayah, e.target.value)}
-                                className="capitalize w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
+                                className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
                                 <option value="">
                                     Semua Aset
@@ -224,12 +224,12 @@ export default function Tiang({
 
                 {/* Tabel */}
 
-                <div className="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
+                <div className="overflow-hidden rounded-2xl bg-white dark:bg-night-900 shadow-sm border border-gray-100 dark:border-night-700">
                     <div className="overflow-x-auto hidden md:block">
                         <table className="w-full min-w-[700px] border-collapse text-xs">
 
                             <thead>
-                                <tr className="bg-gray-50/70 border-b border-gray-200 text-center font-medium">
+                                <tr className="bg-gray-50/70 dark:bg-night-800/70 border-b border-gray-200 dark:border-night-700 text-center font-medium">
                                     <th className="w-12 px-4 py-3">
                                         No
                                     </th>
@@ -264,16 +264,16 @@ export default function Tiang({
                                 </tr>
                             </thead>
 
-                            <tbody className="text-center capitalize divide-y divide-gray-100">
+                            <tbody className="text-center capitalize divide-y divide-gray-100 dark:divide-night-700">
                                 {listWilayah.length > 0 ? (
                                     listWilayah.map((row, index) => (
-                                        <tr key={row.id ?? row.nama_wilayah ?? index} className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/80 transition-colors font-light">
+                                        <tr key={row.id ?? row.nama_wilayah ?? index} className="border-b border-gray-100 dark:border-night-700 last:border-b-0 hover:bg-gray-50/80 dark:hover:bg-night-800/80 transition-colors font-light">
                                             <td className="px-4 py-2">
                                                 {String((dataWilayah?.from ? dataWilayah.from + index : index + 1)).padStart(2, "0")}
                                             </td>
 
                                             <td className="px-4 py-2">
-                                                {row.nama_wilayah ?? <span className="text-gray-400">Belum ada data</span>}
+                                                {row.nama_wilayah ?? <span className="text-gray-400 dark:text-night-500">Belum ada data</span>}
                                             </td>
 
                                             <td className="px-4 py-2">
@@ -358,7 +358,7 @@ export default function Tiang({
                                     key={i}
                                     disabled={!link.url}
                                     onClick={() => link.url && router.get(link.url, {}, { preserveState: true, preserveScroll: true })}
-                                    className={`px-3 py-1.5 text-xs font-medium rounded-full shadow-sm ring-1 transition ${link.active ? 'bg-[#AB3C3C] text-white ring-[#AB3C3C]' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    className={`px-3 py-1.5 text-xs font-medium rounded-full shadow-sm ring-1 transition ${link.active ? 'bg-[#AB3C3C] text-white ring-[#AB3C3C]' : 'bg-white dark:bg-night-800 border border-gray-200 dark:border-night-600 text-gray-700 dark:text-night-200 hover:bg-gray-50 dark:hover:bg-night-700'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     dangerouslySetInnerHTML={{ __html: link.label }}
                                 />
                             ))}

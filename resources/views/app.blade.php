@@ -12,12 +12,22 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>GIS Dashboard</title>
+    <script>
+        try {
+            if (localStorage.getItem('gis_theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.style.colorScheme = 'dark';
+            } else {
+                document.documentElement.style.colorScheme = 'light';
+            }
+        } catch (e) {}
+    </script>
     @viteReactRefresh
     @vite('resources/js/app.jsx')
 
     @inertiaHead
 </head>
-<body>
+<body class="bg-white text-gray-900 antialiased dark:bg-night-950 dark:text-night-200">
     @inertia
 </body>
 </html>

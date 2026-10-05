@@ -26,7 +26,7 @@ const Sidebar = memo(function Sidebar({ isOpen, onToggle }) {
             className={`
                 gis-rail
                 fixed h-screen top-15 left-0 z-40
-                bg-slate-100
+                bg-slate-100 dark:bg-night-900 dark:border-r dark:border-night-700
                 transition-all duration-300
                 ${isOpen ? "w-64" : "w-20"}
             `}
@@ -40,73 +40,73 @@ const Sidebar = memo(function Sidebar({ isOpen, onToggle }) {
 
                 <div className="contents">
 
-                {menuItems.map((item) => {
-                    const isActive = isActivePath(currentPath, item.activePaths);
+                    {menuItems.map((item) => {
+                        const isActive = isActivePath(currentPath, item.activePaths);
 
-                    return (
-                        <div
-                            key={item.href}
-                            className={`
+                        return (
+                            <div
+                                key={item.href}
+                                className={`
                                 group relative flex items-center gap-3
                                 rounded-xl px-3 py-3
                                 text-sm font-medium
                                 cursor-pointer
                                 transition-all duration-200
                                 ${isActive
-                                    ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
-                                    : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C]"
-                                }
+                                        ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
+                                        : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:text-night-300 dark:hover:bg-night-800 dark:hover:text-white"
+                                    }
                                 ${!isOpen ? "justify-center" : ""}
                             `}
-                        >
+                            >
 
-                            {/* Penanda */}
+                                {/* Penanda */}
 
-                            {isActive && (
-                                <span
-                                    className="
+                                {isActive && (
+                                    <span
+                                        className="
                                         absolute left-0
                                         h-7 w-1
                                         rounded-r-full
                                         bg-white
                                     "
-                                />
-                            )}
+                                    />
+                                )}
 
-                            <span
-                                className="
+                                <span
+                                    className="
                                     shrink-0
                                     transition-transform duration-200
                                     group-hover:scale-110
                                 "
-                            >
-                                {item.icon}
-                            </span>
-
-                            {isOpen && (
-                                <a
-                                    href={resolveHref(item.href)}
-                                    className="flex-1 whitespace-nowrap"
                                 >
-                                    {item.label}
-                                </a>
-                            )}
-                        </div>
-                    );
-                })}
+                                    {item.icon}
+                                </span>
 
-                {/* Pemisah + Alihan (selalu sejajar) */}
+                                {isOpen && (
+                                    <a
+                                        href={resolveHref(item.href)}
+                                        className="flex-1 whitespace-nowrap"
+                                    >
+                                        {item.label}
+                                    </a>
+                                )}
+                            </div>
+                        );
+                    })}
 
-                <div className="relative overflow-visible py-2">
-                    <hr className="border-0 border-t-2 border-[#AB3C3C]/50 rounded-full" />
-                    {onToggle && (
-                        <button
-                            type="button"
-                            onClick={onToggle}
-                            aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
-                            aria-expanded={isOpen}
-                            title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
-                            className="
+                    {/* Pemisah + Alihan (selalu sejajar) */}
+
+                    <div className="relative overflow-visible py-2">
+                        <hr className="border-0 border-t-2 border-[#AB3C3C]/50 rounded-full dark:border-night-700" />
+                        {onToggle && (
+                            <button
+                                type="button"
+                                onClick={onToggle}
+                                aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+                                aria-expanded={isOpen}
+                                title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+                                className="
                                 absolute left-full top-1/2 z-20
                                 -ml-1 flex h-8 w-8 -translate-y-1/2
                                 items-center justify-center
@@ -114,15 +114,15 @@ const Sidebar = memo(function Sidebar({ isOpen, onToggle }) {
                                 transition-all duration-300
                                 hover:scale-105 hover:bg-[#8f3030]
                             "
-                        >
-                            {isOpen ? (
-                                <FiChevronLeft size={20} />
-                            ) : (
-                                <FiChevronRight size={20} />
-                            )}
-                        </button>
-                    )}
-                </div>
+                            >
+                                {isOpen ? (
+                                    <FiChevronLeft size={20} />
+                                ) : (
+                                    <FiChevronRight size={20} />
+                                )}
+                            </button>
+                        )}
+                    </div>
 
                 </div>
 
@@ -130,23 +130,23 @@ const Sidebar = memo(function Sidebar({ isOpen, onToggle }) {
 
                 <div className="contents">
 
-                {/* Pengaturan */}
+                    {/* Pengaturan */}
 
-                <div
-                    className={`
+                    <div
+                        className={`
         group flex items-center gap-3
         rounded-xl px-3 py-3
         text-sm font-medium
         cursor-pointer
         transition-all duration-200
         ${isPengaturanPath(currentPath)
-                            ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
-                            : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C]"
-                        }
+                                ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
+                                : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:text-night-300 dark:hover:bg-night-800 dark:hover:text-white"
+                            }
         ${!isOpen ? "justify-center" : ""}
     `}
-                >
-                    {isPengaturanPath(currentPath) && (
+                    >
+                        {isPengaturanPath(currentPath) && (
                             <span
                                 className="
                 absolute left-0
@@ -157,58 +157,59 @@ const Sidebar = memo(function Sidebar({ isOpen, onToggle }) {
                             />
                         )}
 
-                    <IoIosSettings
-                        size={20}
-                        className="
+                        <IoIosSettings
+                            size={20}
+                            className="
             shrink-0
             transition-transform duration-200
             group-hover:rotate-45
         "
-                    />
+                        />
 
-                    {isOpen && (
-                        <a
-                            href={resolveHref("pengaturan")}
-                            className="flex-1 whitespace-nowrap"
-                        >
-                            Pengaturan
-                        </a>
-                    )}
-                </div>
+                        {isOpen && (
+                            <a
+                                href={resolveHref("pengaturan")}
+                                className="flex-1 whitespace-nowrap"
+                            >
+                                Pengaturan
+                            </a>
+                        )}
+                    </div>
 
-                {/* Keluar */}
+                    {/* Keluar */}
 
-                <div
-                    className="
+                    <div
+                        className="
                         group flex items-center gap-3
                         rounded-xl px-3 py-3
                         text-sm font-medium
-                        text-[#992e2e]
+                        text-[#992e2e] dark:text-night-300
                         cursor-pointer
                         transition-all duration-200
                         hover:bg-[#F3DADA]
                         hover:text-[#AB3C3C]
+                        dark:hover:bg-night-800 dark:hover:text-white
                     "
-                >
-                    <IoIosLogOut
-                        size={20}
-                        className="
+                    >
+                        <IoIosLogOut
+                            size={20}
+                            className="
                             shrink-0
                             transition-transform duration-200
                             group-hover:translate-x-1
                         "
-                    />
+                        />
 
-                    {isOpen && (
-                        <a
-                            href={resolveHref("logout")}
-                            className="flex-1"
-                            onClick={confirmLogout}
-                        >
-                            Keluar
-                        </a>
-                    )}
-                </div>
+                        {isOpen && (
+                            <a
+                                href={resolveHref("logout")}
+                                className="flex-1"
+                                onClick={confirmLogout}
+                            >
+                                Keluar
+                            </a>
+                        )}
+                    </div>
                 </div>
             </nav>
 

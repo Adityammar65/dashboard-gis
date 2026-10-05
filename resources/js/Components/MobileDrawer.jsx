@@ -57,7 +57,7 @@ const MobileDrawer = memo(function MobileDrawer({ open, onClose }) {
                 aria-label="Menu navigasi"
                 className={`
                     fixed left-0 top-0 z-[61] flex h-[100vh] w-[280px] max-w-[85vw] flex-col
-                    bg-slate-100 shadow-2xl
+                    bg-slate-100 shadow-2xl dark:bg-night-900 dark:border-r dark:border-night-700
                     transition-transform duration-300 ease-out
                     ${open ? "translate-x-0" : "-translate-x-full"}
                 `}
@@ -108,7 +108,7 @@ const MobileDrawer = memo(function MobileDrawer({ open, onClose }) {
                                     transition-all duration-200
                                     ${isActive
                                         ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
-                                        : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C]"
+                                        : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:text-night-300 dark:hover:bg-night-800 dark:hover:text-white"
                                     }
                                 `}
                             >
@@ -134,7 +134,7 @@ const MobileDrawer = memo(function MobileDrawer({ open, onClose }) {
                             transition-all duration-200
                             ${isNotifikasi
                                 ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
-                                : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C]"
+                                : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:text-night-300 dark:hover:bg-night-800 dark:hover:text-white"
                             }
                         `}
                     >
@@ -155,7 +155,7 @@ const MobileDrawer = memo(function MobileDrawer({ open, onClose }) {
                     {/* Pemisah */}
 
                     <div className="py-2">
-                        <hr className="rounded-full border-0 border-t-2 border-[#AB3C3C]/50" />
+                        <hr className="rounded-full border-0 border-t-2 border-[#AB3C3C]/50 dark:border-night-700" />
                     </div>
 
                     {/* Pengaturan */}
@@ -171,7 +171,7 @@ const MobileDrawer = memo(function MobileDrawer({ open, onClose }) {
                             transition-all duration-200
                             ${isPengaturan
                                 ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
-                                : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C]"
+                                : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:text-night-300 dark:hover:bg-night-800 dark:hover:text-white"
                             }
                         `}
                     >
@@ -198,9 +198,9 @@ const MobileDrawer = memo(function MobileDrawer({ open, onClose }) {
                         className="
                             flex items-center gap-3
                             rounded-xl px-3 py-3
-                            text-sm font-medium text-[#992e2e]
+                            text-sm font-medium text-[#992e2e] dark:text-night-300
                             transition-all duration-200
-                            hover:bg-[#F3DADA] hover:text-[#AB3C3C]
+                            hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:hover:bg-night-800 dark:hover:text-white
                         "
                     >
                         <span className="shrink-0">

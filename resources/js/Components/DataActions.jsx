@@ -7,7 +7,7 @@ export function confirmHapus(nama, label) {
     return window.confirm(`Apakah kamu yakin ingin menghapus ${nama} ${label || ""}?`.trim());
 }
 
-// Aksi baris tabel desktop (ikon saja): Detail + Ubah + Hapus
+// Table Actions
 
 export function TableActions({ type = "tiang", id, kode = "", base = "", detailHref = "#", editHref = "#" }) {
     const nama = type === "ont" ? "ont" : "tiang";
@@ -43,7 +43,7 @@ export function TableActions({ type = "tiang", id, kode = "", base = "", detailH
     );
 }
 
-// Aksi kartu mobile (berlabel penuh): Detail + Ubah + Hapus
+// Mobile Card Action
 
 export function CardActions({ type = "tiang", id, kode = "", base = "", detailHref = "#", editHref = "#" }) {
     const nama = type === "ont" ? "ont" : "tiang";
@@ -77,7 +77,7 @@ export function CardActions({ type = "tiang", id, kode = "", base = "", detailHr
     );
 }
 
-// Tombol hapus tunggal (ikon, sel tabel)
+// Tombol hapus
 
 export function TableDelete({ type = "wilayah", id, name = "", base = "", title = "Hapus Data", confirmText = null }) {
     return (
@@ -96,7 +96,7 @@ export function TableDelete({ type = "wilayah", id, name = "", base = "", title 
     );
 }
 
-// Tombol hapus tunggal (label penuh, kartu mobile)
+// Tombol hapus mobile
 
 export function CardDelete({ type = "wilayah", id, name = "", base = "", confirmText = null }) {
     return (
@@ -121,22 +121,22 @@ export function TableEmpty({ colSpan = 9, icon: Icon, title = "Belum ada data", 
         <tr>
             <td colSpan={colSpan} className="px-4 py-12 text-center">
                 <div className="flex flex-col items-center justify-center gap-2">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                        {Icon ? <Icon className="text-xl text-gray-400" /> : null}
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-night-800">
+                        {Icon ? <Icon className="text-xl text-gray-400 dark:text-night-500" /> : null}
                     </div>
-                    <p className="text-sm font-medium text-gray-500">{title}</p>
-                    {hint ? <p className="text-xs text-gray-400">{hint}</p> : null}
+                    <p className="text-sm font-medium text-gray-500 dark:text-night-400">{title}</p>
+                    {hint ? <p className="text-xs text-gray-400 dark:text-night-500">{hint}</p> : null}
                 </div>
             </td>
         </tr>
     );
 }
 
-// Keadaan kosong kartu mobile
+// Keadaan card kosong mobile
 
 export function CardEmpty({ title = "Belum ada data" }) {
     return (
-        <p className="rounded-xl border border-dashed border-gray-200 bg-gray-50/60 py-8 text-center text-xs text-gray-400">
+        <p className="rounded-xl border border-dashed border-gray-200 dark:border-night-700 bg-gray-50/60 dark:bg-night-800/60 py-8 text-center text-xs text-gray-400 dark:text-night-500">
             {title}
         </p>
     );

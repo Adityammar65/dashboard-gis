@@ -31,7 +31,7 @@ export default function GoogleMapsButton({
                 disabled
                 title="Koordinat tidak tersedia"
                 aria-disabled="true"
-                className={`${baseClass} cursor-not-allowed bg-gray-50 text-gray-400 ring-gray-200 opacity-60 ${className}`.trim()}
+                className={`${baseClass} cursor-not-allowed bg-gray-50 dark:bg-night-800/60 text-gray-400 dark:text-night-500 ring-gray-200 dark:ring-night-700 opacity-60 ${className}`.trim()}
             >
                 <FaExternalLinkAlt />
                 {label}
@@ -45,7 +45,7 @@ export default function GoogleMapsButton({
             target="_blank"
             rel="noopener noreferrer"
             title={label}
-            className={`${baseClass} bg-blue-50 text-blue-700 ring-blue-200 hover:bg-blue-100 hover:shadow-sm ${className}`.trim()}
+            className={`${baseClass} bg-blue-50 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300 ring-blue-200 dark:ring-blue-500/30 hover:bg-blue-100 dark:hover:bg-blue-500/20 hover:shadow-sm ${className}`.trim()}
         >
             <FaExternalLinkAlt />
             {label}

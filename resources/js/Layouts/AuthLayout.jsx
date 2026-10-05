@@ -17,7 +17,7 @@ export default function AuthLayout({ children, errorMessage }) {
     }, [errorMessage]);
 
     return (
-        <div className="relative flex h-screen font-poppins max-md:h-auto max-md:min-h-screen max-md:flex-col max-md:bg-[#F6F4F4]">
+        <div className="relative flex h-screen bg-white font-poppins text-gray-900 transition-colors duration-200 max-md:h-auto max-md:min-h-screen max-md:flex-col max-md:bg-[#F6F4F4] dark:bg-night-950 dark:text-night-200 dark:max-md:bg-night-950">
             {visible && errorMessage && (
                 <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2">
                     <div className="rounded-lg bg-red-500 px-4 py-2 text-xs font-medium text-white shadow-lg">
@@ -78,7 +78,7 @@ export default function AuthLayout({ children, errorMessage }) {
 
             {/* Masuk */}
 
-            <div className="flex w-1/2 items-center justify-center max-md:relative max-md:z-10 max-md:-mt-6 max-md:w-full max-md:flex-1 max-md:items-start max-md:bg-transparent max-md:p-4 max-md:pb-8">
+            <div className="flex w-1/2 items-center justify-center bg-white max-md:relative max-md:z-10 max-md:-mt-6 max-md:w-full max-md:flex-1 max-md:items-start max-md:bg-transparent max-md:p-4 max-md:pb-8 dark:bg-night-950 dark:max-md:bg-transparent">
                 {children}
             </div>
         </div>

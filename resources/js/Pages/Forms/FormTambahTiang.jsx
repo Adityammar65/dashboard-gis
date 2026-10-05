@@ -263,14 +263,14 @@ export default function FormTambahTiang({ wilayah }) {
 
                 {/* Formulir */}
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-7 max-md:p-4">
+                <div className="bg-white dark:bg-night-900 rounded-2xl shadow-sm border border-gray-100 dark:border-night-700 p-6 md:p-7 max-md:p-4">
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                             {/* Kode Tiang */}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Kode Tiang
                                 </label>
 
@@ -281,14 +281,14 @@ export default function FormTambahTiang({ wilayah }) {
                                     onChange={handleChange}
                                     placeholder={placeholderKode}
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                             </div>
 
                             {/* Wilayah */}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Wilayah
                                 </label>
 
@@ -297,7 +297,7 @@ export default function FormTambahTiang({ wilayah }) {
                                     value={form.wilayah}
                                     onChange={handleChange}
                                     required
-                                    className="capitalize w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm"
+                                    className="capitalize w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none text-sm text-gray-900 dark:text-night-200 focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm"
                                 >
                                     <option value="" disabled>
                                         {wilayah?.length === 0
@@ -320,7 +320,7 @@ export default function FormTambahTiang({ wilayah }) {
                             {/* Kecamatan */}
 
                             <div className="relative">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Kecamatan
                                 </label>
 
@@ -334,10 +334,10 @@ export default function FormTambahTiang({ wilayah }) {
                                     placeholder={kecamatanLoading ? "Memuat kecamatan..." : "Ketik kecamatan"}
                                     required
                                     autoComplete="off"
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                                 {kecFocused && filteredKecamatan.length > 0 && (
-                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
                                         {filteredKecamatan.map((opt) => (
                                             <button
                                                 key={opt.code}
@@ -367,13 +367,13 @@ export default function FormTambahTiang({ wilayah }) {
                                         ))}
                                     </div>
                                 )}
-                                {kecamatanLoading && <p className="mt-1 text-[11px] text-gray-400">Memuat kecamatan...</p>}
+                                {kecamatanLoading && <p className="mt-1 text-[11px] text-gray-400 dark:text-night-500">Memuat kecamatan...</p>}
                             </div>
 
                             {/* Kelurahan */}
 
                             <div className="relative">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Kelurahan
                                 </label>
 
@@ -387,10 +387,10 @@ export default function FormTambahTiang({ wilayah }) {
                                     placeholder={kelurahanLoading ? "Memuat..." : kelurahanManual && kelurahanOptions.length === 0 ? "Kelurahan tidak terdeteksi – isi manual" : "Ketik kelurahan"}
                                     required
                                     autoComplete="off"
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 disabled:bg-gray-50"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500 disabled:bg-gray-50"
                                 />
                                 {kelFocused && filteredKelurahan.length > 0 && (
-                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
                                         {filteredKelurahan.map((opt) => (
                                             <button
                                                 key={opt.code}
@@ -409,15 +409,15 @@ export default function FormTambahTiang({ wilayah }) {
                                     </div>
                                 )}
                                 {kelurahanManual && (
-                                    <p className="mt-1 text-[11px] text-amber-600">Kelurahan tidak terdeteksi – silakan isi manual.</p>
+                                    <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-300">Kelurahan tidak terdeteksi – silakan isi manual.</p>
                                 )}
-                                {kelurahanLoading && <p className="mt-1 text-[11px] text-gray-400">Memuat kelurahan...</p>}
+                                {kelurahanLoading && <p className="mt-1 text-[11px] text-gray-400 dark:text-night-500">Memuat kelurahan...</p>}
                             </div>
 
                             {/* Petugas */}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Nama Petugas
                                 </label>
 
@@ -428,14 +428,14 @@ export default function FormTambahTiang({ wilayah }) {
                                     onChange={handleChange}
                                     placeholder="Masukkan nama petugas"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                             </div>
 
                             {/* Status */}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Status
                                 </label>
 
@@ -444,7 +444,7 @@ export default function FormTambahTiang({ wilayah }) {
                                     value={form.status}
                                     onChange={handleChange}
                                     required
-                                    className="capitalize w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm"
+                                    className="capitalize w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none text-sm text-gray-900 dark:text-night-200 focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm"
                                 >
                                     <option value="" disabled>
                                         Pilih Status
@@ -463,8 +463,8 @@ export default function FormTambahTiang({ wilayah }) {
                             {/* Lokasi */}
 
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Titik Lokasi <span className="font-normal text-gray-400">(klik peta / cari alamat)</span>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
+                                    Titik Lokasi <span className="font-normal text-gray-400 dark:text-night-500">(klik peta / cari alamat)</span>
                                 </label>
 
                                 <LocationPicker
@@ -480,7 +480,7 @@ export default function FormTambahTiang({ wilayah }) {
 
                             <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
                                 <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-night-200">
                                         Latitude
                                     </label>
 
@@ -491,12 +491,12 @@ export default function FormTambahTiang({ wilayah }) {
                                         onChange={handleChange}
                                         placeholder="Masukkan latitude"
                                         required
-                                        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                        className="w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-4 py-3 text-sm text-gray-900 dark:text-night-200 outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                                    <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-night-200">
                                         Longitude
                                     </label>
 
@@ -507,7 +507,7 @@ export default function FormTambahTiang({ wilayah }) {
                                         onChange={handleChange}
                                         placeholder="Masukkan longitude"
                                         required
-                                        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                        className="w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-4 py-3 text-sm text-gray-900 dark:text-night-200 outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                     />
                                 </div>
                             </div>
@@ -515,7 +515,7 @@ export default function FormTambahTiang({ wilayah }) {
                             {/* Foto */}
 
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Foto Tiang
                                 </label>
 
@@ -524,7 +524,7 @@ export default function FormTambahTiang({ wilayah }) {
                                     {/* Foto 1 */}
 
                                     <div>
-                                        <label className="block text-xs text-gray-500 mb-1">
+                                        <label className="block text-xs text-gray-500 dark:text-night-400 mb-1">
                                             Foto 1
                                         </label>
 
@@ -534,14 +534,14 @@ export default function FormTambahTiang({ wilayah }) {
                                             accept="image/*"
                                             required
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                            className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
                                     {/* Foto 2 */}
 
                                     <div>
-                                        <label className="block text-xs text-gray-500 mb-1">
+                                        <label className="block text-xs text-gray-500 dark:text-night-400 mb-1">
                                             Foto 2
                                         </label>
 
@@ -551,14 +551,14 @@ export default function FormTambahTiang({ wilayah }) {
                                             accept="image/*"
                                             required
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                            className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
                                     {/* Foto 3 */}
 
                                     <div>
-                                        <label className="block text-xs text-gray-500 mb-1">
+                                        <label className="block text-xs text-gray-500 dark:text-night-400 mb-1">
                                             Foto 3
                                         </label>
 
@@ -568,14 +568,14 @@ export default function FormTambahTiang({ wilayah }) {
                                             accept="image/*"
                                             required
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                            className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
                                     {/* Foto 4 */}
 
                                     <div>
-                                        <label className="block text-xs text-gray-500 mb-1">
+                                        <label className="block text-xs text-gray-500 dark:text-night-400 mb-1">
                                             Foto 4
                                         </label>
 
@@ -585,14 +585,14 @@ export default function FormTambahTiang({ wilayah }) {
                                             accept="image/*"
                                             required
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                            className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
                                     {/* Foto 5 */}
 
                                     <div>
-                                        <label className="block text-xs text-gray-500 mb-1">
+                                        <label className="block text-xs text-gray-500 dark:text-night-400 mb-1">
                                             Foto 5
                                         </label>
 
@@ -602,7 +602,7 @@ export default function FormTambahTiang({ wilayah }) {
                                             accept="image/*"
                                             required
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                            className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
                                 </div>
@@ -612,7 +612,7 @@ export default function FormTambahTiang({ wilayah }) {
                         {/* Deskripsi */}
 
                         <div className="mt-5">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                 Deskripsi Tiang
                             </label>
 
@@ -622,13 +622,13 @@ export default function FormTambahTiang({ wilayah }) {
                                 onChange={handleChange}
                                 rows="4"
                                 placeholder="Masukkan deskripsi tiang..."
-                                className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none resize-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none resize-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                             />
                         </div>
 
                         {/* Simpan */}
 
-                        <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100 max-md:flex-col-reverse max-md:items-stretch">
+                        <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100 dark:border-night-700 max-md:flex-col-reverse max-md:items-stretch">
                             <button
                                 type="submit"
                                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-green-700 active:scale-[0.98] transition max-md:w-full max-md:justify-center"

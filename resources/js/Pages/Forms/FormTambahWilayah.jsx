@@ -68,14 +68,14 @@ export default function FormTambahWilayah() {
 
                 {/* Formulir */}
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-7 max-md:p-4">
+                <div className="bg-white dark:bg-night-900 rounded-2xl shadow-sm border border-gray-100 dark:border-night-700 p-6 md:p-7 max-md:p-4">
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                             {/* Nama Wilayah */}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Nama Wilayah
                                 </label>
 
@@ -86,14 +86,14 @@ export default function FormTambahWilayah() {
                                     onChange={handleChange}
                                     placeholder="Masukkan nama wilayah"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 capitalize"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500 capitalize"
                                 />
                             </div>
 
                             {/* Kode Wilayah */}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Kode Wilayah
                                 </label>
 
@@ -104,7 +104,7 @@ export default function FormTambahWilayah() {
                                     onChange={handleChange}
                                     placeholder="Masukkan kode wilayah"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                             </div>
 
@@ -112,7 +112,7 @@ export default function FormTambahWilayah() {
 
                         {/* Simpan */}
 
-                        <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100 max-md:flex-col-reverse max-md:items-stretch">
+                        <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100 dark:border-night-700 max-md:flex-col-reverse max-md:items-stretch">
                             <button
                                 type="submit"
                                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-green-700 active:scale-[0.98] transition max-md:w-full max-md:justify-center"

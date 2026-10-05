@@ -324,7 +324,7 @@ export default function DataONT({
                             disabled={listONT.length === 0}
                             title="Export"
                             aria-label="Export"
-                            className="flex h-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium text-[#6F2424] shadow-md ring-1 ring-[#AB3C3C]/25 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:text-[#6F2424] disabled:hover:ring-[#AB3C3C]/25 max-md:rounded-lg max-md:px-4 max-md:py-4 max-md:text-xs"
+                            className="flex h-full items-center justify-center gap-2 rounded-xl bg-white dark:bg-night-800 px-4 py-2.5 text-sm font-medium text-[#6F2424] dark:text-night-200 shadow-md ring-1 ring-[#AB3C3C]/25 dark:ring-night-600 transition hover:bg-[#AB3C3C] hover:text-white hover:ring-[#AB3C3C] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white dark:disabled:hover:bg-night-800 disabled:hover:text-[#6F2424] dark:disabled:hover:text-night-200 disabled:hover:ring-[#AB3C3C]/25 dark:disabled:hover:ring-night-600 max-md:rounded-lg max-md:px-4 max-md:py-4 max-md:text-xs"
                         >
                             <FaFileExport />
                             <span className="max-md:hidden">Export</span>
@@ -332,7 +332,7 @@ export default function DataONT({
                         </button>
 
                         {openExport && (
-                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl max-md:right-0 max-md:w-52">
+                            <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 shadow-xl max-md:right-0 max-md:w-52">
 
                                 <button
                                     type="button"
@@ -341,9 +341,9 @@ export default function DataONT({
                                         setKonfirmasiEkspor({ format: "pdf" });
                                     }}
                                     disabled={sedangExport !== ""}
-                                    className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-night-200 transition hover:bg-red-50 dark:hover:bg-red-500/15 hover:text-red-700 dark:hover:text-red-200 disabled:cursor-not-allowed disabled:opacity-50"
                                 >
-                                    <FaFilePdf className="text-red-600" />
+                                    <FaFilePdf className="text-red-600 dark:text-red-300" />
                                     Export PDF
                                 </button>
 
@@ -354,9 +354,9 @@ export default function DataONT({
                                         setKonfirmasiEkspor({ format: "excel" });
                                     }}
                                     disabled={sedangExport !== ""}
-                                    className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-night-200 transition hover:bg-green-50 dark:hover:bg-green-500/15 hover:text-green-700 dark:hover:text-green-200 disabled:cursor-not-allowed disabled:opacity-50"
                                 >
-                                    <FaFileExcel className="text-green-600" />
+                                    <FaFileExcel className="text-green-600 dark:text-green-300" />
                                     Export Excel
                                 </button>
 
@@ -377,18 +377,18 @@ export default function DataONT({
                         }}
                     >
                         <div
-                            className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl"
+                            className="w-full max-w-sm rounded-2xl bg-white dark:bg-night-900 p-5 shadow-xl"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <h3 className="text-sm font-semibold text-gray-800">
+                            <h3 className="text-sm font-semibold text-gray-800 dark:text-night-200">
                                 Export {konfirmasiEkspor.format === "pdf" ? "PDF" : "Excel"}
                             </h3>
 
-                            <p className="mt-1 text-xs text-gray-500">
+                            <p className="mt-1 text-xs text-gray-500 dark:text-night-400">
                                 Halaman {dataONT?.current_page ?? 1} dari {dataONT?.last_page ?? 1} &bull; {listONT.length} data halaman ini &bull; {dataONT?.total ?? listONT.length} total data
                             </p>
 
-                            <p className="mt-3 text-xs text-gray-600">
+                            <p className="mt-3 text-xs text-gray-600 dark:text-night-300">
                                 Cetak halaman ini saja atau semua data sesuai filter?
                             </p>
 
@@ -406,7 +406,7 @@ export default function DataONT({
                                     type="button"
                                     onClick={() => handleExport(konfirmasiEkspor.format, "semua")}
                                     disabled={sedangExport !== ""}
-                                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-4 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 transition hover:bg-gray-50 dark:hover:bg-night-800 disabled:cursor-not-allowed disabled:opacity-50"
                                 >
                                     Semua Data ({dataONT?.total ?? listONT.length} data)
                                 </button>
@@ -415,7 +415,7 @@ export default function DataONT({
                                     type="button"
                                     onClick={() => setKonfirmasiEkspor(null)}
                                     disabled={sedangExport !== ""}
-                                    className="w-full rounded-xl px-4 py-2 text-xs font-medium text-gray-400 transition hover:text-gray-600 disabled:opacity-50"
+                                    className="w-full rounded-xl px-4 py-2 text-xs font-medium text-gray-400 dark:text-night-500 transition hover:text-gray-600 disabled:opacity-50"
                                 >
                                     Batal
                                 </button>
@@ -429,14 +429,14 @@ export default function DataONT({
                 {notifExport && (
                     <div
                         className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-medium shadow-sm ring-1 ${notifExport.tipe === "sukses"
-                            ? "bg-green-50 text-green-700 ring-green-200"
-                            : "bg-red-50 text-red-700 ring-red-200"
+                            ? "bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300 ring-green-200 dark:ring-green-500/30"
+                            : "bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300 ring-red-200 dark:ring-red-500/30"
                             }`}
                     >
                         {notifExport.tipe === "sukses" ? (
-                            <FaFileExcel className="shrink-0 text-green-600" />
+                            <FaFileExcel className="shrink-0 text-green-600 dark:text-green-300" />
                         ) : (
-                            <FaFilePdf className="shrink-0 text-red-600" />
+                            <FaFilePdf className="shrink-0 text-red-600 dark:text-red-300" />
                         )}
 
                         <span className="flex-1">{notifExport.pesan}</span>
@@ -457,7 +457,7 @@ export default function DataONT({
 
                     {/* Total ONT */}
 
-                    <div className="hover:scale-[1.02] transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-2xl border border-gray-100 border-t-[3px] border-t-sky-500 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:min-h-0 max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
+                    <div className="hover:scale-[1.02] transition-all duration-200 flex min-h-[136px] flex-col justify-between rounded-2xl border border-gray-100 dark:border-night-700 border-t-[3px] border-t-sky-500 bg-white dark:bg-night-900 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:min-h-0 max-md:p-3.5 max-md:hover:scale-100 max-md:hover:translate-y-0">
 
                         <div className="flex items-start justify-between max-md:gap-2">
 
@@ -467,7 +467,7 @@ export default function DataONT({
                                     TOTAL ONT
                                 </p>
 
-                                <p className="text-sm font-light capitalize text-gray-500 mt-1 truncate max-md:text-xs">
+                                <p className="text-sm font-light capitalize text-gray-500 dark:text-night-400 mt-1 truncate max-md:text-xs">
                                     {selectedWilayahLabel}
                                 </p>
 
@@ -492,15 +492,15 @@ export default function DataONT({
 
                         {/* Aktif */}
 
-                        <div className="hover:scale-[1.02] transition-all shadow-sm duration-200 flex flex-1 items-center rounded-2xl border border-gray-100 border-t-[3px] border-t-emerald-600 bg-white px-5 hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:px-3.5 max-md:py-3 max-md:hover:scale-100 max-md:hover:translate-y-0">
+                        <div className="hover:scale-[1.02] transition-all shadow-sm duration-200 flex flex-1 items-center rounded-2xl border border-gray-100 dark:border-night-700 border-t-[3px] border-t-emerald-600 bg-white dark:bg-night-900 px-5 hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:px-3.5 max-md:py-3 max-md:hover:scale-100 max-md:hover:translate-y-0">
 
                             <div className="min-w-0">
 
-                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
+                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 dark:text-night-400 max-md:tracking-normal">
                                     ONT AKTIF
                                 </p>
 
-                                <h2 className="mt-1 text-xl font-bold text-gray-800 max-md:text-lg">
+                                <h2 className="mt-1 text-xl font-bold text-gray-800 dark:text-night-200 max-md:text-lg">
                                     {ONTAktif}
                                 </h2>
 
@@ -510,15 +510,15 @@ export default function DataONT({
 
                         {/* Nonaktif */}
 
-                        <div className="hover:scale-[1.02] duration-200 transition-all shadow-sm flex flex-1 items-center rounded-2xl border border-gray-100 border-t-[3px] border-t-red-500 bg-white px-5 hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:px-3.5 max-md:py-3 max-md:hover:scale-100 max-md:hover:translate-y-0">
+                        <div className="hover:scale-[1.02] duration-200 transition-all shadow-sm flex flex-1 items-center rounded-2xl border border-gray-100 dark:border-night-700 border-t-[3px] border-t-red-500 bg-white dark:bg-night-900 px-5 hover:shadow-md hover:-translate-y-0.5 will-change-transform max-md:px-3.5 max-md:py-3 max-md:hover:scale-100 max-md:hover:translate-y-0">
 
                             <div className="min-w-0">
 
-                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 max-md:tracking-normal">
+                                <p className="truncate text-[11px] font-semibold tracking-widest text-gray-500 dark:text-night-400 max-md:tracking-normal">
                                     ONT NONAKTIF
                                 </p>
 
-                                <h2 className="mt-1 text-xl font-bold text-gray-800 max-md:text-lg">
+                                <h2 className="mt-1 text-xl font-bold text-gray-800 dark:text-night-200 max-md:text-lg">
                                     {ONTNonaktif}
                                 </h2>
 
@@ -530,13 +530,13 @@ export default function DataONT({
 
                     {/* Filter */}
 
-                    <div className="min-h-[136px] rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:col-span-2 max-md:min-h-0 max-md:p-4">
+                    <div className="min-h-[136px] rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:col-span-2 max-md:min-h-0 max-md:p-4">
 
                         <div className="mb-4 flex items-center gap-2">
 
-                            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-50 ring-1 ring-gray-200"><FaFilter className="text-gray-600 text-xs" /></span>
+                            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-50 dark:bg-night-800/60 ring-1 ring-gray-200 dark:ring-night-700"><FaFilter className="text-gray-600 dark:text-night-300 text-xs" /></span>
 
-                            <span className="text-[11px] font-semibold tracking-widest text-gray-600">
+                            <span className="text-[11px] font-semibold tracking-widest text-gray-600 dark:text-night-300">
                                 FILTER DATA
                             </span>
 
@@ -557,7 +557,7 @@ export default function DataONT({
                                         filterKelurahan
                                     )
                                 }
-                                className="capitalize w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
+                                className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
 
                                 <option value="">
@@ -595,10 +595,10 @@ export default function DataONT({
                                     }}
                                     placeholder={kecamatanLoading ? "Memuat..." : "Kecamatan"}
                                     autoComplete="off"
-                                    className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition placeholder:text-gray-400"
+                                    className="w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                                 {kecFocused && filteredKecamatan.length > 0 && (
-                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
                                         {filteredKecamatan.map((opt) => (
                                             <button
                                                 key={opt.code}
@@ -609,7 +609,7 @@ export default function DataONT({
                                                     setKecFocused(false);
                                                     handleFilter(filterWilayah, opt.name, filterStatus, filterKelurahan);
                                                 }}
-                                                className="w-full px-3 py-2 text-left capitalize text-xs hover:bg-gray-50 transition"
+                                                className="w-full px-3 py-2 text-left capitalize text-xs text-gray-700 dark:text-night-200 hover:bg-gray-50 dark:hover:bg-night-800 transition"
                                             >
                                                 {opt.name}
                                             </button>
@@ -630,7 +630,7 @@ export default function DataONT({
                                         filterKelurahan
                                     )
                                 }
-                                className="capitalize w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
+                                className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
 
                                 <option value="">
@@ -666,10 +666,10 @@ export default function DataONT({
                                     }}
                                     placeholder={kelurahanLoading ? "Memuat..." : "Kelurahan"}
                                     autoComplete="off"
-                                    className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-xs font-medium outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition placeholder:text-gray-400"
+                                    className="w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                                 {kelFocused && filteredKelurahan.length > 0 && (
-                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
                                         {filteredKelurahan.map((opt) => (
                                             <button
                                                 key={opt.code}
@@ -680,7 +680,7 @@ export default function DataONT({
                                                     setKelFocused(false);
                                                     handleFilter(filterWilayah, filterKecamatan, filterStatus, opt.name);
                                                 }}
-                                                className="w-full px-3 py-2 text-left capitalize text-xs hover:bg-gray-50 transition"
+                                                className="w-full px-3 py-2 text-left capitalize text-xs text-gray-700 dark:text-night-200 hover:bg-gray-50 dark:hover:bg-night-800 transition"
                                             >
                                                 {opt.name}
                                             </button>
@@ -701,7 +701,7 @@ export default function DataONT({
                             <button
                                 type="button"
                                 onClick={() => handleFilter("", "", "", "")}
-                                className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50 transition"
+                                className="rounded-xl border border-gray-200 dark:border-night-600 bg-white dark:bg-night-800 px-3 py-2 text-xs font-medium text-gray-600 dark:text-night-200 hover:bg-gray-50 dark:hover:bg-night-700 transition"
                             >
                                 Reset
                             </button>
@@ -714,7 +714,7 @@ export default function DataONT({
 
                 {/* Tabel */}
 
-                <div className="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
+                <div className="overflow-hidden rounded-2xl bg-white dark:bg-night-900 shadow-sm border border-gray-100 dark:border-night-700">
 
                     <div className="overflow-x-auto hidden md:block">
 
@@ -724,7 +724,7 @@ export default function DataONT({
 
                             <thead>
 
-                                <tr className="bg-gray-50/70 border-b border-gray-200 text-center">
+                                <tr className="bg-gray-50/70 dark:bg-night-800/70 border-b border-gray-200 dark:border-night-700 text-center">
 
                                     <th className="w-12 px-4 py-3 font-medium">
                                         No
@@ -769,7 +769,7 @@ export default function DataONT({
 
                             {/* Isi Tabel */}
 
-                            <tbody className="text-center capitalize divide-y divide-gray-100">
+                            <tbody className="text-center capitalize divide-y divide-gray-100 dark:divide-night-700">
 
                                 {listONT.length > 0 ? (
 
@@ -777,7 +777,7 @@ export default function DataONT({
 
                                         <tr
                                             key={ont.id}
-                                            className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/80 transition-colors"
+                                            className="border-b border-gray-100 dark:border-night-700 last:border-b-0 hover:bg-gray-50/80 dark:hover:bg-night-800/80 transition-colors"
                                         >
 
                                             {/* Nomor */}
@@ -791,7 +791,7 @@ export default function DataONT({
 
                                             <td className="px-4 py-2.5">
 
-                                                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-gray-100 ring-1 ring-gray-200 shadow-sm">
+                                                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl bg-gray-100 dark:bg-night-800 ring-1 ring-gray-200 dark:ring-night-700 shadow-sm">
 
                                                     {ont.foto_ont_1 ? (
 
@@ -807,7 +807,7 @@ export default function DataONT({
 
                                                     ) : (
 
-                                                        <span className="text-[10px] text-gray-400">
+                                                        <span className="text-[10px] text-gray-400 dark:text-night-500">
                                                             Belum ada foto
                                                         </span>
 
@@ -824,7 +824,7 @@ export default function DataONT({
 
                                                 {ont.kode_ont || (
 
-                                                    <span className="text-gray-400">
+                                                    <span className="text-gray-400 dark:text-night-500">
                                                         Belum ada data
                                                     </span>
 
@@ -839,7 +839,7 @@ export default function DataONT({
                                                 {ont.wilayah || ont.kabupaten ? (
                                                     ont.wilayah || ont.kabupaten
                                                 ) : (
-                                                    <span className="text-gray-400">Belum ada data</span>
+                                                    <span className="text-gray-400 dark:text-night-500">Belum ada data</span>
                                                 )}
                                             </td>
 
@@ -849,7 +849,7 @@ export default function DataONT({
                                                 {ont.kecamatan || ont.area ? (
                                                     ont.kecamatan || ont.area
                                                 ) : (
-                                                    <span className="text-gray-400">Belum ada data</span>
+                                                    <span className="text-gray-400 dark:text-night-500">Belum ada data</span>
                                                 )}
                                             </td>
 
@@ -859,7 +859,7 @@ export default function DataONT({
                                                 {ont.kelurahan ? (
                                                     ont.kelurahan
                                                 ) : (
-                                                    <span className="text-gray-400">-</span>
+                                                    <span className="text-gray-400 dark:text-night-500">-</span>
                                                 )}
                                             </td>
 
@@ -869,7 +869,7 @@ export default function DataONT({
 
                                                 {ont.nama_petugas || (
 
-                                                    <span className="text-gray-400">
+                                                    <span className="text-gray-400 dark:text-night-500">
                                                         Belum ada data
                                                     </span>
 
@@ -896,7 +896,7 @@ export default function DataONT({
 
                                                 ) : (
 
-                                                    <span className="text-gray-400">
+                                                    <span className="text-gray-400 dark:text-night-500">
                                                         Belum ada data
                                                     </span>
 
@@ -973,7 +973,7 @@ export default function DataONT({
                     {dataONT?.links && dataONT.links.length > 3 && (
                         <div className="flex flex-wrap gap-1.5 justify-center mt-4 pb-3 max-md:px-2">
                             {dataONT.links.map((link, i) => (
-                                <button key={i} disabled={!link.url} onClick={() => link.url && router.get(link.url, {}, { preserveState: true, preserveScroll: true })} className={`px-3 py-1.5 text-xs font-medium rounded-full shadow-sm ring-1 transition ${link.active ? 'bg-[#AB3C3C] text-white ring-[#AB3C3C]' : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`} dangerouslySetInnerHTML={{ __html: link.label }} />
+                                <button key={i} disabled={!link.url} onClick={() => link.url && router.get(link.url, {}, { preserveState: true, preserveScroll: true })} className={`px-3 py-1.5 text-xs font-medium rounded-full shadow-sm ring-1 transition ${link.active ? 'bg-[#AB3C3C] text-white ring-[#AB3C3C]' : 'bg-white dark:bg-night-800 border border-gray-200 dark:border-night-600 text-gray-700 dark:text-night-200 hover:bg-gray-50 dark:hover:bg-night-700'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`} dangerouslySetInnerHTML={{ __html: link.label }} />
                             ))}
                         </div>
                     )}

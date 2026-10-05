@@ -81,16 +81,16 @@ export default function DetailTiang({ tiang }) {
 
                     {/* Foto */}
 
-                    <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:p-4">
+                    <div className="rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:p-4">
 
                         {/* Foto Utama */}
 
                         <div className="mb-3">
-                            <p className="mb-2 text-xs font-semibold tracking-wide text-gray-700">
+                            <p className="mb-2 text-xs font-semibold tracking-wide text-gray-700 dark:text-night-200">
                                 Foto Utama
                             </p>
 
-                            <div className="overflow-hidden rounded-xl border border-gray-100 shadow-sm">
+                            <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-night-700 shadow-sm">
                                 {activeImage ? (
                                     <img
                                         src={activeImage}
@@ -101,7 +101,7 @@ export default function DetailTiang({ tiang }) {
                                     />
                                 ) : (
                                     <div className="flex h-[330px] w-full items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 max-md:h-[220px]">
-                                        <span className="text-xs text-gray-400">
+                                        <span className="text-xs text-gray-400 dark:text-night-500">
                                             Belum ada foto tiang
                                         </span>
                                     </div>
@@ -118,7 +118,7 @@ export default function DetailTiang({ tiang }) {
 
                                     return (
                                         <div key={image}>
-                                            <p className="mb-1.5 text-center text-[10px] font-semibold tracking-wide text-gray-600">
+                                            <p className="mb-1.5 text-center text-[10px] font-semibold tracking-wide text-gray-600 dark:text-night-300">
                                                 Foto {index + 1}
                                             </p>
 
@@ -142,8 +142,8 @@ export default function DetailTiang({ tiang }) {
                                     );
                                 })
                             ) : (
-                                <div className="col-span-5 flex h-24 items-center justify-center rounded-xl bg-gray-50 border border-dashed border-gray-200">
-                                    <span className="text-[10px] text-gray-400">
+                                <div className="col-span-5 flex h-24 items-center justify-center rounded-xl bg-gray-50 dark:bg-night-800/60 border border-dashed border-gray-200 dark:border-night-700">
+                                    <span className="text-[10px] text-gray-400 dark:text-night-500">
                                         Belum ada foto
                                     </span>
                                 </div>
@@ -154,7 +154,7 @@ export default function DetailTiang({ tiang }) {
 
                     {/* Informasi */}
 
-                    <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:p-4">
+                    <div className="rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:p-4">
 
                         {/* Judul */}
 
@@ -162,7 +162,7 @@ export default function DetailTiang({ tiang }) {
 
                             <div>
 
-                                <h2 className="text-lg font-bold text-gray-800">
+                                <h2 className="text-lg font-bold text-gray-800 dark:text-night-200">
                                     {tiang?.kode_tiang ?? "Data Tiang"}
                                 </h2>
 
@@ -180,11 +180,11 @@ export default function DetailTiang({ tiang }) {
 
                             <div>
 
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Wilayah
                                 </p>
 
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     {tiang?.wilayah || "-"}
                                 </p>
 
@@ -192,15 +192,15 @@ export default function DetailTiang({ tiang }) {
 
                             <div>
 
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Koordinat
                                 </p>
 
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     Latitude: {tiang?.latitude || "-"}
                                 </p>
 
-                                <p className="text-gray-600">
+                                <p className="text-gray-600 dark:text-night-300">
                                     Longitude: {tiang?.longitude || "-"}
                                 </p>
 
@@ -208,11 +208,11 @@ export default function DetailTiang({ tiang }) {
 
                             <div>
 
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Deskripsi Tiang
                                 </p>
 
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     {tiang?.deskripsi_tiang || "-"}
                                 </p>
 
@@ -220,11 +220,11 @@ export default function DetailTiang({ tiang }) {
 
                             <div>
 
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Status
                                 </p>
 
-                                <div className="mt-1 flex items-center gap-1 text-gray-600">
+                                <div className="mt-1 flex items-center gap-1 text-gray-600 dark:text-night-300">
 
                                     <span
                                         className={`h-2 w-2 rounded-full ${tiang?.status?.toLowerCase() ===
@@ -243,11 +243,11 @@ export default function DetailTiang({ tiang }) {
                             {tiang?.updated_by && (
                                 <div>
 
-                                    <p className="font-semibold text-gray-800">
+                                    <p className="font-semibold text-gray-800 dark:text-night-200">
                                         Diperbarui oleh
                                     </p>
 
-                                    <p className="mt-1 text-gray-600">
+                                    <p className="mt-1 text-gray-600 dark:text-night-300">
                                         {tiang.updated_by}
                                     </p>
 
@@ -256,11 +256,11 @@ export default function DetailTiang({ tiang }) {
 
                             <div>
 
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Kecamatan
                                 </p>
 
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     {tiang?.kecamatan || tiang?.area || "-"}
                                 </p>
 
@@ -268,11 +268,11 @@ export default function DetailTiang({ tiang }) {
 
                             <div>
 
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Kelurahan
                                 </p>
 
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     {tiang?.kelurahan || "-"}
                                 </p>
 
@@ -280,11 +280,11 @@ export default function DetailTiang({ tiang }) {
 
                             <div>
 
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Kode Tiang
                                 </p>
 
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     {tiang?.kode_tiang || "-"}
                                 </p>
 
@@ -324,7 +324,7 @@ export default function DetailTiang({ tiang }) {
 
                         {/* Peta */}
 
-                        <div className="relative mt-4 h-[220px] overflow-hidden rounded-xl bg-gray-100 border border-gray-200 shadow-inner">
+                        <div className="relative mt-4 h-[220px] overflow-hidden rounded-xl bg-gray-100 dark:bg-night-800 border border-gray-200 dark:border-night-700 shadow-inner">
 
                             <MapView
                                 latitude={tiang?.latitude}

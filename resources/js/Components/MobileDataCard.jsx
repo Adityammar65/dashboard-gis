@@ -15,13 +15,13 @@ export default function MobileDataCard({
         statusLower === "aktif"
             ? "bg-green-500"
             : statusLower === "nonaktif"
-              ? "bg-red-500"
-              : "bg-gray-400";
+                ? "bg-red-500"
+                : "bg-gray-400";
 
     return (
-        <div className="gis-mobile-card rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+        <div className="gis-mobile-card rounded-2xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 p-4 shadow-sm">
             <div className="flex items-start gap-3">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100 ring-1 ring-gray-200">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100 dark:bg-night-800 ring-1 ring-gray-200 dark:ring-night-700">
                     {imageSrc ? (
                         <img
                             src={imageSrc}
@@ -31,18 +31,18 @@ export default function MobileDataCard({
                             decoding="async"
                         />
                     ) : (
-                        <span className="px-1 text-center text-[10px] text-gray-400">
+                        <span className="px-1 text-center text-[10px] text-gray-400 dark:text-night-500">
                             {fallbackLabel}
                         </span>
                     )}
                 </div>
 
                 <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold capitalize text-gray-800">
+                    <p className="truncate text-sm font-semibold capitalize text-gray-800 dark:text-night-200">
                         {title || "Belum ada data"}
                     </p>
                     {subtitle && (
-                        <p className="mt-0.5 truncate text-xs capitalize text-gray-500">
+                        <p className="mt-0.5 truncate text-xs capitalize text-gray-500 dark:text-night-400">
                             {subtitle}
                         </p>
                     )}
@@ -57,13 +57,13 @@ export default function MobileDataCard({
             </div>
 
             {meta.length > 0 && (
-                <div className="mt-3 grid grid-cols-2 gap-2 border-t border-gray-100 pt-3 text-xs">
+                <div className="mt-3 grid grid-cols-2 gap-2 border-t border-gray-100 dark:border-night-700 pt-3 text-xs">
                     {meta.map((m, i) => (
                         <div key={i} className="min-w-0">
-                            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+                            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-night-500">
                                 {m.label}
                             </p>
-                            <p className="mt-0.5 truncate capitalize text-gray-700">
+                            <p className="mt-0.5 truncate capitalize text-gray-700 dark:text-night-200">
                                 {m.value || "-"}
                             </p>
                         </div>
@@ -72,7 +72,7 @@ export default function MobileDataCard({
             )}
 
             {actions && (
-                <div className="mt-3 flex items-center gap-2 border-t border-gray-100 pt-3">
+                <div className="mt-3 flex items-center gap-2 border-t border-gray-100 dark:border-night-700 pt-3">
                     {actions}
                 </div>
             )}

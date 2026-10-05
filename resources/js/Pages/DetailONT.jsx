@@ -66,15 +66,15 @@ export default function DetailONT({ ont }) {
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                    <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:p-4">
+                    <div className="rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:p-4">
 
                         {/* Foto Utama */}
 
                         <div className="mb-3">
-                            <p className="mb-2 text-xs font-semibold tracking-wide text-gray-700">
+                            <p className="mb-2 text-xs font-semibold tracking-wide text-gray-700 dark:text-night-200">
                                 Foto Utama
                             </p>
-                            <div className="overflow-hidden rounded-xl border border-gray-100 shadow-sm">
+                            <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-night-700 shadow-sm">
                                 {activeImage ? (
                                     <img
                                         src={activeImage}
@@ -85,7 +85,7 @@ export default function DetailONT({ ont }) {
                                     />
                                 ) : (
                                     <div className="flex h-[330px] w-full items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 max-md:h-[220px]">
-                                        <span className="text-xs text-gray-400">
+                                        <span className="text-xs text-gray-400 dark:text-night-500">
                                             Belum ada foto ONT
                                         </span>
                                     </div>
@@ -101,7 +101,7 @@ export default function DetailONT({ ont }) {
                                     const imageUrl = getFotoUrl(image);
                                     return (
                                         <div key={image}>
-                                            <p className="mb-1.5 text-center text-[10px] font-semibold tracking-wide text-gray-600">
+                                            <p className="mb-1.5 text-center text-[10px] font-semibold tracking-wide text-gray-600 dark:text-night-300">
                                                 Foto {index + 1}
                                             </p>
                                             <button
@@ -124,8 +124,8 @@ export default function DetailONT({ ont }) {
                                     );
                                 })
                             ) : (
-                                <div className="col-span-5 flex h-24 items-center justify-center rounded-xl bg-gray-50 border border-dashed border-gray-200">
-                                    <span className="text-[10px] text-gray-400">
+                                <div className="col-span-5 flex h-24 items-center justify-center rounded-xl bg-gray-50 dark:bg-night-800/60 border border-dashed border-gray-200 dark:border-night-700">
+                                    <span className="text-[10px] text-gray-400 dark:text-night-500">
                                         Belum ada foto
                                     </span>
                                 </div>
@@ -134,13 +134,13 @@ export default function DetailONT({ ont }) {
 
                     </div>
 
-                    <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:p-4">
+                    <div className="rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:p-4">
 
                         {/* Judul */}
 
                         <div className="flex items-start justify-between">
                             <div>
-                                <h2 className="text-lg font-bold text-gray-800">
+                                <h2 className="text-lg font-bold text-gray-800 dark:text-night-200">
                                     {ont?.kode_ont ?? "Data ONT"}
                                 </h2>
                             </div>
@@ -151,40 +151,40 @@ export default function DetailONT({ ont }) {
                         <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-5 text-xs max-sm:grid-cols-1 max-sm:gap-y-4">
 
                             <div>
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Wilayah
                                 </p>
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     {ont?.wilayah || "-"}
                                 </p>
                             </div>
 
                             <div>
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Koordinat
                                 </p>
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     Latitude: {ont?.latitude || "-"}
                                 </p>
-                                <p className="text-gray-600">
+                                <p className="text-gray-600 dark:text-night-300">
                                     Longitude: {ont?.longitude || "-"}
                                 </p>
                             </div>
 
                             <div>
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Deskripsi ONT
                                 </p>
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     {ont?.deskripsi_ont || "-"}
                                 </p>
                             </div>
 
                             <div>
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Status
                                 </p>
-                                <div className="mt-1 flex items-center gap-1 text-gray-600">
+                                <div className="mt-1 flex items-center gap-1 text-gray-600 dark:text-night-300">
                                     <span className={`h-2 w-2 rounded-full ${ont?.status?.toLowerCase() === "aktif" ? "bg-green-500" : "bg-red-500"}`} />
                                     {ont?.status || "-"}
                                 </div>
@@ -192,38 +192,38 @@ export default function DetailONT({ ont }) {
 
                             {ont?.updated_by && (
                                 <div>
-                                    <p className="font-semibold text-gray-800">
+                                    <p className="font-semibold text-gray-800 dark:text-night-200">
                                         Diperbarui oleh
                                     </p>
-                                    <p className="mt-1 text-gray-600">
+                                    <p className="mt-1 text-gray-600 dark:text-night-300">
                                         {ont.updated_by}
                                     </p>
                                 </div>
                             )}
 
                             <div>
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Kecamatan
                                 </p>
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     {ont?.kecamatan || ont?.area || "-"}
                                 </p>
                             </div>
 
                             <div>
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Kelurahan
                                 </p>
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     {ont?.kelurahan || "-"}
                                 </p>
                             </div>
 
                             <div>
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold text-gray-800 dark:text-night-200">
                                     Kode ONT
                                 </p>
-                                <p className="mt-1 text-gray-600">
+                                <p className="mt-1 text-gray-600 dark:text-night-300">
                                     {ont?.kode_ont || "-"}
                                 </p>
                             </div>
@@ -257,7 +257,7 @@ export default function DetailONT({ ont }) {
 
                         {/* Peta */}
 
-                        <div className="relative mt-4 h-[220px] overflow-hidden rounded-xl bg-gray-100 border border-gray-200 shadow-inner">
+                        <div className="relative mt-4 h-[220px] overflow-hidden rounded-xl bg-gray-100 dark:bg-night-800 border border-gray-200 dark:border-night-700 shadow-inner">
 
                             <MapView
                                 latitude={ont?.latitude}

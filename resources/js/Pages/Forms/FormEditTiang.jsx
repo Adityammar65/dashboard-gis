@@ -317,7 +317,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
 
                 {/* Formulir */}
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-7 max-md:p-4">
+                <div className="bg-white dark:bg-night-900 rounded-2xl shadow-sm border border-gray-100 dark:border-night-700 p-6 md:p-7 max-md:p-4">
 
                     <form onSubmit={handleSubmit}>
 
@@ -326,7 +326,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             {/* Kode Tiang */}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Kode Tiang
                                 </label>
 
@@ -337,14 +337,14 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     onChange={handleChange}
                                     placeholder="Masukkan kode tiang"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                             </div>
 
                             {/* Wilayah */}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Wilayah
                                 </label>
 
@@ -353,7 +353,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     value={form.wilayah}
                                     onChange={handleChange}
                                     required
-                                    className="capitalize w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="capitalize w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 >
                                     <option value="" disabled>
                                         Pilih Wilayah
@@ -374,7 +374,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             {/* Kecamatan */}
 
                             <div className="relative">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Kecamatan
                                 </label>
 
@@ -388,10 +388,10 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     placeholder={kecamatanLoading ? "Memuat kecamatan..." : "Ketik kecamatan"}
                                     required
                                     autoComplete="off"
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                                 {kecFocused && filteredKecamatan.length > 0 && (
-                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
                                         {filteredKecamatan.map((opt) => (
                                             <button
                                                 key={opt.code}
@@ -421,13 +421,13 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         ))}
                                     </div>
                                 )}
-                                {kecamatanLoading && <p className="mt-1 text-[11px] text-gray-400">Memuat kecamatan...</p>}
+                                {kecamatanLoading && <p className="mt-1 text-[11px] text-gray-400 dark:text-night-500">Memuat kecamatan...</p>}
                             </div>
 
                             {/* Kelurahan */}
 
                             <div className="relative">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Kelurahan
                                 </label>
 
@@ -441,10 +441,10 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     placeholder={kelurahanLoading ? "Memuat..." : kelurahanManual && kelurahanOptions.length === 0 ? "Kelurahan tidak terdeteksi – isi manual" : "Ketik kelurahan"}
                                     required
                                     autoComplete="off"
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 disabled:bg-gray-50"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500 disabled:bg-gray-50"
                                 />
                                 {kelFocused && filteredKelurahan.length > 0 && (
-                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                                    <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
                                         {filteredKelurahan.map((opt) => (
                                             <button
                                                 key={opt.code}
@@ -463,15 +463,15 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     </div>
                                 )}
                                 {kelurahanManual && (
-                                    <p className="mt-1 text-[11px] text-amber-600">Kelurahan tidak terdeteksi – silakan isi manual.</p>
+                                    <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-300">Kelurahan tidak terdeteksi – silakan isi manual.</p>
                                 )}
-                                {kelurahanLoading && <p className="mt-1 text-[11px] text-gray-400">Memuat kelurahan...</p>}
+                                {kelurahanLoading && <p className="mt-1 text-[11px] text-gray-400 dark:text-night-500">Memuat kelurahan...</p>}
                             </div>
 
                             {/* Petugas */}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Petugas Lapangan
                                 </label>
 
@@ -482,14 +482,14 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     onChange={handleChange}
                                     placeholder="Masukkan nama petugas"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                             </div>
 
                             {/* Status */}
 
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Status
                                 </label>
 
@@ -498,7 +498,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     value={form.status}
                                     onChange={handleChange}
                                     required
-                                    className="capitalize w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="capitalize w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 >
                                     <option value="" disabled>
                                         Pilih Status
@@ -517,8 +517,8 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             {/* Lokasi */}
 
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Titik Lokasi <span className="font-normal text-gray-400">(klik peta / cari alamat)</span>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
+                                    Titik Lokasi <span className="font-normal text-gray-400 dark:text-night-500">(klik peta / cari alamat)</span>
                                 </label>
 
                                 <LocationPicker
@@ -533,7 +533,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                             {/* Koordinat */}
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Latitude
                                 </label>
 
@@ -544,12 +544,12 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     onChange={handleChange}
                                     placeholder="Contoh: -7.7956"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Longitude
                                 </label>
 
@@ -560,7 +560,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     onChange={handleChange}
                                     placeholder="Contoh: 110.3695"
                                     required
-                                    className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                    className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
                             </div>
 
@@ -568,7 +568,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
 
                             <div className="md:col-span-2">
 
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                     Foto Tiang
                                 </label>
 
@@ -578,7 +578,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
 
                                     <div>
                                         <div className="mb-2 flex items-center justify-between">
-                                            <label className="block text-xs text-gray-500">
+                                            <label className="block text-xs text-gray-500 dark:text-night-400">
                                                 Foto 1
                                             </label>
 
@@ -586,7 +586,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                 <button
                                                     type="button"
                                                     onClick={() => toggleHapusFoto("foto_tiang_1")}
-                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_1 ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100" : "bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100"}`}
+                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_1 ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-500/30 hover:bg-amber-100 dark:hover:bg-amber-500/20" : "bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-300 ring-1 ring-red-200 dark:ring-red-500/30 hover:bg-red-100 dark:hover:bg-red-500/20"}`}
                                                 >
                                                     {hapusFoto.foto_tiang_1 ? <><FaUndo size={10} /> Batal</> : <><FaTrash size={10} /> Hapus</>}
                                                 </button>
@@ -594,13 +594,13 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         </div>
 
                                         {hapusFoto.foto_tiang_1 ? (
-                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 bg-amber-50">
-                                                <span className="px-3 text-center text-xs text-amber-700">
+                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/15">
+                                                <span className="px-3 text-center text-xs text-amber-700 dark:text-amber-300">
                                                     Akan dihapus saat disimpan
                                                 </span>
                                             </div>
                                         ) : (
-                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 dark:border-night-700 bg-gray-100 dark:bg-night-800">
                                                 {preview.foto_tiang_1 ? (
                                                     <img
                                                         src={preview.foto_tiang_1}
@@ -609,7 +609,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                     />
                                                 ) : (
                                                     <div className="flex h-40 items-center justify-center">
-                                                        <span className="text-xs text-gray-400">
+                                                        <span className="text-xs text-gray-400 dark:text-night-500">
                                                             Belum ada foto
                                                         </span>
                                                     </div>
@@ -622,7 +622,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                             type="file"
                                             accept="image/*"
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                            className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
@@ -630,7 +630,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
 
                                     <div>
                                         <div className="mb-2 flex items-center justify-between">
-                                            <label className="block text-xs text-gray-500">
+                                            <label className="block text-xs text-gray-500 dark:text-night-400">
                                                 Foto 2
                                             </label>
 
@@ -638,7 +638,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                 <button
                                                     type="button"
                                                     onClick={() => toggleHapusFoto("foto_tiang_2")}
-                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_2 ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100" : "bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100"}`}
+                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_2 ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-500/30 hover:bg-amber-100 dark:hover:bg-amber-500/20" : "bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-300 ring-1 ring-red-200 dark:ring-red-500/30 hover:bg-red-100 dark:hover:bg-red-500/20"}`}
                                                 >
                                                     {hapusFoto.foto_tiang_2 ? <><FaUndo size={10} /> Batal</> : <><FaTrash size={10} /> Hapus</>}
                                                 </button>
@@ -646,13 +646,13 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         </div>
 
                                         {hapusFoto.foto_tiang_2 ? (
-                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 bg-amber-50">
-                                                <span className="px-3 text-center text-xs text-amber-700">
+                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/15">
+                                                <span className="px-3 text-center text-xs text-amber-700 dark:text-amber-300">
                                                     Akan dihapus saat disimpan
                                                 </span>
                                             </div>
                                         ) : (
-                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 dark:border-night-700 bg-gray-100 dark:bg-night-800">
                                                 {preview.foto_tiang_2 ? (
                                                     <img
                                                         src={preview.foto_tiang_2}
@@ -661,7 +661,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                     />
                                                 ) : (
                                                     <div className="flex h-40 items-center justify-center">
-                                                        <span className="text-xs text-gray-400">
+                                                        <span className="text-xs text-gray-400 dark:text-night-500">
                                                             Belum ada foto
                                                         </span>
                                                     </div>
@@ -674,7 +674,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                             type="file"
                                             accept="image/*"
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                            className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
@@ -682,7 +682,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
 
                                     <div>
                                         <div className="mb-2 flex items-center justify-between">
-                                            <label className="block text-xs text-gray-500">
+                                            <label className="block text-xs text-gray-500 dark:text-night-400">
                                                 Foto 3
                                             </label>
 
@@ -690,7 +690,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                 <button
                                                     type="button"
                                                     onClick={() => toggleHapusFoto("foto_tiang_3")}
-                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_3 ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100" : "bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100"}`}
+                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_3 ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-500/30 hover:bg-amber-100 dark:hover:bg-amber-500/20" : "bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-300 ring-1 ring-red-200 dark:ring-red-500/30 hover:bg-red-100 dark:hover:bg-red-500/20"}`}
                                                 >
                                                     {hapusFoto.foto_tiang_3 ? <><FaUndo size={10} /> Batal</> : <><FaTrash size={10} /> Hapus</>}
                                                 </button>
@@ -698,13 +698,13 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         </div>
 
                                         {hapusFoto.foto_tiang_3 ? (
-                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 bg-amber-50">
-                                                <span className="px-3 text-center text-xs text-amber-700">
+                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/15">
+                                                <span className="px-3 text-center text-xs text-amber-700 dark:text-amber-300">
                                                     Akan dihapus saat disimpan
                                                 </span>
                                             </div>
                                         ) : (
-                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 dark:border-night-700 bg-gray-100 dark:bg-night-800">
                                                 {preview.foto_tiang_3 ? (
                                                     <img
                                                         src={preview.foto_tiang_3}
@@ -713,7 +713,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                     />
                                                 ) : (
                                                     <div className="flex h-40 items-center justify-center">
-                                                        <span className="text-xs text-gray-400">
+                                                        <span className="text-xs text-gray-400 dark:text-night-500">
                                                             Belum ada foto
                                                         </span>
                                                     </div>
@@ -726,7 +726,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                             type="file"
                                             accept="image/*"
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                            className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
@@ -734,7 +734,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
 
                                     <div>
                                         <div className="mb-2 flex items-center justify-between">
-                                            <label className="block text-xs text-gray-500">
+                                            <label className="block text-xs text-gray-500 dark:text-night-400">
                                                 Foto 4
                                             </label>
 
@@ -742,7 +742,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                 <button
                                                     type="button"
                                                     onClick={() => toggleHapusFoto("foto_tiang_4")}
-                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_4 ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100" : "bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100"}`}
+                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_4 ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-500/30 hover:bg-amber-100 dark:hover:bg-amber-500/20" : "bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-300 ring-1 ring-red-200 dark:ring-red-500/30 hover:bg-red-100 dark:hover:bg-red-500/20"}`}
                                                 >
                                                     {hapusFoto.foto_tiang_4 ? <><FaUndo size={10} /> Batal</> : <><FaTrash size={10} /> Hapus</>}
                                                 </button>
@@ -750,13 +750,13 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         </div>
 
                                         {hapusFoto.foto_tiang_4 ? (
-                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 bg-amber-50">
-                                                <span className="px-3 text-center text-xs text-amber-700">
+                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/15">
+                                                <span className="px-3 text-center text-xs text-amber-700 dark:text-amber-300">
                                                     Akan dihapus saat disimpan
                                                 </span>
                                             </div>
                                         ) : (
-                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 dark:border-night-700 bg-gray-100 dark:bg-night-800">
                                                 {preview.foto_tiang_4 ? (
                                                     <img
                                                         src={preview.foto_tiang_4}
@@ -765,7 +765,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                     />
                                                 ) : (
                                                     <div className="flex h-40 items-center justify-center">
-                                                        <span className="text-xs text-gray-400">
+                                                        <span className="text-xs text-gray-400 dark:text-night-500">
                                                             Belum ada foto
                                                         </span>
                                                     </div>
@@ -778,7 +778,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                             type="file"
                                             accept="image/*"
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                            className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
@@ -786,7 +786,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
 
                                     <div>
                                         <div className="mb-2 flex items-center justify-between">
-                                            <label className="block text-xs text-gray-500">
+                                            <label className="block text-xs text-gray-500 dark:text-night-400">
                                                 Foto 5
                                             </label>
 
@@ -794,7 +794,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                 <button
                                                     type="button"
                                                     onClick={() => toggleHapusFoto("foto_tiang_5")}
-                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_5 ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100" : "bg-red-50 text-red-600 ring-1 ring-red-200 hover:bg-red-100"}`}
+                                                    className={`flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium transition ${hapusFoto.foto_tiang_5 ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-500/30 hover:bg-amber-100 dark:hover:bg-amber-500/20" : "bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-300 ring-1 ring-red-200 dark:ring-red-500/30 hover:bg-red-100 dark:hover:bg-red-500/20"}`}
                                                 >
                                                     {hapusFoto.foto_tiang_5 ? <><FaUndo size={10} /> Batal</> : <><FaTrash size={10} /> Hapus</>}
                                                 </button>
@@ -802,13 +802,13 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         </div>
 
                                         {hapusFoto.foto_tiang_5 ? (
-                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 bg-amber-50">
-                                                <span className="px-3 text-center text-xs text-amber-700">
+                                            <div className="mb-2 flex h-40 items-center justify-center rounded-lg border border-dashed border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-500/15">
+                                                <span className="px-3 text-center text-xs text-amber-700 dark:text-amber-300">
                                                     Akan dihapus saat disimpan
                                                 </span>
                                             </div>
                                         ) : (
-                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+                                            <div className="mb-2 overflow-hidden rounded-lg border border-gray-200 dark:border-night-700 bg-gray-100 dark:bg-night-800">
                                                 {preview.foto_tiang_5 ? (
                                                     <img
                                                         src={preview.foto_tiang_5}
@@ -817,7 +817,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                                     />
                                                 ) : (
                                                     <div className="flex h-40 items-center justify-center">
-                                                        <span className="text-xs text-gray-400">
+                                                        <span className="text-xs text-gray-400 dark:text-night-500">
                                                             Belum ada foto
                                                         </span>
                                                     </div>
@@ -830,7 +830,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                             type="file"
                                             accept="image/*"
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
+                                            className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
                                     </div>
 
@@ -842,7 +842,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
 
                         <div className="mt-5">
 
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-night-200 mb-2">
                                 Deskripsi
                             </label>
 
@@ -852,14 +852,14 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                 onChange={handleChange}
                                 rows="4"
                                 placeholder="Masukkan deskripsi..."
-                                className="w-full px-4 py-2.5 border border-gray-200 bg-white rounded-xl outline-none resize-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                                className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none resize-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                             />
 
                         </div>
 
                         {/* Simpan */}
 
-                        <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100 max-md:flex-col-reverse max-md:items-stretch">
+                        <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100 dark:border-night-700 max-md:flex-col-reverse max-md:items-stretch">
 
                             <button
                                 type="submit"

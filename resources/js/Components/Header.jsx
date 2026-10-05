@@ -214,9 +214,9 @@ const Header = memo(function Header({ onMenu }) {
                     {/* Hasil Pencarian */}
 
                     {open && (
-                        <div className="absolute left-0 top-full mt-2 w-full max-h-[320px] overflow-auto rounded-xl bg-white shadow-xl border border-gray-200 z-[100]">
+                        <div className="absolute left-0 top-full mt-2 w-full max-h-[320px] overflow-auto rounded-xl bg-white shadow-xl border border-gray-200 z-[100] dark:bg-night-900 dark:border-night-700">
                             {loading ? (
-                                <div className="px-4 py-3 text-xs text-gray-500">Mencari...</div>
+                                <div className="px-4 py-3 text-xs text-gray-500 dark:text-night-400">Mencari...</div>
                             ) : results.length > 0 ? (
                                 results.map((item) => {
                                     const isKode = item.match === 'kode';
@@ -227,19 +227,19 @@ const Header = memo(function Header({ onMenu }) {
                                             type="button"
                                             onMouseDown={(e) => e.preventDefault()}
                                             onClick={() => handleResultClick(item)}
-                                            className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-0 transition"
+                                            className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-0 transition dark:hover:bg-night-800 dark:border-night-700"
                                         >
-                                            <span className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${item.type === 'tiang' ? 'bg-blue-100 text-blue-600' : 'bg-sky-100 text-sky-600'}`}>
+                                            <span className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${item.type === 'tiang' ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-300' : 'bg-sky-100 dark:bg-sky-500/20 text-sky-600 dark:text-sky-300'}`}>
                                                 <Icon size={14} />
                                             </span>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-xs font-medium text-gray-800 truncate flex items-center gap-2">
+                                                <p className="text-xs font-medium text-gray-800 truncate flex items-center gap-2 dark:text-night-200">
                                                     <span className="truncate">{isKode ? item.kode : item.label}</span>
                                                     <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[9px] text-white ${item.type === 'tiang' ? 'bg-blue-600' : 'bg-sky-500'}`}>{item.type.toUpperCase()}</span>
-                                                    {!isKode && <span className="shrink-0 text-[10px] text-gray-400">→ Filter</span>}
-                                                    {isKode && <span className="shrink-0 text-[10px] text-gray-400">→ Detail</span>}
+                                                    {!isKode && <span className="shrink-0 text-[10px] text-gray-400 dark:text-night-500">→ Filter</span>}
+                                                    {isKode && <span className="shrink-0 text-[10px] text-gray-400 dark:text-night-500">→ Detail</span>}
                                                 </p>
-                                                <p className="text-[11px] text-gray-500 truncate">
+                                                <p className="text-[11px] text-gray-500 truncate dark:text-night-400">
                                                     {isKode ? `${item.match}: ${item.matchedValue} • ${item.label}` : `${item.match}: ${item.matchedValue}`}
                                                 </p>
                                             </div>
@@ -251,13 +251,13 @@ const Header = memo(function Header({ onMenu }) {
                     )}
                 </div>
                 <div className="flex items-center bg-white rounded-full gap-2">
-                    <select value={asetFilter === "tiang" ? "Tiang" : asetFilter === "ont" ? "ONT" : ""} onChange={handleSelectChange} className="capitalize text-xs outline-none appearance-none px-3 py-2 bg-transparent">
+                    <select value={asetFilter === "tiang" ? "Tiang" : asetFilter === "ont" ? "ONT" : ""} onChange={handleSelectChange} className="capitalize text-xs text-gray-800 outline-none appearance-none px-3 py-2 bg-transparent">
                         <option value="">Pilih Aset</option>
                         <option value="Tiang">Tiang</option>
                         <option value="ONT">ONT</option>
                     </select>
 
-                    <IoMdArrowDropdown className="pr-3 w-8" />
+                    <IoMdArrowDropdown className="pr-3 w-8 text-gray-600" />
                 </div>
             </div>
 
@@ -271,50 +271,50 @@ const Header = memo(function Header({ onMenu }) {
                     <button
                         type="button"
                         onClick={() => {
-                        setMobileSearchOpen(!mobileSearchOpen);
-                        setMobileNotice("");
-                    }}
+                            setMobileSearchOpen(!mobileSearchOpen);
+                            setMobileNotice("");
+                        }}
                         aria-label={mobileSearchOpen ? "Tutup pencarian" : "Buka pencarian"}
                         className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25"
                     >
                         {mobileSearchOpen ? <FaTimes size={16} /> : <FaSearch size={16} />}
                     </button>
 
-                {mobileSearchOpen && (
-                    <div className="absolute right-0 top-full z-[100] mt-2 max-h-[70vh] w-[calc(100vw-6rem)] max-w-[320px] overflow-auto rounded-2xl border border-white/20 bg-[#6F2424] p-3 shadow-xl">
-                        <form onSubmit={onMobileSubmit}>
-                            <div className="relative">
-                                <input
-                                    type="search"
-                                    enterKeyHint="search"
-                                    value={query}
-                                    disabled={mobileBusy}
-                                    onChange={(e) => {
-                                        setQuery(e.target.value);
-                                        setMobileNotice("");
-                                    }}
-                                    placeholder="Cari Aset..."
-                                    className="w-full rounded-full bg-white px-4 py-2.5 pr-10 text-sm text-black outline-none disabled:opacity-70"
-                                />
-                                <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-black" />
-                            </div>
-                        </form>
-                        {mobileBusy && (
-                            <p className="mt-2 px-1 text-xs text-white/80">Mencari...</p>
-                        )}
-                        {!mobileBusy && mobileNotice && (
-                            <p className="mt-2 px-1 text-xs text-white/90">{mobileNotice}</p>
-                        )}
-                        {!mobileBusy && !mobileNotice && (
-                            <p className="mt-2 px-1 text-[11px] text-white/60">Tekan cari pada keyboard untuk menemukan aset</p>
-                        )}
+                    {mobileSearchOpen && (
+                        <div className="absolute right-0 top-full z-[100] mt-2 max-h-[70vh] w-[calc(100vw-6rem)] max-w-[320px] overflow-auto rounded-2xl border border-white/20 dark:border-night-700 bg-[#6F2424] dark:bg-night-900 p-3 shadow-xl">
+                            <form onSubmit={onMobileSubmit}>
+                                <div className="relative">
+                                    <input
+                                        type="search"
+                                        enterKeyHint="search"
+                                        value={query}
+                                        disabled={mobileBusy}
+                                        onChange={(e) => {
+                                            setQuery(e.target.value);
+                                            setMobileNotice("");
+                                        }}
+                                        placeholder="Cari Aset..."
+                                        className="w-full rounded-full bg-white px-4 py-2.5 pr-10 text-sm text-black outline-none disabled:opacity-70"
+                                    />
+                                    <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-black" />
+                                </div>
+                            </form>
+                            {mobileBusy && (
+                                <p className="mt-2 px-1 text-xs text-white/80">Mencari...</p>
+                            )}
+                            {!mobileBusy && mobileNotice && (
+                                <p className="mt-2 px-1 text-xs text-white/90">{mobileNotice}</p>
+                            )}
+                            {!mobileBusy && !mobileNotice && (
+                                <p className="mt-2 px-1 text-[11px] text-white/60">Tekan cari pada keyboard untuk menemukan aset</p>
+                            )}
                             <div className="mt-2 flex items-center justify-between rounded-full bg-white px-3 py-1">
-                                <select value={asetFilter === "tiang" ? "Tiang" : asetFilter === "ont" ? "ONT" : ""} onChange={handleSelectChange} className="capitalize w-full appearance-none bg-transparent px-1 py-1.5 text-xs outline-none">
+                                <select value={asetFilter === "tiang" ? "Tiang" : asetFilter === "ont" ? "ONT" : ""} onChange={handleSelectChange} className="capitalize w-full appearance-none bg-transparent px-1 py-1.5 text-xs text-gray-800 outline-none">
                                     <option value="">Pilih Aset</option>
                                     <option value="Tiang">Tiang</option>
                                     <option value="ONT">ONT</option>
                                 </select>
-                                <IoMdArrowDropdown className="shrink-0" />
+                                <IoMdArrowDropdown className="shrink-0 text-gray-600" />
                             </div>
                         </div>
                     )}
@@ -352,13 +352,13 @@ const Header = memo(function Header({ onMenu }) {
                                     {username || "-"}
                                 </p>
                             </div>
-                            <div className="bg-white py-1">
+                            <div className="bg-white py-1 dark:bg-night-900">
                                 <a
                                     href={`${base}/pengaturan`.replace(/\/+/g, '/')}
                                     onClick={() => setProfileOpen(false)}
-                                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-[#AB3C3C]"
+                                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-[#AB3C3C] dark:text-night-200 dark:hover:bg-night-800"
                                 >
-                                    <IoIosSettings size={18} className="shrink-0 text-gray-400" />
+                                    <IoIosSettings size={18} className="shrink-0 text-gray-400 dark:text-night-500" />
                                     Pengaturan Profil
                                 </a>
                                 <a
@@ -370,9 +370,9 @@ const Header = memo(function Header({ onMenu }) {
                                             setProfileOpen(false);
                                         }
                                     }}
-                                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-[#AB3C3C]"
+                                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-[#AB3C3C] dark:text-night-200 dark:hover:bg-night-800"
                                 >
-                                    <IoIosLogOut size={18} className="shrink-0 text-gray-400" />
+                                    <IoIosLogOut size={18} className="shrink-0 text-gray-400 dark:text-night-500" />
                                     Keluar
                                 </a>
                             </div>

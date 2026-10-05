@@ -8,6 +8,7 @@ import {
 import L from "leaflet";
 import { memo, useMemo, useEffect, useState } from "react";
 import { buildDivIcon, parseCoord, isValidLatLng } from "./mapMarker";
+import useTheme from "../hooks/useTheme";
 
 function FitBounds({ points }) {
     const map = useMap();
@@ -63,7 +64,7 @@ function LiveCoords() {
     return (
         <div className="leaflet-bottom leaflet-left" style={{ pointerEvents: "none" }}>
             <div className="leaflet-control leaflet-bar !m-0 !border-0 !bg-transparent !shadow-none" style={{ marginLeft: 12, marginBottom: 12 }}>
-                <div className="rounded-md bg-white/90 px-3 py-1.5 text-[11px] font-medium text-gray-800 shadow backdrop-blur-sm border border-gray-200">
+                <div className="rounded-md bg-white/90 px-3 py-1.5 text-[11px] font-medium text-gray-800 shadow backdrop-blur-sm border border-gray-200 dark:bg-night-900/90 dark:text-night-200 dark:border-night-700">
                     {coords[0].toFixed(6)} | {coords[1].toFixed(6)}
                 </div>
             </div>
@@ -72,6 +73,7 @@ function LiveCoords() {
 }
 
 const MapView = memo(function MapView({ latitude, longitude, markers = null, wilayah = "Semua", wilayahCenter = null, type = null, status = null }) {
+    const { isDark } = useTheme();
     const singlePosition = useMemo(() => {
         const lat = parseCoord(latitude);
         const lng = parseCoord(longitude);
@@ -125,7 +127,7 @@ const MapView = memo(function MapView({ latitude, longitude, markers = null, wil
             keepBuffer={2}
         >
             <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 maxZoom={19}
             />
@@ -145,21 +147,21 @@ const MapView = memo(function MapView({ latitude, longitude, markers = null, wil
                         >
                             <Popup>
                                 <div style={{ minWidth: 185 }}>
-                                    <p style={{ fontWeight: 800, fontSize: 14, color: "#111827", letterSpacing: "0.02em", marginBottom: 4 }}>
+                                    <p style={{ fontWeight: 800, fontSize: 14, color: isDark ? "#e9d5d5" : "#111827", letterSpacing: "0.02em", marginBottom: 4 }}>
                                         {m.kode || (m.type === "ont" ? "ONT" : "Tiang")}
                                     </p>
-                                    <p style={{ fontSize: 12.5, color: "#1f2937", fontWeight: 600, textTransform: "capitalize", marginBottom: 3 }}>
+                                    <p style={{ fontSize: 12.5, color: isDark ? "#c9a9a9" : "#1f2937", fontWeight: 600, textTransform: "capitalize", marginBottom: 3 }}>
                                         {m.type} &middot;{" "}
-                                        <span style={{ color: m.status === "aktif" ? "#16a34a" : m.status === "nonaktif" ? "#dc2626" : "#1f2937", textTransform: "capitalize" }}>
+                                        <span style={{ color: m.status === "aktif" ? "#4ade80" : m.status === "nonaktif" ? "#f87171" : (isDark ? "#c9a9a9" : "#1f2937"), textTransform: "capitalize" }}>
                                             {m.status || "-"}
                                         </span>
                                     </p>
-                                    <p style={{ fontSize: 12.5, color: "#1f2937", fontWeight: 500, textTransform: "capitalize", marginBottom: 3 }}>
+                                    <p style={{ fontSize: 12.5, color: isDark ? "#c9a9a9" : "#1f2937", fontWeight: 500, textTransform: "capitalize", marginBottom: 3 }}>
                                         {m.wilayah ? m.wilayah : "-"}
                                         {m.kecamatan ? ` / ${m.kecamatan}` : (m.area ? ` / ${m.area}` : "")}
                                         {m.kelurahan ? ` / ${m.kelurahan}` : ""}
                                     </p>
-                                    <p style={{ fontSize: 11.5, color: "#111827", fontWeight: 600, marginBottom: 6 }}>
+                                    <p style={{ fontSize: 11.5, color: isDark ? "#e9d5d5" : "#111827", fontWeight: 600, marginBottom: 6 }}>
                                         {m.position[0].toFixed(6)}, {m.position[1].toFixed(6)}
                                     </p>
                                     <a

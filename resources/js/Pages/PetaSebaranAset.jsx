@@ -105,7 +105,7 @@ export default function Peta() {
                     </span>
                 </div>
 
-                <div className="gis-map-wrap relative h-[calc(100vh-180px)] min-h-[500px] overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100 max-md:h-[68vh] max-md:min-h-[360px]">
+                <div className="gis-map-wrap relative h-[calc(100vh-180px)] min-h-[500px] overflow-hidden rounded-2xl bg-white dark:bg-night-900 shadow-sm border border-gray-100 dark:border-night-700 max-md:h-[68vh] max-md:min-h-[360px]">
 
                     {/* Peta */}
 
@@ -114,15 +114,15 @@ export default function Peta() {
                     </div>
 
                     <div className="absolute left-4 top-4 z-10 max-md:left-2 max-md:top-2 max-md:max-w-[calc(100vw-6rem)]">
-                        <div className="rounded-xl bg-white/90 px-4 py-3 shadow-lg backdrop-blur-md border border-white/60">
+                        <div className="rounded-xl bg-white/90 dark:bg-night-900/90 px-4 py-3 shadow-lg backdrop-blur-md border border-white/60 dark:border-night-700">
 
-                            <h2 className="text-sm font-semibold text-gray-800">
+                            <h2 className="text-sm font-semibold text-gray-800 dark:text-night-200">
                                 Legenda
                             </h2>
 
                             {/* Legenda */}
 
-                            <div className="mt-2 flex items-center gap-4 text-xs text-gray-800 max-md:flex-wrap max-md:gap-2 max-md:text-[11px]">
+                            <div className="mt-2 flex items-center gap-4 text-xs text-gray-800 dark:text-night-200 max-md:flex-wrap max-md:gap-2 max-md:text-[11px]">
 
                                 <span className="flex items-center gap-2">
                                     <span className="text-white p-2.5 rounded-full bg-blue-900" ></span>
@@ -152,10 +152,10 @@ export default function Peta() {
 
                         {/* Filter */}
 
-                        <div className="rounded-xl bg-white/90 px-3.5 py-4 shadow-lg backdrop-blur-md border border-white/60 max-md:px-3 max-md:py-3">
+                        <div className="rounded-xl bg-white/90 dark:bg-night-900/90 px-3.5 py-4 shadow-lg backdrop-blur-md border border-white/60 dark:border-night-700 max-md:px-3 max-md:py-3">
 
                             <div className="mb-3 flex items-center justify-between">
-                                <h2 className="text-sm font-bold tracking-wide text-gray-800">
+                                <h2 className="text-sm font-bold tracking-wide text-gray-800 dark:text-night-200">
                                     FILTER
                                 </h2>
 
@@ -165,7 +165,7 @@ export default function Peta() {
                                     type="button"
                                     onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
                                     aria-label={mobileFilterOpen ? "Sembunyikan filter" : "Tampilkan filter"}
-                                    className="hidden rounded-lg bg-gray-100 px-2 py-1 text-[11px] font-semibold text-gray-700 max-md:flex max-md:items-center max-md:gap-1 md:hidden"
+                                    className="hidden rounded-lg bg-gray-100 dark:bg-night-800 px-2 py-1 text-[11px] font-semibold text-gray-700 dark:text-night-200 max-md:flex max-md:items-center max-md:gap-1 md:hidden"
                                 >
                                     {mobileFilterOpen ? "Tutup" : "Buka"}
                                     <FaChevronDown className={`text-[10px] transition-transform ${mobileFilterOpen ? "rotate-180" : ""}`} />
@@ -177,9 +177,9 @@ export default function Peta() {
                                 <div className="grid grid-cols-3 gap-2">
 
                                     {[
-                                        { label: "Semua", icon: null, active: "bg-gray-900 text-white border-gray-900 shadow", idle: "bg-white text-gray-700 border-gray-300 hover:bg-gray-50" },
-                                        { label: "Tiang", icon: LuUtilityPole, active: "bg-[#1e3a8a] text-white border-[#1e3a8a] shadow", idle: "bg-white text-[#1e3a8a] border-[#1e3a8a]/30 hover:bg-blue-50" },
-                                        { label: "ONT", icon: FaWifi, active: "bg-sky-500 text-white border-sky-500 shadow", idle: "bg-white text-sky-600 border-sky-500/30 hover:bg-sky-50" },
+                                        { label: "Semua", icon: null, active: "bg-gray-900 dark:bg-night-200 text-white dark:text-night-900 border-gray-900 dark:border-night-200 shadow", idle: "bg-white dark:bg-night-800 text-gray-700 dark:text-night-200 border-gray-300 dark:border-night-600 hover:bg-gray-50 dark:hover:bg-night-700" },
+                                        { label: "Tiang", icon: LuUtilityPole, active: "bg-[#1e3a8a] text-white border-[#1e3a8a] shadow", idle: "bg-white dark:bg-night-800 text-[#1e3a8a] dark:text-blue-300 border-[#1e3a8a]/30 hover:bg-blue-50 dark:hover:bg-blue-500/15" },
+                                        { label: "ONT", icon: FaWifi, active: "bg-sky-500 text-white border-sky-500 shadow", idle: "bg-white dark:bg-night-800 text-sky-600 dark:text-sky-300 border-sky-500/30 hover:bg-sky-50 dark:hover:bg-sky-500/15" },
                                     ].map(({ label, icon: Icon, active, idle }) => {
                                         const isActive = assetType === label;
                                         return (
@@ -205,7 +205,7 @@ export default function Peta() {
                                         <select
                                             value={status}
                                             onChange={(e) => setStatus(e.target.value)}
-                                            className={`capitalize h-8 w-full appearance-none rounded-md border bg-white pl-6 pr-7 text-[10px] font-medium outline-none transition ${status === "Aktif" ? "border-green-500 bg-green-50 text-green-700" : status === "Nonaktif" ? "border-red-500 bg-red-50 text-red-700" : "border-gray-300 hover:bg-gray-50"}`}
+                                            className={`capitalize h-8 w-full appearance-none rounded-md border bg-white dark:bg-night-900 pl-6 pr-7 text-[10px] font-medium text-gray-700 dark:text-night-200 outline-none transition ${status === "Aktif" ? "border-green-500 bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300" : status === "Nonaktif" ? "border-red-500 bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300" : "border-gray-300 dark:border-night-600 hover:bg-gray-50 dark:hover:bg-night-800"}`}
                                         >
                                             <option>Semua</option>
                                             <option>Aktif</option>
@@ -221,7 +221,7 @@ export default function Peta() {
                                         <select
                                             value={wilayah}
                                             onChange={(e) => setWilayah(e.target.value)}
-                                            className="capitalize h-8 w-full appearance-none rounded-md border border-gray-300 bg-white px-2 pr-6 text-[10px] font-medium outline-none hover:bg-gray-50"
+                                            className="capitalize h-8 w-full appearance-none rounded-md border border-gray-300 dark:border-night-600 bg-white dark:bg-night-900 px-2 pr-6 text-[10px] font-medium text-gray-700 dark:text-night-200 outline-none hover:bg-gray-50 dark:hover:bg-night-800"
                                         >
                                             <option value="Semua">Semua</option>
                                             {wilayahOptions.map((nama) => (
@@ -239,29 +239,29 @@ export default function Peta() {
 
                                 <div className="mt-3 grid grid-cols-3 gap-2.5">
 
-                                    <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-[#1e3a8a]/20 bg-blue-50 shadow-sm">
-                                        <span className="flex items-center gap-1 text-[11px] font-bold text-[#1e3a8a]">
+                                    <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-[#1e3a8a]/20 bg-blue-50 dark:bg-blue-500/15 shadow-sm">
+                                        <span className="flex items-center gap-1 text-[11px] font-bold text-[#1e3a8a] dark:text-blue-300">
                                             <LuUtilityPole size={12} /> {totalTiang}
                                         </span>
-                                        <span className="text-[10px] font-medium text-[#1e3a8a]/70">
+                                        <span className="text-[10px] font-medium text-[#1e3a8a]/70 dark:text-blue-300/70">
                                             Tiang
                                         </span>
                                     </div>
 
-                                    <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-sky-500/20 bg-sky-50 shadow-sm">
-                                        <span className="flex items-center gap-1 text-[11px] font-bold text-sky-600">
+                                    <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-sky-500/20 bg-sky-50 dark:bg-sky-500/15 shadow-sm">
+                                        <span className="flex items-center gap-1 text-[11px] font-bold text-sky-600 dark:text-sky-300">
                                             <FaWifi size={12} /> {totalOnt}
                                         </span>
-                                        <span className="text-[10px] font-medium text-sky-600/70">
+                                        <span className="text-[10px] font-medium text-sky-600/70 dark:text-sky-300/70">
                                             ONT
                                         </span>
                                     </div>
 
-                                    <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-gray-200 bg-gray-50 shadow-sm">
-                                        <span className="text-[11px] font-bold text-gray-800">
+                                    <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-gray-200 dark:border-night-700 bg-gray-50 dark:bg-night-800/60 shadow-sm">
+                                        <span className="text-[11px] font-bold text-gray-800 dark:text-night-200">
                                             {markers.length}
                                         </span>
-                                        <span className="text-[10px] font-medium text-gray-500">
+                                        <span className="text-[10px] font-medium text-gray-500 dark:text-night-400">
                                             Tampil
                                         </span>
                                     </div>

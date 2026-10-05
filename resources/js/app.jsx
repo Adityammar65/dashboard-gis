@@ -4,6 +4,13 @@ import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import 'leaflet/dist/leaflet.css';
 
+try {
+    const saved = window.localStorage.getItem('gis_theme');
+    const isDark = saved === 'dark';
+    document.documentElement.classList.toggle('dark', isDark);
+    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+} catch { }
+
 createInertiaApp({
     resolve: async (name) => {
         const pages = import.meta.glob('./Pages/**/*.jsx');

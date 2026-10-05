@@ -102,7 +102,7 @@ export default function LocationPicker({ latitude, longitude, onChange, type = "
     return (
         <div className="relative z-0 isolate space-y-2">
             <div className="relative z-20">
-                <FaSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={13} />
+                <FaSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-night-500" size={13} />
                 <input
                     type="text"
                     value={query}
@@ -110,15 +110,15 @@ export default function LocationPicker({ latitude, longitude, onChange, type = "
                     onFocus={() => results.length > 0 && setOpen(true)}
                     onBlur={() => setTimeout(() => setOpen(false), 200)}
                     placeholder="Cari alamat… cth: Malioboro, Sleman"
-                    className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-9 pr-9 text-sm outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400"
+                    className="w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 py-2.5 pl-9 pr-9 text-sm text-gray-900 dark:text-night-200 outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-night-500">
                     {searching ? <FaSpinner className="animate-spin" size={13} /> : null}
                 </span>
                 {open && (results.length > 0 || searchNote) && (
-                    <ul className="absolute z-30 mt-1 max-h-52 w-full overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+                    <ul className="absolute z-30 mt-1 max-h-52 w-full overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
                         {searchNote && results.length === 0 && (
-                            <li className="px-3 py-2 text-xs text-gray-500">{searchNote}</li>
+                            <li className="px-3 py-2 text-xs text-gray-500 dark:text-night-400">{searchNote}</li>
                         )}
                         {results.map((r) => (
                             <li key={r.place_id}>
@@ -129,10 +129,10 @@ export default function LocationPicker({ latitude, longitude, onChange, type = "
                                         setQuery(r.display_name.split(",").slice(0, 2).join(","));
                                         setOpen(false);
                                     }}
-                                    className="flex w-full items-start gap-2 px-3 py-2 text-left text-xs hover:bg-gray-50"
+                                    className="flex w-full items-start gap-2 px-3 py-2 text-left text-xs hover:bg-gray-50 dark:hover:bg-night-800"
                                 >
                                     <FaMapMarkerAlt className="mt-0.5 shrink-0 text-[#AB3C3C]" size={12} />
-                                    <span className="line-clamp-2 text-gray-700">{r.display_name}</span>
+                                    <span className="line-clamp-2 text-gray-700 dark:text-night-200">{r.display_name}</span>
                                 </button>
                             </li>
                         ))}
@@ -140,10 +140,10 @@ export default function LocationPicker({ latitude, longitude, onChange, type = "
                 )}
             </div>
 
-            <div className="relative z-0 isolate overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+            <div className="relative z-0 isolate overflow-hidden rounded-xl border border-gray-200 dark:border-night-700 shadow-sm">
                 <MapContainer center={initialPos} zoom={hasPos ? 16 : 12} scrollWheelZoom={true} className="relative z-0 h-[300px] w-full">
                     <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         maxZoom={19}
                     />
@@ -167,17 +167,17 @@ export default function LocationPicker({ latitude, longitude, onChange, type = "
                 <button
                     type="button"
                     onClick={() => emit(pendingPos[0], pendingPos[1])}
-                    className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+                    className="flex items-center gap-1.5 rounded-lg border border-gray-200 dark:border-night-600 bg-white dark:bg-night-800 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-night-200 shadow-sm hover:bg-gray-50 dark:hover:bg-night-700"
                 >
                     <FaMapMarkerAlt size={12} />
                     Tentukan Lokasi
                 </button>
-                <span className="rounded-lg bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 ring-1 ring-gray-200">
+                <span className="rounded-lg bg-gray-50 dark:bg-night-800/60 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-night-300 ring-1 ring-gray-200 dark:ring-night-700">
                     {`${pendingPos[0].toFixed(6)}, ${pendingPos[1].toFixed(6)}`}
                 </span>
             </div>
             {searchNote && (
-                <p className="text-xs text-gray-500">{searchNote}</p>
+                <p className="text-xs text-gray-500 dark:text-night-400">{searchNote}</p>
             )}
         </div>
     );

@@ -1,5 +1,6 @@
 import MainLayout from "../Layouts/MainLayout";
-import { FaMapMarked, FaSave, FaUserCog, FaKey } from "react-icons/fa";
+import ThemeToggle from "../Components/ThemeToggle";
+import { FaMapMarked, FaSave, FaUserCog, FaKey, FaMoon } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
@@ -80,19 +81,19 @@ export default function Pengaturan({ wilayah }) {
 
                 {/* Profil Pengguna */}
 
-                <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:p-4">
+                <div className="rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:p-4">
 
                     <div className="mb-5 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F8EAEA] text-[#AB3C3C]">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F8EAEA] text-[#AB3C3C] dark:bg-night-800 dark:text-night-200">
                             <FaUserCog />
                         </div>
 
                         <div>
-                            <h2 className="text-sm font-semibold text-gray-800">
+                            <h2 className="text-sm font-semibold text-gray-800 dark:text-night-200">
                                 Profil Pengguna
                             </h2>
 
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-night-400">
                                 Kelola username dan kata sandi akun yang sedang masuk
                             </p>
                         </div>
@@ -102,18 +103,18 @@ export default function Pengaturan({ wilayah }) {
 
                         {/* Ubah Username */}
 
-                        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-                            <p className="mb-1 text-xs font-semibold tracking-widest text-gray-500">
+                        <div className="rounded-2xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 p-5 shadow-sm">
+                            <p className="mb-1 text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400">
                                 Username Saat Ini
                             </p>
 
-                            <p className="truncate text-base font-bold text-gray-800" title={currentUsername}>
+                            <p className="truncate text-base font-bold text-gray-800 dark:text-night-200" title={currentUsername}>
                                 {currentUsername || "Belum diketahui"}
                             </p>
 
                             <label
                                 htmlFor="username-baru"
-                                className="mb-2 mt-5 block text-xs font-semibold tracking-widest text-gray-500"
+                                className="mb-2 mt-5 block text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400"
                             >
                                 Username Baru
                             </label>
@@ -125,11 +126,11 @@ export default function Pengaturan({ wilayah }) {
                                 onChange={(e) => setNewUsername(e.target.value)}
                                 placeholder="Masukkan username baru"
                                 autoComplete="username"
-                                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white shadow-sm"
+                                className="w-full rounded-xl border border-gray-200 dark:border-night-700 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white dark:bg-night-900 dark:text-night-200 dark:placeholder:text-night-500 shadow-sm"
                             />
 
                             {errors.username && (
-                                <p className="mt-1.5 text-xs text-red-600">{errors.username}</p>
+                                <p className="mt-1.5 text-xs text-red-600 dark:text-red-300">{errors.username}</p>
                             )}
 
                             <button
@@ -145,17 +146,17 @@ export default function Pengaturan({ wilayah }) {
 
                         {/* Ubah Kata Sandi */}
 
-                        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-                            <div className="mb-4 flex items-center gap-2 text-gray-800">
-                                <FaKey className="text-xs text-gray-400" />
-                                <p className="text-xs font-semibold tracking-widest text-gray-500">
+                        <div className="rounded-2xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 p-5 shadow-sm">
+                            <div className="mb-4 flex items-center gap-2 text-gray-800 dark:text-night-200">
+                                <FaKey className="text-xs text-gray-400 dark:text-night-500" />
+                                <p className="text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400">
                                     Ubah Kata Sandi
                                 </p>
                             </div>
 
                             <label
                                 htmlFor="sandi-saat-ini"
-                                className="mb-2 block text-xs font-semibold tracking-widest text-gray-500"
+                                className="mb-2 block text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400"
                             >
                                 Kata Sandi Saat Ini
                             </label>
@@ -168,14 +169,14 @@ export default function Pengaturan({ wilayah }) {
                                     onChange={(e) => setCurrentPassword(e.target.value)}
                                     placeholder="Masukkan kata sandi saat ini"
                                     autoComplete="current-password"
-                                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pr-12 text-sm outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white shadow-sm"
+                                    className="w-full rounded-xl border border-gray-200 dark:border-night-700 px-4 py-2.5 pr-12 text-sm text-gray-700 outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white dark:bg-night-900 dark:text-night-200 dark:placeholder:text-night-500 shadow-sm"
                                 />
 
                                 <button
                                     type="button"
                                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                                     aria-label={showCurrentPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-night-300"
                                 >
                                     {showCurrentPassword ? (
                                         <FiEyeOff size={20} />
@@ -186,12 +187,12 @@ export default function Pengaturan({ wilayah }) {
                             </div>
 
                             {errors.current_password && (
-                                <p className="mt-1.5 text-xs text-red-600">{errors.current_password}</p>
+                                <p className="mt-1.5 text-xs text-red-600 dark:text-red-300">{errors.current_password}</p>
                             )}
 
                             <label
                                 htmlFor="sandi-baru"
-                                className="mb-2 mt-4 block text-xs font-semibold tracking-widest text-gray-500"
+                                className="mb-2 mt-4 block text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400"
                             >
                                 Kata Sandi Baru (min. 8 karakter)
                             </label>
@@ -205,14 +206,14 @@ export default function Pengaturan({ wilayah }) {
                                     placeholder="Masukkan kata sandi baru"
                                     autoComplete="new-password"
                                     minLength={8}
-                                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pr-12 text-sm outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white shadow-sm"
+                                    className="w-full rounded-xl border border-gray-200 dark:border-night-700 px-4 py-2.5 pr-12 text-sm text-gray-700 outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white dark:bg-night-900 dark:text-night-200 dark:placeholder:text-night-500 shadow-sm"
                                 />
 
                                 <button
                                     type="button"
                                     onClick={() => setShowNewPassword(!showNewPassword)}
                                     aria-label={showNewPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-night-300"
                                 >
                                     {showNewPassword ? (
                                         <FiEyeOff size={20} />
@@ -223,12 +224,12 @@ export default function Pengaturan({ wilayah }) {
                             </div>
 
                             {errors.password && (
-                                <p className="mt-1.5 text-xs text-red-600">{errors.password}</p>
+                                <p className="mt-1.5 text-xs text-red-600 dark:text-red-300">{errors.password}</p>
                             )}
 
                             <label
                                 htmlFor="sandi-konfirmasi"
-                                className="mb-2 mt-4 block text-xs font-semibold tracking-widest text-gray-500"
+                                className="mb-2 mt-4 block text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400"
                             >
                                 Konfirmasi Kata Sandi Baru
                             </label>
@@ -242,14 +243,14 @@ export default function Pengaturan({ wilayah }) {
                                     placeholder="Ulangi kata sandi baru"
                                     autoComplete="new-password"
                                     minLength={8}
-                                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 pr-12 text-sm outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white shadow-sm"
+                                    className="w-full rounded-xl border border-gray-200 dark:border-night-700 px-4 py-2.5 pr-12 text-sm text-gray-700 outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white dark:bg-night-900 dark:text-night-200 dark:placeholder:text-night-500 shadow-sm"
                                 />
 
                                 <button
                                     type="button"
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                     aria-label={showConfirmPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-night-300"
                                 >
                                     {showConfirmPassword ? (
                                         <FiEyeOff size={20} />
@@ -274,21 +275,61 @@ export default function Pengaturan({ wilayah }) {
 
                 </div>
 
-                {/* Wilayah Operasi */}
+                {/* Tampilan */}
 
-                <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100 max-md:p-4">
+                <div className="rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:p-4 dark:bg-night-900 dark:border-night-700">
 
                     <div className="mb-5 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F8EAEA] text-[#AB3C3C]">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F8EAEA] text-[#AB3C3C] dark:bg-night-800 dark:text-amber-300">
+                            <FaMoon />
+                        </div>
+
+                        <div>
+                            <h2 className="text-sm font-semibold text-gray-800 dark:text-night-200">
+                                Tampilan
+                            </h2>
+
+                            <p className="text-xs text-gray-500 dark:text-night-400">
+                                Pilih tema terang atau gelap untuk dashboard GIS
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="rounded-2xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 p-5 shadow-sm dark:bg-night-900 dark:border-night-700">
+                            <p className="mb-3 text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400">
+                                Tema Aktif
+                            </p>
+                            <ThemeToggle variant="switch" />
+                        </div>
+
+                        <div className="rounded-2xl border border-gray-100 dark:border-night-700 bg-gradient-to-b from-gray-50 to-white dark:from-night-800/60 dark:to-night-900 p-5 shadow-sm dark:from-night-800/60 dark:to-night-900 dark:border-night-700">
+                            <p className="mb-1 text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400">
+                                Catatan
+                            </p>
+                            <p className="text-sm text-gray-600 dark:text-night-300">
+                                Pilihan tema tersimpan otomatis di perangkat ini dan berlaku untuk semua halaman termasuk peta.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                {/* Wilayah Operasi */}
+
+                <div className="rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:p-4 dark:bg-night-900 dark:border-night-700">
+
+                    <div className="mb-5 flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F8EAEA] text-[#AB3C3C] dark:bg-night-800 dark:text-night-200">
                             <FaMapMarked />
                         </div>
 
                         <div>
-                            <h2 className="text-sm font-semibold text-gray-800">
+                            <h2 className="text-sm font-semibold text-gray-800 dark:text-night-200">
                                 Wilayah Operasi
                             </h2>
 
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-night-400">
                                 Tentukan wilayah operasi yang digunakan pada dashboard GIS
                             </p>
                         </div>
@@ -300,26 +341,26 @@ export default function Pengaturan({ wilayah }) {
 
                         {/* Wilayah Aktif */}
 
-                        <div className="rounded-2xl border border-gray-100 bg-gradient-to-b from-gray-50 to-white p-5 shadow-sm">
-                            <p className="mb-1 text-xs font-semibold tracking-widest text-gray-500">
+                        <div className="rounded-2xl border border-gray-100 dark:border-night-700 bg-gradient-to-b from-gray-50 to-white dark:from-night-800/60 dark:to-night-900 p-5 shadow-sm">
+                            <p className="mb-1 text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400">
                                 Wilayah Saat Ini
                             </p>
 
-                            <p className="text-base font-bold capitalize text-gray-800">
+                            <p className="text-base font-bold capitalize text-gray-800 dark:text-night-200">
                                 {settings?.nama_wilayah ?? "Belum ditentukan"}
                             </p>
 
-                            <p className="mt-1 text-xs text-gray-500">
+                            <p className="mt-1 text-xs text-gray-500 dark:text-night-400">
                                 Kode: <span className="font-mono font-medium">{settings?.kode_wilayah ?? "-"}</span>
                             </p>
                         </div>
 
                         {/* Pilih Wilayah */}
 
-                        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+                        <div className="rounded-2xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 p-5 shadow-sm">
                             <label
                                 htmlFor="wilayah"
-                                className="mb-2 block text-xs font-semibold tracking-widest text-gray-500"
+                                className="mb-2 block text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400"
                             >
                                 Pilih Wilayah Baru
                             </label>
@@ -330,7 +371,7 @@ export default function Pengaturan({ wilayah }) {
                                 onChange={(e) =>
                                     setSelectedWilayah(e.target.value)
                                 }
-                                className="capitalize w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white shadow-sm"
+                                className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white dark:bg-night-900 dark:text-night-200 dark:placeholder:text-night-500 shadow-sm"
                                 disabled={wilayah.length === 0}
                             >
                                 {wilayah.length === 0 ? (
