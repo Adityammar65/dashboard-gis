@@ -11,6 +11,9 @@ class PasswordResetRequest extends Model
     protected $fillable = [
         'username',
         'password_hash',
+        'request_type',
+        'requested_by',
+        'new_username',
         'status',
         'requested_ip',
         'handled_by',

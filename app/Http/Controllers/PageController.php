@@ -608,7 +608,7 @@ class PageController extends Controller
         $resetRequest = null;
         if ($notifikasi->reset_request_id) {
             $resetRequest = PasswordResetRequest::where('id', $notifikasi->reset_request_id)
-                ->first(['id', 'username', 'status', 'handled_by', 'handled_at', 'created_at']);
+                ->first(['id', 'username', 'request_type', 'requested_by', 'new_username', 'status', 'handled_by', 'handled_at', 'created_at']);
         }
         return Inertia::render('DetailNotifikasi', [
             'notifikasi' => $notifikasi,
@@ -648,11 +648,11 @@ class PageController extends Controller
             'settings' => $settings,
             'resetRequests' => PasswordResetRequest::where('status', 'pending')
                 ->orderByDesc('id')
-                ->get(['id', 'username', 'created_at']),
+                ->get(['id', 'username', 'request_type', 'requested_by', 'new_username', 'created_at']),
             'resetHistory' => PasswordResetRequest::whereIn('status', ['approved', 'rejected'])
                 ->orderByDesc('id')
                 ->limit(5)
-                ->get(['id', 'username', 'status', 'handled_by', 'handled_at']),
+                ->get(['id', 'username', 'request_type', 'requested_by', 'new_username', 'status', 'handled_by', 'handled_at']),
         ]);
     }
 }

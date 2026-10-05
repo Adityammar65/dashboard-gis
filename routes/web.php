@@ -61,8 +61,9 @@ Route::middleware('cek_login')->group(function () {
 
     // Profil
 
-    Route::post('/update-profil/username', [ProfileController::class, 'updateUsername']);
-    Route::post('/update-profil/password', [ProfileController::class, 'updatePassword']);
+    Route::post('/update-profil', [ProfileController::class, 'updateProfile'])->middleware('throttle:5,1');
+    Route::post('/update-profil/username', [ProfileController::class, 'updateUsername'])->middleware('throttle:5,1');
+    Route::post('/update-profil/password', [ProfileController::class, 'updatePassword'])->middleware('throttle:5,1');
 
     // Persetujuan Reset password
 

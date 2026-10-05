@@ -78,7 +78,7 @@ const parsePesan = (pesan = "") => {
 };
 
 export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
-    const { settings } = usePage().props;
+    const { settings, auth } = usePage().props;
     const item = useMemo(() => (Array.isArray(notifikasi) ? notifikasi[0] : notifikasi) || null, [notifikasi]);
     const { Icon, circle } = getNotifikasiVisual(item || {});
     const { summary, changes, details } = useMemo(() => parsePesan(item?.pesan), [item]);
@@ -106,9 +106,26 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
         router.get(`${base}/notifikasi`.replace(/\/+/g, '/'));
     };
 
+    const requestType = resetRequest?.request_type ?? "password_reset";
+    const requestLabel =
+        requestType === "username_change"
+            ? "Ubah Username"
+            : requestType === "password_change"
+              ? "Ubah Kata Sandi"
+              : "Reset Kata Sandi";
+    const requestDetail =
+        requestType === "username_change" && resetRequest?.new_username
+            ? `${resetRequest.username} → ${resetRequest.new_username}`
+            : `akun "${resetRequest?.username}"`;
+    const currentUsername = auth?.username ?? null;
+    const isOwnRequest = resetRequest
+        ? resetRequest.username === currentUsername ||
+          (resetRequest.requested_by && resetRequest.requested_by === currentUsername)
+        : false;
+
     const handleApproveReset = () => {
         if (!resetRequest) return;
-        if (!window.confirm(`Setujui reset kata sandi untuk akun "${resetRequest.username}"?`)) {
+        if (!window.confirm(`Setujui ${requestLabel} untuk ${requestDetail}?`)) {
             return;
         }
 
@@ -117,7 +134,7 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
 
     const handleRejectReset = () => {
         if (!resetRequest) return;
-        if (!window.confirm(`Tolak permintaan reset kata sandi untuk akun "${resetRequest.username}"?`)) {
+        if (!window.confirm(`Tolak ${requestLabel} untuk ${requestDetail}?`)) {
             return;
         }
 
@@ -247,10 +264,15 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
                                     </div>
                                     <div>
                                         <h3 className="text-sm font-semibold text-gray-800 dark:text-night-200">
-                                            Persetujuan Reset Kata Sandi
+                                            Persetujuan {requestLabel}
                                         </h3>
                                         <p className="text-xs text-gray-500 dark:text-night-400">
-                                            Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username}</span> • diminta {formatWaktu(resetRequest.created_at)}
+                                            {requestType === "username_change" && resetRequest.new_username ? (
+                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username} → {resetRequest.new_username}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
+                                            ) : (
+                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
+                                            )}
+                                            {resetRequest.requested_by ? ` oleh ${resetRequest.requested_by}` : ""}
                                         </p>
                                     </div>
                                     <span className={`ml-auto shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold ${resetRequest.status === "pending" ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300" : resetRequest.status === "approved" ? "bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300" : "bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300"}`}>
@@ -259,6 +281,11 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
                                 </div>
 
                                 {resetRequest.status === "pending" ? (
+                                    isOwnRequest ? (
+                                        <p className="rounded-xl bg-amber-50 dark:bg-amber-500/10 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
+                                            Permintaan sendiri — menunggu admin lain untuk menyetujui.
+                                        </p>
+                                    ) : (
                                     <div className="flex items-center gap-2 max-md:flex-col max-md:items-stretch">
                                         <button
                                             type="button"
@@ -266,7 +293,7 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
                                             className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-600 px-4 py-2.5 text-xs font-medium text-white shadow-sm transition hover:bg-green-700 active:scale-[0.98]"
                                         >
                                             <FaCheck size={12} />
-                                            Setujui Reset
+                                            Setujui {requestLabel}
                                         </button>
                                         <button
                                             type="button"
@@ -277,6 +304,7 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
                                             Tolak
                                         </button>
                                     </div>
+                                    )
                                 ) : (
                                     <p className="text-xs text-gray-500 dark:text-night-400">
                                         {resetRequest.handled_by ? `Ditindaklanjuti oleh ${resetRequest.handled_by}` : ""}

@@ -39,6 +39,9 @@ class PasswordResetController extends Controller
         $reset = PasswordResetRequest::create([
             'username' => $username,
             'password_hash' => Hash::make($request->password),
+            'request_type' => 'password_reset',
+            'requested_by' => $username,
+            'new_username' => null,
             'status' => 'pending',
             'requested_ip' => $request->ip(),
         ]);
@@ -68,15 +71,50 @@ class PasswordResetController extends Controller
         }
 
         $approver = $request->session()->get('username');
+        $requester = $reset->requested_by ?: $reset->username;
+        $type = $reset->request_type ?: 'password_reset';
 
-        if ($approver && $approver === $reset->username) {
-            return back()->withErrors(['Tidak dapat menyetujui permintaan reset akun sendiri.']);
+        if ($approver && ($approver === $reset->username || $approver === $requester)) {
+            return back()->withErrors(['Tidak dapat menyetujui permintaan akun sendiri.']);
         }
 
         $user = UserModel::where('username', $reset->username)->first();
 
         if (!$user) {
             return back()->withErrors(['Akun tidak ditemukan (mungkin sudah dihapus).']);
+        }
+
+        if ($type === 'username_change') {
+            $newUsername = trim((string) ($reset->new_username ?? ''));
+
+            if ($newUsername === '' || $newUsername === $user->username) {
+                return back()->withErrors(['Username baru tidak valid.']);
+            }
+
+            $taken = UserModel::where('username', $newUsername)
+                ->where('id', '!=', $user->id)
+                ->exists();
+
+            if ($taken) {
+                return back()->withErrors(['Username baru sudah digunakan pengguna lain.']);
+            }
+
+            DB::table('user')->where('id', $user->id)->update([
+                'username' => $newUsername,
+                'updated_at' => now(),
+            ]);
+
+            $reset->update([
+                'status' => 'approved',
+                'handled_by' => $approver,
+                'handled_at' => now(),
+            ]);
+
+            return back()->with('success', "Username {$reset->username} berhasil diubah menjadi {$newUsername}.");
+        }
+
+        if (!$reset->password_hash) {
+            return back()->withErrors(['Data kata sandi pada permintaan tidak valid.']);
         }
 
         DB::table('user')->where('id', $user->id)->update([
@@ -105,9 +143,10 @@ class PasswordResetController extends Controller
         }
 
         $approver = $request->session()->get('username');
+        $requester = $reset->requested_by ?: $reset->username;
 
-        if ($approver && $approver === $reset->username) {
-            return back()->withErrors(['Tidak dapat menolak permintaan reset akun sendiri.']);
+        if ($approver && ($approver === $reset->username || $approver === $requester)) {
+            return back()->withErrors(['Tidak dapat menolak permintaan akun sendiri.']);
         }
 
         $reset->update([
@@ -116,6 +155,6 @@ class PasswordResetController extends Controller
             'handled_at' => now(),
         ]);
 
-        return back()->with('success', "Permintaan reset akun {$reset->username} ditolak.");
+        return back()->with('success', "Permintaan akun {$reset->username} ditolak.");
     }
 }
