@@ -2,9 +2,12 @@ import MainLayout from "../../Layouts/MainLayout";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 import { router, usePage } from "@inertiajs/react";
 import { useState } from "react";
+import useBase from "../../hooks/useBase";
 
 export default function FormTambahWilayah() {
     const { settings } = usePage().props;
+    const base = useBase();
+    const resolveUrl = (path) => `${base}/${path}`.replace(/\/+/g, '/');
     const [form, setForm] = useState({
         nama_wilayah: "",
         kode_wilayah: "",
@@ -19,10 +22,14 @@ export default function FormTambahWilayah() {
         });
     };
 
+    const handleBack = () => {
+        router.get(resolveUrl("wilayah"));
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        router.post("simpan-wilayah", form, {
+        router.post(resolveUrl("simpan-wilayah"), form, {
             onError: (errors) => {
                 console.log(errors);
                 const raw = errors?.error || Object.values(errors || {})[0];
@@ -56,7 +63,7 @@ export default function FormTambahWilayah() {
 
                     <button
                         type="button"
-                        onClick={() => window.history.back()}
+                        onClick={handleBack}
                         title="Kembali"
                         aria-label="Kembali"
                         className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:rounded-lg max-md:px-4 max-md:py-4"

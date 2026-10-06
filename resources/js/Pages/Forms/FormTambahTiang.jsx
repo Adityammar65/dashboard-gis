@@ -3,6 +3,7 @@ import LocationPicker from "../../Components/LocationPicker";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 import { router, usePage } from "@inertiajs/react";
 import { useState, useEffect, useMemo } from "react";
+import useBase from "../../hooks/useBase";
 
 export default function FormTambahTiang({ wilayah }) {
     const [form, setForm] = useState({
@@ -33,12 +34,7 @@ export default function FormTambahTiang({ wilayah }) {
     const [kecamatanLoading, setKecamatanLoading] = useState(false);
     const [kelurahanLoading, setKelurahanLoading] = useState(false);
     const [kelurahanManual, setKelurahanManual] = useState(false);
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
+    const base = useBase();
     const resolveUrl = (path) => `${base}/${path}`.replace(/\/+/g, '/');
 
     const [kecFocused, setKecFocused] = useState(false);
@@ -215,7 +211,7 @@ export default function FormTambahTiang({ wilayah }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        router.post("simpan-tiang", form, {
+        router.post(resolveUrl("simpan-tiang"), form, {
             forceFormData: true,
 
             onError: (errors) => {

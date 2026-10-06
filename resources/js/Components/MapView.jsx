@@ -9,6 +9,7 @@ import L from "leaflet";
 import { memo, useMemo, useEffect, useState } from "react";
 import { buildDivIcon, parseCoord, isValidLatLng } from "./mapMarker";
 import useTheme from "../hooks/useTheme";
+import useBase from "../hooks/useBase";
 
 function FitBounds({ points }) {
     const map = useMap();
@@ -110,12 +111,7 @@ const MapView = memo(function MapView({ latitude, longitude, markers = null, wil
         ? (fitPoints.length > 0 ? fitPoints[0] : [-7.7956, 110.3695])
         : singlePosition;
 
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
+    const base = useBase();
 
     return (
         <MapContainer

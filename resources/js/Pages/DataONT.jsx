@@ -6,6 +6,7 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { TableActions, CardActions, TableEmpty, CardEmpty } from "../Components/DataActions";
 
 import { FaPlus, FaFilter, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel, FaWifi } from "react-icons/fa";
+import useBase from "../hooks/useBase";
 
 const ambilNamaBerkas = (contentDisposition, cadangan) => {
     if (!contentDisposition) return cadangan;
@@ -30,12 +31,7 @@ export default function DataONT({
 }) {
     const { settings } = usePage().props;
 
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
+    const base = useBase();
     const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, '/'), [base]);
 
     const [filterWilayah, setFilterWilayah] = useState(
@@ -106,9 +102,7 @@ export default function DataONT({
         if (!kode) { setKecamatanOptions([]); return; }
         let cancelled = false;
         setKecamatanLoading(true);
-        const baseSeg = window.location.pathname.split('/').filter(Boolean)[0];
-        const known = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
-        const base = (baseSeg && !known.includes(baseSeg)) ? `/${baseSeg}` : '';
+        // base dari useBase() modular (outer scope)
         fetch(`${base}/api/regions/kabupaten/${kode}/kecamatan`.replace(/\/+/g, '/'))
             .then((r) => r.json())
             .then((j) => {
@@ -128,9 +122,7 @@ export default function DataONT({
         if (!code) { setKelurahanOptions([]); return; }
         let cancelled = false;
         setKelurahanLoading(true);
-        const baseSeg = window.location.pathname.split('/').filter(Boolean)[0];
-        const known = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
-        const base = (baseSeg && !known.includes(baseSeg)) ? `/${baseSeg}` : '';
+        // base dari useBase() modular (outer scope)
         fetch(`${base}/api/regions/kecamatan/${code}/kelurahan`.replace(/\/+/g, '/'))
             .then((r) => r.json())
             .then((j) => {

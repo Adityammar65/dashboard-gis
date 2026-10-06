@@ -6,6 +6,7 @@ import { useState, useMemo, useCallback } from "react";
 
 import { FaFilter, FaMap, FaPlus } from "react-icons/fa";
 import { LuBox } from "react-icons/lu";
+import useBase from "../hooks/useBase";
 
 export default function Tiang({
     dataWilayah = { data: [], total: 0, links: [] },
@@ -14,12 +15,7 @@ export default function Tiang({
 }) {
     const { settings } = usePage().props;
 
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont','tambah-wilayah','hapus-tiang','hapus-ont','hapus-wilayah'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
+    const base = useBase();
     const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, '/'), [base]);
 
     const [filterWilayah, setFilterWilayah] = useState(filter.wilayah ?? "");

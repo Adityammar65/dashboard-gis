@@ -2,8 +2,9 @@
 import MainLayout from "../Layouts/MainLayout";
 import { FaWifi, FaChevronRight, FaMap, FaCheckDouble, FaTrash, FaUser, FaKey } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
+import useBase from "../hooks/useBase";
 
 const getIconByKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
@@ -45,12 +46,7 @@ const getNotifikasiVisual = (item) => {
 
 export default function Notifikasi({ notifikasi = [] }) {
     const { settings } = usePage().props;
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
+    const base = useBase();
 
     const goDetail = (id) => {
         router.get(`${base}/detail-notifikasi/${id}`.replace(/\/+/g, '/'));

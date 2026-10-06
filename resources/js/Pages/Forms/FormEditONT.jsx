@@ -3,6 +3,7 @@ import LocationPicker from "../../Components/LocationPicker";
 import { FaArrowLeft, FaSave, FaTrash, FaUndo } from "react-icons/fa";
 import { router, usePage } from "@inertiajs/react";
 import { useState, useEffect, useMemo } from "react";
+import useBase from "../../hooks/useBase";
 
 export default function FormEditONT({ ont, wilayah }) {
     const getFotoUrl = (foto) => {
@@ -36,12 +37,7 @@ export default function FormEditONT({ ont, wilayah }) {
     const [kelurahanManual, setKelurahanManual] = useState(false);
     const [kecFocused, setKecFocused] = useState(false);
     const [kelFocused, setKelFocused] = useState(false);
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
+    const base = useBase();
     const resolveUrl = (path) => `${base}/${path}`.replace(/\/+/g, '/');
     useEffect(() => {
         let cancelled = false;
@@ -163,7 +159,7 @@ export default function FormEditONT({ ont, wilayah }) {
             const wil = wilayah?.find((w) => w.nama_wilayah === value);
             const kodeWil = wil?.kode_wilayah;
             if (kodeWil) {
-                fetch(`${window.location.pathname.split('/').filter(Boolean)[0] ? '/' + window.location.pathname.split('/').filter(Boolean)[0] : ''}/api/next-kode?kode_wilayah=${kodeWil}&type=ont`.replace(/\/+/g, '/'))
+                fetch(resolveUrl(`api/next-kode?kode_wilayah=${kodeWil}&type=ont`))
                     .then((r) => r.json())
                     .then((d) => {
                         if (d?.kode && !kodeEdited) setForm((prev) => ({ ...prev, wilayah: value, kode_ont: d.kode }));
@@ -204,7 +200,7 @@ export default function FormEditONT({ ont, wilayah }) {
         e.preventDefault();
 
         router.post(
-            `../update-ont/${ont.id}`,
+            resolveUrl(`update-ont/${ont.id}`),
             {
                 ...form,
                 hapus_foto_1: hapusFoto.foto_ont_1 ? 1 : 0,
@@ -358,7 +354,7 @@ export default function FormEditONT({ ont, wilayah }) {
                                                         setKecFocused(false);
                                                         const code = opt.code;
                                                         setKelurahanLoading(true);
-                                                        fetch(`${window.location.pathname.split('/').filter(Boolean)[0] ? '/' + window.location.pathname.split('/').filter(Boolean)[0] : ''}/api/regions/kecamatan/${code}/kelurahan`.replace(/\/+/g, '/'))
+                                                        fetch(resolveUrl(`api/regions/kecamatan/${code}/kelurahan`))
                                                             .then((r) => r.json())
                                                             .then((j) => {
                                                                 const d = Array.isArray(j?.data) ? j.data : [];

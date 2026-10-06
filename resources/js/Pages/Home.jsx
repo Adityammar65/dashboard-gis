@@ -13,6 +13,7 @@ import { MdStorage } from "react-icons/md";
 import { LuUtilityPole } from "react-icons/lu";
 import MapView from "../Components/MapView";
 import { useState, useMemo, useCallback } from "react";
+import useBase from "../hooks/useBase";
 
 const formatRelative = (iso) => {
     if (!iso) return "-";
@@ -34,12 +35,7 @@ export default function Dashboard() {
     const hasWilayah = !!String(settings?.nama_wilayah ?? "").trim();
     const activeWilayah = hasWilayah ? String(settings.nama_wilayah) : "Semua";
 
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split("/").filter(Boolean)[0];
-        const knownRoutes = ["home", "data-tiang", "data-ont", "wilayah", "peta-sebaran-aset", "pengaturan", "logout", "notifikasi", "detail-tiang", "detail-ont", "detail-notifikasi", "edit-tiang", "edit-ont", "tambah-tiang", "tambah-ont", "tambah-wilayah", "hapus-tiang", "hapus-ont", "hapus-wilayah"];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return "";
-    }, []);
+    const base = useBase();
     const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, "/"), [base]);
 
     const markers = useMemo(() => {

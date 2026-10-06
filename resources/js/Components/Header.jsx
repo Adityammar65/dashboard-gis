@@ -1,21 +1,17 @@
-import { memo, useMemo, useState, useEffect, useRef, useCallback } from "react";
+import { memo, useState, useEffect, useRef, useCallback } from "react";
 import { FaSearch, FaWifi, FaTimes, FaUserCircle } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import { IoMdArrowDropdown, IoMdNotifications } from "react-icons/io";
 import { IoIosSettings, IoIosLogOut } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
 import { usePage, router } from "@inertiajs/react";
+import useBase, { asset } from "../hooks/useBase";
 
 const Header = memo(function Header({ onMenu }) {
     const { url, props } = usePage();
     const unreadCount = Number(props?.unreadNotifikasi || 0);
     const username = props?.auth?.username ?? "";
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'api'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
+    const base = useBase();
 
     const [query, setQuery] = useState("");
     const [asetFilter, setAsetFilter] = useState("");
@@ -179,7 +175,7 @@ const Header = memo(function Header({ onMenu }) {
                 )}
                 <div>
                     <img
-                        src={`${base}/public/Assets/Logo.png`.replace(/\/+/g, '/')}
+                        src={asset("public/Assets/Logo.png")}
                         alt="Logo"
                         className="w-10 max-md:w-8"
                         width="40"

@@ -3,17 +3,12 @@ import { IoIosLogOut, IoIosSettings } from "react-icons/io";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
 import { menuItems, isActivePath, isPengaturanPath, LOGOUT_CONFIRM } from "./navItems";
+import { useResolveHref } from "../hooks/useBase";
 
 const Sidebar = memo(function Sidebar({ isOpen, onToggle }) {
     const { url } = usePage();
     const currentPath = useMemo(() => url.split('?')[0], [url]);
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
-    const resolveHref = (href) => `${base}/${href}`.replace(/\/+/g, '/');
+    const resolveHref = useResolveHref();
 
     const confirmLogout = (e) => {
         if (!confirm(LOGOUT_CONFIRM)) {

@@ -3,6 +3,7 @@ import LocationPicker from "../../Components/LocationPicker";
 import { FaArrowLeft, FaSave, FaTrash, FaUndo } from "react-icons/fa";
 import { router, usePage } from "@inertiajs/react";
 import { useState, useEffect, useMemo } from "react";
+import useBase from "../../hooks/useBase";
 
 export default function FormEditTiang({ tiang, wilayah }) {
     const getFotoUrl = (foto) => {
@@ -34,12 +35,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
     const [kecamatanLoading, setKecamatanLoading] = useState(false);
     const [kelurahanLoading, setKelurahanLoading] = useState(false);
     const [kelurahanManual, setKelurahanManual] = useState(false);
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'hapus-tiang', 'hapus-ont'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
+    const base = useBase();
     const resolveUrl = (path) => `${base}/${path}`.replace(/\/+/g, '/');
 
     // Kecamatan Kelurahan
@@ -214,7 +210,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
             const kodeWil = wil?.kode_wilayah;
             const prefix = kodeWil ? `SIMS-${kodeWil}-` : "";
             if (kodeWil) {
-                fetch(`${window.location.pathname.split('/').filter(Boolean)[0] ? '/' + window.location.pathname.split('/').filter(Boolean)[0] : ''}/api/next-kode?kode_wilayah=${kodeWil}&type=tiang`.replace(/\/+/g, '/'))
+                fetch(resolveUrl(`api/next-kode?kode_wilayah=${kodeWil}&type=tiang`))
                     .then((r) => r.json())
                     .then((d) => {
                         if (d?.kode && !kodeEdited) setForm((prev) => ({ ...prev, wilayah: value, kode_tiang: d.kode }));
@@ -255,7 +251,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
         e.preventDefault();
 
         router.post(
-            `../update-tiang/${tiang.id}`,
+            resolveUrl(`update-tiang/${tiang.id}`),
             {
                 ...form,
                 hapus_foto_1: hapusFoto.foto_tiang_1 ? 1 : 0,

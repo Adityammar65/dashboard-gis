@@ -1,12 +1,7 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { asset } from "../hooks/useBase";
 
 export default function AuthLayout({ children, errorMessage }) {
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont', 'login', 'lupa-password', 'hapus-tiang', 'hapus-ont'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
 
     const [visible, setVisible] = useState(!!errorMessage);
     useEffect(() => {
@@ -32,7 +27,7 @@ export default function AuthLayout({ children, errorMessage }) {
                 className="gis-auth-hero relative flex w-1/2 items-center justify-center overflow-hidden max-md:h-auto max-md:min-h-0 max-md:w-full max-md:px-5 max-md:pb-12 max-md:pt-10"
                 style={{
                     backgroundImage:
-                        `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)), url('${`${base}/public/Assets/LoginBackground.jpg`.replace(/\/+/g, '/')}')`,
+                        `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)), url('${asset("public/Assets/LoginBackground.jpg")}')`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}
@@ -49,7 +44,7 @@ export default function AuthLayout({ children, errorMessage }) {
 
                 <div className="relative flex flex-row items-center gap-8 max-md:flex-col max-md:gap-3 max-md:px-0 max-md:text-center">
                     <img
-                        src={`${base}/public/Assets/Logo.png`.replace(/\/+/g, '/')}
+                        src={asset("public/Assets/Logo.png")}
                         alt="Logo"
                         className="w-25 max-md:w-16"
                         width="100"

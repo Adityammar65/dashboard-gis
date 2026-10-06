@@ -3,6 +3,7 @@ import { FaArrowLeft, FaWifi, FaMap, FaUser, FaKey, FaCheck, FaTimes } from "rea
 import { LuUtilityPole } from "react-icons/lu";
 import { useMemo } from "react";
 import { router, usePage } from "@inertiajs/react";
+import useBase from "../hooks/useBase";
 
 const getIconByKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
@@ -96,12 +97,7 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
         : aksiLabel === "Dihapus"
             ? "text-rose-600 dark:text-rose-300"
             : "text-amber-600 dark:text-amber-300";
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home', 'data-tiang', 'data-ont', 'wilayah', 'peta-sebaran-aset', 'pengaturan', 'logout', 'notifikasi', 'detail-tiang', 'detail-ont', 'detail-notifikasi', 'edit-tiang', 'edit-ont', 'tambah-tiang', 'tambah-ont'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
+    const base = useBase();
     const handleBack = () => {
         router.get(`${base}/notifikasi`.replace(/\/+/g, '/'));
     };

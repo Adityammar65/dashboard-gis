@@ -3,17 +3,13 @@ import MapView from "../Components/MapView";
 import GoogleMapsButton from "../Components/GoogleMapsButton";
 import DeleteDataButton from "../Components/DeleteDataButton";
 import { FaArrowLeft, FaPen } from "react-icons/fa";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
+import useBase from "../hooks/useBase";
 
 export default function DetailONT({ ont }) {
     const { settings } = usePage().props;
-    const base = useMemo(() => {
-        const seg = window.location.pathname.split('/').filter(Boolean)[0];
-        const knownRoutes = ['home','data-tiang','data-ont','wilayah','peta-sebaran-aset','pengaturan','logout','notifikasi','detail-tiang','detail-ont','detail-notifikasi','edit-tiang','edit-ont','tambah-tiang','tambah-ont','hapus-tiang','hapus-ont'];
-        if (seg && !knownRoutes.includes(seg)) return `/${seg}`;
-        return '';
-    }, []);
+    const base = useBase();
 
     const getFotoUrl = (foto) => {
         if (!foto) return null;
