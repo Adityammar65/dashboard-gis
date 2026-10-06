@@ -47,8 +47,17 @@ class NotifikasiHelper
                 $lines[] = "- {$label}: {$old} → {$new}";
             }
             $fotoKey = $tipe === 'ont' ? 'foto_ont_' : 'foto_tiang_';
-            for ($i = 1; $i <= 3; $i++) {
-                if (array_key_exists($fotoKey . $i, $baru)) {
+            for ($i = 1; $i <= 5; $i++) {
+                $k = $fotoKey . $i;
+                if (!array_key_exists($k, $baru)) continue;
+                $old = $lama[$k] ?? null;
+                $new = $baru[$k] ?? null;
+                if (empty($old) && empty($new)) continue;
+                if ($new === null || $new === '') {
+                    if (!empty($old)) $lines[] = "- Foto {$i}: dihapus";
+                } elseif (empty($old)) {
+                    $lines[] = "- Foto {$i}: ditambahkan";
+                } else {
                     $lines[] = "- Foto {$i}: diganti";
                 }
             }
