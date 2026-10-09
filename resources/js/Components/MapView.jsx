@@ -113,6 +113,15 @@ const MapView = memo(function MapView({ latitude, longitude, markers = null, wil
 
     const base = useBase();
 
+    const focusPin = (e) => {
+        document.querySelectorAll(".gis-pin-active").forEach((el) => el.classList.remove("gis-pin-active"));
+        e.target.getElement()?.classList.add("gis-pin-active");
+    };
+
+    const unfocusPin = (e) => {
+        e.target.getElement()?.classList.remove("gis-pin-active");
+    };
+
     return (
         <MapContainer
             center={initialCenter}
@@ -140,6 +149,10 @@ const MapView = memo(function MapView({ latitude, longitude, markers = null, wil
                             key={`${m.type}-${m.id}`}
                             position={m.position}
                             icon={buildDivIcon(m.type, m.status)}
+                            eventHandlers={{
+                                click: focusPin,
+                                popupclose: unfocusPin,
+                            }}
                         >
                             <Popup>
                                 <div style={{ minWidth: 185 }}>
@@ -172,7 +185,14 @@ const MapView = memo(function MapView({ latitude, longitude, markers = null, wil
                     ))}
                 </>
             ) : (
-                <Marker position={singlePosition} icon={singleIcon} />
+                <Marker
+                    position={singlePosition}
+                    icon={singleIcon}
+                    eventHandlers={{
+                        click: focusPin,
+                        popupclose: unfocusPin,
+                    }}
+                />
             )}
             <LiveCoords />
         </MapContainer>

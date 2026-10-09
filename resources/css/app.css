@@ -76,6 +76,26 @@ html.dark body {
     isolation: isolate;
 }
 
+.gis-asset-marker {
+    background: transparent;
+    border: none;
+}
+
+.gis-asset-marker > .gis-pin {
+    transition: transform 0.15s ease;
+    transform-origin: 50% 100%;
+}
+
+.gis-asset-marker.gis-pin-active > .gis-pin,
+.gis-asset-marker:focus > .gis-pin,
+.gis-asset-marker:focus-within > .gis-pin {
+    transform: scale(1.05);
+}
+
+.gis-asset-marker.gis-pin-active {
+    z-index: 1000 !important;
+}
+
 .gis-map-wrap .leaflet-container {
     z-index: 0;
 }
