@@ -20,6 +20,7 @@ Route::post('/proses-login', [AutentikasiController::class, 'ProsesLogin']);
 Route::get('/logout', [AutentikasiController::class, 'Keluar']);
 Route::get('/lupa-password', [HalamanController::class, 'LupaPassword']);
 Route::post('/reset-request', [SetelUlangKataSandiController::class, 'ajukan'])->middleware('throttle:5,1');
+Route::get('/panduan', [HalamanController::class, 'Panduan']);
 
 // Rute Terlindungi
 

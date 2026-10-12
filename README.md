@@ -159,21 +159,13 @@ Setelah login, verifikasi:
 
 ### 9. Fitur Utama
 
-- **Dashboard Home** — 4 kartu statistik live (TOTAL TIANG/ONT per status Aktif/Nonaktif, WILAYAH COVERAGE, DATA BERKOORDINAT %), peta preview terfilter `settings.json` (limit 2000), dan PEMBARUAN ASET 5 terbaru (tiang/ont berdasarkan `updated_at`, menampilkan `updated_by` + badge Ditambahkan/Diperbarui).
-- **Data Tiang & Data ONT** — tabel paginasi 15 dengan foto (`storage/tiang|ont`), filter wilayah, status, kecamatan & kelurahan (autocomplete via API regions), pencarian `kode/area/petugas`, serta aksi Detail/Edit/Hapus.
-- **Export Data** — export PDF/Excel per jenis aset (`export/aset/{tiang|ont}/{pdf|excel}`) mengikuti filter aktif, dengan pilihan cakupan halaman aktif atau semua data.
-- **Wilayah** — rekap per wilayah (`total_tiang`, `total_ont`, `total_aset`, `aset_aktif/nonaktif`), filter jenis aset, dan hapus dengan validasi relasi.
-- **Peta Sebaran Aset** — peta Leaflet fullscreen dengan filter `Tiang/ONT`, `Aktif/Nonaktif`, dan `Wilayah`; legend, statistik `Tampil`, koordinat live (`LiveCoords`), serta `FitBounds`/`flyTo`.
-- **Marker & Ikon Konsisten** — ONT memakai ikon `FaWifi` di sidebar, daftar, pencarian, dan marker peta; Tiang memakai `LuUtilityPole` di seluruh UI kecuali marker Leaflet (tetap lingkaran status); marker detail aset memakai `divIcon` yang sama dengan peta sebaran (warna hijau/merah sesuai status).
-- **Detail Tiang/ONT** — galeri 5 foto, informasi `wilayah/area/petugas/status/koordinat/deskripsi`, tombol buka Google Maps, dan peta single marker.
-- **Form Aset** — `LocationPicker` (klik peta + pencarian koordinat) untuk latitude/longitude, upload 5 foto, dan autocomplete kecamatan/kelurahan.
-- **Pencarian Global** — `Header` search debounced (`/api/search`, `q≥2`) dengan ranking `exact/prefix/like` untuk `kode/wilayah/area/petugas`.
-- **Notifikasi** — audit trail tiap CRUD (Ditambahkan/Diperbarui/Dihapus) dengan kolom `updated_by` (username login pelaku), indikator hijau untuk sudah dibaca, status `belum_dibaca/dibaca` yang auto-refresh saat kembali dari detail, tandai semua dibaca & hapus yang sudah dibaca.
-- **Pengaturan** — pemilihan wilayah operasi via `storage/app/settings.json` (`php artisan settings:generate`) yang berpengaruh ke filter peta & statistik Home, manajemen profil (ubah username & password), tema tampilan Terang/Gelap, serta kartu **Persetujuan Reset Kata Sandi** (daftar permintaan menunggu + riwayat 5 terakhir).
-- **Autentikasi** — login session + cookie `gis_remember` 30 hari & remember-me, middleware `cek_login`.
-- **Mode Gelap** — tema Terang/Gelap manual (default Terang) via Tailwind class strategy, tersimpan per perangkat di `localStorage` (`gis_theme`) tanpa FOUC. Palet gelap maroon (`night-*` di `resources/css/app.css`) berlaku di semua halaman termasuk popup peta. Toggle tersedia di kartu **Tampilan** pada `/pengaturan` dan ikon kanan-atas halaman Login. Peta tetap memakai tile OSM yang digelapkan via filter CSS sehingga tidak butuh API key.
-- **Lupa Password + Persetujuan Reset** — halaman publik `/lupa-password` (tautan "Lupa password?" di Login): pemohon mengisi username terdaftar + kata sandi baru (min. 8 karakter, konfirmasi). Hanya hash bcrypt yang disimpan di tabel `password_reset_requests` (satu pending per username, throttle 5/menit). Setiap permintaan memicu lonceng notifikasi; admin yang sedang login menyetujui/menolak dari kartu Persetujuan di `/pengaturan` **atau langsung dari Detail Notifikasi** terkait (ikon kunci, tanpa pernah menampilkan kata sandi). Aturan: tidak bisa menyetujui permintaan akun sendiri; persetujuan menimpa hash via query builder, mematikan semua sesi/remember-me akun tersebut, dan mencatat penangan + waktu.
-- **Manajemen File** — upload 5 foto `jpg/jpeg/png/webp` max 5MB, dikonversi ke WebP via `cwebp` (quality 85, sisi terpanjang maks 1600px, rasio aspek dipertahankan, EXIF orientasi dipertahankan), output divalidasi (header RIFF/WEBP + decode), cleanup saat gagal/hapus. Diatur lewat `IMAGE_WEBP_QUALITY`, `IMAGE_MAX_LONGEST_SIDE`, `IMAGE_SHARP_YUV` (`config/image.php`).
+- **Dashboard & Rekapitulasi** — statistik live Tiang/ONT (Aktif/Nonaktif), cakupan wilayah, % berkoordinat, peta pratinjau wilayah operasi, dan 5 pembaruan aset terbaru.
+- **Data Tiang, ONT & Wilayah** — tabel paginasi + filter + pencarian dengan aksi Detail/Edit/Hapus; rekap per wilayah; hapus wilayah ditolak bila masih punya aset.
+- **Formulir Aset** — kode otomatis (`SIMS-kode-nomor`), autocomplete kecamatan/kelurahan, koordinat via klik peta atau pencarian alamat, 5 foto (otomatis WebP; bisa diganti/dikosongkan per slot saat ubah).
+- **Peta Sebaran Aset** — filter jenis/status/wilayah, marker hijau (Aktif) dan merah (Nonaktif), popup + tautan detail, tombol Google Maps, dan koordinat kursor live.
+- **Ekspor & Pencarian** — unduh PDF/Excel mengikuti filter aktif (cakupan halaman ini atau semua data); pencarian global di header (min. 2 huruf).
+- **Notifikasi** — audit trail tiap CRUD dan permintaan reset akun, status baca otomatis, serta tombol tandai semua dibaca dan hapus yang dibaca.
+- **Pengaturan & Akun** — wilayah operasi (`settings.json`), profil dan reset kata sandi via persetujuan admin, tema Terang/Gelap per perangkat, login sesi + Ingat Saya 30 hari + Lupa Password; konversi foto via `cwebp`/ImageMagick (lihat `config/image.php`).
 
 ### 10. Dokumentasi Antarmuka
 

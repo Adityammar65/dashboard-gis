@@ -20,6 +20,7 @@ export const KNOWN_ROUTES = [
     "detail-notifikasi",
     "notifikasi",
     "pengaturan",
+    "panduan",
     "login",
     "logout",
     "lupa-password",

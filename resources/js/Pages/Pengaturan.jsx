@@ -150,6 +150,21 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                     </span>
                 </div>
 
+                {/* Panduan & Pintasan */}
+
+                <div className="rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-sm dark:border-night-700 dark:bg-night-900">
+                    <p className="text-xs text-gray-600 dark:text-night-300">
+                        Butuh bantuan memakai halaman ini? Lihat{" "}
+                        <a
+                            href="panduan"
+                            className="font-medium text-[#ab3c3c] transition hover:text-[#68182A] hover:underline"
+                        >
+                            Panduan Penggunaan
+                        </a>
+                        .
+                    </p>
+                </div>
+
                 {/* Profil Pengguna */}
 
                 <div className="rounded-2xl bg-white dark:bg-night-900 p-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:p-4">

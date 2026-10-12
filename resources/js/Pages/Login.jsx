@@ -127,6 +127,18 @@ export default function Login() {
                     >
                         Masuk
                     </button>
+
+                    {/* Panduan Singkat */}
+
+                    <p className="text-center text-xs text-gray-500 dark:text-night-400">
+                        Butuh bantuan? Lihat{" "}
+                        <a
+                            href="panduan"
+                            className="font-medium text-[#ab3c3c] transition hover:text-[#68182A] hover:underline"
+                        >
+                            Panduan Penggunaan
+                        </a>
+                    </p>
                 </form>
             </div>
         </AuthLayout>

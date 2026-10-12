@@ -631,6 +631,12 @@ class HalamanController extends Controller
         NotifikasiModel::where('status', 'dibaca')->delete();
         return redirect('notifikasi');
     }
+    // Panduan Penggunaan
+
+    public function Panduan()
+    {
+        return Inertia::render('Panduan', []);
+    }
 
     // Pengaturan
 
