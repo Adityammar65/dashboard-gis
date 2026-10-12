@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class PasswordResetRequest extends Model
 {
-    protected $table = 'password_reset_requests';
+    protected $table = 'request_perubahan_akun';
 
     protected $fillable = [
         'username',
-        'password_hash',
-        'request_type',
+        'password_baru',
+        'tipe_request',
         'requested_by',
-        'new_username',
+        'username_baru',
         'status',
         'requested_ip',
         'handled_by',

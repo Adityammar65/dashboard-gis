@@ -21,23 +21,23 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
     const myPending = resetRequests.filter(
         (r) => r.username === currentUsername || r.requested_by === currentUsername
     );
-    const myPendingUsername = myPending.find((r) => (r.request_type ?? "password_reset") === "username_change");
+    const myPendingUsername = myPending.find((r) => (r.tipe_request ?? "password_reset") === "username_change");
     const myPendingPassword = myPending.find((r) => {
-        const t = r.request_type ?? "password_reset";
+        const t = r.tipe_request ?? "password_reset";
         return t === "password_change" || t === "password_reset";
     });
 
     const getRequestLabel = (item) => {
-        const t = item?.request_type ?? "password_reset";
+        const t = item?.tipe_request ?? "password_reset";
         if (t === "username_change") return "Ubah Username";
         if (t === "password_change") return "Ubah Kata Sandi";
         return "Reset Kata Sandi";
     };
 
     const getRequestDetail = (item) => {
-        const t = item?.request_type ?? "password_reset";
-        if (t === "username_change" && item?.new_username) {
-            return `${item.username} → ${item.new_username}`;
+        const t = item?.tipe_request ?? "password_reset";
+        if (t === "username_change" && item?.username_baru) {
+            return `${item.username} → ${item.username_baru}`;
         }
         if (t === "password_change") {
             return `Ubah kata sandi akun ${item.username}`;
@@ -221,7 +221,7 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
 
                             {myPendingUsername && (
                                 <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
-                                    Pengajuan {myPendingUsername.username} → {myPendingUsername.new_username} menunggu persetujuan.
+                                    Pengajuan {myPendingUsername.username} → {myPendingUsername.username_baru} menunggu persetujuan.
                                 </p>
                             )}
                         </div>

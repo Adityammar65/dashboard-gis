@@ -102,7 +102,7 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
         router.get(`${base}/notifikasi`.replace(/\/+/g, '/'));
     };
 
-    const requestType = resetRequest?.request_type ?? "password_reset";
+    const requestType = resetRequest?.tipe_request ?? "password_reset";
     const requestLabel =
         requestType === "username_change"
             ? "Ubah Username"
@@ -110,8 +110,8 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
               ? "Ubah Kata Sandi"
               : "Reset Kata Sandi";
     const requestDetail =
-        requestType === "username_change" && resetRequest?.new_username
-            ? `${resetRequest.username} → ${resetRequest.new_username}`
+        requestType === "username_change" && resetRequest?.username_baru
+            ? `${resetRequest.username} → ${resetRequest.username_baru}`
             : `akun "${resetRequest?.username}"`;
     const currentUsername = auth?.username ?? null;
     const isOwnRequest = resetRequest
@@ -263,8 +263,8 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
                                             Persetujuan {requestLabel}
                                         </h3>
                                         <p className="text-xs text-gray-500 dark:text-night-400">
-                                            {requestType === "username_change" && resetRequest.new_username ? (
-                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username} → {resetRequest.new_username}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
+                                            {requestType === "username_change" && resetRequest.username_baru ? (
+                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username} → {resetRequest.username_baru}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
                                             ) : (
                                                 <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
                                             )}

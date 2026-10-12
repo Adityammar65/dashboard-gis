@@ -38,10 +38,10 @@ class SetelUlangKataSandiController extends Controller
 
         $reset = PasswordResetRequest::create([
             'username' => $username,
-            'password_hash' => Hash::make($request->password),
-            'request_type' => 'password_reset',
+            'password_baru' => Hash::make($request->password),
+            'tipe_request' => 'password_reset',
             'requested_by' => $username,
-            'new_username' => null,
+            'username_baru' => null,
             'status' => 'pending',
             'requested_ip' => $request->ip(),
         ]);
@@ -72,7 +72,7 @@ class SetelUlangKataSandiController extends Controller
 
         $penyetuju = $request->session()->get('username');
         $peminta = $reset->requested_by ?: $reset->username;
-        $jenis = $reset->request_type ?: 'password_reset';
+        $jenis = $reset->tipe_request ?: 'password_reset';
 
         if ($penyetuju && ($penyetuju === $reset->username || $penyetuju === $peminta)) {
             return back()->withErrors(['Tidak dapat menyetujui permintaan akun sendiri.']);
@@ -85,7 +85,7 @@ class SetelUlangKataSandiController extends Controller
         }
 
         if ($jenis === 'username_change') {
-            $userBaru = trim((string) ($reset->new_username ?? ''));
+            $userBaru = trim((string) ($reset->username_baru ?? ''));
 
             if ($userBaru === '' || $userBaru === $user->username) {
                 return back()->withErrors(['Username baru tidak valid.']);
@@ -113,12 +113,12 @@ class SetelUlangKataSandiController extends Controller
             return back()->with('success', "Username {$reset->username} berhasil diubah menjadi {$userBaru}.");
         }
 
-        if (!$reset->password_hash) {
+        if (!$reset->password_baru) {
             return back()->withErrors(['Data kata sandi pada permintaan tidak valid.']);
         }
 
         DB::table('user')->where('id', $user->id)->update([
-            'password' => $reset->password_hash,
+            'password' => $reset->password_baru,
             'remember_token' => null,
             'updated_at' => now(),
         ]);

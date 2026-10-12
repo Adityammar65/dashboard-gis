@@ -42,7 +42,7 @@ class ProfilController extends Controller
         }
 
         $menunggu = PasswordResetRequest::where('status', 'pending')
-            ->where('request_type', 'username_change')
+            ->where('tipe_request', 'username_change')
             ->where(function ($q) use ($userSaatIni) {
                 $q->where('username', $userSaatIni)
                     ->orWhere('requested_by', $userSaatIni);
@@ -57,10 +57,10 @@ class ProfilController extends Controller
 
         $reset = PasswordResetRequest::create([
             'username' => $userSaatIni,
-            'password_hash' => null,
-            'request_type' => 'username_change',
+            'password_baru' => null,
+            'tipe_request' => 'username_change',
             'requested_by' => $userSaatIni,
-            'new_username' => $userBaru,
+            'username_baru' => $userBaru,
             'status' => 'pending',
             'requested_ip' => $request->ip(),
         ]);
@@ -104,7 +104,7 @@ class ProfilController extends Controller
         $userSaatIni = $user->username;
 
         $menunggu = PasswordResetRequest::where('status', 'pending')
-            ->whereIn('request_type', ['password_change', 'password_reset'])
+            ->whereIn('tipe_request', ['password_change', 'password_reset'])
             ->where(function ($q) use ($userSaatIni) {
                 $q->where('username', $userSaatIni)
                     ->orWhere('requested_by', $userSaatIni);
@@ -119,10 +119,10 @@ class ProfilController extends Controller
 
         $reset = PasswordResetRequest::create([
             'username' => $userSaatIni,
-            'password_hash' => Hash::make($request->password),
-            'request_type' => 'password_change',
+            'password_baru' => Hash::make($request->password),
+            'tipe_request' => 'password_change',
             'requested_by' => $userSaatIni,
-            'new_username' => null,
+            'username_baru' => null,
             'status' => 'pending',
             'requested_ip' => $request->ip(),
         ]);
@@ -181,7 +181,7 @@ class ProfilController extends Controller
             ]);
 
             $menungguUser = PasswordResetRequest::where('status', 'pending')
-                ->where('request_type', 'username_change')
+                ->where('tipe_request', 'username_change')
                 ->where(function ($q) use ($userSaatIni) {
                     $q->where('username', $userSaatIni)
                         ->orWhere('requested_by', $userSaatIni);
@@ -206,7 +206,7 @@ class ProfilController extends Controller
             }
 
             $menungguKataSandi = PasswordResetRequest::where('status', 'pending')
-                ->whereIn('request_type', ['password_change', 'password_reset'])
+                ->whereIn('tipe_request', ['password_change', 'password_reset'])
                 ->where(function ($q) use ($userSaatIni) {
                     $q->where('username', $userSaatIni)
                         ->orWhere('requested_by', $userSaatIni);
@@ -225,10 +225,10 @@ class ProfilController extends Controller
         if ($inginUser) {
             $reset = PasswordResetRequest::create([
                 'username' => $userSaatIni,
-                'password_hash' => null,
-                'request_type' => 'username_change',
+                'password_baru' => null,
+                'tipe_request' => 'username_change',
                 'requested_by' => $userSaatIni,
-                'new_username' => $userBaru,
+                'username_baru' => $userBaru,
                 'status' => 'pending',
                 'requested_ip' => $request->ip(),
             ]);
@@ -250,10 +250,10 @@ class ProfilController extends Controller
         if ($inginKataSandi) {
             $reset = PasswordResetRequest::create([
                 'username' => $userSaatIni,
-                'password_hash' => Hash::make($password),
-                'request_type' => 'password_change',
+                'password_baru' => Hash::make($password),
+                'tipe_request' => 'password_change',
                 'requested_by' => $userSaatIni,
-                'new_username' => null,
+                'username_baru' => null,
                 'status' => 'pending',
                 'requested_ip' => $request->ip(),
             ]);
