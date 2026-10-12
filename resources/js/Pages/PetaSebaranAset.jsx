@@ -6,35 +6,35 @@ import { usePage } from "@inertiajs/react";
 import TataLetakUtama from "../Layouts/TataLetakUtama";
 import TampilanPeta from "../Components/TampilanPeta";
 
-const normalizeStatus = (status) => String(status || "").toLowerCase();
+const normalisasiStatus = (saringStatus) => String(saringStatus || "").toLowerCase();
 
-export default function Peta() {
+export default function PetaSebaranAset() {
     const { pengaturan, tiang = [], ont = [], wilayah: wilayahList = [] } = usePage().props;
-    const [assetType, setAssetType] = useState("Semua");
-    const [status, setStatus] = useState("Semua");
-    const [wilayah, setWilayah] = useState("Semua");
-    const [mobileFilterOpen, setMobileFilterOpen] = useState(() => {
+    const [jenisAset, aturJenisAset] = useState("Semua");
+    const [saringStatus, aturSaringStatus] = useState("Semua");
+    const [wilayahTerpilih, aturWilayahTerpilih] = useState("Semua");
+    const [saringSelulerBuka, aturSaringSelulerBuka] = useState(() => {
         if (typeof window !== "undefined" && window.innerWidth < 768) return false;
         return true;
     });
 
-    const wilayahOptions = useMemo(
+    const opsiWilayah = useMemo(
         () => (Array.isArray(wilayahList) ? wilayahList.map((w) => w.nama_wilayah).filter(Boolean) : []),
         [wilayahList]
     );
 
-    const matchesScope = (item) => {
-        if (status !== "Semua" && normalizeStatus(item.status) !== normalizeStatus(status)) return false;
-        if (wilayah !== "Semua" && String(item.wilayah || "") !== wilayah) return false;
+    const cocokCakupan = (item) => {
+        if (saringStatus !== "Semua" && normalisasiStatus(item.status) !== normalisasiStatus(saringStatus)) return false;
+        if (wilayahTerpilih !== "Semua" && String(item.wilayah || "") !== wilayahTerpilih) return false;
         return true;
     };
 
-    const totalTiang = useMemo(() => tiang.filter(matchesScope).length, [tiang, status, wilayah]);
-    const totalOnt = useMemo(() => ont.filter(matchesScope).length, [ont, status, wilayah]);
+    const totalTiang = useMemo(() => tiang.filter(cocokCakupan).length, [tiang, saringStatus, wilayahTerpilih]);
+    const totalOnt = useMemo(() => ont.filter(cocokCakupan).length, [ont, saringStatus, wilayahTerpilih]);
 
     const penanda = useMemo(() => {
-        const tiangMarkers = (assetType === "Semua" || assetType === "Tiang")
-            ? tiang.filter(matchesScope).map((t) => ({
+        const penandaTiang = (jenisAset === "Semua" || jenisAset === "Tiang")
+            ? tiang.filter(cocokCakupan).map((t) => ({
                 id: t.id,
                 type: "tiang",
                 kode: t.kode_tiang,
@@ -47,8 +47,8 @@ export default function Peta() {
                 longitude: t.longitude,
             }))
             : [];
-        const ontMarkers = (assetType === "Semua" || assetType === "ONT")
-            ? ont.filter(matchesScope).map((o) => ({
+        const penandaOnt = (jenisAset === "Semua" || jenisAset === "ONT")
+            ? ont.filter(cocokCakupan).map((o) => ({
                 id: o.id,
                 type: "ont",
                 kode: o.kode_ont,
@@ -61,14 +61,14 @@ export default function Peta() {
                 longitude: o.longitude,
             }))
             : [];
-        return [...tiangMarkers, ...ontMarkers];
-    }, [tiang, ont, assetType, status, wilayah]);
+        return [...penandaTiang, ...penandaOnt];
+    }, [tiang, ont, jenisAset, saringStatus, wilayahTerpilih]);
 
     // Pusat Wilayah
 
     const pusatWilayah = useMemo(() => {
-        if (wilayah === "Semua") return null;
-        const all = [...tiang, ...ont].filter((it) => String(it.wilayah || "") === wilayah);
+        if (wilayahTerpilih === "Semua") return null;
+        const all = [...tiang, ...ont].filter((it) => String(it.wilayah || "") === wilayahTerpilih);
         const koordinat = all
             .map((it) => {
                 const latStr = String(it.latitude ?? "").trim().replace(",", ".");
@@ -85,7 +85,7 @@ export default function Peta() {
         let sumLat = 0, sumLng = 0;
         for (const [lat, lng] of koordinat) { sumLat += lat; sumLng += lng; }
         return [sumLat / koordinat.length, sumLng / koordinat.length];
-    }, [wilayah, tiang, ont]);
+    }, [wilayahTerpilih, tiang, ont]);
 
     return (
         <TataLetakUtama>
@@ -110,7 +110,7 @@ export default function Peta() {
                     {/* Peta */}
 
                     <div className="absolute inset-0 z-0">
-                        <TampilanPeta penanda={penanda} wilayah={wilayah} pusatWilayah={pusatWilayah} />
+                        <TampilanPeta penanda={penanda} wilayah={wilayahTerpilih} pusatWilayah={pusatWilayah} />
                     </div>
 
                     <div className="absolute left-4 top-4 z-10 max-md:left-2 max-md:top-2 max-md:max-w-[calc(100vw-6rem)]">
@@ -163,16 +163,16 @@ export default function Peta() {
 
                                 <button
                                     type="button"
-                                    onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-                                    aria-label={mobileFilterOpen ? "Sembunyikan penyaring" : "Tampilkan penyaring"}
+                                    onClick={() => aturSaringSelulerBuka(!saringSelulerBuka)}
+                                    aria-label={saringSelulerBuka ? "Sembunyikan penyaring" : "Tampilkan penyaring"}
                                     className="hidden rounded-lg bg-gray-100 dark:bg-night-800 px-2 py-1 text-[11px] font-semibold text-gray-700 dark:text-night-200 max-md:flex max-md:items-center max-md:gap-1 md:hidden"
                                 >
-                                    {mobileFilterOpen ? "Tutup" : "Buka"}
-                                    <FaChevronDown className={`text-[10px] transition-transform ${mobileFilterOpen ? "rotate-180" : ""}`} />
+                                    {saringSelulerBuka ? "Tutup" : "Buka"}
+                                    <FaChevronDown className={`text-[10px] transition-transform ${saringSelulerBuka ? "rotate-180" : ""}`} />
                                 </button>
                             </div>
 
-                            <div className={`${mobileFilterOpen ? "" : "max-md:hidden"} md:block`}>
+                            <div className={`${saringSelulerBuka ? "" : "max-md:hidden"} md:block`}>
 
                                 <div className="grid grid-cols-3 gap-2">
 
@@ -180,16 +180,16 @@ export default function Peta() {
                                         { label: "Semua", icon: null, active: "bg-gray-900 dark:bg-night-200 text-white dark:text-night-900 border-gray-900 dark:border-night-200 shadow", idle: "bg-white dark:bg-night-800 text-gray-700 dark:text-night-200 border-gray-300 dark:border-night-600 hover:bg-gray-50 dark:hover:bg-night-700" },
                                         { label: "Tiang", icon: LuUtilityPole, active: "bg-[#1e3a8a] text-white border-[#1e3a8a] shadow", idle: "bg-white dark:bg-night-800 text-[#1e3a8a] dark:text-blue-300 border-[#1e3a8a]/30 hover:bg-blue-50 dark:hover:bg-blue-500/15" },
                                         { label: "ONT", icon: FaWifi, active: "bg-sky-500 text-white border-sky-500 shadow", idle: "bg-white dark:bg-night-800 text-sky-600 dark:text-sky-300 border-sky-500/30 hover:bg-sky-50 dark:hover:bg-sky-500/15" },
-                                    ].map(({ label, icon: Icon, active, idle }) => {
-                                        const isActive = assetType === label;
+                                    ].map(({ label, ikon: Ikon, active, idle }) => {
+                                        const apakahAktif = jenisAset === label;
                                         return (
                                             <button
                                                 key={label}
                                                 type="button"
-                                                onClick={() => setAssetType(label)}
-                                                className={`h-8 rounded-md border px-2 text-[10px] font-semibold transition flex items-center justify-center gap-1 ${isActive ? active : idle}`}
+                                                onClick={() => aturJenisAset(label)}
+                                                className={`h-8 rounded-md border px-2 text-[10px] font-semibold transition flex items-center justify-center gap-1 ${apakahAktif ? active : idle}`}
                                             >
-                                                {Icon && <Icon size={11} />}
+                                                {Ikon && <Ikon size={11} />}
                                                 {label}
                                             </button>
                                         );
@@ -203,15 +203,15 @@ export default function Peta() {
 
                                     <div className="relative">
                                         <select
-                                            value={status}
-                                            onChange={(e) => setStatus(e.target.value)}
-                                            className={`capitalize h-8 w-full appearance-none rounded-md border bg-white dark:bg-night-900 pl-6 pr-7 text-[10px] font-medium text-gray-700 dark:text-night-200 outline-none transition ${status === "Aktif" ? "border-green-500 bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300" : status === "Nonaktif" ? "border-red-500 bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300" : "border-gray-300 dark:border-night-600 hover:bg-gray-50 dark:hover:bg-night-800"}`}
+                                            value={saringStatus}
+                                            onChange={(kejadian) => aturSaringStatus(kejadian.target.value)}
+                                            className={`capitalize h-8 w-full appearance-none rounded-md border bg-white dark:bg-night-900 pl-6 pr-7 text-[10px] font-medium text-gray-700 dark:text-night-200 outline-none transition ${saringStatus === "Aktif" ? "border-green-500 bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300" : saringStatus === "Nonaktif" ? "border-red-500 bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300" : "border-gray-300 dark:border-night-600 hover:bg-gray-50 dark:hover:bg-night-800"}`}
                                         >
                                             <option>Semua</option>
                                             <option>Aktif</option>
                                             <option>Nonaktif</option>
                                         </select>
-                                        <span className={`pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full ${status === "Aktif" ? "bg-green-500" : status === "Nonaktif" ? "bg-red-500" : "bg-gray-400"}`} />
+                                        <span className={`pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full ${saringStatus === "Aktif" ? "bg-green-500" : saringStatus === "Nonaktif" ? "bg-red-500" : "bg-gray-400"}`} />
                                         <FaChevronDown className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[8px] opacity-60" />
                                     </div>
 
@@ -219,12 +219,12 @@ export default function Peta() {
 
                                     <div className="relative">
                                         <select
-                                            value={wilayah}
-                                            onChange={(e) => setWilayah(e.target.value)}
+                                            value={wilayahTerpilih}
+                                            onChange={(kejadian) => aturWilayahTerpilih(kejadian.target.value)}
                                             className="capitalize h-8 w-full appearance-none rounded-md border border-gray-300 dark:border-night-600 bg-white dark:bg-night-900 px-2 pr-6 text-[10px] font-medium text-gray-700 dark:text-night-200 outline-none hover:bg-gray-50 dark:hover:bg-night-800"
                                         >
                                             <option value="Semua">Semua</option>
-                                            {wilayahOptions.map((nama) => (
+                                            {opsiWilayah.map((nama) => (
                                                 <option key={nama} value={nama}>
                                                     {nama}
                                                 </option>

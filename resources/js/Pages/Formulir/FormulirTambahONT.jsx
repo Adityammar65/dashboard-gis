@@ -3,7 +3,7 @@ import PemilihLokasi from "../../Components/PemilihLokasi";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 import { router, usePage } from "@inertiajs/react";
 import { useState, useEffect, useMemo } from "react";
-import useDasar from "../../hooks/useDasar";
+import useBase from "../../hooks/useBase";
 
 export default function FormulirTambahONT({ wilayah }) {
     const [formulir, aturFormulir] = useState({
@@ -22,22 +22,22 @@ export default function FormulirTambahONT({ wilayah }) {
         nama_petugas: "",
         status: "",
     });
-    const [kodeEdited, setKodeEdited] = useState(false);
+    const [kodeDiubah, aturKodeDiubah] = useState(false);
     const placeholderKode = useMemo(() => {
-        const wil = wilayah?.find((w) => w.nama_wilayah === formulir.wilayah);
-        const kode = wil?.kode_wilayah;
+        const wilayahDitemukan = wilayah?.find((w) => w.nama_wilayah === formulir.wilayah);
+        const kode = wilayahDitemukan?.kode_wilayah;
         return kode ? `SIMS-${kode}-` : "SIMS-YGY-";
     }, [formulir.wilayah, wilayah]);
     const { pengaturan } = usePage().props;
-    const [kecamatanOptions, setKecamatanOptions] = useState([]);
-    const [kelurahanOptions, setKelurahanOptions] = useState([]);
-    const [kecamatanLoading, setKecamatanLoading] = useState(false);
-    const [kelurahanLoading, setKelurahanLoading] = useState(false);
-    const [kelurahanManual, setKelurahanManual] = useState(false);
-    const [kecFocused, setKecFocused] = useState(false);
-    const [kelFocused, setKelFocused] = useState(false);
-    const dasar = useDasar();
-    const resolveUrl = (path) => `${dasar}/${path}`.replace(/\/+/g, '/');
+    const [opsiKecamatan, aturOpsiKecamatan] = useState([]);
+    const [opsiKelurahan, aturOpsiKelurahan] = useState([]);
+    const [kecamatanMemuat, aturKecamatanMemuat] = useState(false);
+    const [kelurahanMemuat, aturKelurahanMemuat] = useState(false);
+    const [kelurahanManual, aturKelurahanManual] = useState(false);
+    const [kecFokus, aturKecFokus] = useState(false);
+    const [kelFokus, aturKelFokus] = useState(false);
+    const base = useBase();
+    const resolveHref = (path) => `${base}/${path}`.replace(/\/+/g, '/');
     const levenshtein = (a, b) => {
         const m = a.length, n = b.length;
         if (m === 0) return n;
@@ -48,7 +48,7 @@ export default function FormulirTambahONT({ wilayah }) {
         for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + 1);
         return dp[m][n];
     };
-    const similarity = (a, b) => {
+    const kemiripan = (a, b) => {
         const al = a.toLowerCase().trim(), bl = b.toLowerCase().trim();
         if (!al || !bl) return 0;
         if (bl.includes(al) && al.length >= 2) {
@@ -63,111 +63,111 @@ export default function FormulirTambahONT({ wilayah }) {
     // Kecamatan Kelurahan
 
     useEffect(() => {
-        const targetWilayah = formulir.wilayah || pengaturan?.nama_wilayah;
-        if (!targetWilayah) { setKecamatanOptions([]); return; }
-        const wil = wilayah?.find((w) => w.nama_wilayah === targetWilayah);
-        const kode = wil?.kode_wilayah || targetWilayah;
-        if (!kode) { setKecamatanOptions([]); return; }
-        let cancelled = false;
-        setKecamatanLoading(true);
-        fetch(resolveUrl(`api/regions/kabupaten/${kode}/kecamatan`))
+        const wilayahTarget = formulir.wilayah || pengaturan?.nama_wilayah;
+        if (!wilayahTarget) { aturOpsiKecamatan([]); return; }
+        const wilayahDitemukan = wilayah?.find((w) => w.nama_wilayah === wilayahTarget);
+        const kode = wilayahDitemukan?.kode_wilayah || wilayahTarget;
+        if (!kode) { aturOpsiKecamatan([]); return; }
+        let dibatalkan = false;
+        aturKecamatanMemuat(true);
+        fetch(resolveHref(`api/regions/kabupaten/${kode}/kecamatan`))
             .then((r) => r.json())
             .then((j) => {
-                if (cancelled) return;
+                if (dibatalkan) return;
                 const data = Array.isArray(j?.data) ? j.data : [];
-                setKecamatanOptions(data);
+                aturOpsiKecamatan(data);
             })
-            .catch(() => { if (!cancelled) setKecamatanOptions([]); })
-            .finally(() => { if (!cancelled) setKecamatanLoading(false); });
-        return () => { cancelled = true; };
+            .catch(() => { if (!dibatalkan) aturOpsiKecamatan([]); })
+            .finally(() => { if (!dibatalkan) aturKecamatanMemuat(false); });
+        return () => { dibatalkan = true; };
     }, [formulir.wilayah, pengaturan?.nama_wilayah, wilayah, base]);
 
-    const fetchKelurahanForKecamatanName = (kecName) => {
-        const opt = kecamatanOptions.find((o) => o.name.toLowerCase() === kecName.toLowerCase().trim());
-        const code = opt?.code;
-        if (!code) { setKelurahanManual(true); setKelurahanOptions([]); return; }
-        setKelurahanLoading(true);
-        fetch(resolveUrl(`api/regions/kecamatan/${code}/kelurahan`))
+    const ambilKelurahanUntukNamaKecamatan = (namaKec) => {
+        const opsi = opsiKecamatan.find((o) => o.name.toLowerCase() === namaKec.toLowerCase().trim());
+        const code = opsi?.code;
+        if (!code) { aturKelurahanManual(true); aturOpsiKelurahan([]); return; }
+        aturKelurahanMemuat(true);
+        fetch(resolveHref(`api/regions/kecamatan/${code}/kelurahan`))
             .then((r) => r.json())
             .then((j) => {
                 const data = Array.isArray(j?.data) ? j.data : [];
-                if (data.length === 0) { setKelurahanManual(true); setKelurahanOptions([]); }
-                else { setKelurahanManual(false); setKelurahanOptions(data); }
+                if (data.length === 0) { aturKelurahanManual(true); aturOpsiKelurahan([]); }
+                else { aturKelurahanManual(false); aturOpsiKelurahan(data); }
             })
-            .catch(() => { setKelurahanManual(true); setKelurahanOptions([]); })
-            .finally(() => setKelurahanLoading(false));
+            .catch(() => { aturKelurahanManual(true); aturOpsiKelurahan([]); })
+            .finally(() => aturKelurahanMemuat(false));
     };
     const tanganiUbahKecamatan = (kejadian) => {
-        const val = kejadian.target.value;
-        aturFormulir({ ...formulir, kecamatan: val, kelurahan: "" });
-        setKelurahanOptions([]);
-        setKelurahanManual(false);
-        if (!val) return;
-        const opt = kecamatanOptions.find((o) => o.name === val);
-        const code = opt?.code;
-        if (!code) { setKelurahanManual(true); return; }
-        setKelurahanLoading(true);
-        fetch(resolveUrl(`api/regions/kecamatan/${code}/kelurahan`))
+        const nilai = kejadian.target.value;
+        aturFormulir({ ...formulir, kecamatan: nilai, kelurahan: "" });
+        aturOpsiKelurahan([]);
+        aturKelurahanManual(false);
+        if (!nilai) return;
+        const opsi = opsiKecamatan.find((o) => o.name === nilai);
+        const code = opsi?.code;
+        if (!code) { aturKelurahanManual(true); return; }
+        aturKelurahanMemuat(true);
+        fetch(resolveHref(`api/regions/kecamatan/${code}/kelurahan`))
             .then((r) => r.json())
             .then((j) => {
                 const data = Array.isArray(j?.data) ? j.data : [];
-                if (data.length === 0) { setKelurahanManual(true); setKelurahanOptions([]); }
-                else { setKelurahanManual(false); setKelurahanOptions(data); }
+                if (data.length === 0) { aturKelurahanManual(true); aturOpsiKelurahan([]); }
+                else { aturKelurahanManual(false); aturOpsiKelurahan(data); }
             })
-            .catch(() => { setKelurahanManual(true); setKelurahanOptions([]); })
-            .finally(() => setKelurahanLoading(false));
+            .catch(() => { aturKelurahanManual(true); aturOpsiKelurahan([]); })
+            .finally(() => aturKelurahanMemuat(false));
     };
-    const filteredKecamatan = useMemo(() => {
-        const input = (formulir.kecamatan || "").trim();
-        if (input.length < 2 || kecamatanOptions.length === 0) return [];
-        if (kecamatanOptions.some((o) => o.name.toLowerCase() === input.toLowerCase())) return [];
-        return kecamatanOptions.filter((opt) => similarity(input, opt.name) >= 0.7).slice(0, 6);
-    }, [formulir.kecamatan, kecamatanOptions]);
-    const filteredKelurahan = useMemo(() => {
-        const input = (formulir.kelurahan || "").trim();
-        if (input.length < 2 || kelurahanOptions.length === 0 || kelurahanManual) return [];
-        if (kelurahanOptions.some((o) => o.name.toLowerCase() === input.toLowerCase())) return [];
-        return kelurahanOptions.filter((opt) => similarity(input, opt.name) >= 0.7).slice(0, 6);
-    }, [formulir.kelurahan, kelurahanOptions, kelurahanManual]);
+    const kecamatanTersaring = useMemo(() => {
+        const masukan = (formulir.kecamatan || "").trim();
+        if (masukan.length < 2 || opsiKecamatan.length === 0) return [];
+        if (opsiKecamatan.some((o) => o.name.toLowerCase() === masukan.toLowerCase())) return [];
+        return opsiKecamatan.filter((opsi) => kemiripan(masukan, opsi.name) >= 0.7).slice(0, 6);
+    }, [formulir.kecamatan, opsiKecamatan]);
+    const kelurahanTersaring = useMemo(() => {
+        const masukan = (formulir.kelurahan || "").trim();
+        if (masukan.length < 2 || opsiKelurahan.length === 0 || kelurahanManual) return [];
+        if (opsiKelurahan.some((o) => o.name.toLowerCase() === masukan.toLowerCase())) return [];
+        return opsiKelurahan.filter((opsi) => kemiripan(masukan, opsi.name) >= 0.7).slice(0, 6);
+    }, [formulir.kelurahan, opsiKelurahan, kelurahanManual]);
     useEffect(() => {
-        if (!formulir.kecamatan || kecamatanOptions.length === 0) return;
-        const exact = kecamatanOptions.find((o) => o.name.toLowerCase() === formulir.kecamatan.toLowerCase().trim());
-        if (exact && kelurahanOptions.length === 0 && !kelurahanLoading && !kelurahanManual) {
-            fetchKelurahanForKecamatanName(formulir.kecamatan);
+        if (!formulir.kecamatan || opsiKecamatan.length === 0) return;
+        const tepat = opsiKecamatan.find((o) => o.name.toLowerCase() === formulir.kecamatan.toLowerCase().trim());
+        if (tepat && opsiKelurahan.length === 0 && !kelurahanMemuat && !kelurahanManual) {
+            ambilKelurahanUntukNamaKecamatan(formulir.kecamatan);
         }
     }, [formulir.kecamatan]);
 
     const tanganiUbah = (kejadian) => {
-        const { name, value, files } = kejadian.target;
-        if (name === "kode_ont") setKodeEdited(true);
-        if (name === "wilayah") {
-            const wil = wilayah?.find((w) => w.nama_wilayah === value);
-            const kodeWil = wil?.kode_wilayah;
+        const { name: nama, value: nilai, files: berkas } = kejadian.target;
+        if (nama === "kode_ont") aturKodeDiubah(true);
+        if (nama === "wilayah") {
+            const wilayahDitemukan = wilayah?.find((w) => w.nama_wilayah === nilai);
+            const kodeWil = wilayahDitemukan?.kode_wilayah;
             const prefix = kodeWil ? `SIMS-${kodeWil}-` : "";
-            if (!kodeEdited && prefix) {
-                aturFormulir((sebelumnya) => ({ ...sebelumnya, wilayah: value, kecamatan: "", kelurahan: "", kode_ont: prefix }));
+            if (!kodeDiubah && prefix) {
+                aturFormulir((sebelumnya) => ({ ...sebelumnya, wilayah: nilai, kecamatan: "", kelurahan: "", kode_ont: prefix }));
             } else {
-                aturFormulir((sebelumnya) => ({ ...sebelumnya, wilayah: value, kecamatan: "", kelurahan: "" }));
+                aturFormulir((sebelumnya) => ({ ...sebelumnya, wilayah: nilai, kecamatan: "", kelurahan: "" }));
             }
-            setKelurahanOptions([]);
-            setKelurahanManual(false);
-            setKecFocused(false);
-            setKelFocused(false);
+            aturOpsiKelurahan([]);
+            aturKelurahanManual(false);
+            aturKecFokus(false);
+            aturKelFokus(false);
             return;
         }
-        if (name === "kecamatan") {
-            aturFormulir({ ...formulir, kecamatan: value, kelurahan: "" });
-            setKelurahanOptions([]);
-            setKelurahanManual(false);
+        if (nama === "kecamatan") {
+            aturFormulir({ ...formulir, kecamatan: nilai, kelurahan: "" });
+            aturOpsiKelurahan([]);
+            aturKelurahanManual(false);
             return;
         }
-        if (name === "kelurahan") {
-            aturFormulir({ ...formulir, kelurahan: value });
+        if (nama === "kelurahan") {
+            aturFormulir({ ...formulir, kelurahan: nilai });
             return;
         }
         aturFormulir({
             ...formulir,
-            [name]: files ? files[0] : value,
+            [nama]: berkas ? berkas[0] : nilai,
         });
     };
 
@@ -178,15 +178,15 @@ export default function FormulirTambahONT({ wilayah }) {
     const tanganiKirim = (kejadian) => {
         kejadian.preventDefault();
 
-        router.post(resolveUrl("simpan-ont"), form, {
+        router.post(resolveHref("simpan-ont"), formulir, {
             forceFormData: true,
 
-            onError: (errors) => {
-                console.log(errors);
-                const raw = errors?.error || Object.values(errors || {})[0];
-                const pesan = Array.isArray(raw) ? raw[0] : raw;
+            onError: (galat) => {
+                console.log(galat);
+                const mentah = galat?.error || Object.values(galat || {})[0];
+                const pesan = Array.isArray(mentah) ? mentah[0] : mentah;
                 const pesanTampil = pesan || "Gagal menyimpan ONT. Periksa kembali isian formulir.";
-                window.dispatchEvent(new CustomEvent("tata-letak:galat", { detail: pesanTampil }));
+                window.dispatchEvent(new CustomEvent("layout:error", { detail: pesanTampil }));
             },
         });
     };
@@ -292,45 +292,45 @@ export default function FormulirTambahONT({ wilayah }) {
                                     type="text"
                                     value={formulir.kecamatan}
                                     onChange={tanganiUbah}
-                                    onFocus={() => setKecFocused(true)}
-                                    onBlur={() => setTimeout(() => setKecFocused(false), 180)}
-                                    placeholder={kecamatanLoading ? "Memuat kecamatan..." : "Ketik kecamatan"}
+                                    onFocus={() => aturKecFokus(true)}
+                                    onBlur={() => setTimeout(() => aturKecFokus(false), 180)}
+                                    placeholder={kecamatanMemuat ? "Memuat kecamatan..." : "Ketik kecamatan"}
                                     required
                                     autoComplete="off"
                                     className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                                 />
-                                {kecFocused && filteredKecamatan.length > 0 && (
+                                {kecFokus && kecamatanTersaring.length > 0 && (
                                     <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
-                                        {filteredKecamatan.map((opt) => (
+                                        {kecamatanTersaring.map((opsi) => (
                                             <button
-                                                key={opt.code}
+                                                key={opsi.code}
                                                 type="button"
                                                 onMouseDown={(kejadian) => kejadian.preventDefault()}
                                                 onClick={() => {
-                                                    aturFormulir((sebelumnya) => ({ ...sebelumnya, kecamatan: opt.name, kelurahan: "" }));
-                                                    setKecFocused(false);
-                                                    setKelurahanOptions([]);
-                                                    setKelurahanManual(false);
-                                                    setKelurahanLoading(true);
-                                                    fetch(resolveUrl(`api/regions/kecamatan/${opt.code}/kelurahan`))
+                                                    aturFormulir((sebelumnya) => ({ ...sebelumnya, kecamatan: opsi.name, kelurahan: "" }));
+                                                    aturKecFokus(false);
+                                                    aturOpsiKelurahan([]);
+                                                    aturKelurahanManual(false);
+                                                    aturKelurahanMemuat(true);
+                                                    fetch(resolveHref(`api/regions/kecamatan/${opsi.code}/kelurahan`))
                                                         .then((r) => r.json())
                                                         .then((j) => {
                                                             const data = Array.isArray(j?.data) ? j.data : [];
-                                                            if (data.length === 0) { setKelurahanManual(true); setKelurahanOptions([]); }
-                                                            else { setKelurahanManual(false); setKelurahanOptions(data); }
+                                                            if (data.length === 0) { aturKelurahanManual(true); aturOpsiKelurahan([]); }
+                                                            else { aturKelurahanManual(false); aturOpsiKelurahan(data); }
                                                         })
-                                                        .catch(() => { setKelurahanManual(true); setKelurahanOptions([]); })
-                                                        .finally(() => setKelurahanLoading(false));
+                                                        .catch(() => { aturKelurahanManual(true); aturOpsiKelurahan([]); })
+                                                        .finally(() => aturKelurahanMemuat(false));
                                                 }}
                                                 className="w-full px-4 py-2.5 text-left capitalize text-sm hover:bg-[#AB3C3C]/10 hover:text-[#AB3C3C] transition"
                                             >
-                                                <span className="font-medium">{opt.name}</span>
+                                                <span className="font-medium">{opsi.name}</span>
 
                                             </button>
                                         ))}
                                     </div>
                                 )}
-                                {kecamatanLoading && <p className="mt-1 text-[11px] text-gray-400 dark:text-night-500">Memuat kecamatan...</p>}
+                                {kecamatanMemuat && <p className="mt-1 text-[11px] text-gray-400 dark:text-night-500">Memuat kecamatan...</p>}
                             </div>
 
                             {/* Kelurahan */}
@@ -345,27 +345,27 @@ export default function FormulirTambahONT({ wilayah }) {
                                     type="text"
                                     value={formulir.kelurahan}
                                     onChange={tanganiUbah}
-                                    onFocus={() => setKelFocused(true)}
-                                    onBlur={() => setTimeout(() => setKelFocused(false), 180)}
-                                    placeholder={kelurahanLoading ? "Memuat..." : kelurahanManual && kelurahanOptions.length === 0 ? "Kelurahan tidak terdeteksi – isi manual" : "Ketik kelurahan"}
+                                    onFocus={() => aturKelFokus(true)}
+                                    onBlur={() => setTimeout(() => aturKelFokus(false), 180)}
+                                    placeholder={kelurahanMemuat ? "Memuat..." : kelurahanManual && opsiKelurahan.length === 0 ? "Kelurahan tidak terdeteksi – isi manual" : "Ketik kelurahan"}
                                     required
                                     autoComplete="off"
                                     className="w-full px-4 py-2.5 border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 rounded-xl outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500 disabled:bg-gray-50"
                                 />
-                                {kelFocused && filteredKelurahan.length > 0 && (
+                                {kelFokus && kelurahanTersaring.length > 0 && (
                                     <div className="absolute left-0 right-0 z-20 mt-1 max-h-48 overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
-                                        {filteredKelurahan.map((opt) => (
+                                        {kelurahanTersaring.map((opsi) => (
                                             <button
-                                                key={opt.code}
+                                                key={opsi.code}
                                                 type="button"
                                                 onMouseDown={(kejadian) => kejadian.preventDefault()}
                                                 onClick={() => {
-                                                    aturFormulir((sebelumnya) => ({ ...sebelumnya, kelurahan: opt.name }));
-                                                    setKelFocused(false);
+                                                    aturFormulir((sebelumnya) => ({ ...sebelumnya, kelurahan: opsi.name }));
+                                                    aturKelFokus(false);
                                                 }}
                                                 className="w-full px-4 py-2.5 text-left capitalize text-sm hover:bg-[#AB3C3C]/10 hover:text-[#AB3C3C] transition"
                                             >
-                                                <span className="font-medium">{opt.name}</span>
+                                                <span className="font-medium">{opsi.name}</span>
 
                                             </button>
                                         ))}
@@ -374,7 +374,7 @@ export default function FormulirTambahONT({ wilayah }) {
                                 {kelurahanManual && (
                                     <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-300">Kelurahan tidak terdeteksi – silakan isi manual.</p>
                                 )}
-                                {kelurahanLoading && <p className="mt-1 text-[11px] text-gray-400 dark:text-night-500">Memuat kelurahan...</p>}
+                                {kelurahanMemuat && <p className="mt-1 text-[11px] text-gray-400 dark:text-night-500">Memuat kelurahan...</p>}
                             </div>
 
                             {/* Petugas */}

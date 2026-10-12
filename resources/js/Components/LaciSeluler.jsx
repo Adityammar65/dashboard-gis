@@ -4,14 +4,14 @@ import { IoIosLogOut, IoIosSettings, IoMdNotifications } from "react-icons/io";
 import { FiX } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
 import { butirMenu, apakahJalurAktif, apakahJalurPengaturan, apakahJalurNotifikasi, KONFIRMASI_KELUAR } from "./butirMenu";
-import { useSelesaikanTautan } from "../hooks/useDasar";
+import { useResolveHref } from "../hooks/useBase";
 
 const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
     const { url, props } = usePage();
     const jalurSaatIni = useMemo(() => url.split("?")[0], [url]);
     const user = props?.auth?.username ?? "";
     const jumlahBelumDibaca = Number(props?.notifikasiBelumDibaca || 0);
-    const selesaikanTautan = useSelesaikanTautan();
+    const resolveHref = useResolveHref();
 
     const isPengaturan = apakahJalurPengaturan(jalurSaatIni);
     const isNotifikasi = apakahJalurNotifikasi(jalurSaatIni);
@@ -20,13 +20,13 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
         if (!buka) return;
         const prev = document.body.style.overflow;
         document.body.style.overflow = "hidden";
-        const onKey = (e) => {
-            if (e.key === "Escape") saatTutup?.();
+        const saatTombol = (kejadian) => {
+            if (kejadian.key === "Escape") saatTutup?.();
         };
-        document.addEventListener("keydown", onKey);
+        document.addEventListener("keydown", saatTombol);
         return () => {
             document.body.style.overflow = prev;
-            document.removeEventListener("keydown", onKey);
+            document.removeEventListener("keydown", saatTombol);
         };
     }, [buka, saatTutup]);
 
@@ -93,7 +93,7 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
                         return (
                             <a
                                 key={item.tautan}
-                                href={selesaikanTautan(item.tautan)}
+                                href={resolveHref(item.tautan)}
                                 onClick={saatTutup}
                                 aria-current={apakahAktif ? "page" : undefined}
                                 className={`
@@ -101,7 +101,7 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
                                     rounded-xl px-3 py-3
                                     text-sm font-medium
                                     transition-all duration-200
-                                    ${isActive
+                                    ${apakahAktif
                                         ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
                                         : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:text-night-300 dark:hover:bg-night-800 dark:hover:text-white"
                                     }
@@ -119,7 +119,7 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
                     {/* Notifikasi */}
 
                     <a
-                        href={selesaikanTautan("notifikasi")}
+                        href={resolveHref("notifikasi")}
                         onClick={saatTutup}
                         aria-current={isNotifikasi ? "page" : undefined}
                         className={`
@@ -156,7 +156,7 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
                     {/* Pengaturan */}
 
                     <a
-                        href={selesaikanTautan("pengaturan")}
+                        href={resolveHref("pengaturan")}
                         onClick={saatTutup}
                         aria-current={isPengaturan ? "page" : undefined}
                         className={`
@@ -182,10 +182,10 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
                     {/* Keluar */}
 
                     <a
-                        href={selesaikanTautan("logout")}
-                        onClick={(e) => {
+                        href={resolveHref("logout")}
+                        onClick={(kejadian) => {
                             if (!confirm(KONFIRMASI_KELUAR)) {
-                                e.preventDefault();
+                                kejadian.preventDefault();
                             } else {
                                 saatTutup?.();
                             }

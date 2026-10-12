@@ -1,103 +1,103 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import { FaMapMarkerAlt, FaSearch, FaSpinner } from "react-icons/fa";
-import { bangunIkonTipe, uraiKoordinat } from "./penandaPeta";
+import { buildTypeIcon, parseCoord } from "./mapMarker";
 
-const DEFAULT_CENTER = [-7.717, 110.355];
+const PUSAT_BAWAAN = [-7.717, 110.355];
 
-function PenetapKlik({ onPick }) {
+function PenetapKlik({ saatPilih }) {
     const map = useMap();
     useEffect(() => {
-        const handler = (e) => onPick(e.latlng.lat, e.latlng.lng);
-        map.on("click", handler);
-        return () => map.off("click", handler);
-    }, [map, onPick]);
+        const penangan = (kejadian) => saatPilih(kejadian.latlng.lat, kejadian.latlng.lng);
+        map.on("click", penangan);
+        return () => map.off("click", penangan);
+    }, [map, saatPilih]);
     return null;
 }
 
-function TerbangKe({ center }) {
+function TerbangKe({ pusat }) {
     const map = useMap();
     useEffect(() => {
-        if (center) map.flyTo(center, 16, { duration: 0.8 });
-    }, [map, center]);
+        if (pusat) map.flyTo(pusat, 16, { duration: 0.8 });
+    }, [map, pusat]);
     return null;
 }
 
 export default function PemilihLokasi({ lintang, bujur, onChange, jenis = "tiang", status = null }) {
-    const lat = uraiKoordinat(lintang);
-    const lng = uraiKoordinat(bujur);
-    const hasPos = lat !== null && lng !== null;
-    const initialPos = hasPos ? [lat, lng] : DEFAULT_CENTER;
-    const [pendingPos, setPendingPos] = useState(initialPos);
-    const [query, setQuery] = useState("");
-    const [results, setResults] = useState([]);
-    const [searching, setSearching] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [searchNote, setSearchNote] = useState("");
-    const timer = useRef(null);
-    const cache = useRef(new Map());
+    const lat = parseCoord(lintang);
+    const lng = parseCoord(bujur);
+    const adaPosisi = lat !== null && lng !== null;
+    const posisiAwal = adaPosisi ? [lat, lng] : PUSAT_BAWAAN;
+    const [posisiTunda, aturPosisiTunda] = useState(posisiAwal);
+    const [kueri, aturKueri] = useState("");
+    const [hasil, aturHasil] = useState([]);
+    const [mencari, aturMencari] = useState(false);
+    const [buka, aturBuka] = useState(false);
+    const [catatanCari, aturCatatanCari] = useState("");
+    const pewaktu = useRef(null);
+    const tembolok = useRef(new Map());
 
     useEffect(() => {
-        if (hasPos) setPendingPos([lat, lng]);
+        if (adaPosisi) aturPosisiTunda([lat, lng]);
     }, [lat, lng]);
 
-    const emit = (la, ln) => {
-        onChange?.(Number(la.toFixed(6)), Number(ln.toFixed(6)));
+    const pancarkan = (lintangBaru, bujurBaru) => {
+        onChange?.(Number(lintangBaru.toFixed(6)), Number(bujurBaru.toFixed(6)));
     };
 
-    const doSearch = async (q) => {
-        const key = q.trim().toLowerCase();
-        if (!key || key.length < 3) {
-            setResults([]);
-            setSearchNote("");
+    const cariAlamat = async (q) => {
+        const kunci = q.trim().toLowerCase();
+        if (!kunci || kunci.length < 3) {
+            aturHasil([]);
+            aturCatatanCari("");
             return;
         }
-        if (cache.current.has(key)) {
-            setResults(cache.current.get(key));
-            setSearchNote("");
-            setOpen(true);
+        if (tembolok.current.has(kunci)) {
+            aturHasil(tembolok.current.get(kunci));
+            aturCatatanCari("");
+            aturBuka(true);
             return;
         }
-        setSearching(true);
-        setSearchNote("");
+        aturMencari(true);
+        aturCatatanCari("");
         try {
-            const res = await fetch(
+            const tanggapan = await fetch(
                 `https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=id&q=${encodeURIComponent(q)}`,
                 { headers: { Accept: "application/json" } }
             );
-            if (res.status === 429) {
-                setResults([]);
-                setSearchNote("Lagi banyak yang mencari, coba lagi sebentar ya…");
-                setOpen(true);
+            if (tanggapan.status === 429) {
+                aturHasil([]);
+                aturCatatanCari("Lagi banyak yang mencari, coba lagi sebentar ya…");
+                aturBuka(true);
                 return;
             }
-            const data = await res.json();
-            const list = Array.isArray(data) ? data : [];
-            if (cache.current.size > 50) cache.current.clear();
-            cache.current.set(key, list);
-            setResults(list);
-            setSearchNote(list.length === 0 ? "Alamat tidak ketemu, coba kata kunci lain atau klik langsung di peta ya." : "");
-            setOpen(true);
+            const data = await tanggapan.json();
+            const daftar = Array.isArray(data) ? data : [];
+            if (tembolok.current.size > 50) tembolok.current.clear();
+            tembolok.current.set(kunci, daftar);
+            aturHasil(daftar);
+            aturCatatanCari(daftar.length === 0 ? "Alamat tidak ketemu, coba kata kunci lain atau klik langsung di peta ya." : "");
+            aturBuka(true);
         } catch {
-            setResults([]);
-            setSearchNote("Koneksi pencarian lagi bermasalah, coba lagi sebentar ya.");
-            setOpen(true);
+            aturHasil([]);
+            aturCatatanCari("Koneksi pencarian lagi bermasalah, coba lagi sebentar ya.");
+            aturBuka(true);
         } finally {
-            setSearching(false);
+            aturMencari(false);
         }
     };
 
-    const onQueryChange = (v) => {
-        setQuery(v);
-        if (timer.current) clearTimeout(timer.current);
-        timer.current = setTimeout(() => doSearch(v), 500);
+    const saatKueriBerubah = (nilai) => {
+        aturKueri(nilai);
+        if (pewaktu.current) clearTimeout(pewaktu.current);
+        pewaktu.current = setTimeout(() => cariAlamat(nilai), 500);
     };
 
-    useEffect(() => () => timer.current && clearTimeout(timer.current), []);
+    useEffect(() => () => pewaktu.current && clearTimeout(pewaktu.current), []);
 
-    const flyTarget = useMemo(() => pendingPos, [pendingPos]);
+    const targetTerbang = useMemo(() => posisiTunda, [posisiTunda]);
 
-    const markerIcon = useMemo(() => bangunIkonTipe(type), [type]);
+    const ikonPenanda = useMemo(() => buildTypeIcon(jenis), [jenis]);
 
     return (
         <div className="relative z-0 isolate space-y-2">
@@ -105,34 +105,34 @@ export default function PemilihLokasi({ lintang, bujur, onChange, jenis = "tiang
                 <FaSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-night-500" size={13} />
                 <input
                     type="text"
-                    value={query}
-                    onChange={(e) => onQueryChange(e.target.value)}
-                    onFocus={() => results.length > 0 && setOpen(true)}
-                    onBlur={() => setTimeout(() => setOpen(false), 200)}
+                    value={kueri}
+                    onChange={(kejadian) => saatKueriBerubah(kejadian.target.value)}
+                    onFocus={() => hasil.length > 0 && aturBuka(true)}
+                    onBlur={() => setTimeout(() => aturBuka(false), 200)}
                     placeholder="Cari alamat… cth: Malioboro, Sleman"
                     className="w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 py-2.5 pl-9 pr-9 text-sm text-gray-900 dark:text-night-200 outline-none focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 transition shadow-sm placeholder:text-gray-400 dark:placeholder:text-night-500"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-night-500">
-                    {searching ? <FaSpinner className="animate-spin" size={13} /> : null}
+                    {mencari ? <FaSpinner className="animate-spin" size={13} /> : null}
                 </span>
-                {open && (results.length > 0 || searchNote) && (
+                {buka && (hasil.length > 0 || catatanCari) && (
                     <ul className="absolute z-30 mt-1 max-h-52 w-full overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
-                        {searchNote && results.length === 0 && (
-                            <li className="px-3 py-2 text-xs text-gray-500 dark:text-night-400">{searchNote}</li>
+                        {catatanCari && hasil.length === 0 && (
+                            <li className="px-3 py-2 text-xs text-gray-500 dark:text-night-400">{catatanCari}</li>
                         )}
-                        {results.map((r) => (
-                            <li key={r.place_id}>
+                        {hasil.map((baris) => (
+                            <li key={baris.place_id}>
                                 <button
                                     type="button"
                                     onMouseDown={() => {
-                                        setPendingPos([parseFloat(r.lat), parseFloat(r.lon)]);
-                                        setQuery(r.display_name.split(",").slice(0, 2).join(","));
-                                        setOpen(false);
+                                        aturPosisiTunda([parseFloat(baris.lat), parseFloat(baris.lon)]);
+                                        aturKueri(baris.display_name.split(",").slice(0, 2).join(","));
+                                        aturBuka(false);
                                     }}
                                     className="flex w-full items-start gap-2 px-3 py-2 text-left text-xs hover:bg-gray-50 dark:hover:bg-night-800"
                                 >
                                     <FaMapMarkerAlt className="mt-0.5 shrink-0 text-[#AB3C3C]" size={12} />
-                                    <span className="line-clamp-2 text-gray-700 dark:text-night-200">{r.display_name}</span>
+                                    <span className="line-clamp-2 text-gray-700 dark:text-night-200">{baris.display_name}</span>
                                 </button>
                             </li>
                         ))}
@@ -141,22 +141,22 @@ export default function PemilihLokasi({ lintang, bujur, onChange, jenis = "tiang
             </div>
 
             <div className="relative z-0 isolate overflow-hidden rounded-xl border border-gray-200 dark:border-night-700 shadow-sm">
-                <MapContainer center={initialPos} zoom={hasPos ? 16 : 12} scrollWheelZoom={true} className="relative z-0 h-[300px] w-full">
+                <MapContainer center={posisiAwal} zoom={adaPosisi ? 16 : 12} scrollWheelZoom={true} className="relative z-0 h-[300px] w-full">
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         maxZoom={19}
                     />
-                    <PenetapKlik onPick={(la, ln) => setPendingPos([la, ln])} />
-                    <TerbangKe center={flyTarget} />
+                    <PenetapKlik saatPilih={(lintangBaru, bujurBaru) => aturPosisiTunda([lintangBaru, bujurBaru])} />
+                    <TerbangKe pusat={targetTerbang} />
                     <Marker
-                        position={pendingPos}
-                        icon={markerIcon}
+                        position={posisiTunda}
+                        icon={ikonPenanda}
                         draggable
                         eventHandlers={{
-                            dragend: (e) => {
-                                const p = e.target.getLatLng();
-                                setPendingPos([p.lat, p.lng]);
+                            dragend: (kejadian) => {
+                                const titik = kejadian.target.getLatLng();
+                                aturPosisiTunda([titik.lat, titik.lng]);
                             },
                         }}
                     />
@@ -166,18 +166,18 @@ export default function PemilihLokasi({ lintang, bujur, onChange, jenis = "tiang
             <div className="flex flex-wrap items-center gap-2">
                 <button
                     type="button"
-                    onClick={() => emit(pendingPos[0], pendingPos[1])}
+                    onClick={() => pancarkan(posisiTunda[0], posisiTunda[1])}
                     className="flex items-center gap-1.5 rounded-lg border border-gray-200 dark:border-night-600 bg-white dark:bg-night-800 px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-night-200 shadow-sm hover:bg-gray-50 dark:hover:bg-night-700"
                 >
                     <FaMapMarkerAlt size={12} />
                     Tentukan Lokasi
                 </button>
                 <span className="rounded-lg bg-gray-50 dark:bg-night-800/60 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-night-300 ring-1 ring-gray-200 dark:ring-night-700">
-                    {`${pendingPos[0].toFixed(6)}, ${pendingPos[1].toFixed(6)}`}
+                    {`${posisiTunda[0].toFixed(6)}, ${posisiTunda[1].toFixed(6)}`}
                 </span>
             </div>
-            {searchNote && (
-                <p className="text-xs text-gray-500 dark:text-night-400">{searchNote}</p>
+            {catatanCari && (
+                <p className="text-xs text-gray-500 dark:text-night-400">{catatanCari}</p>
             )}
         </div>
     );

@@ -5,13 +5,13 @@ import { IoMdArrowDropdown, IoMdNotifications } from "react-icons/io";
 import { IoIosSettings, IoIosLogOut } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
 import { usePage, router } from "@inertiajs/react";
-import useDasar, { aset } from "../hooks/useDasar";
+import useBase, { asset } from "../hooks/useBase";
 
 const Tajuk = memo(function Tajuk({ saatMenu }) {
     const { url, props } = usePage();
     const jumlahBelumDibaca = Number(props?.notifikasiBelumDibaca || 0);
     const user = props?.auth?.username ?? "";
-    const dasar = useDasar();
+    const base = useBase();
 
     const [kueri, aturKueri] = useState("");
     const [saringAset, aturSaringAset] = useState("");
@@ -29,14 +29,14 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
 
     const tanganiUbahPilihan = useCallback((kejadian) => {
         const nilai = kejadian.target.value;
-        if (v === "Tiang" || v === "tiang") aturSaringAset("tiang");
-        else if (v === "ONT" || v === "ont") aturSaringAset("ont");
+        if (nilai === "Tiang" || nilai === "tiang") aturSaringAset("tiang");
+        else if (nilai === "ONT" || nilai === "ont") aturSaringAset("ont");
         else aturSaringAset("");
     }, []);
 
     const ambilHasilCari = useCallback(async (q, jenis, signal) => {
-        const paramJenis = type ? `&type=${encodeURIComponent(jenis)}` : "";
-        const urlCari = `${dasar}/api/search`.replace(/\/+/g, '/') + `?q=${encodeURIComponent(q)}${paramJenis}`;
+        const paramJenis = jenis ? `&type=${encodeURIComponent(jenis)}` : "";
+        const urlCari = `${base}/api/search`.replace(/\/+/g, '/') + `?q=${encodeURIComponent(q)}${paramJenis}`;
         const tanggapan = await fetch(urlCari, {
             headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
             signal,
@@ -44,8 +44,8 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
         });
         if (!tanggapan.ok) throw new Error('search failed');
         const data = await tanggapan.json();
-        return Array.isArray(data.hasil) ? data.hasil : [];
-    }, [dasar]);
+        return Array.isArray(data.results) ? data.results : [];
+    }, [base]);
 
     useEffect(() => {
         if (rujukanBatal.current) rujukanBatal.current.abort();
@@ -58,14 +58,14 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
         }
         const pewaktu = setTimeout(async () => {
             const pengendali = new AbortController();
-            rujukanBatal.current = controller;
+            rujukanBatal.current = pengendali;
             aturMemuat(true);
             try {
                 const daftar = await ambilHasilCari(q, saringAset, pengendali.signal);
                 aturHasil(daftar);
                 aturBuka(daftar.length > 0);
             } catch (kejadian) {
-                if (e.name !== 'AbortError') {
+                if (kejadian.name !== 'AbortError') {
                     aturHasil([]);
                     aturBuka(false);
                 }
@@ -74,17 +74,17 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
             }
         }, 300);
         return () => clearTimeout(pewaktu);
-    }, [kueri, saringAset, dasar, ambilHasilCari]);
+    }, [kueri, saringAset, base, ambilHasilCari]);
 
     useEffect(() => {
         const penangan = (kejadian) => {
-            if (rujukanPembungkus.current && !rujukanPembungkus.current.contains(kejadian.tujuan)) {
+            if (rujukanPembungkus.current && !rujukanPembungkus.current.contains(kejadian.target)) {
                 aturBuka(false);
             }
-            if (rujukanPembungkusSeluler.current && !rujukanPembungkusSeluler.current.contains(kejadian.tujuan)) {
+            if (rujukanPembungkusSeluler.current && !rujukanPembungkusSeluler.current.contains(kejadian.target)) {
                 aturCariSelulerBuka(false);
             }
-            if (rujukanProfil.current && !rujukanProfil.current.contains(kejadian.tujuan)) {
+            if (rujukanProfil.current && !rujukanProfil.current.contains(kejadian.target)) {
                 aturProfilBuka(false);
             }
         };
@@ -94,13 +94,13 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
                 aturCariSelulerBuka(false);
             }
         };
-        document.addEventListener('mousedown', handler);
-        document.addEventListener('touchstart', handler);
-        document.addEventListener('keydown', escapeHandler);
+        document.addEventListener('mousedown', penangan);
+        document.addEventListener('touchstart', penangan);
+        document.addEventListener('keydown', penanganLepas);
         return () => {
-            document.removeEventListener('mousedown', handler);
-            document.removeEventListener('touchstart', handler);
-            document.removeEventListener('keydown', escapeHandler);
+            document.removeEventListener('mousedown', penangan);
+            document.removeEventListener('touchstart', penangan);
+            document.removeEventListener('keydown', penanganLepas);
         };
     }, []);
 
@@ -109,9 +109,9 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
         aturBuka(false);
         aturCariSelulerBuka(false);
         aturKueri("");
-        const tautan = `${dasar}/${item.href}`.replace(/\/+/g, '/');
-        router.get(href);
-    }, [dasar]);
+        const tautan = `${base}/${item.href}`.replace(/\/+/g, '/');
+        router.get(tautan);
+    }, [base]);
 
     const selesaikanAlihan = useCallback((item, asetDitentukan) => {
         if (!item) return null;
@@ -122,7 +122,7 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
     }, []);
 
     const tanganiKirimSeluler = useCallback(async (kejadian) => {
-        e?.preventDefault();
+        kejadian?.preventDefault();
         const q = kueri.trim();
         if (q.length < 2) {
             aturPemberitahuanSeluler("Masukkan minimal 2 karakter");
@@ -135,7 +135,7 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
             const pengendali = new AbortController();
             const daftar = await ambilHasilCari(q, saringAset, pengendali.signal);
             const teratas = daftar[0];
-            if (!top) {
+            if (!teratas) {
                 aturPemberitahuanSeluler("Tidak ditemukan, coba kata kunci lain");
                 return;
             }
@@ -147,7 +147,7 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
             aturCariSelulerBuka(false);
             aturPemberitahuanSeluler("");
             aturKueri("");
-            router.get(`${dasar}/${target}`.replace(/\/+/g, '/'));
+            router.get(`${base}/${tujuan}`.replace(/\/+/g, '/'));
         } catch (err) {
             if (err?.name !== 'AbortError') {
                 aturPemberitahuanSeluler("Pencarian gagal, coba lagi");
@@ -155,7 +155,7 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
         } finally {
             aturSelulerSibuk(false);
         }
-    }, [kueri, saringAset, dasar, selulerSibuk, ambilHasilCari, selesaikanAlihan]);
+    }, [kueri, saringAset, base, selulerSibuk, ambilHasilCari, selesaikanAlihan]);
 
     return (
         <header className="sticky top-0 z-50 flex h-18 items-center justify-between bg-gradient-to-r from-[#6F2424] to-[#AB3C3C] px-6 py-2 max-md:gap-2 max-md:px-3 max-md:h-[60px] max-md:min-h-[60px] max-md:max-h-[60px] max-md:py-0">
@@ -175,7 +175,7 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
                 )}
                 <div>
                     <img
-                        src={aset("public/Assets/Logo.png")}
+                        src={asset("public/Assets/Logo.png")}
                         alt="Logo"
                         className="w-10 max-md:w-8"
                         width="40"
@@ -221,7 +221,7 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
                                         <button
                                             key={`${item.type}-${item.id}-${item.match}-${item.href}`}
                                             type="button"
-                                            onMouseDown={(kejadian) => e.preventDefault()}
+                                            onMouseDown={(kejadian) => kejadian.preventDefault()}
                                             onClick={() => tanganiKlikHasil(item)}
                                             className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-0 transition dark:hover:bg-night-800 dark:border-night-700"
                                         >
@@ -316,7 +316,7 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
                     )}
                 </div>
 
-                <a href={`${dasar}/notifikasi`.replace(/\/+/g, '/')} className="relative hidden md:block max-md:shrink-0">
+                <a href={`${base}/notifikasi`.replace(/\/+/g, '/')} className="relative hidden md:block max-md:shrink-0">
                     <IoMdNotifications size={50} className="px-3 text-white/65 hover:text-white transition-all duration-200 max-md:h-10 max-md:w-10 max-md:px-2 max-md:scale-100" />
                     {jumlahBelumDibaca > 0 && (
                         <span className="absolute right-2 top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white max-md:h-4 max-md:min-w-4 max-md:px-0.5 max-md:text-[8px] max-md:leading-none max-md:right-1 max-md:top-1">
@@ -350,7 +350,7 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
                             </div>
                             <div className="bg-white py-1 dark:bg-night-900">
                                 <a
-                                    href={`${dasar}/pengaturan`.replace(/\/+/g, '/')}
+                                    href={`${base}/pengaturan`.replace(/\/+/g, '/')}
                                     onClick={() => aturProfilBuka(false)}
                                     className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-[#AB3C3C] dark:text-night-200 dark:hover:bg-night-800"
                                 >
@@ -358,10 +358,10 @@ const Tajuk = memo(function Tajuk({ saatMenu }) {
                                     Pengaturan Profil
                                 </a>
                                 <a
-                                    href={`${dasar}/logout`.replace(/\/+/g, '/')}
+                                    href={`${base}/logout`.replace(/\/+/g, '/')}
                                     onClick={(kejadian) => {
                                         if (!confirm("Kembali ke Halaman Login?")) {
-                                            e.preventDefault();
+                                            kejadian.preventDefault();
                                         } else {
                                             aturProfilBuka(false);
                                         }

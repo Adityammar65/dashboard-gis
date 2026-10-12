@@ -2,27 +2,27 @@
 
 namespace Tests\Feature;
 
-use App\Services\GambarService;
+use App\Services\ImageService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class GambarServiceTest extends TestCase
+class ImageServiceTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
 
-        if (! GambarService::apakahWebPDidukung()) {
-            $this->markTestSkipped('Tidak ada penkode WebP (cwebp atau ImageMagick) pada hos ini.');
+        if (! ImageService::isWebPSupported()) {
+            $this->markTestSkipped('No WebP encoder (cwebp or ImageMagick) available on this host.');
         }
 
         Storage::fake('public');
     }
 
-    public function test_menyimpan_webp_dengan_nama_berkas_uuid(): void
+    public function test_it_stores_a_webp_with_a_uuid_filename(): void
     {
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 800, 600), 'tiang');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 800, 600), 'tiang');
 
         $this->assertStringStartsWith('tiang/', $path);
         $this->assertStringEndsWith('.webp', $path);
@@ -34,9 +34,9 @@ class GambarServiceTest extends TestCase
         Storage::disk('public')->assertExists($path);
     }
 
-    public function test_keluaran_merupakan_webp_yang_sah_secara_struktural(): void
+    public function test_output_is_a_structurally_valid_webp(): void
     {
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 800, 600), 'tiang');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 800, 600), 'tiang');
 
         $contents = Storage::disk('public')->get($path);
 
@@ -45,61 +45,61 @@ class GambarServiceTest extends TestCase
         $this->assertSame('image/webp', getimagesizefromstring($contents)['mime']);
     }
 
-    public function test_gambar_lanskap_dibatasi_pada_sisi_terpanjang(): void
+    public function test_landscape_image_is_capped_on_its_longest_side(): void
     {
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 3000, 2000), 'tiang');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 3000, 2000), 'tiang');
 
-        [$width, $height] = $this->dimensi($path);
+        [$width, $height] = $this->dimensions($path);
 
         $this->assertSame(1600, $width);
-        $this->assertSame(1066, $height, 'Rasio aspek harus dipertahankan (3:2).');
+        $this->assertSame(1066, $height, 'Aspect ratio should be preserved (3:2).');
     }
 
-    public function test_gambar_potret_dibatasi_pada_tingginya(): void
+    public function test_portrait_image_is_capped_on_its_height(): void
     {
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 2000, 3000), 'tiang');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 2000, 3000), 'tiang');
 
-        [$width, $height] = $this->dimensi($path);
+        [$width, $height] = $this->dimensions($path);
 
         $this->assertSame(1600, $height);
         $this->assertSame(1066, $width, 'Aspect ratio should be preserved (2:3).');
     }
 
-    public function test_gambar_di_bawah_batas_mempertahankan_dimensi_asli(): void
+    public function test_image_within_the_cap_keeps_its_original_dimensions(): void
     {
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 1024, 768), 'tiang');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 1024, 768), 'tiang');
 
-        $this->assertSame([1024, 768], $this->dimensi($path));
+        $this->assertSame([1024, 768], $this->dimensions($path));
     }
 
-    public function test_gambar_tepat_pada_batas_tidak_diubah_ukurannya(): void
+    public function test_image_exactly_at_the_cap_is_not_resized(): void
     {
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 1600, 1200), 'tiang');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 1600, 1200), 'tiang');
 
-        $this->assertSame([1600, 1200], $this->dimensi($path));
+        $this->assertSame([1600, 1200], $this->dimensions($path));
     }
 
-    public function test_gambar_tidak_pernah_diperbesar(): void
+    public function test_image_is_never_upscaled(): void
     {
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 400, 300), 'tiang');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 400, 300), 'tiang');
 
-        $this->assertSame([400, 300], $this->dimensi($path));
+        $this->assertSame([400, 300], $this->dimensions($path));
     }
 
-    public function test_batas_sisi_terpanjang_dapat_dikonfigurasi(): void
+    public function test_max_longest_side_is_configurable(): void
     {
         config(['image.max_longest_side' => 800]);
 
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 3000, 2000), 'tiang');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 3000, 2000), 'tiang');
 
-        $this->assertSame([800, 533], $this->dimensi($path));
+        $this->assertSame([800, 533], $this->dimensions($path));
     }
 
-    public function test_orientasi_exif_dipertahankan_agar_foto_tampil_tegak(): void
+    public function test_exif_orientation_is_preserved_so_photos_display_upright(): void
     {
-        $file = $this->jpegDenganOrientasiExif(6);
+        $file = $this->jpegWithExifOrientation(6);
 
-        $path = $this->simpan($file, 'tiang');
+        $path = $this->store($file, 'tiang');
 
         $contents = Storage::disk('public')->get($path);
 
@@ -108,20 +108,20 @@ class GambarServiceTest extends TestCase
             $contents,
             'cwebp must keep the EXIF chunk, otherwise rotated photos display sideways.'
         );
-        $this->assertSame(6, $this->orientasiExif($contents));
+        $this->assertSame(6, $this->exifOrientation($contents));
     }
 
-    public function test_orientasi_diratakan_oleh_cadangan_magick(): void
+    public function test_orientation_is_flattened_by_the_magick_fallback(): void
     {
         config(['image.fallbacks' => ['magick']]);
 
-        if (! app(GambarService::class)->memilikiPenkode('magick')) {
+        if (! app(ImageService::class)->hasEncoder('magick')) {
             $this->markTestSkipped('ImageMagick CLI not available on this host.');
         }
 
-        $file = $this->jpegDenganOrientasiExif(6);
+        $file = $this->jpegWithExifOrientation(6);
 
-        $path = $this->simpan($file, 'tiang');
+        $path = $this->store($file, 'tiang');
 
         $contents = Storage::disk('public')->get($path);
 
@@ -134,9 +134,9 @@ class GambarServiceTest extends TestCase
         );
     }
 
-    public function test_png_transparan_mempertahankan_kanal_alfa(): void
+    public function test_png_with_transparency_keeps_its_alpha_channel(): void
     {
-        $path = $this->simpan($this->pngDenganTransparansi(), 'tiang');
+        $path = $this->store($this->pngWithTransparency(), 'tiang');
 
         $contents = Storage::disk('public')->get($path);
 
@@ -148,29 +148,29 @@ class GambarServiceTest extends TestCase
         );
     }
 
-    public function test_membuat_direktori_tujuan(): void
+    public function test_it_creates_the_target_directory(): void
     {
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 800, 600), 'nested/dir');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 800, 600), 'nested/dir');
 
         $this->assertStringStartsWith('nested/dir/', $path);
         Storage::disk('public')->assertExists($path);
     }
 
-    public function test_menolak_berkas_yang_tidak_dapat_dibaca(): void
+    public function test_it_rejects_a_file_that_cannot_be_read(): void
     {
         $this->expectException(\RuntimeException::class);
 
         $file = UploadedFile::fake()->create('broken.jpg', 10);
         $file->getRealPath();
 
-        app(GambarService::class)->simpanWebPTeroptimasi($file, 'tiang');
+        app(ImageService::class)->storeOptimizedWebP($file, 'tiang');
     }
 
-    public function test_gambar_tersimpan_lebih_kecil_dari_sumber_dalam_bita(): void
+    public function test_stored_image_is_smaller_in_bytes_than_the_source(): void
     {
         $source = UploadedFile::fake()->image('tiang.jpg', 3000, 2000);
 
-        $path = $this->simpan($source, 'tiang');
+        $path = $this->store($source, 'tiang');
 
         $stored = Storage::disk('public')->get($path);
 
@@ -184,15 +184,15 @@ class GambarServiceTest extends TestCase
     /**
      * Run the service and return the stored path.
      */
-    private function simpan(UploadedFile $file, string $directory): string
+    private function store(UploadedFile $file, string $directory): string
     {
-        return app(GambarService::class)->simpanWebPTeroptimasi($file, $directory);
+        return app(ImageService::class)->storeOptimizedWebP($file, $directory);
     }
 
     /**
      * @return array{0: int, 1: int}
      */
-    private function dimensi(string $path): array
+    private function dimensions(string $path): array
     {
         $size = getimagesizefromstring(Storage::disk('public')->get($path));
 
@@ -202,7 +202,7 @@ class GambarServiceTest extends TestCase
     /**
      * Build a JPEG carrying the given EXIF orientation tag.
      */
-    private function jpegDenganOrientasiExif(int $orientation): UploadedFile
+    private function jpegWithExifOrientation(int $orientation): UploadedFile
     {
         $width = 40;
         $height = 80;
@@ -239,9 +239,9 @@ class GambarServiceTest extends TestCase
     /**
      * Read the EXIF orientation back out of a WebP EXIF chunk.
      */
-    private function orientasiExif(string $webp): ?int
+    private function exifOrientation(string $webp): ?int
     {
-        if (! $this->potonganExif($webp, $chunk)) {
+        if (! $this->exifChunk($webp, $chunk)) {
             return null;
         }
 
@@ -300,11 +300,11 @@ class GambarServiceTest extends TestCase
         return null;
     }
 
-    public function test_kualitas_tetap_di_atas_batas_bawah_konfigurasi(): void
+    public function test_quality_stays_above_the_configured_floor(): void
     {
-        $source = $this->fotoMiripJpeg(1200, 800);
+        $source = $this->photoLikeJpeg(1200, 800);
 
-        $path = $this->simpan($source, 'tiang');
+        $path = $this->store($source, 'tiang');
 
         $stored = Storage::disk('public')->get($path);
         $target = [
@@ -312,9 +312,9 @@ class GambarServiceTest extends TestCase
             (int) config('image.max_longest_side'),
         ];
 
-        $reference = $this->acuanLanczos($source, 1200, 800, $target);
+        $reference = $this->lanczosReference($source, 1200, 800, $target);
 
-        $psnr = $this->hitungRsnb($reference, $stored);
+        $psnr = $this->psnr($reference, $stored);
 
         $this->assertGreaterThan(
             33.0,
@@ -323,19 +323,19 @@ class GambarServiceTest extends TestCase
         );
     }
 
-    public function test_pengaturan_kualitas_dipatuhi(): void
+    public function test_quality_setting_is_honoured(): void
     {
-        $source = $this->fotoMiripJpeg(1200, 800);
+        $source = $this->photoLikeJpeg(1200, 800);
 
         config(['image.quality' => 20]);
-        $lowPath = $this->simpan($source, 'tiang');
+        $lowPath = $this->store($source, 'tiang');
         $low = Storage::disk('public')->get($lowPath);
-        $lowPsnr = $this->hitungRsnb($this->acuanLanczos($source, 1200, 800, [1600, 1600]), $low);
+        $lowPsnr = $this->psnr($this->lanczosReference($source, 1200, 800, [1600, 1600]), $low);
 
         config(['image.quality' => 95]);
-        $highPath = $this->simpan($source, 'tiang');
+        $highPath = $this->store($source, 'tiang');
         $high = Storage::disk('public')->get($highPath);
-        $highPsnr = $this->hitungRsnb($this->acuanLanczos($source, 1200, 800, [1600, 1600]), $high);
+        $highPsnr = $this->psnr($this->lanczosReference($source, 1200, 800, [1600, 1600]), $high);
 
         $this->assertLessThan(
             strlen($high),
@@ -349,14 +349,14 @@ class GambarServiceTest extends TestCase
         );
     }
 
-    public function test_kualitas_bawaan_adalah_85(): void
+    public function test_quality_defaults_to_85(): void
     {
         $this->assertSame(85, (int) config('image.quality'));
     }
 
-    public function test_penkode_dilaporkan_sebagai_webp_yang_dapat_digunakan(): void
+    public function test_encoder_is_reported_as_a_usable_webp(): void
     {
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 1200, 800), 'tiang');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 1200, 800), 'tiang');
 
         $contents = Storage::disk('public')->get($path);
 
@@ -368,9 +368,9 @@ class GambarServiceTest extends TestCase
         );
     }
 
-    public function test_keluaran_dapat_didekode_dan_sesuai_dimensi_yang_diminta(): void
+    public function test_output_decodes_and_matches_the_requested_dimensions(): void
     {
-        $path = $this->simpan(UploadedFile::fake()->image('tiang.jpg', 3000, 2000), 'tiang');
+        $path = $this->store(UploadedFile::fake()->image('tiang.jpg', 3000, 2000), 'tiang');
 
         $size = getimagesizefromstring(Storage::disk('public')->get($path));
 
@@ -382,7 +382,7 @@ class GambarServiceTest extends TestCase
     /**
      * Build a JPEG with gradients, noise and hard edges.
      */
-    private function fotoMiripJpeg(int $width, int $height): UploadedFile
+    private function photoLikeJpeg(int $width, int $height): UploadedFile
     {
         $image = imagecreatetruecolor($width, $height);
 
@@ -419,7 +419,7 @@ class GambarServiceTest extends TestCase
     /**
      * Best-effort Lanczos downscale, used as the fidelity yardstick.
      */
-    private function acuanLanczos(UploadedFile $source, int $srcW, int $srcH, array $max): string
+    private function lanczosReference(UploadedFile $source, int $srcW, int $srcH, array $max): string
     {
         $bin = trim((string) @shell_exec('command -v magick 2>/dev/null'));
         if ($bin === '') {
@@ -464,7 +464,7 @@ class GambarServiceTest extends TestCase
     /**
      * PSNR in dB between two images, via ImageMagick.
      */
-    private function hitungRsnb(string $reference, string $candidate): float
+    private function psnr(string $reference, string $candidate): float
     {
         $bin = trim((string) @shell_exec('command -v magick 2>/dev/null'));
         if ($bin === '') {
@@ -490,7 +490,7 @@ class GambarServiceTest extends TestCase
 
         $text = trim(implode(' ', $output));
         if (! preg_match('/([0-9]+(?:\.[0-9]+)?)/', $text, $m)) {
-            $this->markTestSkipped('Tidak dapat mengukur RSNB.');
+            $this->markTestSkipped('Could not measure PSNR.');
         }
 
         return (float) $m[1];
@@ -499,7 +499,7 @@ class GambarServiceTest extends TestCase
     /**
      * Build a PNG with a genuinely transparent background.
      */
-    private function pngDenganTransparansi(): UploadedFile
+    private function pngWithTransparency(): UploadedFile
     {
         $width = 200;
         $height = 150;
@@ -525,7 +525,7 @@ class GambarServiceTest extends TestCase
     /**
      * Locate a top-level chunk by its FourCC.
      */
-    private function potonganExif(string $webp, ?string &$found): bool
+    private function exifChunk(string $webp, ?string &$found): bool
     {
         $found = null;
         $offset = 12;

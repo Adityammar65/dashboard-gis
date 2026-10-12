@@ -4,13 +4,13 @@ export default function TombolHapusData({
     jenis = "tiang",
     id,
     kode = "",
-    dasar = "",
+    base = "",
     label = "Hapus Data",
     className = "",
 }) {
     const tanganiHapus = () => {
         const namaJenis = jenis === "ont" ? "ont" : "tiang";
-        const target = `${dasar}/hapus-${namaJenis}/${id}`.replace(/\/+/g, "/");
+        const target = `${base}/hapus-${namaJenis}/${id}`.replace(/\/+/g, "/");
         if (window.confirm(`Apakah kamu yakin ingin menghapus data ${namaJenis} ${kode || ""}?`.trim())) {
             window.location.href = target;
         }

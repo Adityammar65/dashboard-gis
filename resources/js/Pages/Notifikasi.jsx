@@ -4,52 +4,52 @@ import { FaWifi, FaChevronRight, FaMap, FaCheckDouble, FaTrash, FaUser, FaKey } 
 import { LuUtilityPole } from "react-icons/lu";
 import { useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
-import useDasar from "../hooks/useDasar";
+import useBase from "../hooks/useBase";
 
-const getIconByKategori = (kategori) => {
+const ambilIkonBerdasarkanKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
     if (k === "ont") return FaWifi;
     if (k === "wilayah") return FaMap;
     return LuUtilityPole;
 };
 
-const getNotifikasiVisual = (item) => {
+const ambilVisualNotifikasi = (item) => {
     const jenis = item.jenis || "";
     const kategori = (item.kategori || "").toLowerCase();
 
     if (jenis.includes("Ditambahkan")) {
         return {
-            Icon: getIconByKategori(kategori),
-            circle: "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300",
+            Ikon: ambilIkonBerdasarkanKategori(kategori),
+            lingkaran: "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300",
         };
     }
     if (jenis.includes("Diperbarui")) {
         return {
-            Icon: getIconByKategori(kategori),
-            circle: "bg-yellow-100 dark:bg-yellow-500/15 text-yellow-600 dark:text-yellow-300",
+            Ikon: ambilIkonBerdasarkanKategori(kategori),
+            lingkaran: "bg-yellow-100 dark:bg-yellow-500/15 text-yellow-600 dark:text-yellow-300",
         };
     }
     if (jenis.includes("Dihapus")) {
         return {
-            Icon: getIconByKategori(kategori),
-            circle: "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300",
+            Ikon: ambilIkonBerdasarkanKategori(kategori),
+            lingkaran: "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300",
         };
     }
     if (jenis.includes("Reset")) {
         return {
-            Icon: FaKey,
-            circle: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
+            Ikon: FaKey,
+            lingkaran: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
         };
     }
-    return { Icon: null, circle: "" };
+    return { Ikon: null, lingkaran: "" };
 };
 
 export default function Notifikasi({ notifikasi = [] }) {
     const { pengaturan } = usePage().props;
-    const dasar = useDasar();
+    const base = useBase();
 
     const goDetail = (id) => {
-        router.get(`${dasar}/detail-notifikasi/${id}`.replace(/\/+/g, '/'));
+        router.get(`${base}/detail-notifikasi/${id}`.replace(/\/+/g, '/'));
     };
 
     useEffect(() => {
@@ -57,7 +57,7 @@ export default function Notifikasi({ notifikasi = [] }) {
     }, []);
 
     const tandaiSemuaDibaca = () => {
-        router.post(`${dasar}/notifikasi/baca-semua`.replace(/\/+/g, '/'));
+        router.post(`${base}/notifikasi/baca-semua`.replace(/\/+/g, '/'));
     };
 
     const hapusSudahDibaca = () => {
@@ -66,13 +66,13 @@ export default function Notifikasi({ notifikasi = [] }) {
                 "Apakah kamu yakin ingin menghapus semua notifikasi yang sudah dibaca? Tindakan ini tidak dapat dibatalkan."
             )
         ) {
-            router.delete(`${dasar}/notifikasi/hapus-dibaca`.replace(/\/+/g, '/'));
+            router.delete(`${base}/notifikasi/hapus-dibaca`.replace(/\/+/g, '/'));
         }
     };
 
     const renderRow = (item) => {
-        const isUnread = item.status === "belum_dibaca";
-        const { Icon, circle } = getNotifikasiVisual(item);
+        const apakahBelumDibaca = item.status === "belum_dibaca";
+        const { Ikon, lingkaran } = ambilVisualNotifikasi(item);
         const actor = item.updated_by || item.username || item.actor || null;
         const aksiLabel = String(item.jenis || "").includes("Ditambahkan")
             ? "Ditambahkan"
@@ -90,17 +90,17 @@ export default function Notifikasi({ notifikasi = [] }) {
         return (
                 <div
                     key={item.id}
-                    className={`flex items-center gap-4 border-b border-gray-100 dark:border-night-700 px-5 py-4 transition hover:bg-gray-50/60 dark:hover:bg-night-800/60 max-md:flex-wrap max-md:gap-3 max-md:px-4 ${isUnread ? "bg-red-50/50 dark:bg-red-500/10 border-l-4 border-l-red-500" : "bg-green-50/40 dark:bg-green-500/10 border-l-4 border-l-green-500"}`}
+                    className={`flex items-center gap-4 border-b border-gray-100 dark:border-night-700 px-5 py-4 transition hover:bg-gray-50/60 dark:hover:bg-night-800/60 max-md:flex-wrap max-md:gap-3 max-md:px-4 ${apakahBelumDibaca ? "bg-red-50/50 dark:bg-red-500/10 border-l-4 border-l-red-500" : "bg-green-50/40 dark:bg-green-500/10 border-l-4 border-l-green-500"}`}
                 >
                 <div
-                    className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${circle || (isUnread
+                    className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${lingkaran || (apakahBelumDibaca
                         ? "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300"
                         : "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300")
                         }`}
                 >
-                    {Icon ? (
-                        <Icon size={20} />
-                    ) : isUnread ? (
+                    {Ikon ? (
+                        <Ikon size={20} />
+                    ) : apakahBelumDibaca ? (
                         "⚠"
                     ) : (
                         "✓"
@@ -149,7 +149,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                     </p>
                 </div>
 
-                {isUnread ? (
+                {apakahBelumDibaca ? (
                     <span title="Belum dibaca" className="h-2 w-2 rounded-full bg-red-500" />
                 ) : (
                     <span title="Sudah dibaca" className="h-2 w-2 rounded-full bg-green-500" />

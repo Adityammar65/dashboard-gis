@@ -3,7 +3,7 @@ import { useMemo, useCallback } from "react";
 // Single source of truth for first-segment routes (lowercased).
 // Must cover every entry in routes/web.php so the subfolder detector
 // never mistakes a real route (e.g. tambah-wilayah) for a base prefix.
-export const RUTE_DIKENAL = [
+export const KNOWN_ROUTES = [
     "home",
     "data-tiang",
     "data-ont",
@@ -41,30 +41,30 @@ export const RUTE_DIKENAL = [
 ];
 
 // Non-hook version: safe to call inside fetch callbacks / event handlers.
-export function ambilDasar() {
+export function getBase() {
     if (typeof window === "undefined") return "";
-    const segmen = window.location.pathname.split("/").filter(Boolean)[0];
-    if (!segmen) return "";
-    if (RUTE_DIKENAL.includes(segmen.toLowerCase())) return "";
-    return `/${segmen}`;
+    const seg = window.location.pathname.split("/").filter(Boolean)[0];
+    if (!seg) return "";
+    if (KNOWN_ROUTES.includes(seg.toLowerCase())) return "";
+    return `/${seg}`;
 }
 
-export function selesaikanJalur(tautan = "") {
-    return `${ambilDasar()}/${href}`.replace(/\/+/g, "/");
+export function resolvePath(href = "") {
+    return `${getBase()}/${href}`.replace(/\/+/g, "/");
 }
 
-export function aset(jalur = "") {
-    return `${ambilDasar()}/${path}`.replace(/\/+/g, "/");
+export function asset(path = "") {
+    return `${getBase()}/${path}`.replace(/\/+/g, "/");
 }
 
 // Modular routing hook, same API other pages already use:
-//   const dasar = useDasar();
-//   const selesaikanTautan = useSelesaikanTautan();
-export default function useDasar() {
-    return useMemo(() => ambilDasar(), []);
+//   const base = useBase();
+//   const resolveHref = useResolveHref();
+export default function useBase() {
+    return useMemo(() => getBase(), []);
 }
 
-export function useSelesaikanTautan() {
-    const dasar = useDasar();
-    return useCallback((tautan = "") => `${dasar}/${tautan}`.replace(/\/+/g, "/"), [base]);
+export function useResolveHref() {
+    const base = useBase();
+    return useCallback((href = "") => `${base}/${href}`.replace(/\/+/g, "/"), [base]);
 }

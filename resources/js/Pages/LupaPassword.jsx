@@ -14,7 +14,7 @@ export default function LupaPassword() {
 
     const { errors, flash } = usePage().props;
 
-    const pesanGalat = Object.values(errors || {})[0];
+    const errorMessage = Object.values(errors || {})[0];
     const pesanKeberhasilan = flash?.success;
 
     const tanganiKirim = (kejadian) => {
@@ -33,7 +33,7 @@ export default function LupaPassword() {
     };
 
     return (
-        <TataLetakOtentikasi pesanGalat={pesanGalat}>
+        <TataLetakOtentikasi errorMessage={errorMessage}>
             <div className="relative flex p-6 pt-14 max-md:w-full max-md:max-w-md max-md:rounded-3xl max-md:bg-white max-md:p-6 max-md:pt-14 max-md:shadow-xl max-md:ring-1 max-md:ring-black/5 dark:max-md:bg-night-900 dark:max-md:ring-white/10">
                 <div className="absolute right-4 top-4">
                     <PengalihTema variant="login" />
@@ -75,7 +75,7 @@ export default function LupaPassword() {
                             id="reset-username"
                             name="username"
                             value={user}
-                            onChange={(e) => aturUser(e.target.value)}
+                            onChange={(kejadian) => aturUser(kejadian.target.value)}
                             placeholder="Masukkan username akun"
                             autoComplete="username"
                             className="w-full rounded-xl border border-gray-300 dark:border-night-600 bg-white dark:bg-night-900 px-4 py-3 text-sm text-gray-900 dark:text-night-200 outline-none transition placeholder:text-gray-400 dark:placeholder:text-night-500 focus:border-[#ab3c3c] focus:ring-2 focus:ring-[#7F1D32]/10 max-md:rounded-xl max-md:py-3.5 max-md:text-base"
@@ -97,8 +97,8 @@ export default function LupaPassword() {
                                 type={tampilKataSandi ? "text" : "password"}
                                 id="reset-password"
                                 name="password"
-                                value={password}
-                                onChange={(e) => aturKataSandi(e.target.value)}
+                                value={kataSandi}
+                                onChange={(kejadian) => aturKataSandi(kejadian.target.value)}
                                 placeholder="Masukkan kata sandi baru"
                                 autoComplete="new-password"
                                 minLength={8}
@@ -136,7 +136,7 @@ export default function LupaPassword() {
                                 id="reset-password-confirmation"
                                 name="password_confirmation"
                                 value={konfirmasiKataSandi}
-                                onChange={(e) => aturKonfirmasiKataSandi(e.target.value)}
+                                onChange={(kejadian) => aturKonfirmasiKataSandi(kejadian.target.value)}
                                 placeholder="Ulangi kata sandi baru"
                                 autoComplete="new-password"
                                 minLength={8}

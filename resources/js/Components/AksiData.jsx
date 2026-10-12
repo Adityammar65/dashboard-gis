@@ -1,7 +1,7 @@
 import { FaEye, FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
-export const tautanHapus = (dasar, jenis, id) => `${dasar}/hapus-${jenis}/${id}`.replace(/\/+/g, "/");
+export const tautanHapus = (base, jenis, id) => `${base}/hapus-${jenis}/${id}`.replace(/\/+/g, "/");
 
 export function konfirmasiHapus(nama, label) {
     return window.confirm(`Apakah kamu yakin ingin menghapus ${nama} ${label || ""}?`.trim());
@@ -9,7 +9,7 @@ export function konfirmasiHapus(nama, label) {
 
 // Table Actions
 
-export function AksiTabel({ jenis = "tiang", id, kode = "", dasar = "", tautanRinci = "#", tautanUbah = "#" }) {
+export function AksiTabel({ jenis = "tiang", id, kode = "", base = "", tautanRinci = "#", tautanUbah = "#" }) {
     const namaJenis = jenis === "ont" ? "ont" : "tiang";
     return (
         <div className="flex items-center gap-1.5">
@@ -31,7 +31,7 @@ export function AksiTabel({ jenis = "tiang", id, kode = "", dasar = "", tautanRi
                 type="button"
                 onClick={() => {
                     if (konfirmasiHapus(`data ${namaJenis}`, kode)) {
-                        window.location.href = tautanHapus(dasar, namaJenis, id);
+                        window.location.href = tautanHapus(base, namaJenis, id);
                     }
                 }}
                 className="rounded-lg bg-red-500 px-2 py-1.5 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/10 transition hover:bg-red-600 hover:shadow"
@@ -45,7 +45,7 @@ export function AksiTabel({ jenis = "tiang", id, kode = "", dasar = "", tautanRi
 
 // Mobile Card Action
 
-export function AksiKartu({ jenis = "tiang", id, kode = "", dasar = "", tautanRinci = "#", tautanUbah = "#" }) {
+export function AksiKartu({ jenis = "tiang", id, kode = "", base = "", tautanRinci = "#", tautanUbah = "#" }) {
     const namaJenis = jenis === "ont" ? "ont" : "tiang";
     return (
         <>
@@ -65,7 +65,7 @@ export function AksiKartu({ jenis = "tiang", id, kode = "", dasar = "", tautanRi
                 type="button"
                 onClick={() => {
                     if (konfirmasiHapus(`data ${namaJenis}`, kode)) {
-                        window.location.href = tautanHapus(dasar, namaJenis, id);
+                        window.location.href = tautanHapus(base, namaJenis, id);
                     }
                 }}
                 title="Hapus Data"
@@ -79,13 +79,13 @@ export function AksiKartu({ jenis = "tiang", id, kode = "", dasar = "", tautanRi
 
 // Tombol hapus
 
-export function HapusTabel({ jenis = "wilayah", id, nama = "", dasar = "", judul = "Hapus Data", teksKonfirmasi = null }) {
+export function HapusTabel({ jenis = "wilayah", id, nama = "", base = "", judul = "Hapus Data", teksKonfirmasi = null }) {
     return (
         <button
             type="button"
             onClick={() => {
                 if (window.confirm(teksKonfirmasi ?? `Apakah kamu yakin ingin menghapus ${jenis} ${nama}?`.trim())) {
-                    window.location.href = tautanHapus(dasar, jenis, id);
+                    window.location.href = tautanHapus(base, jenis, id);
                 }
             }}
             className="rounded-lg bg-red-500 px-2 py-1.5 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/10 transition hover:bg-red-600 hover:shadow"
@@ -98,13 +98,13 @@ export function HapusTabel({ jenis = "wilayah", id, nama = "", dasar = "", judul
 
 // Tombol hapus mobile
 
-export function HapusKartu({ jenis = "wilayah", id, nama = "", dasar = "", teksKonfirmasi = null }) {
+export function HapusKartu({ jenis = "wilayah", id, nama = "", base = "", teksKonfirmasi = null }) {
     return (
         <button
             type="button"
             onClick={() => {
                 if (window.confirm(teksKonfirmasi ?? `Apakah kamu yakin ingin menghapus ${jenis} ${nama}?`.trim())) {
-                    window.location.href = tautanHapus(dasar, jenis, id);
+                    window.location.href = tautanHapus(base, jenis, id);
                 }
             }}
             className="flex w-full items-center justify-center gap-1 rounded-lg bg-red-500 px-2 py-2 text-xs font-medium text-white"

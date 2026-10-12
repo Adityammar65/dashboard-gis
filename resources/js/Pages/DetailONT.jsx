@@ -5,18 +5,18 @@ import TombolHapusData from "../Components/TombolHapusData";
 import { FaArrowLeft, FaPen } from "react-icons/fa";
 import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
-import useDasar from "../hooks/useDasar";
+import useBase from "../hooks/useBase";
 
 export default function DetailONT({ ont }) {
     const { pengaturan } = usePage().props;
-    const dasar = useDasar();
+    const base = useBase();
 
-    const getFotoUrl = (foto) => {
+    const ambilUrlFoto = (foto) => {
         if (!foto) return null;
-        return `${dasar}/public/storage/${foto}`.replace(/\/+/g, '/');
+        return `${base}/public/storage/${foto}`.replace(/\/+/g, '/');
     };
 
-    const images = [
+    const daftarGambar = [
         ont?.foto_ont_1,
         ont?.foto_ont_2,
         ont?.foto_ont_3,
@@ -24,8 +24,8 @@ export default function DetailONT({ ont }) {
         ont?.foto_ont_5,
     ].filter(Boolean);
 
-    const [activeImage, setActiveImage] = useState(
-        images.length > 0 ? getFotoUrl(images[0]) : null
+    const [gambarAktif, aturGambarAktif] = useState(
+        daftarGambar.length > 0 ? ambilUrlFoto(daftarGambar[0]) : null
     );
 
     return (
@@ -71,9 +71,9 @@ export default function DetailONT({ ont }) {
                                 Foto Utama
                             </p>
                             <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-night-700 shadow-sm">
-                                {activeImage ? (
+                                {gambarAktif ? (
                                     <img
-                                        src={activeImage}
+                                        src={gambarAktif}
                                         alt={`Foto ${ont?.kode_ont ?? "ONT"}`}
                                         className="h-[330px] w-full object-cover transition duration-300 hover:scale-[1.01] max-md:h-[220px]"
                                         loading="lazy"
@@ -92,25 +92,25 @@ export default function DetailONT({ ont }) {
                         {/* Miniatur */}
 
                         <div className="mt-3 grid grid-cols-5 gap-3 max-md:grid-cols-3 max-md:gap-2">
-                            {images.length > 0 ? (
-                                images.map((image, index) => {
-                                    const imageUrl = getFotoUrl(image);
+                            {daftarGambar.length > 0 ? (
+                                daftarGambar.map((gambar, indeks) => {
+                                    const urlGambar = ambilUrlFoto(gambar);
                                     return (
-                                        <div key={image}>
+                                        <div key={gambar}>
                                             <p className="mb-1.5 text-center text-[10px] font-semibold tracking-wide text-gray-600 dark:text-night-300">
-                                                Foto {index + 1}
+                                                Foto {indeks + 1}
                                             </p>
                                             <button
                                                 type="button"
-                                                onClick={() => setActiveImage(imageUrl)}
-                                                className={`w-full overflow-hidden rounded-xl border-2 transition shadow-sm ${activeImage === imageUrl
+                                                onClick={() => aturGambarAktif(urlGambar)}
+                                                className={`w-full overflow-hidden rounded-xl border-2 transition shadow-sm ${gambarAktif === urlGambar
                                                     ? "border-sky-500 ring-2 ring-sky-100"
                                                     : "border-transparent hover:border-gray-200 hover:shadow"
                                                     }`}
                                             >
                                                 <img
-                                                    src={imageUrl}
-                                                    alt={`Foto ${index + 1}`}
+                                                    src={urlGambar}
+                                                    alt={`Foto ${indeks + 1}`}
                                                     className="h-24 w-full object-cover max-md:h-20"
                                                     loading="lazy"
                                                     decoding="async"
@@ -231,7 +231,7 @@ export default function DetailONT({ ont }) {
                         <div className="mt-5 flex flex-wrap items-center gap-2 max-sm:flex-col max-sm:items-stretch">
                             <button
                                 type="button"
-                                onClick={() => router.get(`${dasar}/edit-ont/${ont?.id}`.replace(/\/+/g, '/'))}
+                                onClick={() => router.get(`${base}/edit-ont/${ont?.id}`.replace(/\/+/g, '/'))}
                                 className="flex w-fit items-center gap-2 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-blue-700 hover:to-blue-800 active:scale-[0.98] max-sm:w-full max-sm:justify-center"
                             >
                                 <FaPen />
@@ -247,7 +247,7 @@ export default function DetailONT({ ont }) {
                                 jenis="ont"
                                 id={ont?.id}
                                 kode={ont?.kode_ont}
-                                dasar={dasar}
+                                base={base}
                             />
                         </div>
 

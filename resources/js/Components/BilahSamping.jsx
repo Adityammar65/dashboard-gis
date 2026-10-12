@@ -3,12 +3,12 @@ import { IoIosLogOut, IoIosSettings } from "react-icons/io";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
 import { butirMenu, apakahJalurAktif, apakahJalurPengaturan, KONFIRMASI_KELUAR } from "./butirMenu";
-import { useSelesaikanTautan } from "../hooks/useDasar";
+import { useResolveHref } from "../hooks/useBase";
 
 const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
     const { url } = usePage();
     const jalurSaatIni = useMemo(() => url.split('?')[0], [url]);
-    const selesaikanTautan = useSelesaikanTautan();
+    const resolveHref = useResolveHref();
 
     const konfirmasiKeluar = (kejadian) => {
         if (!confirm(KONFIRMASI_KELUAR)) {
@@ -47,7 +47,7 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
                                 text-sm font-medium
                                 cursor-pointer
                                 transition-all duration-200
-                                ${isActive
+                                ${apakahAktif
                                         ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
                                         : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:text-night-300 dark:hover:bg-night-800 dark:hover:text-white"
                                     }
@@ -80,7 +80,7 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
 
                                 {apakahBuka && (
                                     <a
-                                        href={selesaikanTautan(item.tautan)}
+                                        href={resolveHref(item.tautan)}
                                         className="flex-1 whitespace-nowrap"
                                     >
                                         {item.label}
@@ -163,7 +163,7 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
 
                         {apakahBuka && (
                             <a
-                                href={selesaikanTautan("pengaturan")}
+                                href={resolveHref("pengaturan")}
                                 className="flex-1 whitespace-nowrap"
                             >
                                 Pengaturan
@@ -197,7 +197,7 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
 
                         {apakahBuka && (
                             <a
-                                href={selesaikanTautan("logout")}
+                                href={resolveHref("logout")}
                                 className="flex-1"
                                 onClick={konfirmasiKeluar}
                             >

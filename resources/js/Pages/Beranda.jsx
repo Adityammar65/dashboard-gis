@@ -13,7 +13,7 @@ import { MdStorage } from "react-icons/md";
 import { LuUtilityPole } from "react-icons/lu";
 import TampilanPeta from "../Components/TampilanPeta";
 import { useState, useMemo, useCallback } from "react";
-import useDasar from "../hooks/useDasar";
+import useBase from "../hooks/useBase";
 
 const formatRelatif = (iso) => {
     if (!iso) return "-";
@@ -35,8 +35,8 @@ export default function Beranda() {
     const adaWilayah = !!String(pengaturan?.nama_wilayah ?? "").trim();
     const wilayahAktif = adaWilayah ? String(pengaturan.nama_wilayah) : "Semua";
 
-    const dasar = useDasar();
-    const selesaikanTautan = useCallback((tautan) => `${dasar}/${tautan}`.replace(/\/+/g, "/"), [dasar]);
+    const base = useBase();
+    const resolveHref = useCallback((tautan) => `${base}/${tautan}`.replace(/\/+/g, "/"), [base]);
 
     const penanda = useMemo(() => {
         if (!adaWilayah) return [];
@@ -147,7 +147,7 @@ export default function Beranda() {
                             <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 shadow-xl max-md:right-0 max-md:w-52">
 
                                 <a
-                                    href={selesaikanTautan("tambah-tiang")}
+                                    href={resolveHref("tambah-tiang")}
                                     onClick={() => aturBukaTambah(false)}
                                     className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-night-200 transition hover:bg-blue-50 dark:hover:bg-blue-500/15 hover:text-blue-800 dark:hover:text-blue-200"
                                 >
@@ -156,7 +156,7 @@ export default function Beranda() {
                                 </a>
 
                                 <a
-                                    href={selesaikanTautan("tambah-ont")}
+                                    href={resolveHref("tambah-ont")}
                                     onClick={() => aturBukaTambah(false)}
                                     className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-night-200 transition hover:bg-sky-50 dark:hover:bg-sky-500/15 hover:text-sky-700 dark:hover:text-sky-200"
                                 >
@@ -256,7 +256,7 @@ export default function Beranda() {
                         </div>
 
                         <a
-                            href={selesaikanTautan("wilayah")}
+                            href={resolveHref("wilayah")}
                             className="mt-auto flex shrink-0 items-center justify-end gap-2 pt-5 text-xs font-medium text-gray-500 dark:text-night-400 transition hover:text-yellow-600 dark:hover:text-yellow-200 hover:gap-3 max-md:justify-start max-md:pt-3"
                         >
                             Lihat Sebaran Wilayah
@@ -283,7 +283,7 @@ export default function Beranda() {
                         </div>
 
                         <a
-                            href={selesaikanTautan("peta-sebaran-aset")}
+                            href={resolveHref("peta-sebaran-aset")}
                             className="mt-auto flex shrink-0 items-center justify-end gap-2 pt-5 text-xs font-medium text-gray-500 dark:text-night-400 transition hover:text-emerald-600 dark:hover:text-emerald-200 hover:gap-3 max-md:justify-start max-md:pt-3"
                         >
                             Lihat Sebaran Data
@@ -317,7 +317,7 @@ export default function Beranda() {
                             </div>
 
                             <a
-                                href={selesaikanTautan("peta-sebaran-aset")}
+                                href={resolveHref("peta-sebaran-aset")}
                                 className="rounded-xl bg-blue-50 dark:bg-blue-500/15 px-3.5 py-2 text-xs font-medium text-blue-700 dark:text-blue-300 ring-1 ring-blue-200 dark:ring-blue-500/30 transition hover:bg-blue-100 dark:hover:bg-blue-500/20 hover:shadow-sm">
                                 Buka Peta Penuh
                             </a>
@@ -329,7 +329,7 @@ export default function Beranda() {
                             </div>
                         ) : (
                             <a
-                                href={selesaikanTautan("pengaturan")}
+                                href={resolveHref("pengaturan")}
                                 className="flex h-[340px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 dark:border-night-700 bg-gradient-to-b from-gray-50 to-white dark:from-night-800/60 dark:to-night-900 text-center transition hover:border-[#AB3C3C]/50 hover:bg-red-50/30 hover:shadow-sm"
                             >
                                 <FaMapMarkedAlt className="mb-2 text-3xl text-gray-400 dark:text-night-500" />
@@ -363,12 +363,12 @@ export default function Beranda() {
                         <div className="mt-5 space-y-3">
                             {asetTerbaru.length > 0 ? (
                                 asetTerbaru.map((item) => {
-                                    const createdMs = item.created_at ? new Date(item.created_at).getTime() : null;
-                                    const updatedMs = item.updated_at ? new Date(item.updated_at).getTime() : null;
-                                    const isBaru = createdMs !== null && updatedMs !== null
-                                        ? Math.abs(updatedMs - createdMs) <= 1000
+                                    const waktuBuatMs = item.created_at ? new Date(item.created_at).getTime() : null;
+                                    const waktuUbahMs = item.updated_at ? new Date(item.updated_at).getTime() : null;
+                                    const isBaru = waktuBuatMs !== null && waktuUbahMs !== null
+                                        ? Math.abs(waktuUbahMs - waktuBuatMs) <= 1000
                                         : false;
-                                    const displayTime = isBaru ? item.created_at : item.updated_at;
+                                    const waktuTampil = isBaru ? item.created_at : item.updated_at;
                                     return (
                                         <div
                                             key={`${item.type}-${item.id}`}
@@ -406,7 +406,7 @@ export default function Beranda() {
                                                     {item.status}
                                                 </span>
                                                 <p className="mt-1 text-[10px] text-gray-500 dark:text-night-400">
-                                                    {formatRelatif(displayTime)}
+                                                    {formatRelatif(waktuTampil)}
                                                 </p>
                                             </div>
                                         </div>
@@ -418,12 +418,12 @@ export default function Beranda() {
                         </div>
 
                         <div className="mt-6 flex items-center justify-between mx-1 text-xs font-medium max-md:flex-col max-md:items-stretch max-md:gap-2">
-                            <a href={selesaikanTautan("data-tiang")} className="flex items-center gap-2 rounded-full bg-gray-50 dark:bg-night-800/60 px-3 py-1.5 text-gray-700 dark:text-night-200 ring-1 ring-gray-200 dark:ring-night-700 transition hover:bg-blue-50 dark:hover:bg-blue-500/15 hover:text-blue-600 dark:hover:text-blue-200 hover:ring-blue-200 max-md:justify-center">
+                            <a href={resolveHref("data-tiang")} className="flex items-center gap-2 rounded-full bg-gray-50 dark:bg-night-800/60 px-3 py-1.5 text-gray-700 dark:text-night-200 ring-1 ring-gray-200 dark:ring-night-700 transition hover:bg-blue-50 dark:hover:bg-blue-500/15 hover:text-blue-600 dark:hover:text-blue-200 hover:ring-blue-200 max-md:justify-center">
                                 Lihat Data Tiang
                                 <FaArrowRight />
                             </a>
 
-                            <a href={selesaikanTautan("data-ont")} className="flex items-center gap-2 rounded-full bg-gray-50 dark:bg-night-800/60 px-3 py-1.5 text-gray-700 dark:text-night-200 ring-1 ring-gray-200 dark:ring-night-700 transition hover:bg-sky-50 dark:hover:bg-sky-500/15 hover:text-sky-600 dark:hover:text-sky-200 hover:ring-sky-200 max-md:justify-center">
+                            <a href={resolveHref("data-ont")} className="flex items-center gap-2 rounded-full bg-gray-50 dark:bg-night-800/60 px-3 py-1.5 text-gray-700 dark:text-night-200 ring-1 ring-gray-200 dark:ring-night-700 transition hover:bg-sky-50 dark:hover:bg-sky-500/15 hover:text-sky-600 dark:hover:text-sky-200 hover:ring-sky-200 max-md:justify-center">
                                 Lihat Data ONT
                                 <FaArrowRight />
                             </a>

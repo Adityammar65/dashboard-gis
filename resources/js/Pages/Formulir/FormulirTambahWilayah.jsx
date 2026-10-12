@@ -2,40 +2,40 @@ import TataLetakUtama from "../../Layouts/TataLetakUtama";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 import { router, usePage } from "@inertiajs/react";
 import { useState } from "react";
-import useDasar from "../../hooks/useDasar";
+import useBase from "../../hooks/useBase";
 
 export default function FormulirTambahWilayah() {
     const { pengaturan } = usePage().props;
-    const dasar = useDasar();
-    const resolveUrl = (path) => `${dasar}/${path}`.replace(/\/+/g, '/');
+    const base = useBase();
+    const resolveHref = (path) => `${base}/${path}`.replace(/\/+/g, '/');
     const [formulir, aturFormulir] = useState({
         nama_wilayah: "",
         kode_wilayah: "",
     });
 
     const tanganiUbah = (kejadian) => {
-        const { name, value } = kejadian.target;
+        const { name: nama, value: nilai } = kejadian.target;
 
         aturFormulir({
             ...formulir,
-            [name]: value,
+            [nama]: nilai,
         });
     };
 
-    const handleBack = () => {
-        router.get(resolveUrl("wilayah"));
+    const tanganiKembali = () => {
+        router.get(resolveHref("wilayah"));
     };
 
     const tanganiKirim = (kejadian) => {
         kejadian.preventDefault();
 
-        router.post(resolveUrl("simpan-wilayah"), form, {
-            onError: (errors) => {
-                console.log(errors);
-                const raw = errors?.error || Object.values(errors || {})[0];
-                const pesan = Array.isArray(raw) ? raw[0] : raw;
+        router.post(resolveHref("simpan-wilayah"), formulir, {
+            onError: (galat) => {
+                console.log(galat);
+                const mentah = galat?.error || Object.values(galat || {})[0];
+                const pesan = Array.isArray(mentah) ? mentah[0] : mentah;
                 const pesanTampil = pesan || "Gagal menyimpan wilayah. Periksa kembali isian formulir.";
-                window.dispatchEvent(new CustomEvent("tata-letak:galat", { detail: pesanTampil }));
+                window.dispatchEvent(new CustomEvent("layout:error", { detail: pesanTampil }));
             },
         });
     };
@@ -63,7 +63,7 @@ export default function FormulirTambahWilayah() {
 
                     <button
                         type="button"
-                        onClick={handleBack}
+                        onClick={tanganiKembali}
                         title="Kembali"
                         aria-label="Kembali"
                         className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:rounded-lg max-md:px-4 max-md:py-4"

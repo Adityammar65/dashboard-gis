@@ -3,106 +3,106 @@ import { Tajuk, BilahSamping, LaciSeluler } from "../Components";
 import { FiX } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
 
-export const KonteksGalatTataLetak = createContext(null);
+export const LayoutErrorContext = createContext(null);
 
-export function useGalatTataLetak() {
-    const ctx = useContext(KonteksGalatTataLetak);
+export function useLayoutError() {
+    const ctx = useContext(LayoutErrorContext);
     if (!ctx) {
-        throw new Error("useGalatTataLetak must be used within <TataLetakUtama>");
+        throw new Error("useLayoutError must be used within <MainLayout>");
     }
     return ctx;
 }
 
-export default function TataLetakUtama({ children, pesanGalat }) {
-    const [apakahBuka, aturApakahBuka] = useState(() => {
+export default function MainLayout({ children, errorMessage }) {
+    const [isOpen, setIsOpen] = useState(() => {
         if (typeof window !== "undefined" && window.innerWidth < 768) return false;
         return true;
     });
-    const [laciBuka, aturLaciBuka] = useState(false);
-    const [galatLokal, aturGalatLokal] = useState(null);
-    const [diabaikan, aturDiabaikan] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [localError, setLocalError] = useState(null);
+    const [dismissed, setDismissed] = useState(false);
 
     const { url } = usePage();
     const { errors, flash } = usePage().props;
 
-    const tampilkanGalat = useCallback((pesan) => {
-        if (!pesan) return;
+    const showError = useCallback((msg) => {
+        if (!msg) return;
 
-        if (Array.isArray(pesan)) pesan = pesan[0];
-        else if (typeof pesan === "object") {
-            const daftarNilai = Object.values(pesan);
-            pesan = daftarNilai[0];
-            if (Array.isArray(pesan)) pesan = pesan[0];
+        if (Array.isArray(msg)) msg = msg[0];
+        else if (typeof msg === "object") {
+            const vals = Object.values(msg);
+            msg = vals[0];
+            if (Array.isArray(msg)) msg = msg[0];
         }
-        aturDiabaikan(false);
-        aturGalatLokal(String(pesan));
+        setDismissed(false);
+        setLocalError(String(msg));
     }, []);
 
-    const bersihkanGalat = useCallback(() => {
-        aturGalatLokal(null);
-        aturDiabaikan(true);
+    const clearError = useCallback(() => {
+        setLocalError(null);
+        setDismissed(true);
     }, []);
 
     useEffect(() => {
-        if (errors || flash?.error || flash?.message || flash?.success || pesanGalat) {
-            aturDiabaikan(false);
+        if (errors || flash?.error || flash?.message || flash?.success || errorMessage) {
+            setDismissed(false);
         }
-    }, [errors, flash, pesanGalat]);
+    }, [errors, flash, errorMessage]);
 
     useEffect(() => {
-        aturLaciBuka(false);
+        setDrawerOpen(false);
     }, [url]);
 
     useEffect(() => {
-        const handler = (e) => tampilkanGalat(e.detail);
-        window.addEventListener("tata-letak:galat", penangan);
-        return () => window.removeEventListener("tata-letak:galat", penangan);
-    }, [tampilkanGalat]);
+        const handler = (e) => showError(e.detail);
+        window.addEventListener("layout:error", handler);
+        return () => window.removeEventListener("layout:error", handler);
+    }, [showError]);
 
     useEffect(() => {
-        if (!galatLokal) return;
-        const pewaktu = setTimeout(() => aturGalatLokal(null), 3000);
-        return () => clearTimeout(pewaktu);
-    }, [galatLokal]);
+        if (!localError) return;
+        const t = setTimeout(() => setLocalError(null), 3000);
+        return () => clearTimeout(t);
+    }, [localError]);
 
-    const galatInersia = Object.values(errors || {})?.[0];
-    const galatKilas = flash?.error || flash?.message || null;
-    const suksesKilas = flash?.success || null;
+    const inertiaError = Object.values(errors || {})?.[0];
+    const flashError = flash?.error || flash?.message || null;
+    const flashSuccess = flash?.success || null;
 
-    const galatTerpilih = diabaikan
-        ? galatLokal
-        : pesanGalat || galatLokal || inertiaError || flashError || null;
+    const resolvedError = dismissed
+        ? localError
+        : errorMessage || localError || inertiaError || flashError || null;
 
-    const galatTampil = Array.isArray(galatTerpilih)
-        ? galatTerpilih[0]
-        : galatTerpilih;
+    const displayError = Array.isArray(resolvedError)
+        ? resolvedError[0]
+        : resolvedError;
 
     useEffect(() => {
-        if (!galatTampil) return;
+        if (!displayError) return;
         const t = setTimeout(() => {
-            bersihkanGalat();
+            clearError();
         }, 3000);
-        return () => clearTimeout(pewaktu);
-    }, [galatTampil, bersihkanGalat]);
+        return () => clearTimeout(t);
+    }, [displayError, clearError]);
 
     useEffect(() => {
-        if (!flashSuccess || diabaikan || galatTampil) return;
+        if (!flashSuccess || dismissed || displayError) return;
         const t = setTimeout(() => setDismissed(true), 3000);
-        return () => clearTimeout(pewaktu);
-    }, [flashSuccess, diabaikan, galatTampil]);
+        return () => clearTimeout(t);
+    }, [flashSuccess, dismissed, displayError]);
 
     return (
-        <KonteksGalatTataLetak.Provider value={{ error: galatTampil, tampilkanGalat, setError: tampilkanGalat, bersihkanGalat }}>
+        <LayoutErrorContext.Provider value={{ error: displayError, showError, setError: showError, clearError }}>
             <div className="relative min-h-screen bg-[#F6F4F4] font-poppins text-gray-900 transition-colors duration-200 max-md:overflow-x-clip dark:bg-night-950 dark:text-night-200">
-                {galatTampil && (
+                {displayError && (
                     <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2 max-md:w-[calc(100vw-2rem)] max-md:max-w-md">
                         <div className="flex items-center gap-3 rounded-lg bg-red-500 px-4 py-2 text-xs font-medium text-white shadow-lg">
-                            <span>{galatTampil}</span>
+                            <span>{displayError}</span>
                             <button
                                 type="button"
-                                onClick={bersihkanGalat}
+                                onClick={clearError}
                                 className="rounded p-0.5 hover:bg-white/20"
-                                aria-label="Tutup galat"
+                                aria-label="Close error"
                             >
                                 <FiX size={14} />
                             </button>
@@ -110,15 +110,15 @@ export default function TataLetakUtama({ children, pesanGalat }) {
                     </div>
                 )}
 
-                {!galatTampil && !diabaikan && flashSuccess && (
+                {!displayError && !dismissed && flashSuccess && (
                     <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2 max-md:w-[calc(100vw-2rem)] max-md:max-w-md">
                         <div className="flex items-center gap-3 rounded-lg bg-green-600 px-4 py-2 text-xs font-medium text-white shadow-lg">
                             <span>{flashSuccess}</span>
                             <button
                                 type="button"
-                                onClick={bersihkanGalat}
+                                onClick={clearError}
                                 className="rounded p-0.5 hover:bg-white/20"
-                                aria-label="Tutup keberhasilan"
+                                aria-label="Close success"
                             >
                                 <FiX size={14} />
                             </button>
@@ -129,16 +129,16 @@ export default function TataLetakUtama({ children, pesanGalat }) {
                 {/* BilahSamping */}
 
                 <div className="max-md:hidden">
-                    <BilahSamping apakahBuka={apakahBuka} saatAlih={() => aturApakahBuka(!apakahBuka)} />
+                    <BilahSamping apakahBuka={isOpen} saatAlih={() => setIsOpen(!isOpen)} />
                 </div>
 
-                {/* Mobile Drawer */}
+                {/* Laci Seluler */}
 
-                <LaciSeluler buka={laciBuka} saatTutup={() => aturLaciBuka(false)} />
+                <LaciSeluler buka={drawerOpen} saatTutup={() => setDrawerOpen(false)} />
 
                 {/* Tajuk */}
 
-                <Tajuk saatMenu={() => aturLaciBuka(true)} />
+                <Tajuk saatMenu={() => setDrawerOpen(true)} />
 
                 {/* Isi */}
 
@@ -146,11 +146,11 @@ export default function TataLetakUtama({ children, pesanGalat }) {
                     className={`min-h-[calc(100vh-72px)] bg-[#F6F4F4] p-6
                     transition-all duration-300 dark:bg-night-950
                     max-md:p-4 max-md:min-w-0 max-md:ml-0 max-md:min-h-[calc(100vh-60px)]
-                    ${apakahBuka ? "ml-64" : "ml-20"}`}
+                    ${isOpen ? "ml-64" : "ml-20"}`}
                 >
                     {children}
                 </main>
             </div>
-        </KonteksGalatTataLetak.Provider>
+        </LayoutErrorContext.Provider>
     );
 }

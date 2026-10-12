@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
-use App\Services\GambarService;
+use App\Services\ImageService;
 
 class TiangController extends Controller
 {
@@ -17,9 +17,9 @@ class TiangController extends Controller
 
     public function SimpanTiang(Request $request)
     {
-        $berkasTersimpan = [];
+        $storedFiles = [];
         try {
-            $tervalidasi = $request->validate([
+            $validated = $request->validate([
                 'kode_tiang'      => 'required|string|max:255|unique:tiang,kode_tiang',
                 'wilayah'         => 'required|string|max:255',
                 'kecamatan'       => 'required|string|max:255',
@@ -59,58 +59,58 @@ class TiangController extends Controller
                 'status.required' => 'Status wajib diisi.',
                 'status.in' => 'Status tidak valid.',
             ]);
-            $tervalidasi['status'] = strtolower($tervalidasi['status']);
+            $validated['status'] = strtolower($validated['status']);
             $data = [
-                'kode_tiang'      => $tervalidasi['kode_tiang'],
-                'wilayah'         => $tervalidasi['wilayah'],
-                'kecamatan'       => $tervalidasi['kecamatan'],
-                'kelurahan'       => $tervalidasi['kelurahan'],
-                'deskripsi_tiang' => $tervalidasi['deskripsi_tiang'],
-                'latitude'        => $tervalidasi['latitude'],
-                'longitude'       => $tervalidasi['longitude'],
-                'nama_petugas'    => $tervalidasi['nama_petugas'],
-                'status'          => $tervalidasi['status'],
+                'kode_tiang'      => $validated['kode_tiang'],
+                'wilayah'         => $validated['wilayah'],
+                'kecamatan'       => $validated['kecamatan'],
+                'kelurahan'       => $validated['kelurahan'],
+                'deskripsi_tiang' => $validated['deskripsi_tiang'],
+                'latitude'        => $validated['latitude'],
+                'longitude'       => $validated['longitude'],
+                'nama_petugas'    => $validated['nama_petugas'],
+                'status'          => $validated['status'],
             ];
             if (!Storage::disk('public')->exists('tiang')) Storage::disk('public')->makeDirectory('tiang');
             if ($request->hasFile('foto_tiang_1')) {
-                $path = app(GambarService::class)->simpanWebPTeroptimasi($request->file('foto_tiang_1'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_1'), 'tiang');
                 $data['foto_tiang_1'] = $path;
-                $berkasTersimpan[] = $path;
+                $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_tiang_2')) {
-                $path = app(GambarService::class)->simpanWebPTeroptimasi($request->file('foto_tiang_2'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_2'), 'tiang');
                 $data['foto_tiang_2'] = $path;
-                $berkasTersimpan[] = $path;
+                $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_tiang_3')) {
-                $path = app(GambarService::class)->simpanWebPTeroptimasi($request->file('foto_tiang_3'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_3'), 'tiang');
                 $data['foto_tiang_3'] = $path;
-                $berkasTersimpan[] = $path;
+                $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_tiang_4')) {
-                $path = app(GambarService::class)->simpanWebPTeroptimasi($request->file('foto_tiang_4'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_4'), 'tiang');
                 $data['foto_tiang_4'] = $path;
-                $berkasTersimpan[] = $path;
+                $storedFiles[] = $path;
             }
             if ($request->hasFile('foto_tiang_5')) {
-                $path = app(GambarService::class)->simpanWebPTeroptimasi($request->file('foto_tiang_5'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_5'), 'tiang');
                 $data['foto_tiang_5'] = $path;
-                $berkasTersimpan[] = $path;
+                $storedFiles[] = $path;
             }
             TiangModel::create($data);
             NotifikasiHelper::kirim('Data Tiang Ditambahkan', 'tiang', NotifikasiHelper::detailPesan('ditambahkan', 'tiang', [], $data));
             return redirect('data-tiang')->with('success', NotifikasiHelper::pesanKeberhasilan('ditambahkan', 'tiang', $data['kode_tiang'], $data['nama_petugas']));
         } catch (QueryException $e) {
-            $this->bersihkanBerkas($berkasTersimpan);
-            Log::error('SimpanTiang KesalahanKueri: ' . $e->getMessage());
-            return redirect()->back()->withErrors($this->uraiKesalahanKueri($e))->withInput();
+            $this->cleanupFiles($storedFiles);
+            Log::error('SimpanTiang QueryException: ' . $e->getMessage());
+            return redirect()->back()->withErrors($this->parseQueryError($e))->withInput();
         } catch (\Throwable $e) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
-                $this->bersihkanBerkas($berkasTersimpan);
+                $this->cleanupFiles($storedFiles);
                 throw $e;
             }
-            $this->bersihkanBerkas($berkasTersimpan);
-            Log::error('SimpanTiang Galat: ' . $e->getMessage());
+            $this->cleanupFiles($storedFiles);
+            Log::error('SimpanTiang Error: ' . $e->getMessage());
             return redirect()->back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
@@ -119,11 +119,11 @@ class TiangController extends Controller
 
     public function PerbaruiTiang(Request $request, $id)
     {
-        $berkasBaru = [];
-        $berkasLamaDihapus = [];
+        $newFiles = [];
+        $oldFilesToDelete = [];
         try {
             $tiang = TiangModel::findOrFail($id);
-            $tervalidasi = $request->validate([
+            $validated = $request->validate([
                 'kode_tiang'      => 'required|string|max:255|unique:tiang,kode_tiang,' . $id,
                 'wilayah'         => 'required|string|max:255',
                 'kecamatan'       => 'required|string|max:255',
@@ -159,78 +159,78 @@ class TiangController extends Controller
                 'status.in' => 'Status tidak valid.',
             ]);
             $data = [
-                'kode_tiang'      => $tervalidasi['kode_tiang'],
-                'wilayah'         => $tervalidasi['wilayah'],
-                'kecamatan'       => $tervalidasi['kecamatan'],
-                'kelurahan'       => $tervalidasi['kelurahan'],
-                'deskripsi_tiang' => $tervalidasi['deskripsi_tiang'],
-                'latitude'        => $tervalidasi['latitude'],
-                'longitude'       => $tervalidasi['longitude'],
-                'nama_petugas'    => $tervalidasi['nama_petugas'],
-                'status'          => $tervalidasi['status'],
+                'kode_tiang'      => $validated['kode_tiang'],
+                'wilayah'         => $validated['wilayah'],
+                'kecamatan'       => $validated['kecamatan'],
+                'kelurahan'       => $validated['kelurahan'],
+                'deskripsi_tiang' => $validated['deskripsi_tiang'],
+                'latitude'        => $validated['latitude'],
+                'longitude'       => $validated['longitude'],
+                'nama_petugas'    => $validated['nama_petugas'],
+                'status'          => $validated['status'],
             ];
             if (!Storage::disk('public')->exists('tiang')) Storage::disk('public')->makeDirectory('tiang');
             if ($request->hasFile('foto_tiang_1')) {
-                $path = app(GambarService::class)->simpanWebPTeroptimasi($request->file('foto_tiang_1'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_1'), 'tiang');
                 $data['foto_tiang_1'] = $path;
-                $berkasBaru[] = $path;
-                if ($tiang->foto_tiang_1) $berkasLamaDihapus[] = $tiang->foto_tiang_1;
+                $newFiles[] = $path;
+                if ($tiang->foto_tiang_1) $oldFilesToDelete[] = $tiang->foto_tiang_1;
             } elseif ($request->boolean('hapus_foto_1')) {
-                if ($tiang->foto_tiang_1) $berkasLamaDihapus[] = $tiang->foto_tiang_1;
+                if ($tiang->foto_tiang_1) $oldFilesToDelete[] = $tiang->foto_tiang_1;
                 $data['foto_tiang_1'] = null;
             }
             if ($request->hasFile('foto_tiang_2')) {
-                $path = app(GambarService::class)->simpanWebPTeroptimasi($request->file('foto_tiang_2'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_2'), 'tiang');
                 $data['foto_tiang_2'] = $path;
-                $berkasBaru[] = $path;
-                if ($tiang->foto_tiang_2) $berkasLamaDihapus[] = $tiang->foto_tiang_2;
+                $newFiles[] = $path;
+                if ($tiang->foto_tiang_2) $oldFilesToDelete[] = $tiang->foto_tiang_2;
             } elseif ($request->boolean('hapus_foto_2')) {
-                if ($tiang->foto_tiang_2) $berkasLamaDihapus[] = $tiang->foto_tiang_2;
+                if ($tiang->foto_tiang_2) $oldFilesToDelete[] = $tiang->foto_tiang_2;
                 $data['foto_tiang_2'] = null;
             }
             if ($request->hasFile('foto_tiang_3')) {
-                $path = app(GambarService::class)->simpanWebPTeroptimasi($request->file('foto_tiang_3'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_3'), 'tiang');
                 $data['foto_tiang_3'] = $path;
-                $berkasBaru[] = $path;
-                if ($tiang->foto_tiang_3) $berkasLamaDihapus[] = $tiang->foto_tiang_3;
+                $newFiles[] = $path;
+                if ($tiang->foto_tiang_3) $oldFilesToDelete[] = $tiang->foto_tiang_3;
             } elseif ($request->boolean('hapus_foto_3')) {
-                if ($tiang->foto_tiang_3) $berkasLamaDihapus[] = $tiang->foto_tiang_3;
+                if ($tiang->foto_tiang_3) $oldFilesToDelete[] = $tiang->foto_tiang_3;
                 $data['foto_tiang_3'] = null;
             }
             if ($request->hasFile('foto_tiang_4')) {
-                $path = app(GambarService::class)->simpanWebPTeroptimasi($request->file('foto_tiang_4'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_4'), 'tiang');
                 $data['foto_tiang_4'] = $path;
-                $berkasBaru[] = $path;
-                if ($tiang->foto_tiang_4) $berkasLamaDihapus[] = $tiang->foto_tiang_4;
+                $newFiles[] = $path;
+                if ($tiang->foto_tiang_4) $oldFilesToDelete[] = $tiang->foto_tiang_4;
             } elseif ($request->boolean('hapus_foto_4')) {
-                if ($tiang->foto_tiang_4) $berkasLamaDihapus[] = $tiang->foto_tiang_4;
+                if ($tiang->foto_tiang_4) $oldFilesToDelete[] = $tiang->foto_tiang_4;
                 $data['foto_tiang_4'] = null;
             }
             if ($request->hasFile('foto_tiang_5')) {
-                $path = app(GambarService::class)->simpanWebPTeroptimasi($request->file('foto_tiang_5'), 'tiang');
+                $path = app(ImageService::class)->storeOptimizedWebP($request->file('foto_tiang_5'), 'tiang');
                 $data['foto_tiang_5'] = $path;
-                $berkasBaru[] = $path;
-                if ($tiang->foto_tiang_5) $berkasLamaDihapus[] = $tiang->foto_tiang_5;
+                $newFiles[] = $path;
+                if ($tiang->foto_tiang_5) $oldFilesToDelete[] = $tiang->foto_tiang_5;
             } elseif ($request->boolean('hapus_foto_5')) {
-                if ($tiang->foto_tiang_5) $berkasLamaDihapus[] = $tiang->foto_tiang_5;
+                if ($tiang->foto_tiang_5) $oldFilesToDelete[] = $tiang->foto_tiang_5;
                 $data['foto_tiang_5'] = null;
             }
             $lama = $tiang->toArray();
             $tiang->update($data);
-            $this->bersihkanBerkas($berkasLamaDihapus);
+            $this->cleanupFiles($oldFilesToDelete);
             NotifikasiHelper::kirim('Data Tiang Diperbarui', 'tiang', NotifikasiHelper::detailPesan('diperbarui', 'tiang', $lama, $data));
             return redirect('data-tiang')->with('success', NotifikasiHelper::pesanKeberhasilan('diperbarui', 'tiang', $data['kode_tiang'], $data['nama_petugas']));
         } catch (QueryException $e) {
-            $this->bersihkanBerkas($berkasBaru);
-            Log::error('PerbaruiTiang KesalahanKueri: ' . $e->getMessage());
-            return redirect()->back()->withErrors($this->uraiKesalahanKueri($e))->withInput();
+            $this->cleanupFiles($newFiles);
+            Log::error('UpdateTiang QueryException: ' . $e->getMessage());
+            return redirect()->back()->withErrors($this->parseQueryError($e))->withInput();
         } catch (\Throwable $e) {
             if ($e instanceof \Illuminate\Validation\ValidationException) {
-                $this->bersihkanBerkas($berkasBaru);
+                $this->cleanupFiles($newFiles);
                 throw $e;
             }
-            $this->bersihkanBerkas($berkasBaru);
-            Log::error('PerbaruiTiang Galat: ' . $e->getMessage());
+            $this->cleanupFiles($newFiles);
+            Log::error('UpdateTiang Error: ' . $e->getMessage());
             return redirect()->back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
@@ -242,61 +242,61 @@ class TiangController extends Controller
         $tiang = TiangModel::findOrFail($id);
         $kode = $tiang->kode_tiang;
         $lama = $tiang->toArray();
-        $daftarBerkas = array_filter([$tiang->foto_tiang_1, $tiang->foto_tiang_2, $tiang->foto_tiang_3, $tiang->foto_tiang_4, $tiang->foto_tiang_5]);
+        $files = array_filter([$tiang->foto_tiang_1, $tiang->foto_tiang_2, $tiang->foto_tiang_3, $tiang->foto_tiang_4, $tiang->foto_tiang_5]);
         $tiang->delete();
-        $this->bersihkanBerkas($daftarBerkas);
+        $this->cleanupFiles($files);
         NotifikasiHelper::kirim('Data Tiang Dihapus', 'tiang', NotifikasiHelper::detailPesan('dihapus', 'tiang', $lama, []));
         return redirect('data-tiang')->with('success', NotifikasiHelper::pesanKeberhasilan('dihapus', 'tiang', $kode));
     }
 
-    // Tangani Pesan Kesalahan
+    // Handle Error Message
 
-    private function uraiKesalahanKueri(QueryException $e): array
+    private function parseQueryError(QueryException $e): array
     {
-        $pesan = $e->getMessage();
-        if (str_contains($pesan, 'cannot be null') || str_contains($pesan, "doesn't have a default value") || str_contains($pesan, '1048') || str_contains($pesan, '1364') || preg_match("/(Column|Field) '[^']+' (cannot be null|doesn't have a default value)/", $pesan)) {
-            if (preg_match("/(?:Column|Field) '([^']+)'/", $pesan, $m)) {
+        $msg = $e->getMessage();
+        if (str_contains($msg, 'cannot be null') || str_contains($msg, "doesn't have a default value") || str_contains($msg, '1048') || str_contains($msg, '1364') || preg_match("/(Column|Field) '[^']+' (cannot be null|doesn't have a default value)/", $msg)) {
+            if (preg_match("/(?:Column|Field) '([^']+)'/", $msg, $m)) {
                 $col = $m[1];
                 $labels = ['kode_tiang' => 'Kode Tiang', 'wilayah' => 'Wilayah', 'kecamatan' => 'Kecamatan', 'kelurahan' => 'Kelurahan', 'deskripsi_tiang' => 'Deskripsi Tiang', 'foto_tiang_1' => 'Foto Tiang 1', 'foto_tiang_2' => 'Foto Tiang 2', 'foto_tiang_3' => 'Foto Tiang 3', 'foto_tiang_4' => 'Foto Tiang 4', 'foto_tiang_5' => 'Foto Tiang 5', 'latitude' => 'Latitude', 'longitude' => 'Longitude', 'nama_petugas' => 'Nama Petugas', 'status' => 'Status'];
                 return [$col => ($labels[$col] ?? $col) . ' wajib diisi.'];
             }
             return ['error' => 'Ada field wajib yang belum diisi.'];
         }
-        if (str_contains($pesan, 'Duplicate entry') || str_contains($pesan, 'UNIQUE') || str_contains($pesan, 'unique constraint') || str_contains($pesan, '1062')) {
-            if (str_contains($pesan, 'kode_tiang')) return ['kode_tiang' => 'Kode Tiang sudah digunakan. Gunakan kode lain.'];
-            if (str_contains($pesan, 'kode_ont')) return ['kode_ont' => 'Kode ONT sudah digunakan.'];
-            if (preg_match("/for key '[^']*\.([^']+)'/", $pesan, $m)) {
+        if (str_contains($msg, 'Duplicate entry') || str_contains($msg, 'UNIQUE') || str_contains($msg, 'unique constraint') || str_contains($msg, '1062')) {
+            if (str_contains($msg, 'kode_tiang')) return ['kode_tiang' => 'Kode Tiang sudah digunakan. Gunakan kode lain.'];
+            if (str_contains($msg, 'kode_ont')) return ['kode_ont' => 'Kode ONT sudah digunakan.'];
+            if (preg_match("/for key '[^']*\.([^']+)'/", $msg, $m)) {
                 $col = $m[1];
                 return [$col => ucfirst(str_replace('_', ' ', $col)) . ' sudah digunakan.'];
             }
             return ['error' => 'Data sudah ada (duplikat). Periksa kembali kode unik.'];
         }
-        if (str_contains($pesan, 'foreign key') || str_contains($pesan, '1452')) return ['error' => 'Data relasi tidak valid.'];
-        Log::warning('KesalahanKueri Tiang tak terpetakan: ' . $pesan);
-        return ['error' => 'Gagal menyimpan data tiang: ' . $this->ambilRincianSql($pesan)];
+        if (str_contains($msg, 'foreign key') || str_contains($msg, '1452')) return ['error' => 'Data relasi tidak valid.'];
+        Log::warning('Unmapped QueryException for Tiang: ' . $msg);
+        return ['error' => 'Gagal menyimpan data tiang: ' . $this->extractSqlDetail($msg)];
     }
 
-    private function ambilRincianSql(string $pesan): string
+    private function extractSqlDetail(string $msg): string
     {
-        if (preg_match('/SQLSTATE\[.*?\]:\s*(.+?)(?:\s*\(|$)/', $pesan, $m)) return trim($m[1]);
-        return mb_substr($pesan, -200);
+        if (preg_match('/SQLSTATE\[.*?\]:\s*(.+?)(?:\s*\(|$)/', $msg, $m)) return trim($m[1]);
+        return mb_substr($msg, -200);
     }
 
-    private function formatKesalahanKueri(QueryException $e): string
+    private function formatQueryError(QueryException $e): string
     {
-        return array_values($this->uraiKesalahanKueri($e))[0];
+        return array_values($this->parseQueryError($e))[0];
     }
 
-    // Tangani Hapus Berkas
+    // Handle Delete File
 
-    private function bersihkanBerkas(array $daftarJalur): void
+    private function cleanupFiles(array $paths): void
     {
-        foreach ($daftarJalur as $jalur) {
-            if (!$jalur) continue;
+        foreach ($paths as $path) {
+            if (!$path) continue;
             try {
-                if (Storage::disk('public')->exists($jalur)) Storage::disk('public')->delete($jalur);
+                if (Storage::disk('public')->exists($path)) Storage::disk('public')->delete($path);
             } catch (\Throwable $e) {
-                Log::warning('Gagal membersihkan berkas: ' . $jalur . ' - ' . $e->getMessage());
+                Log::warning('Failed to cleanup file: ' . $path . ' - ' . $e->getMessage());
             }
         }
     }

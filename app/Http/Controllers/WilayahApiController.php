@@ -12,7 +12,7 @@ class WilayahApiController extends Controller
 {
     // Ambil Wilayah Saat Ini
 
-    private function ambilWilayahSaatIni(): ?WilayahModel
+    private function getCurrentWilayah(): ?WilayahModel
     {
         $settings = Cache::remember('settings', 3600, function () {
             $path = storage_path('app/settings.json');
@@ -31,14 +31,14 @@ class WilayahApiController extends Controller
         return WilayahModel::first();
     }
 
-    // Uraikan Kode Kemendagri
+    // Resolve Kode Kemendagri
 
-    private function uraikanKodeKemendagri(WilayahModel $wilayah): ?string
+    private function resolveKemendagriCode(WilayahModel $wil): ?string
     {
-        if (isset($wilayah->kemendagri_code) && $wilayah->kemendagri_code) {
-            return (string) $wilayah->kemendagri_code;
+        if (isset($wil->kemendagri_code) && $wil->kemendagri_code) {
+            return (string) $wil->kemendagri_code;
         }
-        $peta = config('regions.map', [
+        $map = config('regions.map', [
             'yogyakarta' => '3471',
             'sleman' => '3404',
             'bantul' => '3402',
@@ -48,37 +48,37 @@ class WilayahApiController extends Controller
             'sukoharjo' => '3311',
             'magelang' => '3308',
         ]);
-        $kunci = strtolower(trim($wilayah->nama_wilayah));
-        return $peta[$kunci] ?? null;
+        $key = strtolower(trim($wil->nama_wilayah));
+        return $map[$key] ?? null;
     }
 
     // Kecamatan Berdasarkan Kabupaten
 
     public function kecamatanBerdasarkanKabupaten(Request $request, $kode)
     {
-        $masukan = trim((string) $kode);
-        $wilayah = WilayahModel::where('kode_wilayah', $masukan)->orWhere('nama_wilayah', $masukan)->first();
-        $kodeKemendagri = null;
-        $wilayahUntukMeta = $wilayah;
-        if ($wilayah) {
-            $kodeKemendagri = $this->uraikanKodeKemendagri($wilayah);
+        $kode = trim((string) $kode);
+        $wil = WilayahModel::where('kode_wilayah', $kode)->orWhere('nama_wilayah', $kode)->first();
+        $code = null;
+        $wilForMeta = $wil;
+        if ($wil) {
+            $code = $this->resolveKemendagriCode($wil);
         } else {
-            $kodeKemendagri = $masukan;
-            $wilayahUntukMeta = null;
+            $code = $kode;
+            $wilForMeta = null;
         }
-        if (!$kodeKemendagri) {
-            return response()->json(['data' => [], 'meta' => ['source' => 'fallback', 'warning' => 'Kode Kemendagri tidak ditemukan untuk wilayah ' . $masukan]]);
+        if (!$code) {
+            return response()->json(['data' => [], 'meta' => ['source' => 'fallback', 'warning' => 'Kode Kemendagri tidak ditemukan untuk wilayah ' . $kode]]);
         }
 
-        $kunciTembolok = "regions:kecamatan:kabupaten:$kodeKemendagri";
-        $hasil = Cache::remember($kunciTembolok, 86400, function () use ($kodeKemendagri) {
+        $cacheKey = "regions:kecamatan:kabupaten:$code";
+        $result = Cache::remember($cacheKey, 86400, function () use ($code) {
             $apiKey = config('services.api_indonesia.key') ?? env('API_INDONESIA_KEY');
             if ($apiKey) {
                 try {
                     $res = Http::withHeaders(['x-api-key' => $apiKey])
                         ->timeout(5)
                         ->get("https://use.apiindonesia.id/api/v1/wilayah/kecamatan", [
-                            'kabupaten_id' => $kode,
+                            'kabupaten_id' => $code,
                             'per_page' => 100,
                         ]);
                     if ($res->successful()) {
@@ -91,16 +91,16 @@ class WilayahApiController extends Controller
                         ])->values()->all();
                         return ['data' => $norm, 'source' => 'api_indonesia', 'meta' => $json['meta'] ?? []];
                     }
-                    Log::warning("API Wilayah Indonesia kecamatan gagal: " . $res->status() . " " . $res->body());
+                    Log::warning("Region API Indonesia kecamatan failed: " . $res->status() . " " . $res->body());
                 } catch (\Throwable $e) {
-                    Log::warning("Pengecualian API Wilayah Indonesia: " . $e->getMessage());
+                    Log::warning("Region API Indonesia exception: " . $e->getMessage());
                 }
             }
 
-            $kodeWilayahId = $this->formatUntukIdWilayah($kode, 'kabupaten');
-            foreach ([$kode, $kodeWilayahId] as $kodeCoba) {
+            $wilayahIdCode = $this->formatForWilayahId($code, 'kabupaten');
+            foreach ([$code, $wilayahIdCode] as $tryCode) {
                 try {
-                    $res = Http::timeout(5)->get("https://wilayah.id/api/districts/{$kodeCoba}.json");
+                    $res = Http::timeout(5)->get("https://wilayah.id/api/districts/{$tryCode}.json");
                     if ($res->successful()) {
                         $json = $res->json();
                         $data = $json['data'] ?? [];
@@ -112,61 +112,61 @@ class WilayahApiController extends Controller
                         if (!empty($norm)) return ['data' => $norm, 'source' => 'wilayah.id', 'meta' => $json['meta'] ?? []];
                     }
                 } catch (\Throwable $e) {
-                    Log::warning("Pengambilan distrik Wilayah.id gagal: " . $e->getMessage());
+                    Log::warning("Wilayah.id districts fetch failed: " . $e->getMessage());
                 }
             }
 
             return null;
         });
 
-        if ($hasil && !empty($hasil['data'])) {
+        if ($result && !empty($result['data'])) {
             return response()->json([
-                'data' => $hasil['data'],
-                'meta' => array_merge($hasil['meta'] ?? [], ['source' => $hasil['source'], 'kabupaten' => $wilayahUntukMeta?->nama_wilayah ?? $masukan, 'kabupaten_code' => $kodeKemendagri]),
+                'data' => $result['data'],
+                'meta' => array_merge($result['meta'] ?? [], ['source' => $result['source'], 'kabupaten' => $wilForMeta?->nama_wilayah ?? $kode, 'kabupaten_code' => $code]),
             ]);
         }
         return response()->json([
             'data' => [],
-            'meta' => ['source' => 'fallback', 'warning' => 'Gagal memuat kecamatan dari API, silakan isi manual', 'kabupaten' => $wilayahUntukMeta?->nama_wilayah ?? $masukan],
+            'meta' => ['source' => 'fallback', 'warning' => 'Gagal memuat kecamatan dari API, silakan isi manual', 'kabupaten' => $wilForMeta?->nama_wilayah ?? $kode],
         ]);
     }
 
     // Format Kode untuk Wilayah.id
 
-    private function formatUntukIdWilayah(string $kode, string $tingkat): string
+    private function formatForWilayahId(string $code, string $level): string
     {
-        $angka = preg_replace('/[^0-9]/', '', $kode);
-        if ($tingkat === 'kabupaten' && strlen($angka) === 4) return substr($angka, 0, 2) . '.' . substr($angka, 2);
-        if ($tingkat === 'kecamatan' && strlen($angka) === 7) return substr($angka, 0, 2) . '.' . substr($angka, 2, 2) . '.' . substr($angka, 4);
-        if ($tingkat === 'kecamatan' && strlen($angka) === 6) return substr($angka, 0, 2) . '.' . substr($angka, 2, 2) . '.' . substr($angka, 4);
+        $digits = preg_replace('/[^0-9]/', '', $code);
+        if ($level === 'kabupaten' && strlen($digits) === 4) return substr($digits, 0, 2) . '.' . substr($digits, 2);
+        if ($level === 'kecamatan' && strlen($digits) === 7) return substr($digits, 0, 2) . '.' . substr($digits, 2, 2) . '.' . substr($digits, 4);
+        if ($level === 'kecamatan' && strlen($digits) === 6) return substr($digits, 0, 2) . '.' . substr($digits, 2, 2) . '.' . substr($digits, 4);
 
-        if (str_contains($kode, '.')) return $kode;
-        return $kode;
+        if (str_contains($code, '.')) return $code;
+        return $code;
     }
 
     // Kecamatan Wilayah Aktif
 
     public function kecamatanSaatIni(Request $request)
     {
-        $wilayah = $this->ambilWilayahSaatIni();
-        if (!$wilayah) {
+        $wil = $this->getCurrentWilayah();
+        if (!$wil) {
             return response()->json(['data' => [], 'meta' => ['source' => 'fallback', 'warning' => 'Wilayah tidak ditemukan']]);
         }
 
-        $kode = $request->query('kabupaten_id') ?? $this->uraikanKodeKemendagri($wilayah);
-        if (!$kode) {
-            return response()->json(['data' => [], 'meta' => ['source' => 'fallback', 'warning' => 'Kode Kemendagri tidak ditemukan untuk wilayah ' . $wilayah->nama_wilayah]]);
+        $code = $request->query('kabupaten_id') ?? $this->resolveKemendagriCode($wil);
+        if (!$code) {
+            return response()->json(['data' => [], 'meta' => ['source' => 'fallback', 'warning' => 'Kode Kemendagri tidak ditemukan untuk wilayah ' . $wil->nama_wilayah]]);
         }
 
-        $kunciTembolok = "regions:kecamatan:kabupaten:$kode";
-        $hasil = Cache::remember($kunciTembolok, 86400, function () use ($kode) {
+        $cacheKey = "regions:kecamatan:kabupaten:$code";
+        $result = Cache::remember($cacheKey, 86400, function () use ($code) {
             $apiKey = config('services.api_indonesia.key') ?? env('API_INDONESIA_KEY');
             if ($apiKey) {
                 try {
                     $res = Http::withHeaders(['x-api-key' => $apiKey])
                         ->timeout(5)
                         ->get("https://use.apiindonesia.id/api/v1/wilayah/kecamatan", [
-                            'kabupaten_id' => $kode,
+                            'kabupaten_id' => $code,
                             'per_page' => 100,
                         ]);
                     if ($res->successful()) {
@@ -179,16 +179,16 @@ class WilayahApiController extends Controller
                         ])->values()->all();
                         return ['data' => $norm, 'source' => 'api_indonesia', 'meta' => $json['meta'] ?? []];
                     }
-                    Log::warning("API Wilayah Indonesia kecamatan gagal: " . $res->status() . " " . $res->body());
+                    Log::warning("Region API Indonesia kecamatan failed: " . $res->status() . " " . $res->body());
                 } catch (\Throwable $e) {
-                    Log::warning("Pengecualian API Wilayah Indonesia: " . $e->getMessage());
+                    Log::warning("Region API Indonesia exception: " . $e->getMessage());
                 }
             }
 
-            $kodeWilayahId = $this->formatUntukIdWilayah($kode, 'kabupaten');
-            foreach ([$kode, $kodeWilayahId] as $kodeCoba) {
+            $wilayahIdCode = $this->formatForWilayahId($code, 'kabupaten');
+            foreach ([$code, $wilayahIdCode] as $tryCode) {
                 try {
-                    $res = Http::timeout(5)->get("https://wilayah.id/api/districts/{$kodeCoba}.json");
+                    $res = Http::timeout(5)->get("https://wilayah.id/api/districts/{$tryCode}.json");
                     if ($res->successful()) {
                         $json = $res->json();
                         $data = $json['data'] ?? [];
@@ -200,43 +200,43 @@ class WilayahApiController extends Controller
                         if (!empty($norm)) return ['data' => $norm, 'source' => 'wilayah.id', 'meta' => $json['meta'] ?? []];
                     }
                 } catch (\Throwable $e) {
-                    Log::warning("Pengambilan distrik Wilayah.id gagal: " . $e->getMessage());
+                    Log::warning("Wilayah.id districts fetch failed: " . $e->getMessage());
                 }
             }
             return null;
         });
 
-        if ($hasil && !empty($hasil['data'])) {
+        if ($result && !empty($result['data'])) {
             return response()->json([
-                'data' => $hasil['data'],
-                'meta' => array_merge($hasil['meta'] ?? [], ['source' => $hasil['source'], 'kabupaten' => $wilayah->nama_wilayah, 'kabupaten_code' => $kode]),
+                'data' => $result['data'],
+                'meta' => array_merge($result['meta'] ?? [], ['source' => $result['source'], 'kabupaten' => $wil->nama_wilayah, 'kabupaten_code' => $code]),
             ]);
         }
 
         return response()->json([
             'data' => [],
-            'meta' => ['source' => 'fallback', 'warning' => 'Gagal memuat kecamatan dari API, silakan isi manual', 'kabupaten' => $wilayah->nama_wilayah],
+            'meta' => ['source' => 'fallback', 'warning' => 'Gagal memuat kecamatan dari API, silakan isi manual', 'kabupaten' => $wil->nama_wilayah],
         ]);
     }
 
     // Kelurahan Berdasarkan Kecamatan
 
-    public function kelurahanBerdasarkanKecamatan(Request $request, $kode)
+    public function kelurahanBerdasarkanKecamatan(Request $request, $code)
     {
-        $kode = trim((string) $kode);
-        if ($kode === '') {
+        $code = trim((string) $code);
+        if ($code === '') {
             return response()->json(['data' => [], 'meta' => ['source' => 'fallback', 'warning' => 'Kode kecamatan kosong']]);
         }
 
-        $kunciTembolok = "regions:kelurahan:kecamatan:$kode";
-        $hasil = Cache::remember($kunciTembolok, 86400, function () use ($kode) {
+        $cacheKey = "regions:kelurahan:kecamatan:$code";
+        $result = Cache::remember($cacheKey, 86400, function () use ($code) {
             $apiKey = config('services.api_indonesia.key') ?? env('API_INDONESIA_KEY');
             if ($apiKey) {
                 try {
                     $res = Http::withHeaders(['x-api-key' => $apiKey])
                         ->timeout(5)
                         ->get("https://use.apiindonesia.id/api/v1/wilayah/kelurahan", [
-                            'kecamatan_id' => $kode,
+                            'kecamatan_id' => $code,
                             'per_page' => 100,
                         ]);
                     if ($res->successful()) {
@@ -249,16 +249,16 @@ class WilayahApiController extends Controller
                         ])->values()->all();
                         return ['data' => $norm, 'source' => 'api_indonesia', 'meta' => $json['meta'] ?? []];
                     }
-                    Log::warning("API Wilayah Indonesia kelurahan gagal: " . $res->status());
+                    Log::warning("Region API Indonesia kelurahan failed: " . $res->status());
                 } catch (\Throwable $e) {
-                    Log::warning("Pengecualian API kelurahan Wilayah: " . $e->getMessage());
+                    Log::warning("Region kelurahan API exception: " . $e->getMessage());
                 }
             }
 
-            $kodeWilayahId = $this->formatUntukIdWilayah($kode, 'kecamatan');
-            foreach ([$kode, $kodeWilayahId] as $kodeCoba) {
+            $wilayahIdCode = $this->formatForWilayahId($code, 'kecamatan');
+            foreach ([$code, $wilayahIdCode] as $tryCode) {
                 try {
-                    $res = Http::timeout(5)->get("https://wilayah.id/api/villages/{$kodeCoba}.json");
+                    $res = Http::timeout(5)->get("https://wilayah.id/api/villages/{$tryCode}.json");
                     if ($res->successful()) {
                         $json = $res->json();
                         $data = $json['data'] ?? [];
@@ -270,22 +270,22 @@ class WilayahApiController extends Controller
                         if (!empty($norm)) return ['data' => $norm, 'source' => 'wilayah.id', 'meta' => $json['meta'] ?? []];
                     }
                 } catch (\Throwable $e) {
-                    Log::warning("Pengambilan desa Wilayah.id gagal: " . $e->getMessage());
+                    Log::warning("Wilayah.id villages fetch failed: " . $e->getMessage());
                 }
             }
             return null;
         });
 
-        if ($hasil && isset($hasil['data'])) {
+        if ($result && isset($result['data'])) {
             return response()->json([
-                'data' => $hasil['data'],
-                'meta' => array_merge($hasil['meta'] ?? [], ['source' => $hasil['source'], 'kecamatan_code' => $kode]),
+                'data' => $result['data'],
+                'meta' => array_merge($result['meta'] ?? [], ['source' => $result['source'], 'kecamatan_code' => $code]),
             ]);
         }
 
         return response()->json([
             'data' => [],
-            'meta' => ['source' => 'fallback', 'warning' => 'Gagal memuat kelurahan dari API, silakan isi manual', 'kecamatan_code' => $kode],
+            'meta' => ['source' => 'fallback', 'warning' => 'Gagal memuat kelurahan dari API, silakan isi manual', 'kecamatan_code' => $code],
         ]);
     }
 }

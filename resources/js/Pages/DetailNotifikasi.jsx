@@ -3,44 +3,44 @@ import { FaArrowLeft, FaWifi, FaMap, FaUser, FaKey, FaCheck, FaTimes } from "rea
 import { LuUtilityPole } from "react-icons/lu";
 import { useMemo } from "react";
 import { router, usePage } from "@inertiajs/react";
-import useDasar from "../hooks/useDasar";
+import useBase from "../hooks/useBase";
 
-const getIconByKategori = (kategori) => {
+const ambilIkonBerdasarkanKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
     if (k === "ont") return FaWifi;
     if (k === "wilayah") return FaMap;
     return LuUtilityPole;
 };
 
-const getNotifikasiVisual = (item) => {
+const ambilVisualNotifikasi = (item) => {
     const jenis = item?.jenis || "";
     const kategori = (item?.kategori || "").toLowerCase();
 
     if (jenis.includes("Ditambahkan")) {
         return {
-            Icon: getIconByKategori(kategori),
-            circle: "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300",
+            Ikon: ambilIkonBerdasarkanKategori(kategori),
+            lingkaran: "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300",
         };
     }
     if (jenis.includes("Diperbarui")) {
         return {
-            Icon: getIconByKategori(kategori),
-            circle: "bg-yellow-100 dark:bg-yellow-500/15 text-yellow-600 dark:text-yellow-300",
+            Ikon: ambilIkonBerdasarkanKategori(kategori),
+            lingkaran: "bg-yellow-100 dark:bg-yellow-500/15 text-yellow-600 dark:text-yellow-300",
         };
     }
     if (jenis.includes("Dihapus")) {
         return {
-            Icon: getIconByKategori(kategori),
-            circle: "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300",
+            Ikon: ambilIkonBerdasarkanKategori(kategori),
+            lingkaran: "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300",
         };
     }
     if (jenis.includes("Reset")) {
         return {
-            Icon: FaKey,
-            circle: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
+            Ikon: FaKey,
+            lingkaran: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
         };
     }
-    return { Icon: null, circle: "" };
+    return { Ikon: null, lingkaran: "" };
 };
 
 const parsePesan = (pesan = "") => {
@@ -81,7 +81,7 @@ const parsePesan = (pesan = "") => {
 export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = null }) {
     const { pengaturan, auth } = usePage().props;
     const item = useMemo(() => (Array.isArray(notifikasi) ? notifikasi[0] : notifikasi) || null, [notifikasi]);
-    const { Icon, circle } = getNotifikasiVisual(item || {});
+    const { Ikon, lingkaran } = ambilVisualNotifikasi(item || {});
     const { summary, changes, details } = useMemo(() => parsePesan(item?.pesan), [item]);
     const belumDibaca = item?.status === "belum_dibaca";
     const actor = item?.updated_by || item?.username || item?.actor || null;
@@ -97,9 +97,9 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
         : aksiLabel === "Dihapus"
             ? "text-rose-600 dark:text-rose-300"
             : "text-amber-600 dark:text-amber-300";
-    const dasar = useDasar();
-    const handleBack = () => {
-        router.get(`${dasar}/notifikasi`.replace(/\/+/g, '/'));
+    const base = useBase();
+    const tanganiKembali = () => {
+        router.get(`${base}/notifikasi`.replace(/\/+/g, '/'));
     };
 
     const requestType = permintaanSetelUlang?.request_type ?? "password_reset";
@@ -114,27 +114,27 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
             ? `${permintaanSetelUlang.username} → ${permintaanSetelUlang.new_username}`
             : `akun "${permintaanSetelUlang?.username}"`;
     const currentUsername = auth?.username ?? null;
-    const isOwnRequest = permintaanSetelUlang
+    const apakahPermintaanSendiri = permintaanSetelUlang
         ? permintaanSetelUlang.username === currentUsername ||
           (permintaanSetelUlang.requested_by && permintaanSetelUlang.requested_by === currentUsername)
         : false;
 
-    const handleApproveReset = () => {
+    const tanganiSetujuiReset = () => {
         if (!permintaanSetelUlang) return;
         if (!window.confirm(`Setujui ${requestLabel} untuk ${requestDetail}?`)) {
             return;
         }
 
-        router.post(`${dasar}/reset-requests/${permintaanSetelUlang.id}/approve`.replace(/\/+/g, '/'));
+        router.post(`${base}/reset-requests/${permintaanSetelUlang.id}/approve`.replace(/\/+/g, '/'));
     };
 
-    const handleRejectReset = () => {
+    const tanganiTolakReset = () => {
         if (!permintaanSetelUlang) return;
         if (!window.confirm(`Tolak ${requestLabel} untuk ${requestDetail}?`)) {
             return;
         }
 
-        router.post(`${dasar}/reset-requests/${permintaanSetelUlang.id}/reject`.replace(/\/+/g, '/'));
+        router.post(`${base}/reset-requests/${permintaanSetelUlang.id}/reject`.replace(/\/+/g, '/'));
     };
 
     const formatWaktu = (value) => {
@@ -172,7 +172,7 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
 
                     <button
                         type="button"
-                        onClick={handleBack}
+                        onClick={tanganiKembali}
                         title="Kembali"
                         aria-label="Kembali"
                         className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:rounded-lg max-md:px-4 max-md:py-4"
@@ -195,13 +195,13 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
 
                         <div className="flex items-center gap-4 rounded-2xl bg-white dark:bg-night-900 px-5 py-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:flex-col max-md:items-start max-md:gap-3 max-md:px-4">
                             <div
-                                className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${circle || (belumDibaca
+                                className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${lingkaran || (belumDibaca
                                     ? "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300"
                                     : "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300")
                                     }`}
                             >
-                                {Icon ? (
-                                    <Icon size={20} />
+                                {Ikon ? (
+                                    <Ikon size={20} />
                                 ) : belumDibaca ? (
                                     "⚠"
                                 ) : (
@@ -277,7 +277,7 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
                                 </div>
 
                                 {permintaanSetelUlang.status === "pending" ? (
-                                    isOwnRequest ? (
+                                    apakahPermintaanSendiri ? (
                                         <p className="rounded-xl bg-amber-50 dark:bg-amber-500/10 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
                                             Permintaan sendiri — menunggu admin lain untuk menyetujui.
                                         </p>
@@ -285,7 +285,7 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
                                     <div className="flex items-center gap-2 max-md:flex-col max-md:items-stretch">
                                         <button
                                             type="button"
-                                            onClick={handleApproveReset}
+                                            onClick={tanganiSetujuiReset}
                                             className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-600 px-4 py-2.5 text-xs font-medium text-white shadow-sm transition hover:bg-green-700 active:scale-[0.98]"
                                         >
                                             <FaCheck size={12} />
@@ -293,7 +293,7 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={handleRejectReset}
+                                            onClick={tanganiTolakReset}
                                             className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-gray-200 dark:border-night-600 bg-white dark:bg-night-800 px-4 py-2.5 text-xs font-medium text-gray-600 dark:text-night-200 shadow-sm transition hover:bg-gray-50 dark:hover:bg-night-700 active:scale-[0.98]"
                                         >
                                             <FaTimes size={12} />

@@ -270,7 +270,7 @@ class HalamanController extends Controller
                 $r = (int) $row->r;
                 $isKode = $r <= 2;
                 if ($isKode) {
-                    $results->kirim(['id' => $row->id, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => 'kode', 'matchedValue' => $row->kode_tiang, 'label' => $row->kode_tiang . ' - ' . $row->wilayah . ' / ' . $row->kecamatan . ' / ' . $row->kelurahan, 'href' => "detail-tiang/{$row->id}", 'rank' => $r]);
+                    $results->push(['id' => $row->id, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => 'kode', 'matchedValue' => $row->kode_tiang, 'label' => $row->kode_tiang . ' - ' . $row->wilayah . ' / ' . $row->kecamatan . ' / ' . $row->kelurahan, 'href' => "detail-tiang/{$row->id}", 'rank' => $r]);
                 } else {
                     $field = $r <= 5 ? 'wilayah' : ($r <= 8 ? 'kecamatan' : ($r <= 11 ? 'kelurahan' : 'petugas'));
                     $val = $field === 'wilayah' ? $row->wilayah : ($field === 'kecamatan' ? $row->kecamatan : ($field === 'kelurahan' ? $row->kelurahan : $row->nama_petugas));
@@ -285,7 +285,7 @@ class HalamanController extends Controller
                     } else {
                         $href = "data-tiang?q=" . urlencode($val);
                     }
-                    $results->kirim(['id' => $row->id, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'wilayah' => $row->wilayah, 'wilayahId' => $parentWilayahId, 'rank' => $r + 2]);
+                    $results->push(['id' => $row->id, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'wilayah' => $row->wilayah, 'wilayahId' => $parentWilayahId, 'rank' => $r + 2]);
                 }
             }
         }
@@ -301,7 +301,7 @@ class HalamanController extends Controller
                 $r = (int) $row->r;
                 $isKode = $r <= 2;
                 if ($isKode) {
-                    $results->kirim(['id' => $row->id, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => 'kode', 'matchedValue' => $row->kode_ont, 'label' => $row->kode_ont . ' - ' . $row->wilayah . ' / ' . $row->kecamatan . ' / ' . $row->kelurahan, 'href' => "detail-ont/{$row->id}", 'rank' => $r]);
+                    $results->push(['id' => $row->id, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => 'kode', 'matchedValue' => $row->kode_ont, 'label' => $row->kode_ont . ' - ' . $row->wilayah . ' / ' . $row->kecamatan . ' / ' . $row->kelurahan, 'href' => "detail-ont/{$row->id}", 'rank' => $r]);
                 } else {
                     $field = $r <= 5 ? 'wilayah' : ($r <= 8 ? 'kecamatan' : ($r <= 11 ? 'kelurahan' : 'petugas'));
                     $val = $field === 'wilayah' ? $row->wilayah : ($field === 'kecamatan' ? $row->kecamatan : ($field === 'kelurahan' ? $row->kelurahan : $row->nama_petugas));
@@ -316,7 +316,7 @@ class HalamanController extends Controller
                     } else {
                         $href = "data-ont?q=" . urlencode($val);
                     }
-                    $results->kirim(['id' => $row->id, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'wilayah' => $row->wilayah, 'wilayahId' => $parentWilayahId, 'rank' => $r + 2]);
+                    $results->push(['id' => $row->id, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'wilayah' => $row->wilayah, 'wilayahId' => $parentWilayahId, 'rank' => $r + 2]);
                 }
             }
         }

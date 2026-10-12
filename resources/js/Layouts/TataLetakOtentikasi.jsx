@@ -1,22 +1,22 @@
 import { useState, useEffect } from "react";
-import { aset } from "../hooks/useDasar";
+import { asset } from "../hooks/useBase";
 
-export default function TataLetakOtentikasi({ children, pesanGalat }) {
+export default function AuthLayout({ children, errorMessage }) {
 
-    const [terlihat, aturTerlihat] = useState(!!pesanGalat);
+    const [visible, setVisible] = useState(!!errorMessage);
     useEffect(() => {
-        aturTerlihat(!!pesanGalat);
-        if (!pesanGalat) return;
-        const t = setTimeout(() => aturTerlihat(false), 3000);
+        setVisible(!!errorMessage);
+        if (!errorMessage) return;
+        const t = setTimeout(() => setVisible(false), 3000);
         return () => clearTimeout(t);
-    }, [pesanGalat]);
+    }, [errorMessage]);
 
     return (
         <div className="relative flex h-screen bg-white font-poppins text-gray-900 transition-colors duration-200 max-md:h-auto max-md:min-h-screen max-md:flex-col max-md:bg-[#F6F4F4] dark:bg-night-950 dark:text-night-200 dark:max-md:bg-night-950">
-            {terlihat && pesanGalat && (
+            {visible && errorMessage && (
                 <div className="fixed left-1/2 top-5 z-[99999] -translate-x-1/2">
                     <div className="rounded-lg bg-red-500 px-4 py-2 text-xs font-medium text-white shadow-lg">
-                        {pesanGalat}
+                        {errorMessage}
                     </div>
                 </div>
             )}
@@ -27,7 +27,7 @@ export default function TataLetakOtentikasi({ children, pesanGalat }) {
                 className="gis-auth-hero relative flex w-1/2 items-center justify-center overflow-hidden max-md:h-auto max-md:min-h-0 max-md:w-full max-md:px-5 max-md:pb-12 max-md:pt-10"
                 style={{
                     backgroundImage:
-                        `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)), url('${aset("public/Assets/LoginBackground.jpg")}')`,
+                        `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)), url('${asset("public/Assets/LoginBackground.jpg")}')`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}
@@ -44,7 +44,7 @@ export default function TataLetakOtentikasi({ children, pesanGalat }) {
 
                 <div className="relative flex flex-row items-center gap-8 max-md:flex-col max-md:gap-3 max-md:px-0 max-md:text-center">
                     <img
-                        src={aset("public/Assets/Logo.png")}
+                        src={asset("public/Assets/Logo.png")}
                         alt="Logo"
                         className="w-25 max-md:w-16"
                         width="100"

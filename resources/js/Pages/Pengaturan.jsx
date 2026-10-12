@@ -98,7 +98,7 @@ export default function Pengaturan({ wilayah, permintaanSetelUlang = [], riwayat
         });
     };
 
-    const handleApproveReset = (item) => {
+    const tanganiSetujuiReset = (item) => {
         const id = typeof item === "object" ? item.id : item;
         const label = typeof item === "object" ? ambilRincianPermintaan(item) : `akun "${item}"`;
         if (!window.confirm(`Setujui ${ambilLabelPermintaan(typeof item === "object" ? item : null)} untuk ${label}?`)) {
@@ -108,7 +108,7 @@ export default function Pengaturan({ wilayah, permintaanSetelUlang = [], riwayat
         router.post(`reset-requests/${id}/approve`);
     };
 
-    const handleRejectReset = (item) => {
+    const tanganiTolakReset = (item) => {
         const id = typeof item === "object" ? item.id : item;
         const label = typeof item === "object" ? ambilRincianPermintaan(item) : `akun "${item}"`;
         if (!window.confirm(`Tolak ${ambilLabelPermintaan(typeof item === "object" ? item : null)} untuk ${label}?`)) {
@@ -196,7 +196,7 @@ export default function Pengaturan({ wilayah, permintaanSetelUlang = [], riwayat
                                     type="text"
                                     label="Username Baru"
                                     value={userBaru}
-                                    onChange={(e) => aturUserBaru(e.target.value)}
+                                    onChange={(kejadian) => aturUserBaru(kejadian.target.value)}
                                     placeholder="Masukkan username baru"
                                     autoComplete="username"
                                     error={errors.username}
@@ -225,7 +225,7 @@ export default function Pengaturan({ wilayah, permintaanSetelUlang = [], riwayat
                                 id="sandi-saat-ini"
                                 label="Kata Sandi Saat Ini"
                                 value={kataSandiSaatIni}
-                                onChange={(e) => aturKataSandiSaatIni(e.target.value)}
+                                onChange={(kejadian) => aturKataSandiSaatIni(kejadian.target.value)}
                                 placeholder="Masukkan kata sandi saat ini"
                                 autoComplete="current-password"
                                 tampil={tampilKataSandiSaatIni}
@@ -239,7 +239,7 @@ export default function Pengaturan({ wilayah, permintaanSetelUlang = [], riwayat
                                     id="sandi-baru"
                                     label="Kata Sandi Baru (min. 8 karakter)"
                                     value={kataSandiBaru}
-                                    onChange={(e) => aturKataSandiBaru(e.target.value)}
+                                    onChange={(kejadian) => aturKataSandiBaru(kejadian.target.value)}
                                     placeholder="Masukkan kata sandi baru"
                                     autoComplete="new-password"
                                     minLength={8}
@@ -255,7 +255,7 @@ export default function Pengaturan({ wilayah, permintaanSetelUlang = [], riwayat
                                     id="sandi-konfirmasi"
                                     label="Konfirmasi Kata Sandi Baru"
                                     value={konfirmasiKataSandi}
-                                    onChange={(e) => aturKonfirmasiKataSandi(e.target.value)}
+                                    onChange={(kejadian) => aturKonfirmasiKataSandi(kejadian.target.value)}
                                     placeholder="Ulangi kata sandi baru"
                                     autoComplete="new-password"
                                     minLength={8}
@@ -383,8 +383,8 @@ export default function Pengaturan({ wilayah, permintaanSetelUlang = [], riwayat
                             <select
                                 id="wilayah"
                                 value={wilayahTerpilih}
-                                onChange={(e) =>
-                                    aturWilayahTerpilih(e.target.value)
+                                onChange={(kejadian) =>
+                                    aturWilayahTerpilih(kejadian.target.value)
                                 }
                                 className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white dark:bg-night-900 dark:text-night-200 dark:placeholder:text-night-500 shadow-sm"
                                 disabled={wilayah.length === 0}
@@ -483,7 +483,7 @@ export default function Pengaturan({ wilayah, permintaanSetelUlang = [], riwayat
                                     <div className="flex shrink-0 items-center gap-2 max-md:w-full">
                                         <button
                                             type="button"
-                                            onClick={() => handleApproveReset(item)}
+                                            onClick={() => tanganiSetujuiReset(item)}
                                             className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-600 px-4 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-green-700 active:scale-[0.98] max-md:py-2.5"
                                         >
                                             <FaCheck size={12} />
@@ -491,7 +491,7 @@ export default function Pengaturan({ wilayah, permintaanSetelUlang = [], riwayat
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => handleRejectReset(item)}
+                                            onClick={() => tanganiTolakReset(item)}
                                             className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-gray-200 dark:border-night-600 bg-white dark:bg-night-800 px-4 py-2 text-xs font-medium text-gray-600 dark:text-night-200 shadow-sm transition hover:bg-gray-50 dark:hover:bg-night-700 active:scale-[0.98] max-md:py-2.5"
                                         >
                                             <FaTimes size={12} />

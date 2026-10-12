@@ -52,7 +52,7 @@ export function KolomKataSandi({
                     id={id}
                     type={tampil ? "text" : "password"}
                     className={`${KELAS_MASUKAN} pr-12${className ? ` ${className}` : ""}`}
-                    {...sisa}
+                    {...props}
                 />
                 <button
                     type="button"

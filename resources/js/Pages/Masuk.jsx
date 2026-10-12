@@ -12,7 +12,7 @@ export default function Masuk() {
 
     const { errors } = usePage().props;
 
-    const pesanGalat = Object.values(errors || {})[0];
+    const errorMessage = Object.values(errors || {})[0];
 
     useEffect(() => {
         const ingatTersimpan = localStorage.getItem("gis_remember_me") === "true";
@@ -42,7 +42,7 @@ export default function Masuk() {
     };
 
     return (
-        <TataLetakOtentikasi pesanGalat={pesanGalat}>
+        <TataLetakOtentikasi errorMessage={errorMessage}>
             <div className="relative flex p-6 pt-14 max-md:w-full max-md:max-w-md max-md:rounded-3xl max-md:bg-white max-md:p-6 max-md:pt-14 max-md:shadow-xl max-md:ring-1 max-md:ring-black/5 dark:max-md:bg-night-900 dark:max-md:ring-white/10">
                 <div className="absolute right-4 top-4">
                     <PengalihTema variant="login" />
@@ -68,7 +68,7 @@ export default function Masuk() {
                         type="text"
                         label="Nama Pengguna"
                         value={user}
-                        onChange={(e) => aturUser(e.target.value)}
+                        onChange={(kejadian) => aturUser(kejadian.target.value)}
                         placeholder="Masukkan nama pengguna"
                         autoComplete="username"
                     />
@@ -80,7 +80,7 @@ export default function Masuk() {
                         name="password"
                         label="Kata Sandi"
                         value={kataSandi}
-                        onChange={(e) => aturKataSandi(e.target.value)}
+                        onChange={(kejadian) => aturKataSandi(kejadian.target.value)}
                         placeholder="Masukkan kata sandi"
                         autoComplete="current-password"
                         tampil={tampilKataSandi}
@@ -101,8 +101,8 @@ export default function Masuk() {
                                 id="remember"
                                 name="remember"
                                 checked={ingatSaya}
-                                onChange={(e) =>
-                                    aturIngatSaya(e.target.checked)
+                                onChange={(kejadian) =>
+                                    aturIngatSaya(kejadian.target.checked)
                                 }
                                 className="h-4 w-4 rounded border-gray-300 dark:border-night-600 text-[#ab3c3c] accent-[#ab3c3c] focus:ring-1 focus:ring-[#ab3c3c]/20"
                             />
