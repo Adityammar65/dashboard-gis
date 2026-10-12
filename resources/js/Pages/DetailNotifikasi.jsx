@@ -111,12 +111,11 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
               : "Reset Kata Sandi";
     const requestDetail =
         requestType === "username_change" && resetRequest?.username_baru
-            ? `${resetRequest.username} → ${resetRequest.username_baru}`
-            : `akun "${resetRequest?.username}"`;
+            ? `${resetRequest.requested_by} → ${resetRequest.username_baru}`
+            : `akun "${resetRequest?.requested_by}"`;
     const currentUsername = auth?.username ?? null;
     const isOwnRequest = resetRequest
-        ? resetRequest.username === currentUsername ||
-          (resetRequest.requested_by && resetRequest.requested_by === currentUsername)
+        ? resetRequest.requested_by === currentUsername
         : false;
 
     const handleApproveReset = () => {
@@ -264,11 +263,10 @@ export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
                                         </h3>
                                         <p className="text-xs text-gray-500 dark:text-night-400">
                                             {requestType === "username_change" && resetRequest.username_baru ? (
-                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username} → {resetRequest.username_baru}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
+                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.requested_by} → {resetRequest.username_baru}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
                                             ) : (
-                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
+                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.requested_by}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
                                             )}
-                                            {resetRequest.requested_by ? ` oleh ${resetRequest.requested_by}` : ""}
                                         </p>
                                     </div>
                                     <span className={`ml-auto shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold ${resetRequest.status === "pending" ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300" : resetRequest.status === "approved" ? "bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300" : "bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300"}`}>

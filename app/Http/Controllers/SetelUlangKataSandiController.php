@@ -26,7 +26,7 @@ class SetelUlangKataSandiController extends Controller
 
         $username = $request->username;
 
-        $pending = RequestPerubahanAkun::where('username', $username)
+        $pending = RequestPerubahanAkun::where('requested_by', $username)
             ->where('status', 'pending')
             ->exists();
 
@@ -37,7 +37,6 @@ class SetelUlangKataSandiController extends Controller
         }
 
         $reset = RequestPerubahanAkun::create([
-            'username' => $username,
             'password_baru' => Hash::make($request->password),
             'tipe_request' => 'password_reset',
             'requested_by' => $username,
@@ -71,14 +70,14 @@ class SetelUlangKataSandiController extends Controller
         }
 
         $penyetuju = $request->session()->get('username');
-        $peminta = $reset->requested_by ?: $reset->username;
+        $usernameAkun = $reset->requested_by;
         $jenis = $reset->tipe_request ?: 'password_reset';
 
-        if ($penyetuju && ($penyetuju === $reset->username || $penyetuju === $peminta)) {
+        if ($penyetuju && $penyetuju === $usernameAkun) {
             return back()->withErrors(['Tidak dapat menyetujui permintaan akun sendiri.']);
         }
 
-        $user = UserModel::where('username', $reset->username)->first();
+        $user = UserModel::where('username', $usernameAkun)->first();
 
         if (!$user) {
             return back()->withErrors(['Akun tidak ditemukan (mungkin sudah dihapus).']);
@@ -110,7 +109,7 @@ class SetelUlangKataSandiController extends Controller
                 'handled_at' => now(),
             ]);
 
-            return back()->with('success', "Username {$reset->username} berhasil diubah menjadi {$userBaru}.");
+            return back()->with('success', "Username {$usernameAkun} berhasil diubah menjadi {$userBaru}.");
         }
 
         if (!$reset->password_baru) {
@@ -129,7 +128,7 @@ class SetelUlangKataSandiController extends Controller
             'handled_at' => now(),
         ]);
 
-        return back()->with('success', "Kata sandi akun {$reset->username} berhasil diatur ulang.");
+        return back()->with('success', "Kata sandi akun {$usernameAkun} berhasil diatur ulang.");
     }
 
     // Tolak permintaan
@@ -143,9 +142,9 @@ class SetelUlangKataSandiController extends Controller
         }
 
         $penyetuju = $request->session()->get('username');
-        $peminta = $reset->requested_by ?: $reset->username;
+        $usernameAkun = $reset->requested_by;
 
-        if ($penyetuju && ($penyetuju === $reset->username || $penyetuju === $peminta)) {
+        if ($penyetuju && $penyetuju === $usernameAkun) {
             return back()->withErrors(['Tidak dapat menolak permintaan akun sendiri.']);
         }
 
@@ -155,6 +154,6 @@ class SetelUlangKataSandiController extends Controller
             'handled_at' => now(),
         ]);
 
-        return back()->with('success', "Permintaan akun {$reset->username} ditolak.");
+        return back()->with('success', "Permintaan akun {$usernameAkun} ditolak.");
     }
 }

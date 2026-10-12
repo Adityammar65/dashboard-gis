@@ -34,7 +34,7 @@ Migrasi di `database/migrations/`. Tidak ada foreign key basis data; relasi bers
 | `ont` | Sama seperti `tiang` dengan prefix `kode_ont`/`deskripsi_ont`/`foto_ont_*` |
 | `wilayah` | `nama_wilayah`, `kode_wilayah` (unik) |
 | `notifikasi` | `jenis`, `kategori`, `status` (`belum_dibaca`/`dibaca`), `pesan`, `updated_by`, `reset_request_id` (dapat null) |
-| `password_reset_requests` | `username`, `password_hash` (dapat null untuk ubah username), `request_type` (`password_reset`/`password_change`/`username_change`), `requested_by`, `new_username`, `status` (`pending`/`approved`/`rejected`), `requested_ip`, `handled_by`, `handled_at` |
+| `request_perubahan_akun` | `password_baru` (dapat null untuk ubah username), `tipe_request` (`password_reset`/`password_change`/`username_change`), `requested_by`, `username_baru`, `status` (`pending`/`approved`/`rejected`), `requested_ip`, `handled_by`, `handled_at` |
 
 Indeks tambahan (migrasi `add_performance_indexes`) mencakup kolom yang sering disaring. Seeder bawaan (`DatabaseSeeder` → `UserSeeder`, `WilayahSeeder`, `TiangSeeder`, `OntSeeder`) membuat akun `admin`/`password` dan data contoh (foto contoh berupa string placeholder `tiang/dummy.jpg`, `ont/dummy.jpg`).
 

@@ -43,10 +43,7 @@ class ProfilController extends Controller
 
         $menunggu = RequestPerubahanAkun::where('status', 'pending')
             ->where('tipe_request', 'username_change')
-            ->where(function ($q) use ($userSaatIni) {
-                $q->where('username', $userSaatIni)
-                    ->orWhere('requested_by', $userSaatIni);
-            })
+            ->where('requested_by', $userSaatIni)
             ->exists();
 
         if ($menunggu) {
@@ -56,7 +53,6 @@ class ProfilController extends Controller
         }
 
         $reset = RequestPerubahanAkun::create([
-            'username' => $userSaatIni,
             'password_baru' => null,
             'tipe_request' => 'username_change',
             'requested_by' => $userSaatIni,
@@ -105,10 +101,7 @@ class ProfilController extends Controller
 
         $menunggu = RequestPerubahanAkun::where('status', 'pending')
             ->whereIn('tipe_request', ['password_change', 'password_reset'])
-            ->where(function ($q) use ($userSaatIni) {
-                $q->where('username', $userSaatIni)
-                    ->orWhere('requested_by', $userSaatIni);
-            })
+            ->where('requested_by', $userSaatIni)
             ->exists();
 
         if ($menunggu) {
@@ -118,7 +111,6 @@ class ProfilController extends Controller
         }
 
         $reset = RequestPerubahanAkun::create([
-            'username' => $userSaatIni,
             'password_baru' => Hash::make($request->password),
             'tipe_request' => 'password_change',
             'requested_by' => $userSaatIni,
@@ -182,10 +174,7 @@ class ProfilController extends Controller
 
             $menungguUser = RequestPerubahanAkun::where('status', 'pending')
                 ->where('tipe_request', 'username_change')
-                ->where(function ($q) use ($userSaatIni) {
-                    $q->where('username', $userSaatIni)
-                        ->orWhere('requested_by', $userSaatIni);
-                })
+                ->where('requested_by', $userSaatIni)
                 ->exists();
 
             if ($menungguUser) {
@@ -207,10 +196,7 @@ class ProfilController extends Controller
 
             $menungguKataSandi = RequestPerubahanAkun::where('status', 'pending')
                 ->whereIn('tipe_request', ['password_change', 'password_reset'])
-                ->where(function ($q) use ($userSaatIni) {
-                    $q->where('username', $userSaatIni)
-                        ->orWhere('requested_by', $userSaatIni);
-                })
+                ->where('requested_by', $userSaatIni)
                 ->exists();
 
             if ($menungguKataSandi) {
@@ -224,7 +210,6 @@ class ProfilController extends Controller
 
         if ($inginUser) {
             $reset = RequestPerubahanAkun::create([
-                'username' => $userSaatIni,
                 'password_baru' => null,
                 'tipe_request' => 'username_change',
                 'requested_by' => $userSaatIni,
@@ -249,7 +234,6 @@ class ProfilController extends Controller
 
         if ($inginKataSandi) {
             $reset = RequestPerubahanAkun::create([
-                'username' => $userSaatIni,
                 'password_baru' => Hash::make($password),
                 'tipe_request' => 'password_change',
                 'requested_by' => $userSaatIni,

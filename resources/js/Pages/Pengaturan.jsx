@@ -19,7 +19,7 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const myPending = resetRequests.filter(
-        (r) => r.username === currentUsername || r.requested_by === currentUsername
+        (r) => r.requested_by === currentUsername
     );
     const myPendingUsername = myPending.find((r) => (r.tipe_request ?? "password_reset") === "username_change");
     const myPendingPassword = myPending.find((r) => {
@@ -37,16 +37,15 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
     const getRequestDetail = (item) => {
         const t = item?.tipe_request ?? "password_reset";
         if (t === "username_change" && item?.username_baru) {
-            return `${item.username} → ${item.username_baru}`;
+            return `${item.requested_by} → ${item.username_baru}`;
         }
         if (t === "password_change") {
-            return `Ubah kata sandi akun ${item.username}`;
+            return `Ubah kata sandi akun ${item.requested_by}`;
         }
-        return `Reset kata sandi akun ${item.username}`;
+        return `Reset kata sandi akun ${item.requested_by}`;
     };
 
-    const isOwnRequest = (item) =>
-        item?.username === currentUsername || item?.requested_by === currentUsername;
+    const isOwnRequest = (item) => item?.requested_by === currentUsername;
 
     const handleSimpan = () => {
         if (!selectedWilayah) {
@@ -485,7 +484,7 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                                             </span>
                                         </div>
                                         <p className="mt-0.5 text-xs text-gray-500 dark:text-night-400">
-                                            Diminta {formatWaktu(item.created_at)}{item.requested_by ? ` oleh ${item.requested_by}` : ""}
+                                            Diminta {formatWaktu(item.created_at)}
                                         </p>
                                         {own && (
                                             <p className="mt-0.5 text-[11px] text-amber-700 dark:text-amber-300">

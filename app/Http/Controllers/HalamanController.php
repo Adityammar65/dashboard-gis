@@ -608,7 +608,7 @@ class HalamanController extends Controller
         $resetRequest = null;
         if ($notifikasi->reset_request_id) {
             $resetRequest = RequestPerubahanAkun::where('id', $notifikasi->reset_request_id)
-                ->first(['id', 'username', 'tipe_request', 'requested_by', 'username_baru', 'status', 'handled_by', 'handled_at', 'created_at']);
+                ->first(['id', 'tipe_request', 'requested_by', 'username_baru', 'status', 'handled_by', 'handled_at', 'created_at']);
         }
         return Inertia::render('DetailNotifikasi', [
             'notifikasi' => $notifikasi,
@@ -654,11 +654,11 @@ class HalamanController extends Controller
             'settings' => $settings,
             'resetRequests' => RequestPerubahanAkun::where('status', 'pending')
                 ->orderByDesc('id')
-                ->get(['id', 'username', 'tipe_request', 'requested_by', 'username_baru', 'created_at']),
+                ->get(['id', 'tipe_request', 'requested_by', 'username_baru', 'created_at']),
             'resetHistory' => RequestPerubahanAkun::whereIn('status', ['approved', 'rejected'])
                 ->orderByDesc('id')
                 ->limit(5)
-                ->get(['id', 'username', 'tipe_request', 'requested_by', 'username_baru', 'status', 'handled_by', 'handled_at']),
+                ->get(['id', 'tipe_request', 'requested_by', 'username_baru', 'status', 'handled_by', 'handled_at']),
         ]);
     }
 }

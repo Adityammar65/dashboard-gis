@@ -9,7 +9,6 @@ class RequestPerubahanAkun extends Model
     protected $table = 'request_perubahan_akun';
 
     protected $fillable = [
-        'username',
         'password_baru',
         'tipe_request',
         'requested_by',
