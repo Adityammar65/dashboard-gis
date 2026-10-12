@@ -1,0 +1,160 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Helpers\NotifikasiHelper;
+use App\Models\PasswordResetRequest;
+use App\Models\UserModel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
+class SetelUlangKataSandiController extends Controller
+{
+    // Permintaan setel ulang kata sandi
+
+    public function ajukan(Request $request)
+    {
+        $request->validate([
+            'username' => ['required', 'string', 'exists:user,username'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'username.exists' => 'Username tidak ditemukan.',
+            'password.min' => 'Kata sandi baru minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+        ]);
+
+        $username = $request->username;
+
+        $pending = PasswordResetRequest::where('username', $username)
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($pending) {
+            return back()->withErrors([
+                'Permintaan reset untuk username ini masih menunggu persetujuan admin.',
+            ]);
+        }
+
+        $reset = PasswordResetRequest::create([
+            'username' => $username,
+            'password_hash' => Hash::make($request->password),
+            'request_type' => 'password_reset',
+            'requested_by' => $username,
+            'new_username' => null,
+            'status' => 'pending',
+            'requested_ip' => $request->ip(),
+        ]);
+
+        $notif = NotifikasiHelper::kirim(
+            'Reset Kata Sandi Diminta',
+            'akun',
+            "Permintaan reset kata sandi untuk username {$username} menunggu persetujuan.",
+            $username
+        );
+
+        if ($notif) {
+            $notif->update(['reset_request_id' => $reset->id]);
+        }
+
+        return back()->with('success', 'Permintaan reset terkirim. Tunggu persetujuan admin, lalu masuk dengan kata sandi baru.');
+    }
+
+    // Setujui permintaan
+
+    public function setujui(Request $request, $id)
+    {
+        $reset = PasswordResetRequest::findOrFail($id);
+
+        if (!$reset->isPending()) {
+            return back()->withErrors(['Permintaan ini sudah ditindaklanjuti.']);
+        }
+
+        $penyetuju = $request->session()->get('username');
+        $peminta = $reset->requested_by ?: $reset->username;
+        $jenis = $reset->request_type ?: 'password_reset';
+
+        if ($penyetuju && ($penyetuju === $reset->username || $penyetuju === $peminta)) {
+            return back()->withErrors(['Tidak dapat menyetujui permintaan akun sendiri.']);
+        }
+
+        $user = UserModel::where('username', $reset->username)->first();
+
+        if (!$user) {
+            return back()->withErrors(['Akun tidak ditemukan (mungkin sudah dihapus).']);
+        }
+
+        if ($jenis === 'username_change') {
+            $userBaru = trim((string) ($reset->new_username ?? ''));
+
+            if ($userBaru === '' || $userBaru === $user->username) {
+                return back()->withErrors(['Username baru tidak valid.']);
+            }
+
+            $sudahDipakai = UserModel::where('username', $userBaru)
+                ->where('id', '!=', $user->id)
+                ->exists();
+
+            if ($sudahDipakai) {
+                return back()->withErrors(['Username baru sudah digunakan pengguna lain.']);
+            }
+
+            DB::table('user')->where('id', $user->id)->update([
+                'username' => $userBaru,
+                'updated_at' => now(),
+            ]);
+
+            $reset->update([
+                'status' => 'approved',
+                'handled_by' => $penyetuju,
+                'handled_at' => now(),
+            ]);
+
+            return back()->with('success', "Username {$reset->username} berhasil diubah menjadi {$userBaru}.");
+        }
+
+        if (!$reset->password_hash) {
+            return back()->withErrors(['Data kata sandi pada permintaan tidak valid.']);
+        }
+
+        DB::table('user')->where('id', $user->id)->update([
+            'password' => $reset->password_hash,
+            'remember_token' => null,
+            'updated_at' => now(),
+        ]);
+
+        $reset->update([
+            'status' => 'approved',
+            'handled_by' => $penyetuju,
+            'handled_at' => now(),
+        ]);
+
+        return back()->with('success', "Kata sandi akun {$reset->username} berhasil diatur ulang.");
+    }
+
+    // Tolak permintaan
+
+    public function tolak(Request $request, $id)
+    {
+        $reset = PasswordResetRequest::findOrFail($id);
+
+        if (!$reset->isPending()) {
+            return back()->withErrors(['Permintaan ini sudah ditindaklanjuti.']);
+        }
+
+        $penyetuju = $request->session()->get('username');
+        $peminta = $reset->requested_by ?: $reset->username;
+
+        if ($penyetuju && ($penyetuju === $reset->username || $penyetuju === $peminta)) {
+            return back()->withErrors(['Tidak dapat menolak permintaan akun sendiri.']);
+        }
+
+        $reset->update([
+            'status' => 'rejected',
+            'handled_by' => $penyetuju,
+            'handled_at' => now(),
+        ]);
+
+        return back()->with('success', "Permintaan akun {$reset->username} ditolak.");
+    }
+}

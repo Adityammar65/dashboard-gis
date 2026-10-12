@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\UserModel;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -11,11 +11,11 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Isi basis data aplikasi.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // UserModel::factory(10)->create();
         $this->call([
             UserSeeder::class,
             WilayahSeeder::class,

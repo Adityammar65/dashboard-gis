@@ -1,95 +1,95 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ExportController;
-use App\Http\Controllers\FormController;
+use App\Http\Controllers\AutentikasiController;
+use App\Http\Controllers\EksporController;
+use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\ONTController;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\PasswordResetController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RegionController;
-use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\HalamanController;
+use App\Http\Controllers\SetelUlangKataSandiController;
+use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\WilayahApiController;
+use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\TiangController;
 use App\Http\Controllers\WilayahController;
 
-// Auth
+// Autentikasi
 
-Route::get('/login', [PageController::class, 'Login']);
-Route::post('/proses-login', [AuthController::class, 'ProsesLogin']);
-Route::get('/logout', [AuthController::class, 'Logout']);
-Route::get('/lupa-password', [PageController::class, 'LupaPassword']);
-Route::post('/reset-request', [PasswordResetController::class, 'request'])->middleware('throttle:5,1');
+Route::get('/login', [HalamanController::class, 'Masuk']);
+Route::post('/proses-login', [AutentikasiController::class, 'ProsesLogin']);
+Route::get('/logout', [AutentikasiController::class, 'Keluar']);
+Route::get('/lupa-password', [HalamanController::class, 'LupaPassword']);
+Route::post('/reset-request', [SetelUlangKataSandiController::class, 'ajukan'])->middleware('throttle:5,1');
 
-// Protected Routes
+// Rute Terlindungi
 
 Route::middleware('cek_login')->group(function () {
 
     // Navigasi
 
     Route::get('/', fn() => redirect('home'));
-    Route::get('/home', [PageController::class, 'Index']);
-    Route::get('/data-tiang', [PageController::class, 'DataTiang']);
-    Route::get('/data-ont', [PageController::class, 'DataONT']);
-    Route::get('/api/search', [PageController::class, 'Search']);
-    Route::get('/api/next-kode', [PageController::class, 'NextKode']);
-    Route::get('/api/regions/current/kecamatan', [RegionController::class, 'currentKecamatan']);
-    Route::get('/api/regions/kabupaten/{kode}/kecamatan', [RegionController::class, 'kecamatanByKabupaten']);
-    Route::get('/api/regions/kecamatan/{code}/kelurahan', [RegionController::class, 'kelurahanByKecamatan']);
-    Route::get('/Peta', [PageController::class, 'Peta']);
-    Route::get('/wilayah', [PageController::class, 'Wilayah']);
-    Route::get('/peta-sebaran-aset', [PageController::class, 'PetaSebaranAset']);
-    Route::get('/detail-tiang/{id}', [PageController::class, 'DetailTiang']);
-    Route::get('/detail-ont/{id}', [PageController::class, 'DetailONT']);
-    Route::get('/notifikasi', [PageController::class, 'Notifikasi']);
-    Route::get('/detail-notifikasi/{id}', [PageController::class, 'DetailNotifikasi']);
-    Route::post('/notifikasi/baca-semua', [PageController::class, 'TandaiSemuaDibaca']);
-    Route::delete('/notifikasi/hapus-dibaca', [PageController::class, 'HapusSudahDibaca']);
-    Route::get('/pengaturan', [PageController::class, 'Pengaturan']);
+    Route::get('/home', [HalamanController::class, 'Beranda']);
+    Route::get('/data-tiang', [HalamanController::class, 'DataTiang']);
+    Route::get('/data-ont', [HalamanController::class, 'DataONT']);
+    Route::get('/api/search', [HalamanController::class, 'Cari']);
+    Route::get('/api/next-kode', [HalamanController::class, 'KodeBerikutnya']);
+    Route::get('/api/regions/current/kecamatan', [WilayahApiController::class, 'kecamatanSaatIni']);
+    Route::get('/api/regions/kabupaten/{kode}/kecamatan', [WilayahApiController::class, 'kecamatanBerdasarkanKabupaten']);
+    Route::get('/api/regions/kecamatan/{code}/kelurahan', [WilayahApiController::class, 'kelurahanBerdasarkanKecamatan']);
+    Route::get('/Peta', [HalamanController::class, 'Peta']);
+    Route::get('/wilayah', [HalamanController::class, 'Wilayah']);
+    Route::get('/peta-sebaran-aset', [HalamanController::class, 'PetaSebaranAset']);
+    Route::get('/detail-tiang/{id}', [HalamanController::class, 'DetailTiang']);
+    Route::get('/detail-ont/{id}', [HalamanController::class, 'DetailONT']);
+    Route::get('/notifikasi', [HalamanController::class, 'Notifikasi']);
+    Route::get('/detail-notifikasi/{id}', [HalamanController::class, 'DetailNotifikasi']);
+    Route::post('/notifikasi/baca-semua', [HalamanController::class, 'TandaiSemuaDibaca']);
+    Route::delete('/notifikasi/hapus-dibaca', [HalamanController::class, 'HapusSudahDibaca']);
+    Route::get('/pengaturan', [HalamanController::class, 'Pengaturan']);
 
-    // Form
+    // Formulir
 
-    Route::get('/tambah-tiang', [FormController::class, 'TambahTiang']);
-    Route::get('/tambah-ont', [FormController::class, 'TambahONT']);
-    Route::get('/tambah-wilayah', [FormController::class, 'TambahWilayah']);
-    Route::get('/edit-tiang/{id}', [FormController::class, 'EditTiang']);
-    Route::get('/edit-ont/{id}', [FormController::class, 'EditONT']);
+    Route::get('/tambah-tiang', [FormulirController::class, 'TambahTiang']);
+    Route::get('/tambah-ont', [FormulirController::class, 'TambahONT']);
+    Route::get('/tambah-wilayah', [FormulirController::class, 'TambahWilayah']);
+    Route::get('/edit-tiang/{id}', [FormulirController::class, 'EditTiang']);
+    Route::get('/edit-ont/{id}', [FormulirController::class, 'EditONT']);
 
-    // Settings
+    // Pengaturan
 
-    Route::post('/update-pengaturan', [SettingsController::class, 'updateWilayah']);
+    Route::post('/update-pengaturan', [PengaturanController::class, 'perbaruiWilayah']);
 
     // Profil
 
-    Route::post('/update-profil', [ProfileController::class, 'updateProfile'])->middleware('throttle:5,1');
-    Route::post('/update-profil/username', [ProfileController::class, 'updateUsername'])->middleware('throttle:5,1');
-    Route::post('/update-profil/password', [ProfileController::class, 'updatePassword'])->middleware('throttle:5,1');
+    Route::post('/update-profil', [ProfilController::class, 'perbaruiProfil'])->middleware('throttle:5,1');
+    Route::post('/update-profil/username', [ProfilController::class, 'perbaruiUser'])->middleware('throttle:5,1');
+    Route::post('/update-profil/password', [ProfilController::class, 'perbaruiKataSandi'])->middleware('throttle:5,1');
 
-    // Persetujuan Reset password
+    // Persetujuan Setel Ulang Kata Sandi
 
-    Route::post('/reset-requests/{id}/approve', [PasswordResetController::class, 'approve']);
-    Route::post('/reset-requests/{id}/reject', [PasswordResetController::class, 'reject']);
+    Route::post('/reset-requests/{id}/approve', [SetelUlangKataSandiController::class, 'setujui']);
+    Route::post('/reset-requests/{id}/reject', [SetelUlangKataSandiController::class, 'tolak']);
 
-    // CRUD Tiang
+    // Kelola Tiang
 
     Route::post('/simpan-tiang', [TiangController::class, 'SimpanTiang']);
-    Route::post('/update-tiang/{id}', [TiangController::class, 'UpdateTiang']);
+    Route::post('/update-tiang/{id}', [TiangController::class, 'PerbaruiTiang']);
     Route::get('/hapus-tiang/{id}', [TiangController::class, 'HapusTiang']);
 
-    // CRUD ONT
+    // Kelola ONT
 
     Route::post('/simpan-ont', [ONTController::class, 'SimpanONT']);
-    Route::post('/update-ont/{id}', [ONTController::class, 'UpdateONT']);
+    Route::post('/update-ont/{id}', [ONTController::class, 'PerbaruiONT']);
     Route::get('/hapus-ont/{id}', [ONTController::class, 'HapusONT']);
 
-    // CRUD Wilayah
+    // Kelola Wilayah
 
     Route::post('/simpan-wilayah', [WilayahController::class, 'SimpanWilayah']);
     Route::get('/hapus-wilayah/{id}', [WilayahController::class, 'HapusWilayah']);
 
-    // Export
+    // Ekspor
 
-    Route::get('/export/aset/{type}/{format}', [ExportController::class, 'aset'])
+    Route::get('/export/aset/{type}/{format}', [EksporController::class, 'aset'])
         ->whereIn('type', ['tiang', 'ont'])
         ->whereIn('format', ['pdf', 'excel']);
 });

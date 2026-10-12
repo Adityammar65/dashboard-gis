@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Inertia::share('settings', function () {
+        Inertia::share('pengaturan', function () {
             return Cache::remember('settings', 3600, function () {
                 $path = storage_path('app/settings.json');
                 if (!file_exists($path)) return [];

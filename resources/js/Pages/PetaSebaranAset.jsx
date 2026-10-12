@@ -3,13 +3,13 @@ import { FaChevronDown, FaWifi } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import { usePage } from "@inertiajs/react";
 
-import MainLayout from "../Layouts/MainLayout";
-import MapView from "../Components/MapView";
+import TataLetakUtama from "../Layouts/TataLetakUtama";
+import TampilanPeta from "../Components/TampilanPeta";
 
 const normalizeStatus = (status) => String(status || "").toLowerCase();
 
 export default function Peta() {
-    const { settings, tiang = [], ont = [], wilayah: wilayahList = [] } = usePage().props;
+    const { pengaturan, tiang = [], ont = [], wilayah: wilayahList = [] } = usePage().props;
     const [assetType, setAssetType] = useState("Semua");
     const [status, setStatus] = useState("Semua");
     const [wilayah, setWilayah] = useState("Semua");
@@ -32,7 +32,7 @@ export default function Peta() {
     const totalTiang = useMemo(() => tiang.filter(matchesScope).length, [tiang, status, wilayah]);
     const totalOnt = useMemo(() => ont.filter(matchesScope).length, [ont, status, wilayah]);
 
-    const markers = useMemo(() => {
+    const penanda = useMemo(() => {
         const tiangMarkers = (assetType === "Semua" || assetType === "Tiang")
             ? tiang.filter(matchesScope).map((t) => ({
                 id: t.id,
@@ -66,10 +66,10 @@ export default function Peta() {
 
     // Pusat Wilayah
 
-    const wilayahCenter = useMemo(() => {
+    const pusatWilayah = useMemo(() => {
         if (wilayah === "Semua") return null;
         const all = [...tiang, ...ont].filter((it) => String(it.wilayah || "") === wilayah);
-        const coords = all
+        const koordinat = all
             .map((it) => {
                 const latStr = String(it.latitude ?? "").trim().replace(",", ".");
                 const lngStr = String(it.longitude ?? "").trim().replace(",", ".");
@@ -81,17 +81,17 @@ export default function Peta() {
                 return [lat, lng];
             })
             .filter(Boolean);
-        if (coords.length === 0) return null;
+        if (koordinat.length === 0) return null;
         let sumLat = 0, sumLng = 0;
-        for (const [lat, lng] of coords) { sumLat += lat; sumLng += lng; }
-        return [sumLat / coords.length, sumLng / coords.length];
+        for (const [lat, lng] of koordinat) { sumLat += lat; sumLng += lng; }
+        return [sumLat / koordinat.length, sumLng / koordinat.length];
     }, [wilayah, tiang, ont]);
 
     return (
-        <MainLayout>
+        <TataLetakUtama>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Tajuk */}
 
                 <div className="rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
                     <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
@@ -101,7 +101,7 @@ export default function Peta() {
                     <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">/</span>
 
                     <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                        {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                        {pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
                     </span>
                 </div>
 
@@ -110,7 +110,7 @@ export default function Peta() {
                     {/* Peta */}
 
                     <div className="absolute inset-0 z-0">
-                        <MapView markers={markers} wilayah={wilayah} wilayahCenter={wilayahCenter} />
+                        <TampilanPeta penanda={penanda} wilayah={wilayah} pusatWilayah={pusatWilayah} />
                     </div>
 
                     <div className="absolute left-4 top-4 z-10 max-md:left-2 max-md:top-2 max-md:max-w-[calc(100vw-6rem)]">
@@ -148,7 +148,7 @@ export default function Peta() {
                         </div>
                     </div>
 
-                    <div className="gis-mobile-filter absolute right-4 top-4 z-10 w-[280px] max-w-[calc(100vw-2rem)] space-y-3 max-md:right-2 max-md:top-auto max-md:bottom-2 max-md:w-[calc(100vw-5rem)] max-md:max-w-[260px]">
+                    <div className="gis-mobile-penyaring absolute right-4 top-4 z-10 w-[280px] max-w-[calc(100vw-2rem)] space-y-3 max-md:right-2 max-md:top-auto max-md:bottom-2 max-md:w-[calc(100vw-5rem)] max-md:max-w-[260px]">
 
                         {/* Filter */}
 
@@ -164,7 +164,7 @@ export default function Peta() {
                                 <button
                                     type="button"
                                     onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-                                    aria-label={mobileFilterOpen ? "Sembunyikan filter" : "Tampilkan filter"}
+                                    aria-label={mobileFilterOpen ? "Sembunyikan penyaring" : "Tampilkan penyaring"}
                                     className="hidden rounded-lg bg-gray-100 dark:bg-night-800 px-2 py-1 text-[11px] font-semibold text-gray-700 dark:text-night-200 max-md:flex max-md:items-center max-md:gap-1 md:hidden"
                                 >
                                     {mobileFilterOpen ? "Tutup" : "Buka"}
@@ -259,7 +259,7 @@ export default function Peta() {
 
                                     <div className="flex h-[56px] flex-col items-center justify-center rounded-xl border border-gray-200 dark:border-night-700 bg-gray-50 dark:bg-night-800/60 shadow-sm">
                                         <span className="text-[11px] font-bold text-gray-800 dark:text-night-200">
-                                            {markers.length}
+                                            {penanda.length}
                                         </span>
                                         <span className="text-[10px] font-medium text-gray-500 dark:text-night-400">
                                             Tampil
@@ -276,7 +276,7 @@ export default function Peta() {
 
                 </div>
             </div>
-        </MainLayout>
+        </TataLetakUtama>
     );
 }
 

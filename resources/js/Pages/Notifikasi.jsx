@@ -1,10 +1,10 @@
 
-import MainLayout from "../Layouts/MainLayout";
+import TataLetakUtama from "../Layouts/TataLetakUtama";
 import { FaWifi, FaChevronRight, FaMap, FaCheckDouble, FaTrash, FaUser, FaKey } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import { useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
-import useBase from "../hooks/useBase";
+import useDasar from "../hooks/useDasar";
 
 const getIconByKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
@@ -45,19 +45,19 @@ const getNotifikasiVisual = (item) => {
 };
 
 export default function Notifikasi({ notifikasi = [] }) {
-    const { settings } = usePage().props;
-    const base = useBase();
+    const { pengaturan } = usePage().props;
+    const dasar = useDasar();
 
     const goDetail = (id) => {
-        router.get(`${base}/detail-notifikasi/${id}`.replace(/\/+/g, '/'));
+        router.get(`${dasar}/detail-notifikasi/${id}`.replace(/\/+/g, '/'));
     };
 
     useEffect(() => {
-        router.reload({ only: ['notifikasi', 'unreadNotifikasi'] });
+        router.reload({ only: ['notifikasi', 'notifikasiBelumDibaca'] });
     }, []);
 
     const tandaiSemuaDibaca = () => {
-        router.post(`${base}/notifikasi/baca-semua`.replace(/\/+/g, '/'));
+        router.post(`${dasar}/notifikasi/baca-semua`.replace(/\/+/g, '/'));
     };
 
     const hapusSudahDibaca = () => {
@@ -66,7 +66,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                 "Apakah kamu yakin ingin menghapus semua notifikasi yang sudah dibaca? Tindakan ini tidak dapat dibatalkan."
             )
         ) {
-            router.delete(`${base}/notifikasi/hapus-dibaca`.replace(/\/+/g, '/'));
+            router.delete(`${dasar}/notifikasi/hapus-dibaca`.replace(/\/+/g, '/'));
         }
     };
 
@@ -180,10 +180,10 @@ export default function Notifikasi({ notifikasi = [] }) {
     ).length;
 
     return (
-        <MainLayout>
+        <TataLetakUtama>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Tajuk */}
 
                 <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
                     <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
@@ -196,7 +196,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                         </span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 
@@ -320,6 +320,6 @@ export default function Notifikasi({ notifikasi = [] }) {
                     )}
                 </div>
             </div>
-        </MainLayout>
+        </TataLetakUtama>
     );
 }

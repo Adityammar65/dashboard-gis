@@ -1,40 +1,40 @@
-import MainLayout from "../Layouts/MainLayout";
-import ThemeToggle from "../Components/ThemeToggle";
-import { AuthInput, PasswordField } from "../Components/AuthFields";
+import TataLetakUtama from "../Layouts/TataLetakUtama";
+import PengalihTema from "../Components/PengalihTema";
+import { MasukanOtentikasi, KolomKataSandi } from "../Components/BidangOtentikasi";
 import { FaMapMarked, FaSave, FaUserCog, FaKey, FaMoon, FaCheck, FaTimes, FaUserShield } from "react-icons/fa";
 import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 
-export default function Pengaturan({ wilayah, resetRequests = [], resetHistory = [] }) {
+export default function Pengaturan({ wilayah, permintaanSetelUlang = [], riwayatSetelUlang = [] }) {
     const { props } = usePage();
-    const { settings, auth, errors = {} } = props;
-    const currentUsername = auth?.username ?? "";
-    const [selectedWilayah, setSelectedWilayah] = useState("");
-    const [newUsername, setNewUsername] = useState("");
-    const [currentPassword, setCurrentPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const { pengaturan, auth, errors = {} } = props;
+    const userSaatIni = auth?.username ?? "";
+    const [wilayahTerpilih, aturWilayahTerpilih] = useState("");
+    const [userBaru, aturUserBaru] = useState("");
+    const [kataSandiSaatIni, aturKataSandiSaatIni] = useState("");
+    const [kataSandiBaru, aturKataSandiBaru] = useState("");
+    const [konfirmasiKataSandi, aturKonfirmasiKataSandi] = useState("");
+    const [tampilKataSandiSaatIni, aturTampilKataSandiSaatIni] = useState(false);
+    const [tampilKataSandiBaru, aturTampilKataSandiBaru] = useState(false);
+    const [tampilKonfirmasiKataSandi, aturTampilKonfirmasiKataSandi] = useState(false);
 
-    const myPending = resetRequests.filter(
-        (r) => r.username === currentUsername || r.requested_by === currentUsername
+    const menungguSaya = permintaanSetelUlang.filter(
+        (r) => r.username === userSaatIni || r.requested_by === userSaatIni
     );
-    const myPendingUsername = myPending.find((r) => (r.request_type ?? "password_reset") === "username_change");
-    const myPendingPassword = myPending.find((r) => {
+    const menungguUserSaya = menungguSaya.find((r) => (r.request_type ?? "password_reset") === "username_change");
+    const menungguKataSandiSaya = menungguSaya.find((r) => {
         const t = r.request_type ?? "password_reset";
         return t === "password_change" || t === "password_reset";
     });
 
-    const getRequestLabel = (item) => {
+    const ambilLabelPermintaan = (item) => {
         const t = item?.request_type ?? "password_reset";
         if (t === "username_change") return "Ubah Username";
         if (t === "password_change") return "Ubah Kata Sandi";
         return "Reset Kata Sandi";
     };
 
-    const getRequestDetail = (item) => {
+    const ambilRincianPermintaan = (item) => {
         const t = item?.request_type ?? "password_reset";
         if (t === "username_change" && item?.new_username) {
             return `${item.username} → ${item.new_username}`;
@@ -45,54 +45,54 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
         return `Reset kata sandi akun ${item.username}`;
     };
 
-    const isOwnRequest = (item) =>
-        item?.username === currentUsername || item?.requested_by === currentUsername;
+    const apakahPermintaanSendiri = (item) =>
+        item?.username === userSaatIni || item?.requested_by === userSaatIni;
 
-    const handleSimpan = () => {
-        if (!selectedWilayah) {
+    const tanganiSimpan = () => {
+        if (!wilayahTerpilih) {
             return;
         }
 
         router.post("update-pengaturan", {
-            wilayah: selectedWilayah,
+            wilayah: wilayahTerpilih,
         });
     };
 
-    const usernameValue = newUsername.trim();
-    const wantsUsernameChange =
-        usernameValue !== "" && usernameValue !== currentUsername && !myPendingUsername;
-    const passwordFilled =
-        currentPassword !== "" || newPassword !== "" || confirmPassword !== "";
-    const wantsPasswordChange =
-        currentPassword !== "" && newPassword !== "" && confirmPassword !== "" && !myPendingPassword;
-    const canAjukan = wantsUsernameChange || wantsPasswordChange;
+    const nilaiUser = userBaru.trim();
+    const inginUbahUser =
+        nilaiUser !== "" && nilaiUser !== userSaatIni && !menungguUserSaya;
+    const kataSandiTerisi =
+        kataSandiSaatIni !== "" || kataSandiBaru !== "" || konfirmasiKataSandi !== "";
+    const inginUbahKataSandi =
+        kataSandiSaatIni !== "" && kataSandiBaru !== "" && konfirmasiKataSandi !== "" && !menungguKataSandiSaya;
+    const dapatMengajukan = inginUbahUser || inginUbahKataSandi;
 
-    const handleAjukanPermintaan = () => {
-        const payload = {};
-        const clearUsername = wantsUsernameChange;
-        const clearPassword = wantsPasswordChange || (passwordFilled && !myPendingPassword && !wantsUsernameChange);
+    const tanganiAjukanPermintaan = () => {
+        const muatan = {};
+        const bersihkanUser = inginUbahUser;
+        const bersihkanKataSandi = inginUbahKataSandi || (kataSandiTerisi && !menungguKataSandiSaya && !inginUbahUser);
 
-        if (wantsUsernameChange) {
-            payload.username = usernameValue;
+        if (inginUbahUser) {
+            muatan.username = nilaiUser;
         }
 
-        if (passwordFilled && !myPendingPassword) {
-            payload.current_password = currentPassword;
-            payload.password = newPassword;
-            payload.password_confirmation = confirmPassword;
+        if (kataSandiTerisi && !menungguKataSandiSaya) {
+            muatan.current_password = kataSandiSaatIni;
+            muatan.password = kataSandiBaru;
+            muatan.password_confirmation = konfirmasiKataSandi;
         }
 
-        if (Object.keys(payload).length === 0) {
+        if (Object.keys(muatan).length === 0) {
             return;
         }
 
-        router.post("update-profil", payload, {
+        router.post("update-profil", muatan, {
             onSuccess: () => {
-                if (clearUsername) setNewUsername("");
-                if (clearPassword) {
-                    setCurrentPassword("");
-                    setNewPassword("");
-                    setConfirmPassword("");
+                if (bersihkanUser) aturUserBaru("");
+                if (bersihkanKataSandi) {
+                    aturKataSandiSaatIni("");
+                    aturKataSandiBaru("");
+                    aturKonfirmasiKataSandi("");
                 }
             },
         });
@@ -100,8 +100,8 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
 
     const handleApproveReset = (item) => {
         const id = typeof item === "object" ? item.id : item;
-        const label = typeof item === "object" ? getRequestDetail(item) : `akun "${item}"`;
-        if (!window.confirm(`Setujui ${getRequestLabel(typeof item === "object" ? item : null)} untuk ${label}?`)) {
+        const label = typeof item === "object" ? ambilRincianPermintaan(item) : `akun "${item}"`;
+        if (!window.confirm(`Setujui ${ambilLabelPermintaan(typeof item === "object" ? item : null)} untuk ${label}?`)) {
             return;
         }
 
@@ -110,8 +110,8 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
 
     const handleRejectReset = (item) => {
         const id = typeof item === "object" ? item.id : item;
-        const label = typeof item === "object" ? getRequestDetail(item) : `akun "${item}"`;
-        if (!window.confirm(`Tolak ${getRequestLabel(typeof item === "object" ? item : null)} untuk ${label}?`)) {
+        const label = typeof item === "object" ? ambilRincianPermintaan(item) : `akun "${item}"`;
+        if (!window.confirm(`Tolak ${ambilLabelPermintaan(typeof item === "object" ? item : null)} untuk ${label}?`)) {
             return;
         }
 
@@ -131,10 +131,10 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
     };
 
     return (
-        <MainLayout>
+        <TataLetakUtama>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Tajuk */}
 
                 <div className="rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
                     <span className="text-sm font-semibold tracking-wide max-md:shrink-0 max-md:text-[13px] max-md:whitespace-nowrap">
@@ -146,7 +146,7 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                     </span>
 
                     <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                        {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                        {pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
                     </span>
                 </div>
 
@@ -170,10 +170,10 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                         </div>
                     </div>
 
-                    {myPending.length > 0 && (
+                    {menungguSaya.length > 0 && (
                         <div className="mb-4 rounded-xl border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
-                            Permintaanmu masih menunggu persetujuan ({myPending.length}):{" "}
-                            {myPending.map(getRequestDetail).join(" • ")}. Kamu tidak dapat menyetujui permintaan sendiri.
+                            Permintaanmu masih menunggu persetujuan ({menungguSaya.length}):{" "}
+                            {menungguSaya.map(ambilRincianPermintaan).join(" • ")}. Kamu tidak dapat menyetujui permintaan sendiri.
                         </div>
                     )}
 
@@ -186,27 +186,27 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                                 Username Saat Ini
                             </p>
 
-                            <p className="truncate text-base font-bold text-gray-800 dark:text-night-200" title={currentUsername}>
-                                {currentUsername || "Belum diketahui"}
+                            <p className="truncate text-base font-bold text-gray-800 dark:text-night-200" title={userSaatIni}>
+                                {userSaatIni || "Belum diketahui"}
                             </p>
 
                             <div className="mt-5">
-                                <AuthInput
+                                <MasukanOtentikasi
                                     id="username-baru"
                                     type="text"
                                     label="Username Baru"
-                                    value={newUsername}
-                                    onChange={(e) => setNewUsername(e.target.value)}
+                                    value={userBaru}
+                                    onChange={(e) => aturUserBaru(e.target.value)}
                                     placeholder="Masukkan username baru"
                                     autoComplete="username"
                                     error={errors.username}
-                                    disabled={!!myPendingUsername}
+                                    disabled={!!menungguUserSaya}
                                 />
                             </div>
 
-                            {myPendingUsername && (
+                            {menungguUserSaya && (
                                 <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
-                                    Pengajuan {myPendingUsername.username} → {myPendingUsername.new_username} menunggu persetujuan.
+                                    Pengajuan {menungguUserSaya.username} → {menungguUserSaya.new_username} menunggu persetujuan.
                                 </p>
                             )}
                         </div>
@@ -221,53 +221,53 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                                 </p>
                             </div>
 
-                            <PasswordField
+                            <KolomKataSandi
                                 id="sandi-saat-ini"
                                 label="Kata Sandi Saat Ini"
-                                value={currentPassword}
-                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                value={kataSandiSaatIni}
+                                onChange={(e) => aturKataSandiSaatIni(e.target.value)}
                                 placeholder="Masukkan kata sandi saat ini"
                                 autoComplete="current-password"
-                                show={showCurrentPassword}
-                                onToggle={() => setShowCurrentPassword(!showCurrentPassword)}
+                                tampil={tampilKataSandiSaatIni}
+                                saatAlih={() => aturTampilKataSandiSaatIni(!tampilKataSandiSaatIni)}
                                 error={errors.current_password}
-                                disabled={!!myPendingPassword}
+                                disabled={!!menungguKataSandiSaya}
                             />
 
                             <div className="mt-5">
-                                <PasswordField
+                                <KolomKataSandi
                                     id="sandi-baru"
                                     label="Kata Sandi Baru (min. 8 karakter)"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    value={kataSandiBaru}
+                                    onChange={(e) => aturKataSandiBaru(e.target.value)}
                                     placeholder="Masukkan kata sandi baru"
                                     autoComplete="new-password"
                                     minLength={8}
-                                    show={showNewPassword}
-                                    onToggle={() => setShowNewPassword(!showNewPassword)}
+                                    tampil={tampilKataSandiBaru}
+                                    saatAlih={() => aturTampilKataSandiBaru(!tampilKataSandiBaru)}
                                     error={errors.password}
-                                    disabled={!!myPendingPassword}
+                                    disabled={!!menungguKataSandiSaya}
                                 />
                             </div>
 
                             <div className="mt-5">
-                                <PasswordField
+                                <KolomKataSandi
                                     id="sandi-konfirmasi"
                                     label="Konfirmasi Kata Sandi Baru"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    value={konfirmasiKataSandi}
+                                    onChange={(e) => aturKonfirmasiKataSandi(e.target.value)}
                                     placeholder="Ulangi kata sandi baru"
                                     autoComplete="new-password"
                                     minLength={8}
-                                    show={showConfirmPassword}
-                                    onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    disabled={!!myPendingPassword}
+                                    tampil={tampilKonfirmasiKataSandi}
+                                    saatAlih={() => aturTampilKonfirmasiKataSandi(!tampilKonfirmasiKataSandi)}
+                                    disabled={!!menungguKataSandiSaya}
                                 />
                             </div>
 
-                            {myPendingPassword && (
+                            {menungguKataSandiSaya && (
                                 <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
-                                    Pengajuan ubah kata sandi untuk {myPendingPassword.username} menunggu persetujuan.
+                                    Pengajuan ubah kata sandi untuk {menungguKataSandiSaya.username} menunggu persetujuan.
                                 </p>
                             )}
                         </div>
@@ -279,8 +279,8 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                     <div className="mt-6 flex justify-end max-md:justify-stretch">
                         <button
                             type="button"
-                            onClick={handleAjukanPermintaan}
-                            disabled={!canAjukan}
+                            onClick={tanganiAjukanPermintaan}
+                            disabled={!dapatMengajukan}
                             className="flex items-center gap-2 rounded-xl bg-[#ab3c3c] px-5 py-2.5 text-sm font-medium text-white shadow-md transition hover:bg-[#68182A] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none max-md:w-full max-md:justify-center"
                         >
                             <FaSave />
@@ -315,7 +315,7 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                             <p className="mb-3 text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400">
                                 Tema Aktif
                             </p>
-                            <ThemeToggle variant="switch" />
+                            <PengalihTema variant="switch" />
                         </div>
 
                         <div className="rounded-2xl border border-gray-100 dark:border-night-700 bg-gradient-to-b from-gray-50 to-white dark:from-night-800/60 dark:to-night-900 p-5 shadow-sm dark:from-night-800/60 dark:to-night-900 dark:border-night-700">
@@ -362,11 +362,11 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                             </p>
 
                             <p className="text-base font-bold capitalize text-gray-800 dark:text-night-200">
-                                {settings?.nama_wilayah ?? "Belum ditentukan"}
+                                {pengaturan?.nama_wilayah ?? "Belum ditentukan"}
                             </p>
 
                             <p className="mt-1 text-xs text-gray-500 dark:text-night-400">
-                                Kode: <span className="font-mono font-medium">{settings?.kode_wilayah ?? "-"}</span>
+                                Kode: <span className="font-mono font-medium">{pengaturan?.kode_wilayah ?? "-"}</span>
                             </p>
                         </div>
 
@@ -382,9 +382,9 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
 
                             <select
                                 id="wilayah"
-                                value={selectedWilayah}
+                                value={wilayahTerpilih}
                                 onChange={(e) =>
-                                    setSelectedWilayah(e.target.value)
+                                    aturWilayahTerpilih(e.target.value)
                                 }
                                 className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-[#AB3C3C] focus:ring-2 focus:ring-[#AB3C3C]/10 bg-white dark:bg-night-900 dark:text-night-200 dark:placeholder:text-night-500 shadow-sm"
                                 disabled={wilayah.length === 0}
@@ -420,8 +420,8 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                     <div className="mt-6 flex justify-end max-md:justify-stretch">
                         <button
                             type="button"
-                            onClick={handleSimpan}
-                            disabled={!selectedWilayah}
+                            onClick={tanganiSimpan}
+                            disabled={!wilayahTerpilih}
                             className="flex items-center gap-2 rounded-xl bg-[#AB3C3C] px-5 py-2.5 text-sm font-medium text-white shadow-md transition hover:bg-[#8f3030] hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none max-md:w-full max-md:justify-center"
                         >
                             <FaSave />
@@ -446,15 +446,15 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                             </h2>
 
                             <p className="text-xs text-gray-500 dark:text-night-400">
-                                Setujui atau tolak permintaan ubah username / kata sandi dari pengguna lain ({resetRequests.length} menunggu)
+                                Setujui atau tolak permintaan ubah username / kata sandi dari pengguna lain ({permintaanSetelUlang.length} menunggu)
                             </p>
                         </div>
                     </div>
 
-                    {resetRequests.length > 0 ? (
+                    {permintaanSetelUlang.length > 0 ? (
                         <div className="space-y-3">
-                            {resetRequests.map((item) => {
-                                const own = isOwnRequest(item);
+                            {permintaanSetelUlang.map((item) => {
+                                const own = apakahPermintaanSendiri(item);
                                 return (
                                 <div
                                     key={item.id}
@@ -462,11 +462,11 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                                 >
                                     <div className="min-w-0 flex-1">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <p className="truncate text-sm font-semibold text-gray-800 dark:text-night-200" title={getRequestDetail(item)}>
-                                                {getRequestDetail(item)}
+                                            <p className="truncate text-sm font-semibold text-gray-800 dark:text-night-200" title={ambilRincianPermintaan(item)}>
+                                                {ambilRincianPermintaan(item)}
                                             </p>
                                             <span className="rounded-full bg-gray-100 dark:bg-night-800 px-2 py-0.5 text-[10px] font-semibold text-gray-600 dark:text-night-300">
-                                                {getRequestLabel(item)}
+                                                {ambilLabelPermintaan(item)}
                                             </span>
                                         </div>
                                         <p className="mt-0.5 text-xs text-gray-500 dark:text-night-400">
@@ -509,20 +509,20 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                         </p>
                     )}
 
-                    {resetHistory.length > 0 && (
+                    {riwayatSetelUlang.length > 0 && (
                         <div className="mt-5">
                             <p className="mb-2 text-xs font-semibold tracking-widest text-gray-500 dark:text-night-400">
                                 Riwayat Terakhir
                             </p>
                             <div className="space-y-2">
-                                {resetHistory.map((item) => (
+                                {riwayatSetelUlang.map((item) => (
                                     <div
                                         key={item.id}
                                         className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-xs max-md:flex-wrap max-md:gap-1"
                                     >
-                                        <span className="truncate font-medium text-gray-700 dark:text-night-200" title={getRequestDetail(item)}>
-                                            {getRequestDetail(item)}{" "}
-                                            <span className="font-normal text-gray-400">({getRequestLabel(item)})</span>
+                                        <span className="truncate font-medium text-gray-700 dark:text-night-200" title={ambilRincianPermintaan(item)}>
+                                            {ambilRincianPermintaan(item)}{" "}
+                                            <span className="font-normal text-gray-400">({ambilLabelPermintaan(item)})</span>
                                         </span>
                                         <span className="flex shrink-0 items-center gap-2 text-gray-500 dark:text-night-400">
                                             <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${item.status === "approved" ? "bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300" : "bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300"}`}>
@@ -540,6 +540,6 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
 
                 </div>
             </div>
-        </MainLayout>
+        </TataLetakUtama>
     );
 }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 class NotifikasiHelper
 {
-    public static function successMessage(string $aksi, string $tipe, string $kode, ?string $petugas = null): string
+    public static function pesanKeberhasilan(string $aksi, string $tipe, string $kode, ?string $petugas = null): string
     {
         $label = $tipe === 'ont' ? 'Data ont' : 'Data tiang';
         if ($aksi === 'dihapus') {
@@ -16,7 +16,7 @@ class NotifikasiHelper
         return "{$label} berhasil {$aksi}.";
     }
 
-    public static function fieldLabels(string $tipe): array
+    public static function labelKolom(string $tipe): array
     {
         $kode = $tipe === 'ont' ? 'kode_ont' : 'kode_tiang';
         $deskripsi = $tipe === 'ont' ? 'deskripsi_ont' : 'deskripsi_tiang';
@@ -35,14 +35,14 @@ class NotifikasiHelper
 
     public static function detailPesan(string $aksi, string $tipe, array $lama = [], array $baru = []): string
     {
-        $short = self::successMessage($aksi, $tipe, $baru['kode_tiang'] ?? $baru['kode_ont'] ?? $lama['kode_tiang'] ?? $lama['kode_ont'] ?? '');
-        $labels = self::fieldLabels($tipe);
+        $short = self::pesanKeberhasilan($aksi, $tipe, $baru['kode_tiang'] ?? $baru['kode_ont'] ?? $lama['kode_tiang'] ?? $lama['kode_ont'] ?? '');
+        $labels = self::labelKolom($tipe);
         $lines = [];
 
         if ($aksi === 'diperbarui') {
             foreach ($labels as $key => $label) {
-                $old = array_key_exists($key, $lama) ? self::formatValue($lama[$key]) : null;
-                $new = array_key_exists($key, $baru) ? self::formatValue($baru[$key]) : null;
+                $old = array_key_exists($key, $lama) ? self::formatNilai($lama[$key]) : null;
+                $new = array_key_exists($key, $baru) ? self::formatNilai($baru[$key]) : null;
                 if ($new === null || $old === $new) continue;
                 $lines[] = "- {$label}: {$old} → {$new}";
             }
@@ -71,27 +71,27 @@ class NotifikasiHelper
         $prefix = $aksi === 'dihapus' ? 'Data yang dihapus:' : 'Detail data:';
         foreach ($labels as $key => $label) {
             if (!array_key_exists($key, $snapshot)) continue;
-            $lines[] = "- {$label}: " . self::formatValue($snapshot[$key]);
+            $lines[] = "- {$label}: " . self::formatNilai($snapshot[$key]);
         }
         if (empty($lines)) return $short;
         return $short . "\n" . $prefix . "\n" . implode("\n", $lines);
     }
 
-    private static function formatValue($value): string
+    private static function formatNilai($value): string
     {
         if ($value === null || $value === '') return '-';
         if (is_bool($value)) return $value ? 'ya' : 'tidak';
         return (string) $value;
     }
 
-    public static function push(string $jenis, string $kategori, string $pesan, ?string $updatedBy = null): ?NotifikasiModel
+    public static function kirim(string $jenis, string $kategori, string $pesan, ?string $diperbaruiOleh = null): ?NotifikasiModel
     {
         try {
-            if ($updatedBy === null || $updatedBy === '') {
+            if ($diperbaruiOleh === null || $diperbaruiOleh === '') {
                 try {
-                    $updatedBy = session('username');
+                    $diperbaruiOleh = session('username');
                 } catch (\Throwable $e) {
-                    $updatedBy = null;
+                    $diperbaruiOleh = null;
                 }
             }
             return NotifikasiModel::create([
@@ -99,7 +99,7 @@ class NotifikasiHelper
                 'kategori' => $kategori,
                 'status' => 'belum_dibaca',
                 'pesan' => $pesan,
-                'updated_by' => $updatedBy,
+                'updated_by' => $diperbaruiOleh,
             ]);
         } catch (\Throwable $e) {
             Log::warning('Gagal membuat notifikasi: ' . $e->getMessage());

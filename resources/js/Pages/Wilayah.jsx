@@ -1,25 +1,25 @@
-import MainLayout from "../Layouts/MainLayout";
-import MobileDataCard from "../Components/MobileDataCard";
-import { TableDelete, CardDelete, TableEmpty, CardEmpty } from "../Components/DataActions";
+import TataLetakUtama from "../Layouts/TataLetakUtama";
+import KartuDataSeluler from "../Components/KartuDataSeluler";
+import { HapusTabel, HapusKartu, TabelKosong, KartuKosong } from "../Components/AksiData";
 import { usePage, router } from "@inertiajs/react";
 import { useState, useMemo, useCallback } from "react";
 
 import { FaFilter, FaMap, FaPlus } from "react-icons/fa";
 import { LuBox } from "react-icons/lu";
-import useBase from "../hooks/useBase";
+import useDasar from "../hooks/useDasar";
 
 export default function Tiang({
     dataWilayah = { data: [], total: 0, links: [] },
     wilayah = [],
-    filter = {},
+    penyaring = {},
 }) {
-    const { settings } = usePage().props;
+    const { pengaturan } = usePage().props;
 
-    const base = useBase();
-    const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, '/'), [base]);
+    const dasar = useDasar();
+    const selesaikanTautan = useCallback((tautan) => `${dasar}/${tautan}`.replace(/\/+/g, '/'), [dasar]);
 
-    const [filterWilayah, setFilterWilayah] = useState(filter.wilayah ?? "");
-    const [filterAset, setFilterAset] = useState(filter.aset ?? "");
+    const [saringWilayah, aturSaringWilayah] = useState(penyaring.wilayah ?? "");
+    const [saringAset, setFilterAset] = useState(penyaring.aset ?? "");
 
     const listWilayah = useMemo(() => {
         if (Array.isArray(dataWilayah)) return dataWilayah;
@@ -33,30 +33,30 @@ export default function Tiang({
 
     const totalAset = useMemo(() => {
         return listWilayah.reduce((sum, w) => {
-            if (filterAset === "tiang") return sum + (w.total_tiang ?? 0);
-            if (filterAset === "ont") return sum + (w.total_ont ?? 0);
+            if (saringAset === "tiang") return sum + (w.total_tiang ?? 0);
+            if (saringAset === "ont") return sum + (w.total_ont ?? 0);
             return sum + (w.total_aset ?? 0);
         }, 0);
-    }, [listWilayah, filterAset]);
+    }, [listWilayah, saringAset]);
 
     const asetAktif = useMemo(() => {
-        if (filterAset === "tiang" || filterAset === "ont") {
+        if (saringAset === "tiang" || saringAset === "ont") {
         }
         return listWilayah.reduce((sum, w) => sum + (w.aset_aktif ?? 0), 0);
-    }, [listWilayah, filterAset]);
+    }, [listWilayah, saringAset]);
 
     const asetNonaktif = useMemo(() => {
         return listWilayah.reduce((sum, w) => sum + (w.aset_nonaktif ?? 0), 0);
     }, [listWilayah]);
 
     const namaAsetLabel = useMemo(() => {
-        if (filterAset === "tiang") return "Tiang";
-        if (filterAset === "ont") return "ONT";
+        if (saringAset === "tiang") return "Tiang";
+        if (saringAset === "ont") return "ONT";
         return "Semua Aset";
-    }, [filterAset]);
+    }, [saringAset]);
 
     const handleFilter = useCallback((wilayahValue, asetValue) => {
-        setFilterWilayah(wilayahValue);
+        aturSaringWilayah(wilayahValue);
         setFilterAset(asetValue);
         router.get(
             window.location.pathname,
@@ -73,10 +73,10 @@ export default function Tiang({
     }, []);
 
     return (
-        <MainLayout>
+        <TataLetakUtama>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Tajuk */}
 
                 <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
                     <div className="items-center flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] text-white px-4 py-3.5 shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
@@ -87,14 +87,14 @@ export default function Tiang({
                         <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">/</span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 
                     {/* Formulir */}
 
                     <a
-                        href={resolveHref("tambah-wilayah")}
+                        href={selesaikanTautan("tambah-wilayah")}
                         title="Form Wilayah"
                         aria-label="Form Wilayah"
                         className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:shrink-0 max-md:rounded-lg max-md:px-4 max-md:py-4 max-md:text-xs"
@@ -180,8 +180,8 @@ export default function Tiang({
                             {/* Wilayah */}
 
                             <select
-                                value={filterWilayah}
-                                onChange={(e) => handleFilter(e.target.value, filterAset)}
+                                value={saringWilayah}
+                                onChange={(e) => handleFilter(e.target.value, saringAset)}
                                 className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
                                 <option value="">
@@ -197,8 +197,8 @@ export default function Tiang({
                             {/* Aset */}
 
                             <select
-                                value={filterAset}
-                                onChange={(e) => handleFilter(filterWilayah, e.target.value)}
+                                value={saringAset}
+                                onChange={(e) => handleFilter(saringWilayah, e.target.value)}
                                 className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
                                 <option value="">
@@ -298,19 +298,19 @@ export default function Tiang({
 
                                             <td className="px-4 py-2.5">
                                                 <div className="flex items-center justify-center">
-                                                    <TableDelete
-                                                        type="wilayah"
+                                                    <HapusTabel
+                                                        jenis="wilayah"
                                                         id={row.id}
-                                                        name={row.nama_wilayah}
-                                                        base={base}
-                                                        title="Hapus Wilayah"
+                                                        nama={row.nama_wilayah}
+                                                        dasar={dasar}
+                                                        judul="Hapus Wilayah"
                                                     />
                                                 </div>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
-                                    <TableEmpty colSpan="8" icon={FaMap} title="Belum ada data" hint="Data wilayah belum tersedia atau filter tidak menghasilkan data." />
+                                    <TabelKosong rentangKolom="8" ikon={FaMap} judul="Belum ada data" petunjuk="Data wilayah belum tersedia atau penyaring tidak menghasilkan data." />
                                 )}
                             </tbody>
 
@@ -322,29 +322,29 @@ export default function Tiang({
                     <div className="space-y-3 p-4 md:hidden">
                         {listWilayah.length > 0 ? (
                             listWilayah.map((row, index) => (
-                                <MobileDataCard
+                                <KartuDataSeluler
                                     key={row.id ?? row.nama_wilayah ?? index}
-                                    title={row.nama_wilayah}
-                                    subtitle={`Total ${row.total_aset ?? 0} aset • Tiang ${row.total_tiang ?? 0} • ONT ${row.total_ont ?? 0}`}
-                                    imageSrc={null}
-                                    fallbackLabel={String(row.nama_wilayah || "W").slice(0, 1).toUpperCase()}
+                                    judul={row.nama_wilayah}
+                                    subjudul={`Total ${row.total_aset ?? 0} aset • Tiang ${row.total_tiang ?? 0} • ONT ${row.total_ont ?? 0}`}
+                                    sumberGambar={null}
+                                    labelCadangan={String(row.nama_wilayah || "W").slice(0, 1).toUpperCase()}
                                     status={null}
                                     meta={[
                                         { label: "Aktif", value: String(row.aset_aktif ?? 0) },
                                         { label: "Nonaktif", value: String(row.aset_nonaktif ?? 0) },
                                     ]}
-                                    actions={
-                                        <CardDelete
-                                            type="wilayah"
+                                    aksi={
+                                        <HapusKartu
+                                            jenis="wilayah"
                                             id={row.id}
-                                            name={row.nama_wilayah}
-                                            base={base}
+                                            nama={row.nama_wilayah}
+                                            dasar={dasar}
                                         />
                                     }
                                 />
                             ))
                         ) : (
-                            <CardEmpty />
+                            <KartuKosong />
                         )}
                     </div>
                     {dataWilayah?.links && dataWilayah.links.length > 3 && (
@@ -363,6 +363,6 @@ export default function Tiang({
                 </div>
 
             </div>
-        </MainLayout>
+        </TataLetakUtama>
     );
 }

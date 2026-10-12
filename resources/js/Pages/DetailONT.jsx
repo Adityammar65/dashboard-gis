@@ -1,19 +1,19 @@
-import MainLayout from "../Layouts/MainLayout";
-import MapView from "../Components/MapView";
-import GoogleMapsButton from "../Components/GoogleMapsButton";
-import DeleteDataButton from "../Components/DeleteDataButton";
+import TataLetakUtama from "../Layouts/TataLetakUtama";
+import TampilanPeta from "../Components/TampilanPeta";
+import TombolGoogleMaps from "../Components/TombolGoogleMaps";
+import TombolHapusData from "../Components/TombolHapusData";
 import { FaArrowLeft, FaPen } from "react-icons/fa";
 import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
-import useBase from "../hooks/useBase";
+import useDasar from "../hooks/useDasar";
 
 export default function DetailONT({ ont }) {
-    const { settings } = usePage().props;
-    const base = useBase();
+    const { pengaturan } = usePage().props;
+    const dasar = useDasar();
 
     const getFotoUrl = (foto) => {
         if (!foto) return null;
-        return `${base}/public/storage/${foto}`.replace(/\/+/g, '/');
+        return `${dasar}/public/storage/${foto}`.replace(/\/+/g, '/');
     };
 
     const images = [
@@ -29,10 +29,10 @@ export default function DetailONT({ ont }) {
     );
 
     return (
-        <MainLayout>
+        <TataLetakUtama>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Tajuk */}
 
                 <div className="flex items-stretch justify-between gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
                     <div className="flex-1 rounded-2xl bg-gradient-to-br text-white from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
@@ -45,7 +45,7 @@ export default function DetailONT({ ont }) {
                         </span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {ont?.wilayah ?? settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {ont?.wilayah ?? pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 
@@ -160,10 +160,10 @@ export default function DetailONT({ ont }) {
                                     Koordinat
                                 </p>
                                 <p className="mt-1 text-gray-600 dark:text-night-300">
-                                    Latitude: {ont?.latitude || "-"}
+                                    Lintang: {ont?.latitude || "-"}
                                 </p>
                                 <p className="text-gray-600 dark:text-night-300">
-                                    Longitude: {ont?.longitude || "-"}
+                                    Bujur: {ont?.longitude || "-"}
                                 </p>
                             </div>
 
@@ -231,23 +231,23 @@ export default function DetailONT({ ont }) {
                         <div className="mt-5 flex flex-wrap items-center gap-2 max-sm:flex-col max-sm:items-stretch">
                             <button
                                 type="button"
-                                onClick={() => router.get(`${base}/edit-ont/${ont?.id}`.replace(/\/+/g, '/'))}
+                                onClick={() => router.get(`${dasar}/edit-ont/${ont?.id}`.replace(/\/+/g, '/'))}
                                 className="flex w-fit items-center gap-2 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-blue-700 hover:to-blue-800 active:scale-[0.98] max-sm:w-full max-sm:justify-center"
                             >
                                 <FaPen />
                                 Edit Data
                             </button>
 
-                            <GoogleMapsButton
-                                latitude={ont?.latitude}
-                                longitude={ont?.longitude}
+                            <TombolGoogleMaps
+                                lintang={ont?.latitude}
+                                bujur={ont?.longitude}
                             />
 
-                            <DeleteDataButton
-                                type="ont"
+                            <TombolHapusData
+                                jenis="ont"
                                 id={ont?.id}
                                 kode={ont?.kode_ont}
-                                base={base}
+                                dasar={dasar}
                             />
                         </div>
 
@@ -255,10 +255,10 @@ export default function DetailONT({ ont }) {
 
                         <div className="relative mt-4 h-[220px] overflow-hidden rounded-xl bg-gray-100 dark:bg-night-800 border border-gray-200 dark:border-night-700 shadow-inner">
 
-                            <MapView
-                                latitude={ont?.latitude}
-                                longitude={ont?.longitude}
-                                type="ont"
+                            <TampilanPeta
+                                lintang={ont?.latitude}
+                                bujur={ont?.longitude}
+                                jenis="ont"
                                 status={ont?.status}
                             />
 
@@ -266,6 +266,6 @@ export default function DetailONT({ ont }) {
                     </div>
                 </div>
             </div>
-        </MainLayout>
+        </TataLetakUtama>
     );
 }

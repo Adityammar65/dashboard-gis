@@ -1,12 +1,12 @@
-import MainLayout from "../Layouts/MainLayout";
-import MobileDataCard from "../Components/MobileDataCard";
-import { TableActions, CardActions, TableEmpty, CardEmpty } from "../Components/DataActions";
+import TataLetakUtama from "../Layouts/TataLetakUtama";
+import KartuDataSeluler from "../Components/KartuDataSeluler";
+import { AksiTabel, AksiKartu, TabelKosong, KartuKosong } from "../Components/AksiData";
 
 import { usePage, router } from "@inertiajs/react";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { FaPlus, FaFilter, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
-import useBase from "../hooks/useBase";
+import useDasar from "../hooks/useDasar";
 
 const ambilNamaBerkas = (contentDisposition, cadangan) => {
     if (!contentDisposition) return cadangan;
@@ -27,23 +27,23 @@ const ambilNamaBerkas = (contentDisposition, cadangan) => {
 export default function DataTiang({
     dataTiang = [],
     wilayah = [],
-    filter = {},
+    penyaring = {},
 }) {
-    const { settings } = usePage().props;
+    const { pengaturan } = usePage().props;
 
-    const base = useBase();
-    const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, '/'), [base]);
+    const dasar = useDasar();
+    const selesaikanTautan = useCallback((tautan) => `${dasar}/${tautan}`.replace(/\/+/g, '/'), [dasar]);
 
-    const [filterWilayah, setFilterWilayah] = useState(
-        filter.wilayah ?? ""
+    const [saringWilayah, aturSaringWilayah] = useState(
+        penyaring.wilayah ?? ""
     );
 
-    const [filterStatus, setFilterStatus] = useState(
-        filter.status ?? ""
+    const [saringStatus, aturSaringStatus] = useState(
+        penyaring.status ?? ""
     );
 
-    const [filterKecamatan, setFilterKecamatan] = useState(filter.kecamatan ?? "");
-    const [filterKelurahan, setFilterKelurahan] = useState(filter.kelurahan ?? "");
+    const [saringKecamatan, aturSaringKecamatan] = useState(penyaring.kecamatan ?? "");
+    const [saringKelurahan, aturSaringKelurahan] = useState(penyaring.kelurahan ?? "");
 
     const [openExport, setOpenExport] = useState(false);
     const [sedangExport, setSedangExport] = useState("");
@@ -64,46 +64,46 @@ export default function DataTiang({
     const tiangNonaktif = useMemo(() => listTiang.filter((tiang) => tiang.status?.toLowerCase() === "nonaktif").length, [listTiang]);
 
     const selectedWilayahLabel = useMemo(() => {
-        if (!filterWilayah) return "Semua Wilayah";
-        const found = wilayah.find((item) => String(item.id) === String(filterWilayah));
+        if (!saringWilayah) return "Semua Wilayah";
+        const found = wilayah.find((item) => String(item.id) === String(saringWilayah));
         return found ? found.nama_wilayah : "Semua Wilayah";
-    }, [filterWilayah, wilayah]);
+    }, [saringWilayah, wilayah]);
 
     useEffect(() => {
-        if ((filter.wilayah ?? "") !== filterWilayah) {
-            setFilterWilayah(filter.wilayah ?? "");
+        if ((penyaring.wilayah ?? "") !== saringWilayah) {
+            aturSaringWilayah(penyaring.wilayah ?? "");
         }
-    }, [filter.wilayah]);
+    }, [penyaring.wilayah]);
 
     useEffect(() => {
-        if ((filter.status ?? "") !== filterStatus) {
-            setFilterStatus(filter.status ?? "");
+        if ((penyaring.status ?? "") !== saringStatus) {
+            aturSaringStatus(penyaring.status ?? "");
         }
-    }, [filter.status]);
+    }, [penyaring.status]);
 
     useEffect(() => {
-        if ((filter.kecamatan ?? "") !== filterKecamatan) {
-            setFilterKecamatan(filter.kecamatan ?? "");
+        if ((penyaring.kecamatan ?? "") !== saringKecamatan) {
+            aturSaringKecamatan(penyaring.kecamatan ?? "");
         }
-    }, [filter.kecamatan]);
+    }, [penyaring.kecamatan]);
 
     useEffect(() => {
-        if ((filter.kelurahan ?? "") !== filterKelurahan) {
-            setFilterKelurahan(filter.kelurahan ?? "");
+        if ((penyaring.kelurahan ?? "") !== saringKelurahan) {
+            aturSaringKelurahan(penyaring.kelurahan ?? "");
         }
-    }, [filter.kelurahan]);
+    }, [penyaring.kelurahan]);
 
     // Kecamatan
 
     useEffect(() => {
-        if (!filterWilayah) { setKecamatanOptions([]); return; }
-        const wil = wilayah.find((w) => String(w.id) === String(filterWilayah));
+        if (!saringWilayah) { setKecamatanOptions([]); return; }
+        const wil = wilayah.find((w) => String(w.id) === String(saringWilayah));
         const kode = wil?.kode_wilayah || "";
         if (!kode) { setKecamatanOptions([]); return; }
         let cancelled = false;
         setKecamatanLoading(true);
-        // base dari useBase() modular (outer scope)
-        fetch(`${base}/api/regions/kabupaten/${kode}/kecamatan`.replace(/\/+/g, '/'))
+        // dasar dari useDasar() modular (outer scope)
+        fetch(`${dasar}/api/regions/kabupaten/${kode}/kecamatan`.replace(/\/+/g, '/'))
             .then((r) => r.json())
             .then((j) => {
                 if (cancelled) return;
@@ -113,17 +113,17 @@ export default function DataTiang({
             .catch(() => { if (!cancelled) setKecamatanOptions([]); })
             .finally(() => { if (!cancelled) setKecamatanLoading(false); });
         return () => { cancelled = true; };
-    }, [filterWilayah, wilayah]);
+    }, [saringWilayah, wilayah]);
 
     useEffect(() => {
-        if (!filterKecamatan) { setKelurahanOptions([]); return; }
-        const opt = kecamatanOptions.find((o) => o.name.toLowerCase() === filterKecamatan.toLowerCase().trim());
+        if (!saringKecamatan) { setKelurahanOptions([]); return; }
+        const opt = kecamatanOptions.find((o) => o.name.toLowerCase() === saringKecamatan.toLowerCase().trim());
         const code = opt?.code;
         if (!code) { setKelurahanOptions([]); return; }
         let cancelled = false;
         setKelurahanLoading(true);
-        // base dari useBase() modular (outer scope)
-        fetch(`${base}/api/regions/kecamatan/${code}/kelurahan`.replace(/\/+/g, '/'))
+        // dasar dari useDasar() modular (outer scope)
+        fetch(`${dasar}/api/regions/kecamatan/${code}/kelurahan`.replace(/\/+/g, '/'))
             .then((r) => r.json())
             .then((j) => {
                 if (cancelled) return;
@@ -133,27 +133,27 @@ export default function DataTiang({
             .catch(() => { if (!cancelled) setKelurahanOptions([]); })
             .finally(() => { if (!cancelled) setKelurahanLoading(false); });
         return () => { cancelled = true; };
-    }, [filterKecamatan, kecamatanOptions]);
+    }, [saringKecamatan, kecamatanOptions]);
 
     const filteredKecamatan = useMemo(() => {
-        const q = (filterKecamatan || "").trim().toLowerCase();
+        const q = (saringKecamatan || "").trim().toLowerCase();
         if (q.length < 1 || kecamatanOptions.length === 0) return [];
         if (kecamatanOptions.some((o) => o.name.toLowerCase() === q)) return [];
         return kecamatanOptions.filter((o) => o.name.toLowerCase().includes(q)).slice(0, 6);
-    }, [filterKecamatan, kecamatanOptions]);
+    }, [saringKecamatan, kecamatanOptions]);
 
     const filteredKelurahan = useMemo(() => {
-        const q = (filterKelurahan || "").trim().toLowerCase();
+        const q = (saringKelurahan || "").trim().toLowerCase();
         if (q.length < 1 || kelurahanOptions.length === 0) return [];
         if (kelurahanOptions.some((o) => o.name.toLowerCase() === q)) return [];
         return kelurahanOptions.filter((o) => o.name.toLowerCase().includes(q)).slice(0, 6);
-    }, [filterKelurahan, kelurahanOptions]);
+    }, [saringKelurahan, kelurahanOptions]);
 
     const handleFilter = useCallback((wilayahValue, kecamatanValue, statusValue, kelurahanValue) => {
-        setFilterWilayah(wilayahValue);
-        setFilterKecamatan(kecamatanValue);
-        setFilterStatus(statusValue);
-        setFilterKelurahan(kelurahanValue);
+        aturSaringWilayah(wilayahValue);
+        aturSaringKecamatan(kecamatanValue);
+        aturSaringStatus(statusValue);
+        aturSaringKelurahan(kelurahanValue);
         router.get(
             window.location.pathname,
             {
@@ -210,17 +210,17 @@ export default function DataTiang({
 
         const params = new URLSearchParams();
 
-        if (filterWilayah) params.set("wilayah", filterWilayah);
-        if (filterStatus) params.set("status", filterStatus);
-        if (filterKecamatan) params.set("kecamatan", filterKecamatan);
-        if (filterKelurahan) params.set("kelurahan", filterKelurahan);
+        if (saringWilayah) params.set("wilayah", saringWilayah);
+        if (saringStatus) params.set("status", saringStatus);
+        if (saringKecamatan) params.set("kecamatan", saringKecamatan);
+        if (saringKelurahan) params.set("kelurahan", saringKelurahan);
         if (cakupan === "semua") {
             params.set("scope", "all");
         } else {
             params.set("page", String(dataTiang?.current_page ?? 1));
         }
 
-        const url = `${resolveHref(`export/aset/tiang/${format}`)}?${params.toString()}`;
+        const url = `${selesaikanTautan(`export/aset/tiang/${format}`)}?${params.toString()}`;
 
         setOpenExport(false);
         setKonfirmasiEkspor(null);
@@ -268,13 +268,13 @@ export default function DataTiang({
         } finally {
             setSedangExport("");
         }
-    }, [sedangExport, filterWilayah, filterStatus, filterKecamatan, filterKelurahan, dataTiang, resolveHref]);
+    }, [sedangExport, saringWilayah, saringStatus, saringKecamatan, saringKelurahan, dataTiang, selesaikanTautan]);
 
     return (
-        <MainLayout>
+        <TataLetakUtama>
             <div className="space-y-4">
 
-                {/* Header */}
+                {/* Tajuk */}
 
                 <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
 
@@ -289,7 +289,7 @@ export default function DataTiang({
                         </span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
 
                     </div>
@@ -297,7 +297,7 @@ export default function DataTiang({
                     {/* Form */}
 
                     <a
-                        href={resolveHref("tambah-tiang")}
+                        href={selesaikanTautan("tambah-tiang")}
                         title="Form Tiang"
                         aria-label="Form Tiang"
                         className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:shrink-0 max-md:rounded-lg max-md:px-4 max-md:py-4 max-md:text-xs"
@@ -381,7 +381,7 @@ export default function DataTiang({
                             </p>
 
                             <p className="mt-3 text-xs text-gray-600 dark:text-night-300">
-                                Cetak halaman ini saja atau semua data sesuai filter?
+                                Cetak halaman ini saja atau semua data sesuai penyaring?
                             </p>
 
                             <div className="mt-4 flex flex-col gap-2">
@@ -542,13 +542,13 @@ export default function DataTiang({
                             {/* Wilayah */}
 
                             <select
-                                value={filterWilayah}
+                                value={saringWilayah}
                                 onChange={(e) =>
                                     handleFilter(
                                         e.target.value,
-                                        filterKecamatan,
-                                        filterStatus,
-                                        filterKelurahan
+                                        saringKecamatan,
+                                        saringStatus,
+                                        saringKelurahan
                                     )
                                 }
                                 className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
@@ -575,16 +575,16 @@ export default function DataTiang({
                             <div className="relative">
                                 <input
                                     type="text"
-                                    value={filterKecamatan}
+                                    value={saringKecamatan}
                                     onChange={(e) => {
                                         const v = e.target.value;
-                                        setFilterKecamatan(v);
+                                        aturSaringKecamatan(v);
                                     }}
                                     onFocus={() => setKecFocused(true)}
                                     onBlur={() => setTimeout(() => setKecFocused(false), 180)}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
-                                            handleFilter(filterWilayah, e.target.value, filterStatus, filterKelurahan);
+                                            handleFilter(saringWilayah, e.target.value, saringStatus, saringKelurahan);
                                         }
                                     }}
                                     placeholder={kecamatanLoading ? "Memuat..." : "Kecamatan"}
@@ -599,9 +599,9 @@ export default function DataTiang({
                                                 type="button"
                                                 onMouseDown={(e) => e.preventDefault()}
                                                 onClick={() => {
-                                                    setFilterKecamatan(opt.name);
+                                                    aturSaringKecamatan(opt.name);
                                                     setKecFocused(false);
-                                                    handleFilter(filterWilayah, opt.name, filterStatus, filterKelurahan);
+                                                    handleFilter(saringWilayah, opt.name, saringStatus, saringKelurahan);
                                                 }}
                                                 className="w-full px-3 py-2 text-left capitalize text-xs text-gray-700 dark:text-night-200 hover:bg-gray-50 dark:hover:bg-night-800 transition"
                                             >
@@ -615,13 +615,13 @@ export default function DataTiang({
                             {/* Status */}
 
                             <select
-                                value={filterStatus}
+                                value={saringStatus}
                                 onChange={(e) =>
                                     handleFilter(
-                                        filterWilayah,
-                                        filterKecamatan,
+                                        saringWilayah,
+                                        saringKecamatan,
                                         e.target.value,
-                                        filterKelurahan
+                                        saringKelurahan
                                     )
                                 }
                                 className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
@@ -646,16 +646,16 @@ export default function DataTiang({
                             <div className="relative">
                                 <input
                                     type="text"
-                                    value={filterKelurahan}
+                                    value={saringKelurahan}
                                     onChange={(e) => {
                                         const v = e.target.value;
-                                        setFilterKelurahan(v);
+                                        aturSaringKelurahan(v);
                                     }}
                                     onFocus={() => setKelFocused(true)}
                                     onBlur={() => setTimeout(() => setKelFocused(false), 180)}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
-                                            handleFilter(filterWilayah, filterKecamatan, filterStatus, e.target.value);
+                                            handleFilter(saringWilayah, saringKecamatan, saringStatus, e.target.value);
                                         }
                                     }}
                                     placeholder={kelurahanLoading ? "Memuat..." : "Kelurahan"}
@@ -670,9 +670,9 @@ export default function DataTiang({
                                                 type="button"
                                                 onMouseDown={(e) => e.preventDefault()}
                                                 onClick={() => {
-                                                    setFilterKelurahan(opt.name);
+                                                    aturSaringKelurahan(opt.name);
                                                     setKelFocused(false);
-                                                    handleFilter(filterWilayah, filterKecamatan, filterStatus, opt.name);
+                                                    handleFilter(saringWilayah, saringKecamatan, saringStatus, opt.name);
                                                 }}
                                                 className="w-full px-3 py-2 text-left capitalize text-xs text-gray-700 dark:text-night-200 hover:bg-gray-50 dark:hover:bg-night-800 transition"
                                             >
@@ -687,7 +687,7 @@ export default function DataTiang({
                         <div className="mt-3 flex gap-2">
                             <button
                                 type="button"
-                                onClick={() => handleFilter(filterWilayah, filterKecamatan, filterStatus, filterKelurahan)}
+                                onClick={() => handleFilter(saringWilayah, saringKecamatan, saringStatus, saringKelurahan)}
                                 className="flex-1 rounded-xl bg-[#AB3C3C] px-3 py-2 text-xs font-medium text-white shadow-sm hover:bg-[#6F2424] transition"
                             >
                                 Terapkan
@@ -714,7 +714,7 @@ export default function DataTiang({
 
                         <table className="w-full min-w-[900px] border-collapse text-xs">
 
-                            {/* Header Tabel */}
+                            {/* Tajuk Tabel */}
 
                             <thead>
 
@@ -790,7 +790,7 @@ export default function DataTiang({
                                                     {tiang.foto_tiang_1 ? (
 
                                                         <img
-                                                            src={`${base}/public/storage/${tiang.foto_tiang_1}`.replace(/\/+/g, '/')}
+                                                            src={`${dasar}/public/storage/${tiang.foto_tiang_1}`.replace(/\/+/g, '/')}
                                                             alt={`Foto ${tiang.kode_tiang}`}
                                                             className="h-full w-full object-cover"
                                                             loading="lazy"
@@ -903,13 +903,13 @@ export default function DataTiang({
 
                                             <td className="px-4 py-2.5">
 
-                                                <TableActions
-                                                    type="tiang"
+                                                <AksiTabel
+                                                    jenis="tiang"
                                                     id={tiang.id}
                                                     kode={tiang.kode_tiang}
-                                                    base={base}
-                                                    detailHref={resolveHref(`detail-tiang/${tiang.id}`)}
-                                                    editHref={resolveHref(`edit-tiang/${tiang.id}`)}
+                                                    dasar={dasar}
+                                                    tautanRinci={selesaikanTautan(`detail-tiang/${tiang.id}`)}
+                                                    tautanUbah={selesaikanTautan(`edit-tiang/${tiang.id}`)}
                                                 />
 
                                             </td>
@@ -922,7 +922,7 @@ export default function DataTiang({
 
                                     /* Kosong */
 
-                                    <TableEmpty colSpan="9" icon={LuUtilityPole} title="Belum ada data" hint="Data tiang belum tersedia." />
+                                    <TabelKosong rentangKolom="9" ikon={LuUtilityPole} judul="Belum ada data" petunjuk="Data tiang belum tersedia." />
 
                                 )}
 
@@ -937,31 +937,31 @@ export default function DataTiang({
                     <div className="space-y-3 p-4 md:hidden">
                         {listTiang.length > 0 ? (
                             listTiang.map((tiang, index) => (
-                                <MobileDataCard
+                                <KartuDataSeluler
                                     key={tiang.id ?? index}
-                                    title={tiang.kode_tiang}
-                                    subtitle={`${tiang.wilayah || tiang.kabupaten || ""}${(tiang.kecamatan || tiang.area) ? ` • ${tiang.kecamatan || tiang.area}` : ""}`}
-                                    imageSrc={tiang.foto_tiang_1 ? `${base}/public/storage/${tiang.foto_tiang_1}`.replace(/\/+/g, '/') : null}
-                                    imageAlt={`Foto ${tiang.kode_tiang || "tiang"}`}
+                                    judul={tiang.kode_tiang}
+                                    subjudul={`${tiang.wilayah || tiang.kabupaten || ""}${(tiang.kecamatan || tiang.area) ? ` • ${tiang.kecamatan || tiang.area}` : ""}`}
+                                    sumberGambar={tiang.foto_tiang_1 ? `${dasar}/public/storage/${tiang.foto_tiang_1}`.replace(/\/+/g, '/') : null}
+                                    teksAltGambar={`Foto ${tiang.kode_tiang || "tiang"}`}
                                     status={tiang.status}
                                     meta={[
                                         { label: "Kelurahan", value: tiang.kelurahan },
                                         { label: "Petugas", value: tiang.nama_petugas },
                                     ]}
-                                    actions={
-                                        <CardActions
-                                            type="tiang"
+                                    aksi={
+                                        <AksiKartu
+                                            jenis="tiang"
                                             id={tiang.id}
                                             kode={tiang.kode_tiang}
-                                            base={base}
-                                            detailHref={resolveHref(`detail-tiang/${tiang.id}`)}
-                                            editHref={resolveHref(`edit-tiang/${tiang.id}`)}
+                                            dasar={dasar}
+                                            tautanRinci={selesaikanTautan(`detail-tiang/${tiang.id}`)}
+                                            tautanUbah={selesaikanTautan(`edit-tiang/${tiang.id}`)}
                                         />
                                     }
                                 />
                             ))
                         ) : (
-                            <CardEmpty />
+                            <KartuKosong />
                         )}
                     </div>
                     {dataTiang?.links && dataTiang.links.length > 3 && (
@@ -974,6 +974,6 @@ export default function DataTiang({
                 </div>
 
             </div>
-        </MainLayout>
+        </TataLetakUtama>
     );
 }

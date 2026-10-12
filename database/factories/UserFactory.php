@@ -2,23 +2,23 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\UserModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<User>
+ * @extends Factory<UserModel>
  */
 class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * Kata sandi yang sedang digunakan oleh pabrik.
      */
     protected static ?string $password;
 
     /**
-     * Define the model's default state.
+     * Tentukan keadaan bawaan model.
      *
      * @return array<string, mixed>
      */
@@ -34,7 +34,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Tandai bahwa alamat surel model belum terverifikasi.
      */
     public function unverified(): static
     {
