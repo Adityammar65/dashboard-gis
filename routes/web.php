@@ -7,7 +7,6 @@ use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\ONTController;
 use App\Http\Controllers\HalamanController;
 use App\Http\Controllers\SetelUlangKataSandiController;
-use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\WilayahApiController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\TiangController;
@@ -62,9 +61,9 @@ Route::middleware('cek_login')->group(function () {
 
     // Profil
 
-    Route::post('/update-profil', [ProfilController::class, 'perbaruiProfil'])->middleware('throttle:5,1');
-    Route::post('/update-profil/username', [ProfilController::class, 'perbaruiUser'])->middleware('throttle:5,1');
-    Route::post('/update-profil/password', [ProfilController::class, 'perbaruiKataSandi'])->middleware('throttle:5,1');
+    Route::post('/update-profil', [AutentikasiController::class, 'perbaruiProfil'])->middleware('throttle:5,1');
+    Route::post('/update-profil/username', [AutentikasiController::class, 'perbaruiUser'])->middleware('throttle:5,1');
+    Route::post('/update-profil/password', [AutentikasiController::class, 'perbaruiKataSandi'])->middleware('throttle:5,1');
 
     // Persetujuan Setel Ulang Kata Sandi
 

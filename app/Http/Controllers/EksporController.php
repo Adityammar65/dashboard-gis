@@ -37,8 +37,6 @@ class EksporController extends Controller
     {
         $config = $this->konfigurasiAset($type);
 
-        // Cakupan
-
         $cakupan = strtolower(trim((string) $request->query('scope', 'halaman')));
         $semua = in_array($cakupan, ['all', 'semua', 'semua-data', 'semua_data'], true);
 
