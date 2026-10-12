@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Helpers\NotifikasiHelper;
-use App\Models\PasswordResetRequest;
+use App\Models\RequestPerubahanAkun;
 use App\Models\UserModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -41,7 +41,7 @@ class ProfilController extends Controller
             return back()->withErrors(['username' => 'Username baru sama dengan username saat ini.']);
         }
 
-        $menunggu = PasswordResetRequest::where('status', 'pending')
+        $menunggu = RequestPerubahanAkun::where('status', 'pending')
             ->where('tipe_request', 'username_change')
             ->where(function ($q) use ($userSaatIni) {
                 $q->where('username', $userSaatIni)
@@ -55,7 +55,7 @@ class ProfilController extends Controller
             ]);
         }
 
-        $reset = PasswordResetRequest::create([
+        $reset = RequestPerubahanAkun::create([
             'username' => $userSaatIni,
             'password_baru' => null,
             'tipe_request' => 'username_change',
@@ -103,7 +103,7 @@ class ProfilController extends Controller
 
         $userSaatIni = $user->username;
 
-        $menunggu = PasswordResetRequest::where('status', 'pending')
+        $menunggu = RequestPerubahanAkun::where('status', 'pending')
             ->whereIn('tipe_request', ['password_change', 'password_reset'])
             ->where(function ($q) use ($userSaatIni) {
                 $q->where('username', $userSaatIni)
@@ -117,7 +117,7 @@ class ProfilController extends Controller
             ]);
         }
 
-        $reset = PasswordResetRequest::create([
+        $reset = RequestPerubahanAkun::create([
             'username' => $userSaatIni,
             'password_baru' => Hash::make($request->password),
             'tipe_request' => 'password_change',
@@ -180,7 +180,7 @@ class ProfilController extends Controller
                 'username.unique' => 'Username sudah digunakan.',
             ]);
 
-            $menungguUser = PasswordResetRequest::where('status', 'pending')
+            $menungguUser = RequestPerubahanAkun::where('status', 'pending')
                 ->where('tipe_request', 'username_change')
                 ->where(function ($q) use ($userSaatIni) {
                     $q->where('username', $userSaatIni)
@@ -205,7 +205,7 @@ class ProfilController extends Controller
                 return back()->withErrors(['Password saat ini salah.']);
             }
 
-            $menungguKataSandi = PasswordResetRequest::where('status', 'pending')
+            $menungguKataSandi = RequestPerubahanAkun::where('status', 'pending')
                 ->whereIn('tipe_request', ['password_change', 'password_reset'])
                 ->where(function ($q) use ($userSaatIni) {
                     $q->where('username', $userSaatIni)
@@ -223,7 +223,7 @@ class ProfilController extends Controller
         $dibuat = [];
 
         if ($inginUser) {
-            $reset = PasswordResetRequest::create([
+            $reset = RequestPerubahanAkun::create([
                 'username' => $userSaatIni,
                 'password_baru' => null,
                 'tipe_request' => 'username_change',
@@ -248,7 +248,7 @@ class ProfilController extends Controller
         }
 
         if ($inginKataSandi) {
-            $reset = PasswordResetRequest::create([
+            $reset = RequestPerubahanAkun::create([
                 'username' => $userSaatIni,
                 'password_baru' => Hash::make($password),
                 'tipe_request' => 'password_change',

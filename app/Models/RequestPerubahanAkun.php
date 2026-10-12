@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PasswordResetRequest extends Model
+class RequestPerubahanAkun extends Model
 {
     protected $table = 'request_perubahan_akun';
 

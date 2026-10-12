@@ -7,7 +7,7 @@ use Inertia\Inertia;
 use App\Models\TiangModel;
 use App\Models\ONTModel;
 use App\Models\NotifikasiModel;
-use App\Models\PasswordResetRequest;
+use App\Models\RequestPerubahanAkun;
 use App\Models\WilayahModel;
 use App\Models\UserModel;
 use Illuminate\Support\Facades\Storage;
@@ -607,7 +607,7 @@ class HalamanController extends Controller
         }
         $resetRequest = null;
         if ($notifikasi->reset_request_id) {
-            $resetRequest = PasswordResetRequest::where('id', $notifikasi->reset_request_id)
+            $resetRequest = RequestPerubahanAkun::where('id', $notifikasi->reset_request_id)
                 ->first(['id', 'username', 'tipe_request', 'requested_by', 'username_baru', 'status', 'handled_by', 'handled_at', 'created_at']);
         }
         return Inertia::render('DetailNotifikasi', [
@@ -652,10 +652,10 @@ class HalamanController extends Controller
         return Inertia::render('Pengaturan', [
             'wilayah' => $wilayah,
             'settings' => $settings,
-            'resetRequests' => PasswordResetRequest::where('status', 'pending')
+            'resetRequests' => RequestPerubahanAkun::where('status', 'pending')
                 ->orderByDesc('id')
                 ->get(['id', 'username', 'tipe_request', 'requested_by', 'username_baru', 'created_at']),
-            'resetHistory' => PasswordResetRequest::whereIn('status', ['approved', 'rejected'])
+            'resetHistory' => RequestPerubahanAkun::whereIn('status', ['approved', 'rejected'])
                 ->orderByDesc('id')
                 ->limit(5)
                 ->get(['id', 'username', 'tipe_request', 'requested_by', 'username_baru', 'status', 'handled_by', 'handled_at']),

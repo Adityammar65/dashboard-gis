@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\NotifikasiHelper;
-use App\Models\PasswordResetRequest;
+use App\Models\RequestPerubahanAkun;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +26,7 @@ class SetelUlangKataSandiController extends Controller
 
         $username = $request->username;
 
-        $pending = PasswordResetRequest::where('username', $username)
+        $pending = RequestPerubahanAkun::where('username', $username)
             ->where('status', 'pending')
             ->exists();
 
@@ -36,7 +36,7 @@ class SetelUlangKataSandiController extends Controller
             ]);
         }
 
-        $reset = PasswordResetRequest::create([
+        $reset = RequestPerubahanAkun::create([
             'username' => $username,
             'password_baru' => Hash::make($request->password),
             'tipe_request' => 'password_reset',
@@ -64,7 +64,7 @@ class SetelUlangKataSandiController extends Controller
 
     public function setujui(Request $request, $id)
     {
-        $reset = PasswordResetRequest::findOrFail($id);
+        $reset = RequestPerubahanAkun::findOrFail($id);
 
         if (!$reset->isPending()) {
             return back()->withErrors(['Permintaan ini sudah ditindaklanjuti.']);
@@ -136,7 +136,7 @@ class SetelUlangKataSandiController extends Controller
 
     public function tolak(Request $request, $id)
     {
-        $reset = PasswordResetRequest::findOrFail($id);
+        $reset = RequestPerubahanAkun::findOrFail($id);
 
         if (!$reset->isPending()) {
             return back()->withErrors(['Permintaan ini sudah ditindaklanjuti.']);
