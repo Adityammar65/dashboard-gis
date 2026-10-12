@@ -1,6 +1,6 @@
-import TataLetakUtama from "../Layouts/TataLetakUtama";
-import KartuDataSeluler from "../Components/KartuDataSeluler";
-import { HapusTabel, HapusKartu, TabelKosong, KartuKosong } from "../Components/AksiData";
+import MainLayout from "../Layouts/MainLayout";
+import MobileDataCard from "../Components/MobileDataCard";
+import { TableDelete, CardDelete, TableEmpty, CardEmpty } from "../Components/DataActions";
 import { usePage, router } from "@inertiajs/react";
 import { useState, useMemo, useCallback } from "react";
 
@@ -11,58 +11,58 @@ import useBase from "../hooks/useBase";
 export default function Tiang({
     dataWilayah = { data: [], total: 0, links: [] },
     wilayah = [],
-    penyaring = {},
+    filter = {},
 }) {
-    const { pengaturan } = usePage().props;
+    const { settings } = usePage().props;
 
     const base = useBase();
-    const resolveHref = useCallback((tautan) => `${base}/${tautan}`.replace(/\/+/g, '/'), [base]);
+    const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, '/'), [base]);
 
-    const [saringWilayah, aturSaringWilayah] = useState(penyaring.wilayah ?? "");
-    const [saringAset, aturSaringAset] = useState(penyaring.aset ?? "");
+    const [filterWilayah, setFilterWilayah] = useState(filter.wilayah ?? "");
+    const [filterAset, setFilterAset] = useState(filter.aset ?? "");
 
-    const daftarWilayah = useMemo(() => {
+    const listWilayah = useMemo(() => {
         if (Array.isArray(dataWilayah)) return dataWilayah;
         return dataWilayah?.data ?? [];
     }, [dataWilayah]);
 
     const totalWilayah = useMemo(() => {
         if (typeof dataWilayah?.total === "number") return dataWilayah.total;
-        return daftarWilayah.length;
-    }, [dataWilayah, daftarWilayah]);
+        return listWilayah.length;
+    }, [dataWilayah, listWilayah]);
 
     const totalAset = useMemo(() => {
-        return daftarWilayah.reduce((jumlah, baris) => {
-            if (saringAset === "tiang") return jumlah + (baris.total_tiang ?? 0);
-            if (saringAset === "ont") return jumlah + (baris.total_ont ?? 0);
-            return jumlah + (baris.total_aset ?? 0);
+        return listWilayah.reduce((sum, w) => {
+            if (filterAset === "tiang") return sum + (w.total_tiang ?? 0);
+            if (filterAset === "ont") return sum + (w.total_ont ?? 0);
+            return sum + (w.total_aset ?? 0);
         }, 0);
-    }, [daftarWilayah, saringAset]);
+    }, [listWilayah, filterAset]);
 
     const asetAktif = useMemo(() => {
-        if (saringAset === "tiang" || saringAset === "ont") {
+        if (filterAset === "tiang" || filterAset === "ont") {
         }
-        return daftarWilayah.reduce((jumlah, baris) => jumlah + (baris.aset_aktif ?? 0), 0);
-    }, [daftarWilayah, saringAset]);
+        return listWilayah.reduce((sum, w) => sum + (w.aset_aktif ?? 0), 0);
+    }, [listWilayah, filterAset]);
 
     const asetNonaktif = useMemo(() => {
-        return daftarWilayah.reduce((jumlah, baris) => jumlah + (baris.aset_nonaktif ?? 0), 0);
-    }, [daftarWilayah]);
+        return listWilayah.reduce((sum, w) => sum + (w.aset_nonaktif ?? 0), 0);
+    }, [listWilayah]);
 
     const namaAsetLabel = useMemo(() => {
-        if (saringAset === "tiang") return "Tiang";
-        if (saringAset === "ont") return "ONT";
+        if (filterAset === "tiang") return "Tiang";
+        if (filterAset === "ont") return "ONT";
         return "Semua Aset";
-    }, [saringAset]);
+    }, [filterAset]);
 
-    const tanganiSaring = useCallback((nilaiWilayah, nilaiAset) => {
-        aturSaringWilayah(nilaiWilayah);
-        aturSaringAset(nilaiAset);
+    const handleFilter = useCallback((wilayahValue, asetValue) => {
+        setFilterWilayah(wilayahValue);
+        setFilterAset(asetValue);
         router.get(
             window.location.pathname,
             {
-                wilayah: nilaiWilayah,
-                aset: nilaiAset,
+                wilayah: wilayahValue,
+                aset: asetValue,
             },
             {
                 preserveState: true,
@@ -73,10 +73,10 @@ export default function Tiang({
     }, []);
 
     return (
-        <TataLetakUtama>
+        <MainLayout>
             <div className="space-y-4">
 
-                {/* Tajuk */}
+                {/* Header */}
 
                 <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
                     <div className="items-center flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] text-white px-4 py-3.5 shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
@@ -87,7 +87,7 @@ export default function Tiang({
                         <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">/</span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 
@@ -180,8 +180,8 @@ export default function Tiang({
                             {/* Wilayah */}
 
                             <select
-                                value={saringWilayah}
-                                onChange={(kejadian) => tanganiSaring(kejadian.target.value, saringAset)}
+                                value={filterWilayah}
+                                onChange={(e) => handleFilter(e.target.value, filterAset)}
                                 className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
                                 <option value="">
@@ -197,8 +197,8 @@ export default function Tiang({
                             {/* Aset */}
 
                             <select
-                                value={saringAset}
-                                onChange={(kejadian) => tanganiSaring(saringWilayah, kejadian.target.value)}
+                                value={filterAset}
+                                onChange={(e) => handleFilter(filterWilayah, e.target.value)}
                                 className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
                             >
                                 <option value="">
@@ -261,56 +261,56 @@ export default function Tiang({
                             </thead>
 
                             <tbody className="text-center capitalize divide-y divide-gray-100 dark:divide-night-700">
-                                {daftarWilayah.length > 0 ? (
-                                    daftarWilayah.map((baris, indeks) => (
-                                        <tr key={baris.id ?? baris.nama_wilayah ?? indeks} className="border-b border-gray-100 dark:border-night-700 last:border-b-0 hover:bg-gray-50/80 dark:hover:bg-night-800/80 transition-colors font-light">
+                                {listWilayah.length > 0 ? (
+                                    listWilayah.map((row, index) => (
+                                        <tr key={row.id ?? row.nama_wilayah ?? index} className="border-b border-gray-100 dark:border-night-700 last:border-b-0 hover:bg-gray-50/80 dark:hover:bg-night-800/80 transition-colors font-light">
                                             <td className="px-4 py-2">
-                                                {String((dataWilayah?.from ? dataWilayah.from + indeks : indeks + 1)).padStart(2, "0")}
+                                                {String((dataWilayah?.from ? dataWilayah.from + index : index + 1)).padStart(2, "0")}
                                             </td>
 
                                             <td className="px-4 py-2">
-                                                {baris.nama_wilayah ?? <span className="text-gray-400 dark:text-night-500">Belum ada data</span>}
+                                                {row.nama_wilayah ?? <span className="text-gray-400 dark:text-night-500">Belum ada data</span>}
                                             </td>
 
                                             <td className="px-4 py-2">
-                                                {baris.total_aset ?? 0}
+                                                {row.total_aset ?? 0}
                                             </td>
 
                                             <td className="px-4 py-2">
-                                                {baris.total_tiang ?? 0}
+                                                {row.total_tiang ?? 0}
                                             </td>
 
                                             <td className="px-4 py-2">
-                                                {baris.total_ont ?? 0}
+                                                {row.total_ont ?? 0}
                                             </td>
 
                                             <td className="px-4 py-2.5">
                                                 <span className="rounded-full bg-green-500 px-2.5 py-1 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/20">
-                                                    {baris.aset_aktif ?? 0}
+                                                    {row.aset_aktif ?? 0}
                                                 </span>
                                             </td>
 
                                             <td className="px-4 py-2.5">
                                                 <span className="rounded-full bg-red-500 px-2.5 py-1 text-[10px] font-medium text-white shadow-sm ring-1 ring-white/20">
-                                                    {baris.aset_nonaktif ?? 0}
+                                                    {row.aset_nonaktif ?? 0}
                                                 </span>
                                             </td>
 
                                             <td className="px-4 py-2.5">
                                                 <div className="flex items-center justify-center">
-                                                    <HapusTabel
-                                                        jenis="wilayah"
-                                                        id={baris.id}
-                                                        nama={baris.nama_wilayah}
+                                                    <TableDelete
+                                                        type="wilayah"
+                                                        id={row.id}
+                                                        name={row.nama_wilayah}
                                                         base={base}
-                                                        judul="Hapus Wilayah"
+                                                        title="Hapus Wilayah"
                                                     />
                                                 </div>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
-                                    <TabelKosong rentangKolom="8" ikon={FaMap} judul="Belum ada data" petunjuk="Data wilayah belum tersedia atau penyaring tidak menghasilkan data." />
+                                    <TableEmpty colSpan="8" icon={FaMap} title="Belum ada data" hint="Data wilayah belum tersedia atau filter tidak menghasilkan data." />
                                 )}
                             </tbody>
 
@@ -320,31 +320,31 @@ export default function Tiang({
                     {/* Kartu Mobile */}
 
                     <div className="space-y-3 p-4 md:hidden">
-                        {daftarWilayah.length > 0 ? (
-                            daftarWilayah.map((baris, indeks) => (
-                                <KartuDataSeluler
-                                    key={baris.id ?? baris.nama_wilayah ?? indeks}
-                                    judul={baris.nama_wilayah}
-                                    subjudul={`Total ${baris.total_aset ?? 0} aset • Tiang ${baris.total_tiang ?? 0} • ONT ${baris.total_ont ?? 0}`}
-                                    sumberGambar={null}
-                                    labelCadangan={String(baris.nama_wilayah || "W").slice(0, 1).toUpperCase()}
+                        {listWilayah.length > 0 ? (
+                            listWilayah.map((row, index) => (
+                                <MobileDataCard
+                                    key={row.id ?? row.nama_wilayah ?? index}
+                                    title={row.nama_wilayah}
+                                    subtitle={`Total ${row.total_aset ?? 0} aset • Tiang ${row.total_tiang ?? 0} • ONT ${row.total_ont ?? 0}`}
+                                    imageSrc={null}
+                                    fallbackLabel={String(row.nama_wilayah || "W").slice(0, 1).toUpperCase()}
                                     status={null}
                                     meta={[
-                                        { label: "Aktif", value: String(baris.aset_aktif ?? 0) },
-                                        { label: "Nonaktif", value: String(baris.aset_nonaktif ?? 0) },
+                                        { label: "Aktif", value: String(row.aset_aktif ?? 0) },
+                                        { label: "Nonaktif", value: String(row.aset_nonaktif ?? 0) },
                                     ]}
-                                    aksi={
-                                        <HapusKartu
-                                            jenis="wilayah"
-                                            id={baris.id}
-                                            nama={baris.nama_wilayah}
+                                    actions={
+                                        <CardDelete
+                                            type="wilayah"
+                                            id={row.id}
+                                            name={row.nama_wilayah}
                                             base={base}
                                         />
                                     }
                                 />
                             ))
                         ) : (
-                            <KartuKosong />
+                            <CardEmpty />
                         )}
                     </div>
                     {dataWilayah?.links && dataWilayah.links.length > 3 && (
@@ -363,6 +363,6 @@ export default function Tiang({
                 </div>
 
             </div>
-        </TataLetakUtama>
+        </MainLayout>
     );
 }

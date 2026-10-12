@@ -1,5 +1,5 @@
 import { useState, createContext, useContext, useEffect, useCallback } from "react";
-import { Tajuk, BilahSamping, LaciSeluler } from "../Components";
+import { Header, Sidebar, MobileDrawer } from "../Components";
 import { FiX } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
 
@@ -126,19 +126,19 @@ export default function MainLayout({ children, errorMessage }) {
                     </div>
                 )}
 
-                {/* BilahSamping */}
+                {/* Sidebar */}
 
                 <div className="max-md:hidden">
-                    <BilahSamping apakahBuka={isOpen} saatAlih={() => setIsOpen(!isOpen)} />
+                    <Sidebar isOpen={isOpen} onToggle={() => setIsOpen(!isOpen)} />
                 </div>
 
-                {/* Laci Seluler */}
+                {/* Mobile Drawer */}
 
-                <LaciSeluler buka={drawerOpen} saatTutup={() => setDrawerOpen(false)} />
+                <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
-                {/* Tajuk */}
+                {/* Header */}
 
-                <Tajuk saatMenu={() => setDrawerOpen(true)} />
+                <Header onMenu={() => setDrawerOpen(true)} />
 
                 {/* Isi */}
 

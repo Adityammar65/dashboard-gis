@@ -4,10 +4,10 @@ import useChartView from "../hooks/useChartView";
 
 /**
  * Sakelar mode view data Simple/Detail.
- * variant="switch" -> kontrol segmented untuk halaman Pengaturan (mirip PengalihTema).
+ * variant="switch" -> kontrol segmented untuk halaman Pengaturan (mirip ThemeToggle).
  * variant="compact" -> pil kecil untuk header halaman (override lokal).
  */
-const PengalihTampilanGrafik = memo(function PengalihTampilanGrafik({ variant = "switch", className = "", value, onChange }) {
+const ChartViewToggle = memo(function ChartViewToggle({ variant = "switch", className = "", value, onChange }) {
     const global = useChartView();
     const view = value ?? global.view;
     const setView = onChange ?? global.setView;
@@ -99,4 +99,4 @@ const PengalihTampilanGrafik = memo(function PengalihTampilanGrafik({ variant = 
     );
 });
 
-export default PengalihTampilanGrafik;
+export default ChartViewToggle;

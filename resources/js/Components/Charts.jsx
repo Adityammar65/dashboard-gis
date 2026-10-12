@@ -1,13 +1,13 @@
 import { memo, useMemo } from "react";
 import { FaChartBar } from "react-icons/fa";
 
-export const KartuGrafik = memo(function KartuGrafik({ judul, subjudul, children, className = "" }) {
+export const ChartCard = memo(function ChartCard({ title, subtitle, children, className = "" }) {
     return (
         <div className={`rounded-2xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 p-5 shadow-sm max-md:p-4 ${className}`}>
             <div className="mb-4">
-                <h3 className="text-sm font-semibold text-gray-800 dark:text-night-200">{judul}</h3>
-                {subjudul && (
-                    <p className="mt-0.5 text-xs text-gray-500 dark:text-night-400">{subjudul}</p>
+                <h3 className="text-sm font-semibold text-gray-800 dark:text-night-200">{title}</h3>
+                {subtitle && (
+                    <p className="mt-0.5 text-xs text-gray-500 dark:text-night-400">{subtitle}</p>
                 )}
             </div>
             {children}
@@ -15,17 +15,17 @@ export const KartuGrafik = memo(function KartuGrafik({ judul, subjudul, children
     );
 });
 
-export const GrafikKosong = memo(function GrafikKosong({ judul = "Belum ada data", petunjuk = "Penyaring tidak menghasilkan data untuk grafik." }) {
+export const ChartEmpty = memo(function ChartEmpty({ title = "Belum ada data", hint = "Penyaring tidak menghasilkan data untuk grafik." }) {
     return (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 dark:border-night-700 bg-gray-50/60 dark:bg-night-800/60 py-10 text-center">
             <FaChartBar className="mb-2 text-2xl text-gray-300 dark:text-night-600" />
-            <p className="text-xs font-semibold text-gray-600 dark:text-night-300">{judul}</p>
-            <p className="mt-0.5 text-[11px] text-gray-400 dark:text-night-500">{petunjuk}</p>
+            <p className="text-xs font-semibold text-gray-600 dark:text-night-300">{title}</p>
+            <p className="mt-0.5 text-[11px] text-gray-400 dark:text-night-500">{hint}</p>
         </div>
     );
 });
 
-export const GrafikDonat = memo(function GrafikDonat({ data = [] }) {
+export const DonutChart = memo(function DonutChart({ data = [] }) {
     const { total, segments } = useMemo(() => {
         const items = (Array.isArray(data) ? data : []).filter((d) => (d.value ?? 0) > 0);
         const total = items.reduce((s, d) => s + (d.value ?? 0), 0);
@@ -41,7 +41,7 @@ export const GrafikDonat = memo(function GrafikDonat({ data = [] }) {
         return { total, segments, C };
     }, [data]);
 
-    if (total === 0) return <GrafikKosong />;
+    if (total === 0) return <ChartEmpty />;
 
     return (
         <div className="flex items-center gap-5 max-sm:flex-col max-sm:gap-4">
@@ -85,7 +85,7 @@ export const GrafikDonat = memo(function GrafikDonat({ data = [] }) {
     );
 });
 
-export const GrafikBatangKelompok = memo(function GrafikBatangKelompok({ data = [], batas = 8 }) {
+export const GroupedBarChart = memo(function GroupedBarChart({ data = [], limit = 8 }) {
     const { items, max, others } = useMemo(() => {
         const rows = (Array.isArray(data) ? data : [])
             .map((d) => ({
@@ -96,14 +96,14 @@ export const GrafikBatangKelompok = memo(function GrafikBatangKelompok({ data = 
             }))
             .filter((d) => d.total > 0)
             .sort((a, b) => b.total - a.total);
-        const items = rows.slice(0, batas);
-        const rest = rows.slice(batas);
+        const items = rows.slice(0, limit);
+        const rest = rows.slice(limit);
         const others = rest.reduce((s, d) => s + d.total, 0);
         const max = items.reduce((m, d) => Math.max(m, d.tiang, d.ont), 0);
         return { items, max, others };
-    }, [data, batas]);
+    }, [data, limit]);
 
-    if (items.length === 0) return <GrafikKosong />;
+    if (items.length === 0) return <ChartEmpty />;
 
     return (
         <div>
@@ -156,19 +156,19 @@ export const GrafikBatangKelompok = memo(function GrafikBatangKelompok({ data = 
     );
 });
 
-export const GrafikBatangMendatar = memo(function GrafikBatangMendatar({ data = [], batas = 8 }) {
+export const HBarChart = memo(function HBarChart({ data = [], limit = 8 }) {
     const { items, max, others } = useMemo(() => {
         const sorted = [...(Array.isArray(data) ? data : [])]
             .filter((d) => (d.value ?? 0) > 0)
             .sort((a, b) => b.value - a.value);
-        const items = sorted.slice(0, batas);
-        const rest = sorted.slice(batas);
+        const items = sorted.slice(0, limit);
+        const rest = sorted.slice(limit);
         const others = rest.reduce((s, d) => s + (d.value ?? 0), 0);
         const max = items.length > 0 ? items[0].value : 0;
         return { items, max, others };
-    }, [data, batas]);
+    }, [data, limit]);
 
-    if (items.length === 0) return <GrafikKosong />;
+    if (items.length === 0) return <ChartEmpty />;
 
     return (
         <div className="space-y-3">

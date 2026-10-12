@@ -1,20 +1,20 @@
 /* Kartu Mobile */
 
-export default function KartuDataSeluler({
-    judul,
-    subjudul,
-    sumberGambar,
-    teksAltGambar = "Foto aset",
-    labelCadangan = "Belum ada foto",
+export default function MobileDataCard({
+    title,
+    subtitle,
+    imageSrc,
+    imageAlt = "Foto aset",
+    fallbackLabel = "Belum ada foto",
     status,
-    rincian = [],
-    aksi = null,
+    meta = [],
+    actions = null,
 }) {
-    const statusKecil = String(status || "").toLowerCase();
-    const warnaStatus =
-        statusKecil === "aktif"
+    const statusLower = String(status || "").toLowerCase();
+    const statusColor =
+        statusLower === "aktif"
             ? "bg-green-500"
-            : statusKecil === "nonaktif"
+            : statusLower === "nonaktif"
                 ? "bg-red-500"
                 : "bg-gray-400";
 
@@ -22,33 +22,33 @@ export default function KartuDataSeluler({
         <div className="gis-mobile-card rounded-2xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 p-4 shadow-sm">
             <div className="flex items-start gap-3">
                 <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100 dark:bg-night-800 ring-1 ring-gray-200 dark:ring-night-700">
-                    {sumberGambar ? (
+                    {imageSrc ? (
                         <img
-                            src={sumberGambar}
-                            alt={teksAltGambar}
+                            src={imageSrc}
+                            alt={imageAlt}
                             className="h-full w-full object-cover"
                             loading="lazy"
                             decoding="async"
                         />
                     ) : (
                         <span className="px-1 text-center text-[10px] text-gray-400 dark:text-night-500">
-                            {labelCadangan}
+                            {fallbackLabel}
                         </span>
                     )}
                 </div>
 
                 <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold capitalize text-gray-800 dark:text-night-200">
-                        {judul || "Belum ada data"}
+                        {title || "Belum ada data"}
                     </p>
-                    {subjudul && (
+                    {subtitle && (
                         <p className="mt-0.5 truncate text-xs capitalize text-gray-500 dark:text-night-400">
-                            {subjudul}
+                            {subtitle}
                         </p>
                     )}
                     {status ? (
                         <span
-                            className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[10px] font-medium capitalize text-white shadow-sm ring-1 ring-white/20 ${warnaStatus}`}
+                            className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[10px] font-medium capitalize text-white shadow-sm ring-1 ring-white/20 ${statusColor}`}
                         >
                             {status}
                         </span>
@@ -56,9 +56,9 @@ export default function KartuDataSeluler({
                 </div>
             </div>
 
-            {rincian.length > 0 && (
+            {meta.length > 0 && (
                 <div className="mt-3 grid grid-cols-2 gap-2 border-t border-gray-100 dark:border-night-700 pt-3 text-xs">
-                    {rincian.map((m, i) => (
+                    {meta.map((m, i) => (
                         <div key={i} className="min-w-0">
                             <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400 dark:text-night-500">
                                 {m.label}
@@ -71,9 +71,9 @@ export default function KartuDataSeluler({
                 </div>
             )}
 
-            {aksi && (
+            {actions && (
                 <div className="mt-3 flex items-center gap-2 border-t border-gray-100 dark:border-night-700 pt-3">
-                    {aksi}
+                    {actions}
                 </div>
             )}
         </div>

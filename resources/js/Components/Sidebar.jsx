@@ -2,17 +2,17 @@ import { memo, useMemo } from "react";
 import { IoIosLogOut, IoIosSettings } from "react-icons/io";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
-import { butirMenu, apakahJalurAktif, apakahJalurPengaturan, KONFIRMASI_KELUAR } from "./butirMenu";
+import { menuItems, isActivePath, isPengaturanPath, LOGOUT_CONFIRM } from "./navItems";
 import { useResolveHref } from "../hooks/useBase";
 
-const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
+const Sidebar = memo(function Sidebar({ isOpen, onToggle }) {
     const { url } = usePage();
-    const jalurSaatIni = useMemo(() => url.split('?')[0], [url]);
+    const currentPath = useMemo(() => url.split('?')[0], [url]);
     const resolveHref = useResolveHref();
 
-    const konfirmasiKeluar = (kejadian) => {
-        if (!confirm(KONFIRMASI_KELUAR)) {
-            kejadian.preventDefault();
+    const confirmLogout = (e) => {
+        if (!confirm(LOGOUT_CONFIRM)) {
+            e.preventDefault();
         }
     };
 
@@ -23,7 +23,7 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
                 fixed h-screen top-15 left-0 z-40
                 bg-slate-100 dark:bg-night-900 dark:border-r dark:border-night-700
                 transition-all duration-300
-                ${apakahBuka ? "w-64" : "w-20"}
+                ${isOpen ? "w-64" : "w-20"}
             `}
         >
 
@@ -35,29 +35,29 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
 
                 <div className="contents">
 
-                    {butirMenu.map((item) => {
-                        const apakahAktif = apakahJalurAktif(jalurSaatIni, item.jalurAktif);
+                    {menuItems.map((item) => {
+                        const isActive = isActivePath(currentPath, item.activePaths);
 
                         return (
                             <div
-                                key={item.tautan}
+                                key={item.href}
                                 className={`
                                 group relative flex items-center gap-3
                                 rounded-xl px-3 py-3
                                 text-sm font-medium
                                 cursor-pointer
                                 transition-all duration-200
-                                ${apakahAktif
+                                ${isActive
                                         ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
                                         : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:text-night-300 dark:hover:bg-night-800 dark:hover:text-white"
                                     }
-                                ${!apakahBuka ? "justify-center" : ""}
+                                ${!isOpen ? "justify-center" : ""}
                             `}
                             >
 
                                 {/* Penanda */}
 
-                                {apakahAktif && (
+                                {isActive && (
                                     <span
                                         className="
                                         absolute left-0
@@ -78,9 +78,9 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
                                     {item.icon}
                                 </span>
 
-                                {apakahBuka && (
+                                {isOpen && (
                                     <a
-                                        href={resolveHref(item.tautan)}
+                                        href={resolveHref(item.href)}
                                         className="flex-1 whitespace-nowrap"
                                     >
                                         {item.label}
@@ -94,13 +94,13 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
 
                     <div className="relative overflow-visible py-2">
                         <hr className="border-0 border-t-2 border-[#AB3C3C]/50 rounded-full dark:border-night-700" />
-                        {saatAlih && (
+                        {onToggle && (
                             <button
                                 type="button"
-                                onClick={saatAlih}
-                                aria-label={apakahBuka ? "Tutup BilahSamping" : "Buka BilahSamping"}
-                                aria-expanded={apakahBuka}
-                                title={apakahBuka ? "Tutup BilahSamping" : "Buka BilahSamping"}
+                                onClick={onToggle}
+                                aria-label={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
+                                aria-expanded={isOpen}
+                                title={isOpen ? "Tutup Sidebar" : "Buka Sidebar"}
                                 className="
                                 absolute left-full top-1/2 z-20
                                 -ml-1 flex h-8 w-8 -translate-y-1/2
@@ -110,7 +110,7 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
                                 hover:scale-105 hover:bg-[#8f3030]
                             "
                             >
-                                {apakahBuka ? (
+                                {isOpen ? (
                                     <FiChevronLeft size={20} />
                                 ) : (
                                     <FiChevronRight size={20} />
@@ -134,14 +134,14 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
         text-sm font-medium
         cursor-pointer
         transition-all duration-200
-        ${apakahJalurPengaturan(jalurSaatIni)
+        ${isPengaturanPath(currentPath)
                                 ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
                                 : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:text-night-300 dark:hover:bg-night-800 dark:hover:text-white"
                             }
-        ${!apakahBuka ? "justify-center" : ""}
+        ${!isOpen ? "justify-center" : ""}
     `}
                     >
-                        {apakahJalurPengaturan(jalurSaatIni) && (
+                        {isPengaturanPath(currentPath) && (
                             <span
                                 className="
                 absolute left-0
@@ -161,7 +161,7 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
         "
                         />
 
-                        {apakahBuka && (
+                        {isOpen && (
                             <a
                                 href={resolveHref("pengaturan")}
                                 className="flex-1 whitespace-nowrap"
@@ -195,11 +195,11 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
                         "
                         />
 
-                        {apakahBuka && (
+                        {isOpen && (
                             <a
                                 href={resolveHref("logout")}
                                 className="flex-1"
-                                onClick={konfirmasiKeluar}
+                                onClick={confirmLogout}
                             >
                                 Keluar
                             </a>
@@ -280,4 +280,4 @@ const BilahSamping = memo(function BilahSamping({ apakahBuka, saatAlih }) {
     );
 });
 
-export default BilahSamping;
+export default Sidebar;

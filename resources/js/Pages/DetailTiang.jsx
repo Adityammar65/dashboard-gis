@@ -1,23 +1,23 @@
-import TataLetakUtama from "../Layouts/TataLetakUtama";
-import TampilanPeta from "../Components/TampilanPeta";
-import TombolGoogleMaps from "../Components/TombolGoogleMaps";
-import TombolHapusData from "../Components/TombolHapusData";
+import MainLayout from "../Layouts/MainLayout";
+import MapView from "../Components/MapView";
+import GoogleMapsButton from "../Components/GoogleMapsButton";
+import DeleteDataButton from "../Components/DeleteDataButton";
 import { FaArrowLeft, FaPen } from "react-icons/fa";
 import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import useBase from "../hooks/useBase";
 
 export default function DetailTiang({ tiang }) {
-    const { pengaturan } = usePage().props;
+    const { settings } = usePage().props;
 
     const base = useBase();
 
-    const ambilUrlFoto = (foto) => {
+    const getFotoUrl = (foto) => {
         if (!foto) return null;
         return `${base}/public/storage/${foto}`.replace(/\/+/g, '/');
     };
 
-    const daftarGambar = [
+    const images = [
         tiang?.foto_tiang_1,
         tiang?.foto_tiang_2,
         tiang?.foto_tiang_3,
@@ -25,17 +25,17 @@ export default function DetailTiang({ tiang }) {
         tiang?.foto_tiang_5,
     ].filter(Boolean);
 
-    const [gambarAktif, aturGambarAktif] = useState(
-        daftarGambar.length > 0 ? ambilUrlFoto(daftarGambar[0]) : null
+    const [activeImage, setActiveImage] = useState(
+        images.length > 0 ? getFotoUrl(images[0]) : null
     );
 
     return (
 
-        <TataLetakUtama>
+        <MainLayout>
 
             <div className="space-y-4">
 
-                {/* Tajuk */}
+                {/* Header */}
 
                 <div className="flex items-stretch justify-between gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
 
@@ -50,7 +50,7 @@ export default function DetailTiang({ tiang }) {
                         </span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {tiang?.wilayah ?? pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {tiang?.wilayah ?? settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
 
                     </div>
@@ -87,9 +87,9 @@ export default function DetailTiang({ tiang }) {
                             </p>
 
                             <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-night-700 shadow-sm">
-                                {gambarAktif ? (
+                                {activeImage ? (
                                     <img
-                                        src={gambarAktif}
+                                        src={activeImage}
                                         alt={`Foto ${tiang?.kode_tiang ?? "Tiang"}`}
                                         className="h-[330px] w-full object-cover transition duration-300 hover:scale-[1.01] max-md:h-[220px]"
                                         loading="lazy"
@@ -108,27 +108,27 @@ export default function DetailTiang({ tiang }) {
                         {/* Miniatur */}
 
                         <div className="mt-3 grid grid-cols-5 gap-3 max-md:grid-cols-3 max-md:gap-2">
-                            {daftarGambar.length > 0 ? (
-                                daftarGambar.map((gambar, indeks) => {
-                                    const urlGambar = ambilUrlFoto(gambar);
+                            {images.length > 0 ? (
+                                images.map((image, index) => {
+                                    const imageUrl = getFotoUrl(image);
 
                                     return (
-                                        <div key={gambar}>
+                                        <div key={image}>
                                             <p className="mb-1.5 text-center text-[10px] font-semibold tracking-wide text-gray-600 dark:text-night-300">
-                                                Foto {indeks + 1}
+                                                Foto {index + 1}
                                             </p>
 
                                             <button
                                                 type="button"
-                                                onClick={() => aturGambarAktif(urlGambar)}
-                                                className={`w-full overflow-hidden rounded-xl border-2 transition shadow-sm ${gambarAktif === urlGambar
+                                                onClick={() => setActiveImage(imageUrl)}
+                                                className={`w-full overflow-hidden rounded-xl border-2 transition shadow-sm ${activeImage === imageUrl
                                                     ? "border-blue-500 ring-2 ring-blue-100"
                                                     : "border-transparent hover:border-gray-200 hover:shadow"
                                                     }`}
                                             >
                                                 <img
-                                                    src={urlGambar}
-                                                    alt={`Foto ${indeks + 1}`}
+                                                    src={imageUrl}
+                                                    alt={`Foto ${index + 1}`}
                                                     className="h-24 w-full object-cover max-md:h-20"
                                                     loading="lazy"
                                                     decoding="async"
@@ -193,11 +193,11 @@ export default function DetailTiang({ tiang }) {
                                 </p>
 
                                 <p className="mt-1 text-gray-600 dark:text-night-300">
-                                    Lintang: {tiang?.latitude || "-"}
+                                    Latitude: {tiang?.latitude || "-"}
                                 </p>
 
                                 <p className="text-gray-600 dark:text-night-300">
-                                    Bujur: {tiang?.longitude || "-"}
+                                    Longitude: {tiang?.longitude || "-"}
                                 </p>
 
                             </div>
@@ -304,13 +304,13 @@ export default function DetailTiang({ tiang }) {
 
                             </button>
 
-                            <TombolGoogleMaps
-                                lintang={tiang?.latitude}
-                                bujur={tiang?.longitude}
+                            <GoogleMapsButton
+                                latitude={tiang?.latitude}
+                                longitude={tiang?.longitude}
                             />
 
-                            <TombolHapusData
-                                jenis="tiang"
+                            <DeleteDataButton
+                                type="tiang"
                                 id={tiang?.id}
                                 kode={tiang?.kode_tiang}
                                 base={base}
@@ -322,10 +322,10 @@ export default function DetailTiang({ tiang }) {
 
                         <div className="relative mt-4 h-[220px] overflow-hidden rounded-xl bg-gray-100 dark:bg-night-800 border border-gray-200 dark:border-night-700 shadow-inner">
 
-                            <TampilanPeta
-                                lintang={tiang?.latitude}
-                                bujur={tiang?.longitude}
-                                jenis="tiang"
+                            <MapView
+                                latitude={tiang?.latitude}
+                                longitude={tiang?.longitude}
+                                type="tiang"
                                 status={tiang?.status}
                             />
 
@@ -337,6 +337,6 @@ export default function DetailTiang({ tiang }) {
 
             </div>
 
-        </TataLetakUtama>
+        </MainLayout>
     );
 }

@@ -45,7 +45,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
 
-            'pengaturan' => $settings,
+            'settings' => $settings,
 
             'auth' => [
                 'username' => fn() => $request->session()->get('username'),
@@ -61,7 +61,7 @@ class HandleInertiaRequests extends Middleware
                 'message' => fn() => $request->session()->get('message'),
             ],
 
-            'notifikasiBelumDibaca' => fn() => \App\Models\NotifikasiModel::where('status', 'belum_dibaca')->count(),
+            'unreadNotifikasi' => fn() => \App\Models\NotifikasiModel::where('status', 'belum_dibaca')->count(),
         ];
     }
 }

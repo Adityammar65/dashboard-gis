@@ -16,7 +16,7 @@ class FormulirController extends Controller
     public function TambahTiang()
     {
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
-        return Inertia::render('Formulir/FormulirTambahTiang', [
+        return Inertia::render('Forms/FormTambahTiang', [
             'wilayah' => $wilayah
         ]);
     }
@@ -26,7 +26,7 @@ class FormulirController extends Controller
     public function TambahONT()
     {
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
-        return Inertia::render('Formulir/FormulirTambahONT', [
+        return Inertia::render('Forms/FormTambahONT', [
             'wilayah' => $wilayah
         ]);
     }
@@ -37,7 +37,7 @@ class FormulirController extends Controller
     {
         $tiang = \App\Models\TiangModel::findOrFail($id);
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
-        return Inertia::render('Formulir/FormulirUbahTiang', [
+        return Inertia::render('Forms/FormEditTiang', [
             'tiang' => $tiang,
             'wilayah' => $wilayah,
         ]);
@@ -49,7 +49,7 @@ class FormulirController extends Controller
     {
         $ont = ONTModel::findOrFail($id);
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
-        return Inertia::render('Formulir/FormulirUbahONT', [
+        return Inertia::render('Forms/FormEditONT', [
             'ont' => $ont,
             'wilayah' => $wilayah,
         ]);
@@ -59,6 +59,6 @@ class FormulirController extends Controller
 
     public function TambahWilayah()
     {
-        return Inertia::render('Formulir/FormulirTambahWilayah');
+        return Inertia::render('Forms/FormTambahWilayah');
     }
 }

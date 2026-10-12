@@ -3,12 +3,12 @@ import { FaMoon, FaSun } from "react-icons/fa";
 import useTheme from "../hooks/useTheme";
 
 /**
- * Sakelar theme Terang/Gelap.
+ * Sakelar tema Terang/Gelap.
  * variant="switch" -> kontrol segmented untuk halaman Pengaturan.
  * variant="button" -> tombol ikon ringkas (legacy header, dipertahankan untuk kompatibilitas).
  * variant="login" -> ikon kecil untuk halaman login ( di atas kartu terang maupun gelap ).
  */
-const PengalihTema = memo(function PengalihTema({ variant = "switch", className = "" }) {
+const ThemeToggle = memo(function ThemeToggle({ variant = "switch", className = "" }) {
     const { theme, setTheme, toggle, isDark } = useTheme();
 
     if (variant === "login") {
@@ -84,4 +84,4 @@ const PengalihTema = memo(function PengalihTema({ variant = "switch", className 
     );
 });
 
-export default PengalihTema;
+export default ThemeToggle;

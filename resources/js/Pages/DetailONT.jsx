@@ -1,22 +1,22 @@
-import TataLetakUtama from "../Layouts/TataLetakUtama";
-import TampilanPeta from "../Components/TampilanPeta";
-import TombolGoogleMaps from "../Components/TombolGoogleMaps";
-import TombolHapusData from "../Components/TombolHapusData";
+import MainLayout from "../Layouts/MainLayout";
+import MapView from "../Components/MapView";
+import GoogleMapsButton from "../Components/GoogleMapsButton";
+import DeleteDataButton from "../Components/DeleteDataButton";
 import { FaArrowLeft, FaPen } from "react-icons/fa";
 import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import useBase from "../hooks/useBase";
 
 export default function DetailONT({ ont }) {
-    const { pengaturan } = usePage().props;
+    const { settings } = usePage().props;
     const base = useBase();
 
-    const ambilUrlFoto = (foto) => {
+    const getFotoUrl = (foto) => {
         if (!foto) return null;
         return `${base}/public/storage/${foto}`.replace(/\/+/g, '/');
     };
 
-    const daftarGambar = [
+    const images = [
         ont?.foto_ont_1,
         ont?.foto_ont_2,
         ont?.foto_ont_3,
@@ -24,15 +24,15 @@ export default function DetailONT({ ont }) {
         ont?.foto_ont_5,
     ].filter(Boolean);
 
-    const [gambarAktif, aturGambarAktif] = useState(
-        daftarGambar.length > 0 ? ambilUrlFoto(daftarGambar[0]) : null
+    const [activeImage, setActiveImage] = useState(
+        images.length > 0 ? getFotoUrl(images[0]) : null
     );
 
     return (
-        <TataLetakUtama>
+        <MainLayout>
             <div className="space-y-4">
 
-                {/* Tajuk */}
+                {/* Header */}
 
                 <div className="flex items-stretch justify-between gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
                     <div className="flex-1 rounded-2xl bg-gradient-to-br text-white from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
@@ -45,7 +45,7 @@ export default function DetailONT({ ont }) {
                         </span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {ont?.wilayah ?? pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {ont?.wilayah ?? settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 
@@ -71,9 +71,9 @@ export default function DetailONT({ ont }) {
                                 Foto Utama
                             </p>
                             <div className="overflow-hidden rounded-xl border border-gray-100 dark:border-night-700 shadow-sm">
-                                {gambarAktif ? (
+                                {activeImage ? (
                                     <img
-                                        src={gambarAktif}
+                                        src={activeImage}
                                         alt={`Foto ${ont?.kode_ont ?? "ONT"}`}
                                         className="h-[330px] w-full object-cover transition duration-300 hover:scale-[1.01] max-md:h-[220px]"
                                         loading="lazy"
@@ -92,25 +92,25 @@ export default function DetailONT({ ont }) {
                         {/* Miniatur */}
 
                         <div className="mt-3 grid grid-cols-5 gap-3 max-md:grid-cols-3 max-md:gap-2">
-                            {daftarGambar.length > 0 ? (
-                                daftarGambar.map((gambar, indeks) => {
-                                    const urlGambar = ambilUrlFoto(gambar);
+                            {images.length > 0 ? (
+                                images.map((image, index) => {
+                                    const imageUrl = getFotoUrl(image);
                                     return (
-                                        <div key={gambar}>
+                                        <div key={image}>
                                             <p className="mb-1.5 text-center text-[10px] font-semibold tracking-wide text-gray-600 dark:text-night-300">
-                                                Foto {indeks + 1}
+                                                Foto {index + 1}
                                             </p>
                                             <button
                                                 type="button"
-                                                onClick={() => aturGambarAktif(urlGambar)}
-                                                className={`w-full overflow-hidden rounded-xl border-2 transition shadow-sm ${gambarAktif === urlGambar
+                                                onClick={() => setActiveImage(imageUrl)}
+                                                className={`w-full overflow-hidden rounded-xl border-2 transition shadow-sm ${activeImage === imageUrl
                                                     ? "border-sky-500 ring-2 ring-sky-100"
                                                     : "border-transparent hover:border-gray-200 hover:shadow"
                                                     }`}
                                             >
                                                 <img
-                                                    src={urlGambar}
-                                                    alt={`Foto ${indeks + 1}`}
+                                                    src={imageUrl}
+                                                    alt={`Foto ${index + 1}`}
                                                     className="h-24 w-full object-cover max-md:h-20"
                                                     loading="lazy"
                                                     decoding="async"
@@ -160,10 +160,10 @@ export default function DetailONT({ ont }) {
                                     Koordinat
                                 </p>
                                 <p className="mt-1 text-gray-600 dark:text-night-300">
-                                    Lintang: {ont?.latitude || "-"}
+                                    Latitude: {ont?.latitude || "-"}
                                 </p>
                                 <p className="text-gray-600 dark:text-night-300">
-                                    Bujur: {ont?.longitude || "-"}
+                                    Longitude: {ont?.longitude || "-"}
                                 </p>
                             </div>
 
@@ -238,13 +238,13 @@ export default function DetailONT({ ont }) {
                                 Edit Data
                             </button>
 
-                            <TombolGoogleMaps
-                                lintang={ont?.latitude}
-                                bujur={ont?.longitude}
+                            <GoogleMapsButton
+                                latitude={ont?.latitude}
+                                longitude={ont?.longitude}
                             />
 
-                            <TombolHapusData
-                                jenis="ont"
+                            <DeleteDataButton
+                                type="ont"
                                 id={ont?.id}
                                 kode={ont?.kode_ont}
                                 base={base}
@@ -255,10 +255,10 @@ export default function DetailONT({ ont }) {
 
                         <div className="relative mt-4 h-[220px] overflow-hidden rounded-xl bg-gray-100 dark:bg-night-800 border border-gray-200 dark:border-night-700 shadow-inner">
 
-                            <TampilanPeta
-                                lintang={ont?.latitude}
-                                bujur={ont?.longitude}
-                                jenis="ont"
+                            <MapView
+                                latitude={ont?.latitude}
+                                longitude={ont?.longitude}
+                                type="ont"
                                 status={ont?.status}
                             />
 
@@ -266,6 +266,6 @@ export default function DetailONT({ ont }) {
                     </div>
                 </div>
             </div>
-        </TataLetakUtama>
+        </MainLayout>
     );
 }

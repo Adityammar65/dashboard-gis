@@ -103,11 +103,11 @@ class HalamanController extends Controller
             ->map(fn($r) => array_merge($r->toArray(), ['type' => 'ont']));
         $recentAssets = $recentTiang->concat($recentOnt)->sortByDesc('updated_at')->take(5)->values();
 
-        return Inertia::render('Beranda', [
+        return Inertia::render('Home', [
             'tiang' => $tiang,
             'ont' => $ont,
-            'statistik' => $stats,
-            'asetTerbaru' => $recentAssets,
+            'stats' => $stats,
+            'recentAssets' => $recentAssets,
         ]);
     }
 
@@ -164,7 +164,7 @@ class HalamanController extends Controller
         return Inertia::render('DataTiang', [
             'dataTiang' => $dataTiang,
             'wilayah' => $wilayah,
-            'penyaring' => [
+            'filter' => [
                 'wilayah' => $request->wilayah ?? '',
                 'kecamatan' => $request->kecamatan ?? '',
                 'kelurahan' => $request->kelurahan ?? '',
@@ -227,7 +227,7 @@ class HalamanController extends Controller
         return Inertia::render('DataONT', [
             'dataONT' => $dataONT,
             'wilayah' => $wilayah,
-            'penyaring' => [
+            'filter' => [
                 'wilayah' => $request->wilayah ?? '',
                 'kecamatan' => $request->kecamatan ?? '',
                 'kelurahan' => $request->kelurahan ?? '',
@@ -484,7 +484,7 @@ class HalamanController extends Controller
         return Inertia::render('Wilayah', [
             'dataWilayah' => $paginator,
             'wilayah' => $wilayahList,
-            'penyaring' => [
+            'filter' => [
                 'wilayah' => $filterWilayah,
                 'aset' => $filterAset,
             ],
@@ -557,7 +557,7 @@ class HalamanController extends Controller
             }
         }
 
-        return Inertia::render('Masuk');
+        return Inertia::render('Login');
     }
 
     // Lupa Password (publik)
@@ -612,7 +612,7 @@ class HalamanController extends Controller
         }
         return Inertia::render('DetailNotifikasi', [
             'notifikasi' => $notifikasi,
-            'permintaanSetelUlang' => $resetRequest,
+            'resetRequest' => $resetRequest,
         ]);
     }
 
@@ -645,11 +645,11 @@ class HalamanController extends Controller
 
         return Inertia::render('Pengaturan', [
             'wilayah' => $wilayah,
-            'pengaturan' => $settings,
-            'permintaanSetelUlang' => PasswordResetRequest::where('status', 'pending')
+            'settings' => $settings,
+            'resetRequests' => PasswordResetRequest::where('status', 'pending')
                 ->orderByDesc('id')
                 ->get(['id', 'username', 'request_type', 'requested_by', 'new_username', 'created_at']),
-            'riwayatSetelUlang' => PasswordResetRequest::whereIn('status', ['approved', 'rejected'])
+            'resetHistory' => PasswordResetRequest::whereIn('status', ['approved', 'rejected'])
                 ->orderByDesc('id')
                 ->limit(5)
                 ->get(['id', 'username', 'request_type', 'requested_by', 'new_username', 'status', 'handled_by', 'handled_at']),

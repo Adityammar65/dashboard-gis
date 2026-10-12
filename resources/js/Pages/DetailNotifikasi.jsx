@@ -1,46 +1,46 @@
-import TataLetakUtama from "../Layouts/TataLetakUtama";
+import MainLayout from "../Layouts/MainLayout";
 import { FaArrowLeft, FaWifi, FaMap, FaUser, FaKey, FaCheck, FaTimes } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import { useMemo } from "react";
 import { router, usePage } from "@inertiajs/react";
 import useBase from "../hooks/useBase";
 
-const ambilIkonBerdasarkanKategori = (kategori) => {
+const getIconByKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
     if (k === "ont") return FaWifi;
     if (k === "wilayah") return FaMap;
     return LuUtilityPole;
 };
 
-const ambilVisualNotifikasi = (item) => {
+const getNotifikasiVisual = (item) => {
     const jenis = item?.jenis || "";
     const kategori = (item?.kategori || "").toLowerCase();
 
     if (jenis.includes("Ditambahkan")) {
         return {
-            Ikon: ambilIkonBerdasarkanKategori(kategori),
-            lingkaran: "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300",
+            Icon: getIconByKategori(kategori),
+            circle: "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300",
         };
     }
     if (jenis.includes("Diperbarui")) {
         return {
-            Ikon: ambilIkonBerdasarkanKategori(kategori),
-            lingkaran: "bg-yellow-100 dark:bg-yellow-500/15 text-yellow-600 dark:text-yellow-300",
+            Icon: getIconByKategori(kategori),
+            circle: "bg-yellow-100 dark:bg-yellow-500/15 text-yellow-600 dark:text-yellow-300",
         };
     }
     if (jenis.includes("Dihapus")) {
         return {
-            Ikon: ambilIkonBerdasarkanKategori(kategori),
-            lingkaran: "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300",
+            Icon: getIconByKategori(kategori),
+            circle: "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300",
         };
     }
     if (jenis.includes("Reset")) {
         return {
-            Ikon: FaKey,
-            lingkaran: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
+            Icon: FaKey,
+            circle: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
         };
     }
-    return { Ikon: null, lingkaran: "" };
+    return { Icon: null, circle: "" };
 };
 
 const parsePesan = (pesan = "") => {
@@ -78,10 +78,10 @@ const parsePesan = (pesan = "") => {
     return { summary, changes, details };
 };
 
-export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = null }) {
-    const { pengaturan, auth } = usePage().props;
+export default function DetailNotifikasi({ notifikasi, resetRequest = null }) {
+    const { settings, auth } = usePage().props;
     const item = useMemo(() => (Array.isArray(notifikasi) ? notifikasi[0] : notifikasi) || null, [notifikasi]);
-    const { Ikon, lingkaran } = ambilVisualNotifikasi(item || {});
+    const { Icon, circle } = getNotifikasiVisual(item || {});
     const { summary, changes, details } = useMemo(() => parsePesan(item?.pesan), [item]);
     const belumDibaca = item?.status === "belum_dibaca";
     const actor = item?.updated_by || item?.username || item?.actor || null;
@@ -98,11 +98,11 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
             ? "text-rose-600 dark:text-rose-300"
             : "text-amber-600 dark:text-amber-300";
     const base = useBase();
-    const tanganiKembali = () => {
+    const handleBack = () => {
         router.get(`${base}/notifikasi`.replace(/\/+/g, '/'));
     };
 
-    const requestType = permintaanSetelUlang?.request_type ?? "password_reset";
+    const requestType = resetRequest?.request_type ?? "password_reset";
     const requestLabel =
         requestType === "username_change"
             ? "Ubah Username"
@@ -110,31 +110,31 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
               ? "Ubah Kata Sandi"
               : "Reset Kata Sandi";
     const requestDetail =
-        requestType === "username_change" && permintaanSetelUlang?.new_username
-            ? `${permintaanSetelUlang.username} → ${permintaanSetelUlang.new_username}`
-            : `akun "${permintaanSetelUlang?.username}"`;
+        requestType === "username_change" && resetRequest?.new_username
+            ? `${resetRequest.username} → ${resetRequest.new_username}`
+            : `akun "${resetRequest?.username}"`;
     const currentUsername = auth?.username ?? null;
-    const apakahPermintaanSendiri = permintaanSetelUlang
-        ? permintaanSetelUlang.username === currentUsername ||
-          (permintaanSetelUlang.requested_by && permintaanSetelUlang.requested_by === currentUsername)
+    const isOwnRequest = resetRequest
+        ? resetRequest.username === currentUsername ||
+          (resetRequest.requested_by && resetRequest.requested_by === currentUsername)
         : false;
 
-    const tanganiSetujuiReset = () => {
-        if (!permintaanSetelUlang) return;
+    const handleApproveReset = () => {
+        if (!resetRequest) return;
         if (!window.confirm(`Setujui ${requestLabel} untuk ${requestDetail}?`)) {
             return;
         }
 
-        router.post(`${base}/reset-requests/${permintaanSetelUlang.id}/approve`.replace(/\/+/g, '/'));
+        router.post(`${base}/reset-requests/${resetRequest.id}/approve`.replace(/\/+/g, '/'));
     };
 
-    const tanganiTolakReset = () => {
-        if (!permintaanSetelUlang) return;
+    const handleRejectReset = () => {
+        if (!resetRequest) return;
         if (!window.confirm(`Tolak ${requestLabel} untuk ${requestDetail}?`)) {
             return;
         }
 
-        router.post(`${base}/reset-requests/${permintaanSetelUlang.id}/reject`.replace(/\/+/g, '/'));
+        router.post(`${base}/reset-requests/${resetRequest.id}/reject`.replace(/\/+/g, '/'));
     };
 
     const formatWaktu = (value) => {
@@ -150,10 +150,10 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
     };
 
     return (
-        <TataLetakUtama>
+        <MainLayout>
             <div className="space-y-4">
 
-                {/* Tajuk */}
+                {/* Header */}
 
                 <div className="flex items-stretch justify-between gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
                     <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 text-white shadow-md border border-white/10 max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
@@ -166,13 +166,13 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
                         </span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 
                     <button
                         type="button"
-                        onClick={tanganiKembali}
+                        onClick={handleBack}
                         title="Kembali"
                         aria-label="Kembali"
                         className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-red-600 hover:to-red-700 active:scale-[0.98] max-md:rounded-lg max-md:px-4 max-md:py-4"
@@ -195,13 +195,13 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
 
                         <div className="flex items-center gap-4 rounded-2xl bg-white dark:bg-night-900 px-5 py-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:flex-col max-md:items-start max-md:gap-3 max-md:px-4">
                             <div
-                                className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${lingkaran || (belumDibaca
+                                className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${circle || (belumDibaca
                                     ? "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300"
                                     : "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300")
                                     }`}
                             >
-                                {Ikon ? (
-                                    <Ikon size={20} />
+                                {Icon ? (
+                                    <Icon size={20} />
                                 ) : belumDibaca ? (
                                     "⚠"
                                 ) : (
@@ -252,7 +252,7 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
 
                         {/* Persetujuan Reset Kata Sandi */}
 
-                        {permintaanSetelUlang && (
+                        {resetRequest && (
                             <div className="rounded-2xl bg-white dark:bg-night-900 px-5 py-5 shadow-sm border border-gray-100 dark:border-night-700 max-md:px-4">
                                 <div className="mb-4 flex items-center gap-3">
                                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F8EAEA] text-[#AB3C3C] dark:bg-night-800 dark:text-night-200">
@@ -263,21 +263,21 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
                                             Persetujuan {requestLabel}
                                         </h3>
                                         <p className="text-xs text-gray-500 dark:text-night-400">
-                                            {requestType === "username_change" && permintaanSetelUlang.new_username ? (
-                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{permintaanSetelUlang.username} → {permintaanSetelUlang.new_username}</span> • diminta {formatWaktu(permintaanSetelUlang.created_at)}</>
+                                            {requestType === "username_change" && resetRequest.new_username ? (
+                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username} → {resetRequest.new_username}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
                                             ) : (
-                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{permintaanSetelUlang.username}</span> • diminta {formatWaktu(permintaanSetelUlang.created_at)}</>
+                                                <>Akun <span className="font-semibold text-gray-700 dark:text-night-200">{resetRequest.username}</span> • diminta {formatWaktu(resetRequest.created_at)}</>
                                             )}
-                                            {permintaanSetelUlang.requested_by ? ` oleh ${permintaanSetelUlang.requested_by}` : ""}
+                                            {resetRequest.requested_by ? ` oleh ${resetRequest.requested_by}` : ""}
                                         </p>
                                     </div>
-                                    <span className={`ml-auto shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold ${permintaanSetelUlang.status === "pending" ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300" : permintaanSetelUlang.status === "approved" ? "bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300" : "bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300"}`}>
-                                        {permintaanSetelUlang.status === "pending" ? "Menunggu" : permintaanSetelUlang.status === "approved" ? "Disetujui" : "Ditolak"}
+                                    <span className={`ml-auto shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold ${resetRequest.status === "pending" ? "bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300" : resetRequest.status === "approved" ? "bg-green-50 dark:bg-green-500/15 text-green-700 dark:text-green-300" : "bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-300"}`}>
+                                        {resetRequest.status === "pending" ? "Menunggu" : resetRequest.status === "approved" ? "Disetujui" : "Ditolak"}
                                     </span>
                                 </div>
 
-                                {permintaanSetelUlang.status === "pending" ? (
-                                    apakahPermintaanSendiri ? (
+                                {resetRequest.status === "pending" ? (
+                                    isOwnRequest ? (
                                         <p className="rounded-xl bg-amber-50 dark:bg-amber-500/10 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
                                             Permintaan sendiri — menunggu admin lain untuk menyetujui.
                                         </p>
@@ -285,7 +285,7 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
                                     <div className="flex items-center gap-2 max-md:flex-col max-md:items-stretch">
                                         <button
                                             type="button"
-                                            onClick={tanganiSetujuiReset}
+                                            onClick={handleApproveReset}
                                             className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-600 px-4 py-2.5 text-xs font-medium text-white shadow-sm transition hover:bg-green-700 active:scale-[0.98]"
                                         >
                                             <FaCheck size={12} />
@@ -293,7 +293,7 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={tanganiTolakReset}
+                                            onClick={handleRejectReset}
                                             className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-gray-200 dark:border-night-600 bg-white dark:bg-night-800 px-4 py-2.5 text-xs font-medium text-gray-600 dark:text-night-200 shadow-sm transition hover:bg-gray-50 dark:hover:bg-night-700 active:scale-[0.98]"
                                         >
                                             <FaTimes size={12} />
@@ -303,8 +303,8 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
                                     )
                                 ) : (
                                     <p className="text-xs text-gray-500 dark:text-night-400">
-                                        {permintaanSetelUlang.handled_by ? `Ditindaklanjuti oleh ${permintaanSetelUlang.handled_by}` : ""}
-                                        {permintaanSetelUlang.handled_at ? ` • ${formatWaktu(permintaanSetelUlang.handled_at)}` : ""}
+                                        {resetRequest.handled_by ? `Ditindaklanjuti oleh ${resetRequest.handled_by}` : ""}
+                                        {resetRequest.handled_at ? ` • ${formatWaktu(resetRequest.handled_at)}` : ""}
                                     </p>
                                 )}
                             </div>
@@ -390,6 +390,6 @@ export default function DetailNotifikasi({ notifikasi, permintaanSetelUlang = nu
                     </>
                 )}
             </div>
-        </TataLetakUtama>
+        </MainLayout>
     );
 }

@@ -1,9 +1,9 @@
-import TataLetakUtama from "../Layouts/TataLetakUtama";
-import KartuDataSeluler from "../Components/KartuDataSeluler";
+import MainLayout from "../Layouts/MainLayout";
+import MobileDataCard from "../Components/MobileDataCard";
 
 import { usePage, router } from "@inertiajs/react";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { AksiTabel, AksiKartu, TabelKosong, KartuKosong } from "../Components/AksiData";
+import { TableActions, CardActions, TableEmpty, CardEmpty } from "../Components/DataActions";
 
 import { FaPlus, FaFilter, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel, FaWifi } from "react-icons/fa";
 import useBase from "../hooks/useBase";
@@ -27,25 +27,25 @@ const ambilNamaBerkas = (contentDisposition, cadangan) => {
 export default function DataONT({
     dataONT = [],
     wilayah = [],
-    penyaring = {},
+    filter = {},
 }) {
-    const { pengaturan } = usePage().props;
+    const { settings } = usePage().props;
 
     const base = useBase();
-    const resolveHref = useCallback((tautan) => `${base}/${tautan}`.replace(/\/+/g, '/'), [base]);
+    const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, '/'), [base]);
 
-    const [saringWilayah, aturSaringWilayah] = useState(
-        penyaring.wilayah ?? ""
+    const [filterWilayah, setFilterWilayah] = useState(
+        filter.wilayah ?? ""
     );
 
-    const [saringStatus, aturSaringStatus] = useState(
-        penyaring.status ?? ""
+    const [filterStatus, setFilterStatus] = useState(
+        filter.status ?? ""
     );
 
-    const [saringKecamatan, aturSaringKecamatan] = useState(penyaring.kecamatan ?? "");
-    const [saringKelurahan, aturSaringKelurahan] = useState(penyaring.kelurahan ?? "");
+    const [filterKecamatan, setFilterKecamatan] = useState(filter.kecamatan ?? "");
+    const [filterKelurahan, setFilterKelurahan] = useState(filter.kelurahan ?? "");
 
-    const [eksporBuka, aturEksporBuka] = useState(false);
+    const [openExport, setOpenExport] = useState(false);
     const [sedangExport, setSedangExport] = useState("");
     const [notifExport, setNotifExport] = useState(null);
     const [konfirmasiEkspor, setKonfirmasiEkspor] = useState(null);
@@ -64,40 +64,40 @@ export default function DataONT({
     const ONTNonaktif = useMemo(() => listONT.filter((ont) => ont.status?.toLowerCase() === "nonaktif").length, [listONT]);
 
     const selectedWilayahLabel = useMemo(() => {
-        if (!saringWilayah) return "Semua Wilayah";
-        const found = wilayah.find((item) => String(item.id) === String(saringWilayah));
+        if (!filterWilayah) return "Semua Wilayah";
+        const found = wilayah.find((item) => String(item.id) === String(filterWilayah));
         return found ? found.nama_wilayah : "Semua Wilayah";
-    }, [saringWilayah, wilayah]);
+    }, [filterWilayah, wilayah]);
 
     useEffect(() => {
-        if ((penyaring.wilayah ?? "") !== saringWilayah) {
-            aturSaringWilayah(penyaring.wilayah ?? "");
+        if ((filter.wilayah ?? "") !== filterWilayah) {
+            setFilterWilayah(filter.wilayah ?? "");
         }
-    }, [penyaring.wilayah]);
+    }, [filter.wilayah]);
 
     useEffect(() => {
-        if ((penyaring.status ?? "") !== saringStatus) {
-            aturSaringStatus(penyaring.status ?? "");
+        if ((filter.status ?? "") !== filterStatus) {
+            setFilterStatus(filter.status ?? "");
         }
-    }, [penyaring.status]);
+    }, [filter.status]);
 
     useEffect(() => {
-        if ((penyaring.kecamatan ?? "") !== saringKecamatan) {
-            aturSaringKecamatan(penyaring.kecamatan ?? "");
+        if ((filter.kecamatan ?? "") !== filterKecamatan) {
+            setFilterKecamatan(filter.kecamatan ?? "");
         }
-    }, [penyaring.kecamatan]);
+    }, [filter.kecamatan]);
 
     useEffect(() => {
-        if ((penyaring.kelurahan ?? "") !== saringKelurahan) {
-            aturSaringKelurahan(penyaring.kelurahan ?? "");
+        if ((filter.kelurahan ?? "") !== filterKelurahan) {
+            setFilterKelurahan(filter.kelurahan ?? "");
         }
-    }, [penyaring.kelurahan]);
+    }, [filter.kelurahan]);
 
     // Kecamatan
 
     useEffect(() => {
-        if (!saringWilayah) { setKecamatanOptions([]); return; }
-        const wil = wilayah.find((w) => String(w.id) === String(saringWilayah));
+        if (!filterWilayah) { setKecamatanOptions([]); return; }
+        const wil = wilayah.find((w) => String(w.id) === String(filterWilayah));
         const kode = wil?.kode_wilayah || "";
         if (!kode) { setKecamatanOptions([]); return; }
         let cancelled = false;
@@ -113,12 +113,12 @@ export default function DataONT({
             .catch(() => { if (!cancelled) setKecamatanOptions([]); })
             .finally(() => { if (!cancelled) setKecamatanLoading(false); });
         return () => { cancelled = true; };
-    }, [saringWilayah, wilayah]);
+    }, [filterWilayah, wilayah]);
 
     useEffect(() => {
-        if (!saringKecamatan) { setKelurahanOptions([]); return; }
-        const opsi = kecamatanOptions.find((o) => o.name.toLowerCase() === saringKecamatan.toLowerCase().trim());
-        const code = opsi?.code;
+        if (!filterKecamatan) { setKelurahanOptions([]); return; }
+        const opt = kecamatanOptions.find((o) => o.name.toLowerCase() === filterKecamatan.toLowerCase().trim());
+        const code = opt?.code;
         if (!code) { setKelurahanOptions([]); return; }
         let cancelled = false;
         setKelurahanLoading(true);
@@ -133,34 +133,34 @@ export default function DataONT({
             .catch(() => { if (!cancelled) setKelurahanOptions([]); })
             .finally(() => { if (!cancelled) setKelurahanLoading(false); });
         return () => { cancelled = true; };
-    }, [saringKecamatan, kecamatanOptions]);
+    }, [filterKecamatan, kecamatanOptions]);
 
     const filteredKecamatan = useMemo(() => {
-        const q = (saringKecamatan || "").trim().toLowerCase();
+        const q = (filterKecamatan || "").trim().toLowerCase();
         if (q.length < 1 || kecamatanOptions.length === 0) return [];
         if (kecamatanOptions.some((o) => o.name.toLowerCase() === q)) return [];
         return kecamatanOptions.filter((o) => o.name.toLowerCase().includes(q)).slice(0, 6);
-    }, [saringKecamatan, kecamatanOptions]);
+    }, [filterKecamatan, kecamatanOptions]);
 
     const filteredKelurahan = useMemo(() => {
-        const q = (saringKelurahan || "").trim().toLowerCase();
+        const q = (filterKelurahan || "").trim().toLowerCase();
         if (q.length < 1 || kelurahanOptions.length === 0) return [];
         if (kelurahanOptions.some((o) => o.name.toLowerCase() === q)) return [];
         return kelurahanOptions.filter((o) => o.name.toLowerCase().includes(q)).slice(0, 6);
-    }, [saringKelurahan, kelurahanOptions]);
+    }, [filterKelurahan, kelurahanOptions]);
 
-    const tanganiSaring = useCallback((nilaiWilayah, nilaiKecamatan, nilaiStatus, nilaiKelurahan) => {
-        aturSaringWilayah(nilaiWilayah);
-        aturSaringKecamatan(nilaiKecamatan);
-        aturSaringStatus(nilaiStatus);
-        aturSaringKelurahan(nilaiKelurahan);
+    const handleFilter = useCallback((wilayahValue, kecamatanValue, statusValue, kelurahanValue) => {
+        setFilterWilayah(wilayahValue);
+        setFilterKecamatan(kecamatanValue);
+        setFilterStatus(statusValue);
+        setFilterKelurahan(kelurahanValue);
         router.get(
             window.location.pathname,
             {
-                wilayah: nilaiWilayah,
-                kecamatan: nilaiKecamatan,
-                kelurahan: nilaiKelurahan,
-                status: nilaiStatus,
+                wilayah: wilayahValue,
+                kecamatan: kecamatanValue,
+                kelurahan: kelurahanValue,
+                status: statusValue,
             },
             {
                 preserveState: true,
@@ -173,17 +173,17 @@ export default function DataONT({
     // Ekspor
 
     useEffect(() => {
-        if (!eksporBuka && !konfirmasiEkspor) return;
+        if (!openExport && !konfirmasiEkspor) return;
 
         const tutupKlikLuar = (event) => {
             if (exportRef.current && !exportRef.current.contains(event.target)) {
-                aturEksporBuka(false);
+                setOpenExport(false);
             }
         };
 
         const tutupEscape = (event) => {
             if (event.key === "Escape") {
-                aturEksporBuka(false);
+                setOpenExport(false);
                 if (!sedangExport) setKonfirmasiEkspor(null);
             }
         };
@@ -195,7 +195,7 @@ export default function DataONT({
             document.removeEventListener("mousedown", tutupKlikLuar);
             document.removeEventListener("keydown", tutupEscape);
         };
-    }, [eksporBuka, konfirmasiEkspor, sedangExport]);
+    }, [openExport, konfirmasiEkspor, sedangExport]);
 
     useEffect(() => {
         if (!notifExport) return;
@@ -205,15 +205,15 @@ export default function DataONT({
         return () => clearTimeout(timer);
     }, [notifExport]);
 
-    const tanganiEkspor = useCallback(async (format, cakupan = "halaman") => {
+    const handleExport = useCallback(async (format, cakupan = "halaman") => {
         if (sedangExport) return;
 
         const params = new URLSearchParams();
 
-        if (saringWilayah) params.set("wilayah", saringWilayah);
-        if (saringStatus) params.set("status", saringStatus);
-        if (saringKecamatan) params.set("kecamatan", saringKecamatan);
-        if (saringKelurahan) params.set("kelurahan", saringKelurahan);
+        if (filterWilayah) params.set("wilayah", filterWilayah);
+        if (filterStatus) params.set("status", filterStatus);
+        if (filterKecamatan) params.set("kecamatan", filterKecamatan);
+        if (filterKelurahan) params.set("kelurahan", filterKelurahan);
         if (cakupan === "semua") {
             params.set("scope", "all");
         } else {
@@ -222,7 +222,7 @@ export default function DataONT({
 
         const url = `${resolveHref(`export/aset/ont/${format}`)}?${params.toString()}`;
 
-        aturEksporBuka(false);
+        setOpenExport(false);
         setKonfirmasiEkspor(null);
         setSedangExport(format);
 
@@ -268,13 +268,13 @@ export default function DataONT({
         } finally {
             setSedangExport("");
         }
-    }, [sedangExport, saringWilayah, saringStatus, saringKecamatan, saringKelurahan, dataONT, resolveHref]);
+    }, [sedangExport, filterWilayah, filterStatus, filterKecamatan, filterKelurahan, dataONT, resolveHref]);
 
     return (
-        <TataLetakUtama>
+        <MainLayout>
             <div className="space-y-4">
 
-                {/* Tajuk */}
+                {/* Header */}
 
                 <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
 
@@ -289,7 +289,7 @@ export default function DataONT({
                         </span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
 
                     </div>
@@ -312,7 +312,7 @@ export default function DataONT({
 
                         <button
                             type="button"
-                            onClick={() => aturEksporBuka(!eksporBuka)}
+                            onClick={() => setOpenExport(!openExport)}
                             disabled={listONT.length === 0}
                             title="Export"
                             aria-label="Export"
@@ -320,16 +320,16 @@ export default function DataONT({
                         >
                             <FaFileExport />
                             <span className="max-md:hidden">Export</span>
-                            <FaChevronDown className={`text-[10px] transition-transform max-md:hidden ${eksporBuka ? "rotate-180" : ""}`} />
+                            <FaChevronDown className={`text-[10px] transition-transform max-md:hidden ${openExport ? "rotate-180" : ""}`} />
                         </button>
 
-                        {eksporBuka && (
+                        {openExport && (
                             <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 shadow-xl max-md:right-0 max-md:w-52">
 
                                 <button
                                     type="button"
                                     onClick={() => {
-                                        aturEksporBuka(false);
+                                        setOpenExport(false);
                                         setKonfirmasiEkspor({ format: "pdf" });
                                     }}
                                     disabled={sedangExport !== ""}
@@ -342,7 +342,7 @@ export default function DataONT({
                                 <button
                                     type="button"
                                     onClick={() => {
-                                        aturEksporBuka(false);
+                                        setOpenExport(false);
                                         setKonfirmasiEkspor({ format: "excel" });
                                     }}
                                     disabled={sedangExport !== ""}
@@ -370,7 +370,7 @@ export default function DataONT({
                     >
                         <div
                             className="w-full max-w-sm rounded-2xl bg-white dark:bg-night-900 p-5 shadow-xl"
-                            onClick={(kejadian) => kejadian.stopPropagation()}
+                            onClick={(e) => e.stopPropagation()}
                         >
                             <h3 className="text-sm font-semibold text-gray-800 dark:text-night-200">
                                 Export {konfirmasiEkspor.format === "pdf" ? "PDF" : "Excel"}
@@ -381,13 +381,13 @@ export default function DataONT({
                             </p>
 
                             <p className="mt-3 text-xs text-gray-600 dark:text-night-300">
-                                Cetak halaman ini saja atau semua data sesuai penyaring?
+                                Cetak halaman ini saja atau semua data sesuai filter?
                             </p>
 
                             <div className="mt-4 flex flex-col gap-2">
                                 <button
                                     type="button"
-                                    onClick={() => tanganiEkspor(konfirmasiEkspor.format, "halaman")}
+                                    onClick={() => handleExport(konfirmasiEkspor.format, "halaman")}
                                     disabled={sedangExport !== ""}
                                     className="w-full rounded-xl bg-[#AB3C3C] px-4 py-2.5 text-xs font-medium text-white shadow-sm transition hover:bg-[#6F2424] disabled:cursor-not-allowed disabled:opacity-50"
                                 >
@@ -396,7 +396,7 @@ export default function DataONT({
 
                                 <button
                                     type="button"
-                                    onClick={() => tanganiEkspor(konfirmasiEkspor.format, "semua")}
+                                    onClick={() => handleExport(konfirmasiEkspor.format, "semua")}
                                     disabled={sedangExport !== ""}
                                     className="w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-4 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 transition hover:bg-gray-50 dark:hover:bg-night-800 disabled:cursor-not-allowed disabled:opacity-50"
                                 >
@@ -540,13 +540,13 @@ export default function DataONT({
                             {/* Wilayah */}
 
                             <select
-                                value={saringWilayah}
-                                onChange={(kejadian) =>
-                                    tanganiSaring(
-                                        kejadian.target.value,
-                                        saringKecamatan,
-                                        saringStatus,
-                                        saringKelurahan
+                                value={filterWilayah}
+                                onChange={(e) =>
+                                    handleFilter(
+                                        e.target.value,
+                                        filterKecamatan,
+                                        filterStatus,
+                                        filterKelurahan
                                     )
                                 }
                                 className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
@@ -573,16 +573,16 @@ export default function DataONT({
                             <div className="relative">
                                 <input
                                     type="text"
-                                    value={saringKecamatan}
-                                    onChange={(kejadian) => {
-                                        const nilai = kejadian.target.value;
-                                        aturSaringKecamatan(nilai);
+                                    value={filterKecamatan}
+                                    onChange={(e) => {
+                                        const v = e.target.value;
+                                        setFilterKecamatan(v);
                                     }}
                                     onFocus={() => setKecFocused(true)}
                                     onBlur={() => setTimeout(() => setKecFocused(false), 180)}
-                                    onKeyDown={(kejadian) => {
-                                        if (kejadian.key === 'Enter') {
-                                            tanganiSaring(saringWilayah, kejadian.target.value, saringStatus, saringKelurahan);
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleFilter(filterWilayah, e.target.value, filterStatus, filterKelurahan);
                                         }
                                     }}
                                     placeholder={kecamatanLoading ? "Memuat..." : "Kecamatan"}
@@ -591,19 +591,19 @@ export default function DataONT({
                                 />
                                 {kecFocused && filteredKecamatan.length > 0 && (
                                     <div className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
-                                        {filteredKecamatan.map((opsi) => (
+                                        {filteredKecamatan.map((opt) => (
                                             <button
-                                                key={opsi.code}
+                                                key={opt.code}
                                                 type="button"
-                                                onMouseDown={(kejadian) => kejadian.preventDefault()}
+                                                onMouseDown={(e) => e.preventDefault()}
                                                 onClick={() => {
-                                                    aturSaringKecamatan(opsi.name);
+                                                    setFilterKecamatan(opt.name);
                                                     setKecFocused(false);
-                                                    tanganiSaring(saringWilayah, opsi.name, saringStatus, saringKelurahan);
+                                                    handleFilter(filterWilayah, opt.name, filterStatus, filterKelurahan);
                                                 }}
                                                 className="w-full px-3 py-2 text-left capitalize text-xs text-gray-700 dark:text-night-200 hover:bg-gray-50 dark:hover:bg-night-800 transition"
                                             >
-                                                {opsi.name}
+                                                {opt.name}
                                             </button>
                                         ))}
                                     </div>
@@ -613,13 +613,13 @@ export default function DataONT({
                             {/* Status */}
 
                             <select
-                                value={saringStatus}
-                                onChange={(kejadian) =>
-                                    tanganiSaring(
-                                        saringWilayah,
-                                        saringKecamatan,
-                                        kejadian.target.value,
-                                        saringKelurahan
+                                value={filterStatus}
+                                onChange={(e) =>
+                                    handleFilter(
+                                        filterWilayah,
+                                        filterKecamatan,
+                                        e.target.value,
+                                        filterKelurahan
                                     )
                                 }
                                 className="capitalize w-full rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-night-200 outline-none focus:border-[#6F2424] focus:ring-2 focus:ring-[#AB3C3C]/10 transition"
@@ -644,16 +644,16 @@ export default function DataONT({
                             <div className="relative">
                                 <input
                                     type="text"
-                                    value={saringKelurahan}
-                                    onChange={(kejadian) => {
-                                        const nilai = kejadian.target.value;
-                                        aturSaringKelurahan(nilai);
+                                    value={filterKelurahan}
+                                    onChange={(e) => {
+                                        const v = e.target.value;
+                                        setFilterKelurahan(v);
                                     }}
                                     onFocus={() => setKelFocused(true)}
                                     onBlur={() => setTimeout(() => setKelFocused(false), 180)}
-                                    onKeyDown={(kejadian) => {
-                                        if (kejadian.key === 'Enter') {
-                                            tanganiSaring(saringWilayah, saringKecamatan, saringStatus, kejadian.target.value);
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleFilter(filterWilayah, filterKecamatan, filterStatus, e.target.value);
                                         }
                                     }}
                                     placeholder={kelurahanLoading ? "Memuat..." : "Kelurahan"}
@@ -662,19 +662,19 @@ export default function DataONT({
                                 />
                                 {kelFocused && filteredKelurahan.length > 0 && (
                                     <div className="absolute left-0 right-0 z-20 mt-1 max-h-40 overflow-auto rounded-xl border border-gray-200 dark:border-night-700 bg-white dark:bg-night-900 shadow-lg">
-                                        {filteredKelurahan.map((opsi) => (
+                                        {filteredKelurahan.map((opt) => (
                                             <button
-                                                key={opsi.code}
+                                                key={opt.code}
                                                 type="button"
-                                                onMouseDown={(kejadian) => kejadian.preventDefault()}
+                                                onMouseDown={(e) => e.preventDefault()}
                                                 onClick={() => {
-                                                    aturSaringKelurahan(opsi.name);
+                                                    setFilterKelurahan(opt.name);
                                                     setKelFocused(false);
-                                                    tanganiSaring(saringWilayah, saringKecamatan, saringStatus, opsi.name);
+                                                    handleFilter(filterWilayah, filterKecamatan, filterStatus, opt.name);
                                                 }}
                                                 className="w-full px-3 py-2 text-left capitalize text-xs text-gray-700 dark:text-night-200 hover:bg-gray-50 dark:hover:bg-night-800 transition"
                                             >
-                                                {opsi.name}
+                                                {opt.name}
                                             </button>
                                         ))}
                                     </div>
@@ -685,14 +685,14 @@ export default function DataONT({
                         <div className="mt-3 flex gap-2">
                             <button
                                 type="button"
-                                onClick={() => tanganiSaring(saringWilayah, saringKecamatan, saringStatus, saringKelurahan)}
+                                onClick={() => handleFilter(filterWilayah, filterKecamatan, filterStatus, filterKelurahan)}
                                 className="flex-1 rounded-xl bg-[#AB3C3C] px-3 py-2 text-xs font-medium text-white shadow-sm hover:bg-[#6F2424] transition"
                             >
                                 Terapkan
                             </button>
                             <button
                                 type="button"
-                                onClick={() => tanganiSaring("", "", "", "")}
+                                onClick={() => handleFilter("", "", "", "")}
                                 className="rounded-xl border border-gray-200 dark:border-night-600 bg-white dark:bg-night-800 px-3 py-2 text-xs font-medium text-gray-600 dark:text-night-200 hover:bg-gray-50 dark:hover:bg-night-700 transition"
                             >
                                 Reset
@@ -712,7 +712,7 @@ export default function DataONT({
 
                         <table className="w-full min-w-[900px] border-collapse text-xs">
 
-                            {/* Tajuk Tabel */}
+                            {/* Header Tabel */}
 
                             <thead>
 
@@ -901,13 +901,13 @@ export default function DataONT({
 
                                             <td className="px-4 py-2.5">
 
-                                                <AksiTabel
-                                                    jenis="ont"
+                                                <TableActions
+                                                    type="ont"
                                                     id={ont.id}
                                                     kode={ont.kode_ont}
                                                     base={base}
-                                                    tautanRinci={resolveHref(`detail-ont/${ont.id}`)}
-                                                    tautanUbah={resolveHref(`edit-ont/${ont.id}`)}
+                                                    detailHref={resolveHref(`detail-ont/${ont.id}`)}
+                                                    editHref={resolveHref(`edit-ont/${ont.id}`)}
                                                 />
 
                                             </td>
@@ -920,7 +920,7 @@ export default function DataONT({
 
                                     /* Kosong */
 
-                                    <TabelKosong rentangKolom="9" ikon={FaWifi} judul="Belum ada data" petunjuk="Data ont belum tersedia." />
+                                    <TableEmpty colSpan="9" icon={FaWifi} title="Belum ada data" hint="Data ont belum tersedia." />
 
                                 )}
 
@@ -935,31 +935,31 @@ export default function DataONT({
                     <div className="space-y-3 p-4 md:hidden">
                         {listONT.length > 0 ? (
                             listONT.map((ont, index) => (
-                                <KartuDataSeluler
+                                <MobileDataCard
                                     key={ont.id ?? index}
-                                    judul={ont.kode_ont}
-                                    subjudul={`${ont.wilayah || ont.kabupaten || ""}${(ont.kecamatan || ont.area) ? ` • ${ont.kecamatan || ont.area}` : ""}`}
-                                    sumberGambar={ont.foto_ont_1 ? `${base}/public/storage/${ont.foto_ont_1}`.replace(/\/+/g, '/') : null}
-                                    teksAltGambar={`Foto ${ont.kode_ont || "ont"}`}
+                                    title={ont.kode_ont}
+                                    subtitle={`${ont.wilayah || ont.kabupaten || ""}${(ont.kecamatan || ont.area) ? ` • ${ont.kecamatan || ont.area}` : ""}`}
+                                    imageSrc={ont.foto_ont_1 ? `${base}/public/storage/${ont.foto_ont_1}`.replace(/\/+/g, '/') : null}
+                                    imageAlt={`Foto ${ont.kode_ont || "ont"}`}
                                     status={ont.status}
                                     meta={[
                                         { label: "Kelurahan", value: ont.kelurahan },
                                         { label: "Petugas", value: ont.nama_petugas },
                                     ]}
-                                    aksi={
-                                        <AksiKartu
-                                            jenis="ont"
+                                    actions={
+                                        <CardActions
+                                            type="ont"
                                             id={ont.id}
                                             kode={ont.kode_ont}
                                             base={base}
-                                            tautanRinci={resolveHref(`detail-ont/${ont.id}`)}
-                                            tautanUbah={resolveHref(`edit-ont/${ont.id}`)}
+                                            detailHref={resolveHref(`detail-ont/${ont.id}`)}
+                                            editHref={resolveHref(`edit-ont/${ont.id}`)}
                                         />
                                     }
                                 />
                             ))
                         ) : (
-                            <KartuKosong />
+                            <CardEmpty />
                         )}
                     </div>
                     {dataONT?.links && dataONT.links.length > 3 && (
@@ -972,6 +972,6 @@ export default function DataONT({
                 </div>
 
             </div>
-        </TataLetakUtama>
+        </MainLayout>
     );
 }

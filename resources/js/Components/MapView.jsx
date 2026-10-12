@@ -11,120 +11,120 @@ import { buildDivIcon, parseCoord, isValidLatLng } from "./mapMarker";
 import useTheme from "../hooks/useTheme";
 import useBase from "../hooks/useBase";
 
-function SesuaikanBatas({ titik }) {
+function FitBounds({ points }) {
     const map = useMap();
     useEffect(() => {
-        if (titik.length > 1) {
-            map.fitBounds(L.latLngBounds(titik), { padding: [40, 40] });
-        } else if (titik.length === 1) {
-            map.setView(titik[0], Math.max(map.getZoom(), 13));
+        if (points.length > 1) {
+            map.fitBounds(L.latLngBounds(points), { padding: [40, 40] });
+        } else if (points.length === 1) {
+            map.setView(points[0], Math.max(map.getZoom(), 13));
         }
-    }, [map, titik]);
+    }, [map, points]);
     return null;
 }
 
-function PusatkanWilayah({ wilayah, pusatWilayah }) {
+function RecenterWilayah({ wilayah, wilayahCenter }) {
     const map = useMap();
     useEffect(() => {
-        if (wilayah && wilayah !== "Semua" && Array.isArray(pusatWilayah) && pusatWilayah.length === 2) {
-            const lat = parseFloat(pusatWilayah[0]);
-            const lng = parseFloat(pusatWilayah[1]);
+        if (wilayah && wilayah !== "Semua" && Array.isArray(wilayahCenter) && wilayahCenter.length === 2) {
+            const lat = parseFloat(wilayahCenter[0]);
+            const lng = parseFloat(wilayahCenter[1]);
             if (!isNaN(lat) && !isNaN(lng) && isValidLatLng(lat, lng)) {
                 map.flyTo([lat, lng], 14, { duration: 1.0 });
             }
         }
-    }, [wilayah, pusatWilayah, map]);
+    }, [wilayah, wilayahCenter, map]);
     return null;
 }
 
 // Koordinat
 
-function KoordinatLangsung() {
+function LiveCoords() {
     const map = useMap();
-    const [koordinat, aturKoordinat] = useState(null);
+    const [coords, setCoords] = useState(null);
 
     useEffect(() => {
-        const saatGerakTetikus = (kejadian) => {
-            aturKoordinat([kejadian.latlng.lat, kejadian.latlng.lng]);
+        const onMouseMove = (e) => {
+            setCoords([e.latlng.lat, e.latlng.lng]);
         };
-        const saatPindah = () => {
-            const pusat = map.getCenter();
-            aturKoordinat((sebelumnya) => sebelumnya ?? [pusat.lat, pusat.lng]);
+        const onMove = () => {
+            const c = map.getCenter();
+            setCoords((prev) => prev ?? [c.lat, c.lng]);
         };
-        map.on("mousemove", saatGerakTetikus);
-        map.on("move", saatPindah);
-        const pusat = map.getCenter();
-        aturKoordinat([pusat.lat, pusat.lng]);
+        map.on("mousemove", onMouseMove);
+        map.on("move", onMove);
+        const c = map.getCenter();
+        setCoords([c.lat, c.lng]);
         return () => {
-            map.off("mousemove", saatGerakTetikus);
-            map.off("move", saatPindah);
+            map.off("mousemove", onMouseMove);
+            map.off("move", onMove);
         };
     }, [map]);
 
-    if (!koordinat) return null;
+    if (!coords) return null;
     return (
         <div className="leaflet-bottom leaflet-left" style={{ pointerEvents: "none" }}>
             <div className="leaflet-control leaflet-bar !m-0 !border-0 !bg-transparent !shadow-none" style={{ marginLeft: 12, marginBottom: 12 }}>
                 <div className="rounded-md bg-white/90 px-3 py-1.5 text-[11px] font-medium text-gray-800 shadow backdrop-blur-sm border border-gray-200 dark:bg-night-900/90 dark:text-night-200 dark:border-night-700">
-                    {koordinat[0].toFixed(6)} | {koordinat[1].toFixed(6)}
+                    {coords[0].toFixed(6)} | {coords[1].toFixed(6)}
                 </div>
             </div>
         </div>
     );
 }
 
-const TampilanPeta = memo(function TampilanPeta({ lintang, bujur, penanda = null, wilayah = "Semua", pusatWilayah = null, jenis = null, status = null }) {
+const MapView = memo(function MapView({ latitude, longitude, markers = null, wilayah = "Semua", wilayahCenter = null, type = null, status = null }) {
     const { isDark } = useTheme();
-    const posisiTunggal = useMemo(() => {
-        const lat = parseCoord(lintang);
-        const lng = parseCoord(bujur);
+    const singlePosition = useMemo(() => {
+        const lat = parseCoord(latitude);
+        const lng = parseCoord(longitude);
         if (isValidLatLng(lat, lng)) return [lat, lng];
         return [-7.7956, 110.3695];
-    }, [lintang, bujur]);
+    }, [latitude, longitude]);
 
-    const ikonTunggal = useMemo(() => {
-        const j = String(jenis || "").toLowerCase() === "ont" ? "ont" : "tiang";
+    const singleIcon = useMemo(() => {
+        const t = String(type || "").toLowerCase() === "ont" ? "ont" : "tiang";
         const s = String(status || "").toLowerCase();
-        return buildDivIcon(j, s);
-    }, [jenis, status]);
+        return buildDivIcon(t, s);
+    }, [type, status]);
 
-    const penandaValid = useMemo(() => {
-        if (!Array.isArray(penanda)) return null;
-        return penanda
+    const validMarkers = useMemo(() => {
+        if (!Array.isArray(markers)) return null;
+        return markers
             .map((m) => {
-                const lat = parseCoord(m.lintang ?? m.latitude);
-                const lng = parseCoord(m.bujur ?? m.longitude);
+                const lat = parseCoord(m.latitude);
+                const lng = parseCoord(m.longitude);
                 if (!isValidLatLng(lat, lng)) return null;
-                const jenisAset = String(m.type || "").toLowerCase() === "ont" ? "ont" : "tiang";
-                const statusAset = String(m.status || "").toLowerCase();
-                return { ...m, type: jenisAset, status: statusAset, position: [lat, lng] };
+                const type = String(m.type || "").toLowerCase() === "ont" ? "ont" : "tiang";
+                const status = String(m.status || "").toLowerCase();
+                return { ...m, type, status, position: [lat, lng] };
             })
             .filter(Boolean);
-    }, [penanda]);
+    }, [markers]);
 
-    const titikSesuai = useMemo(
-        () => (penandaValid || []).map((m) => m.position),
-        [penandaValid]
+    const fitPoints = useMemo(
+        () => (validMarkers || []).map((m) => m.position),
+        [validMarkers]
     );
 
-    const pusatAwal = penandaValid
-        ? (titikSesuai.length > 0 ? titikSesuai[0] : [-7.7956, 110.3695])
-        : posisiTunggal;
+    const initialCenter = validMarkers
+        ? (fitPoints.length > 0 ? fitPoints[0] : [-7.7956, 110.3695])
+        : singlePosition;
 
     const base = useBase();
 
-    const fokusPin = (kejadian) => {
-        document.querySelectorAll(".gis-pin-active").forEach((elemen) => elemen.classList.remove("gis-pin-active"));
-        kejadian.target.getElement()?.classList.add("gis-pin-active");
+    const focusPin = (e) => {
+        document.querySelectorAll(".gis-pin-active").forEach((el) => el.classList.remove("gis-pin-active"));
+        e.target.getElement()?.classList.add("gis-pin-active");
     };
 
-    const hilangFokusPin = (kejadian) => {
-        kejadian.target.getElement()?.classList.remove("gis-pin-active");
+    const unfocusPin = (e) => {
+        e.target.getElement()?.classList.remove("gis-pin-active");
     };
 
     return (
         <MapContainer
-            center={pusatAwal}
+            center={initialCenter}
             zoom={13}
             scrollWheelZoom={true}
             className="h-full w-full rounded-lg"
@@ -137,21 +137,21 @@ const TampilanPeta = memo(function TampilanPeta({ lintang, bujur, penanda = null
                 maxZoom={19}
             />
 
-            {penandaValid ? (
+            {validMarkers ? (
                 <>
-                    {wilayah && wilayah !== "Semua" && Array.isArray(pusatWilayah) && pusatWilayah.length === 2 ? (
-                        <PusatkanWilayah wilayah={wilayah} pusatWilayah={pusatWilayah} />
+                    {wilayah && wilayah !== "Semua" && Array.isArray(wilayahCenter) && wilayahCenter.length === 2 ? (
+                        <RecenterWilayah wilayah={wilayah} wilayahCenter={wilayahCenter} />
                     ) : (
-                        <SesuaikanBatas titik={titikSesuai} />
+                        <FitBounds points={fitPoints} />
                     )}
-                    {penandaValid.map((m) => (
+                    {validMarkers.map((m) => (
                         <Marker
                             key={`${m.type}-${m.id}`}
                             position={m.position}
                             icon={buildDivIcon(m.type, m.status)}
                             eventHandlers={{
-                                click: fokusPin,
-                                popupclose: hilangFokusPin,
+                                click: focusPin,
+                                popupclose: unfocusPin,
                             }}
                         >
                             <Popup>
@@ -186,17 +186,17 @@ const TampilanPeta = memo(function TampilanPeta({ lintang, bujur, penanda = null
                 </>
             ) : (
                 <Marker
-                    position={posisiTunggal}
-                    icon={ikonTunggal}
+                    position={singlePosition}
+                    icon={singleIcon}
                     eventHandlers={{
-                        click: fokusPin,
-                        popupclose: hilangFokusPin,
+                        click: focusPin,
+                        popupclose: unfocusPin,
                     }}
                 />
             )}
-            <KoordinatLangsung />
+            <LiveCoords />
         </MapContainer>
     );
 });
 
-export default TampilanPeta;
+export default MapView;

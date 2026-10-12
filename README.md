@@ -2,6 +2,15 @@
 
 Dashboard GIS untuk memantau dan mengelola aset jaringan **Tiang** dan **ONT** berbasis peta. Dibangun dengan Laravel & Inertia + React + Leaflet, mendukung manajemen per wilayah, foto aset, dan notifikasi aktivitas.
 
+## Dokumentasi
+
+- [Panduan Penggunaan Aplikasi](docs/panduan-penggunaan-aplikasi.md)
+- [Panduan Pengelolaan Data Aset](docs/panduan-pengelolaan-data-aset.md)
+- [Panduan Penggunaan Peta Sebaran Aset](docs/panduan-peta-sebaran-aset.md)
+- [Panduan Pengaturan Wilayah Operasi](docs/panduan-wilayah-operasi.md)
+- [Panduan Notifikasi dan Rekapitulasi](docs/panduan-notifikasi-rekapitulasi.md)
+- [Dokumentasi Teknis Sistem](docs/dokumentasi-teknis-sistem.md)
+
 ## Prasyarat
 
 - **PHP 8.2** + ekstensi `gd`, `mbstring`, `pdo_mysql`, `fileinfo`, `openssl`

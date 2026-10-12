@@ -1,51 +1,51 @@
 
-import TataLetakUtama from "../Layouts/TataLetakUtama";
+import MainLayout from "../Layouts/MainLayout";
 import { FaWifi, FaChevronRight, FaMap, FaCheckDouble, FaTrash, FaUser, FaKey } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import { useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
 import useBase from "../hooks/useBase";
 
-const ambilIkonBerdasarkanKategori = (kategori) => {
+const getIconByKategori = (kategori) => {
     const k = (kategori || "").toLowerCase();
     if (k === "ont") return FaWifi;
     if (k === "wilayah") return FaMap;
     return LuUtilityPole;
 };
 
-const ambilVisualNotifikasi = (item) => {
+const getNotifikasiVisual = (item) => {
     const jenis = item.jenis || "";
     const kategori = (item.kategori || "").toLowerCase();
 
     if (jenis.includes("Ditambahkan")) {
         return {
-            Ikon: ambilIkonBerdasarkanKategori(kategori),
-            lingkaran: "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300",
+            Icon: getIconByKategori(kategori),
+            circle: "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300",
         };
     }
     if (jenis.includes("Diperbarui")) {
         return {
-            Ikon: ambilIkonBerdasarkanKategori(kategori),
-            lingkaran: "bg-yellow-100 dark:bg-yellow-500/15 text-yellow-600 dark:text-yellow-300",
+            Icon: getIconByKategori(kategori),
+            circle: "bg-yellow-100 dark:bg-yellow-500/15 text-yellow-600 dark:text-yellow-300",
         };
     }
     if (jenis.includes("Dihapus")) {
         return {
-            Ikon: ambilIkonBerdasarkanKategori(kategori),
-            lingkaran: "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300",
+            Icon: getIconByKategori(kategori),
+            circle: "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300",
         };
     }
     if (jenis.includes("Reset")) {
         return {
-            Ikon: FaKey,
-            lingkaran: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
+            Icon: FaKey,
+            circle: "bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300",
         };
     }
-    return { Ikon: null, lingkaran: "" };
+    return { Icon: null, circle: "" };
 };
 
 export default function Notifikasi({ notifikasi = [] }) {
-    const { pengaturan } = usePage().props;
+    const { settings } = usePage().props;
     const base = useBase();
 
     const goDetail = (id) => {
@@ -53,7 +53,7 @@ export default function Notifikasi({ notifikasi = [] }) {
     };
 
     useEffect(() => {
-        router.reload({ only: ['notifikasi', 'notifikasiBelumDibaca'] });
+        router.reload({ only: ['notifikasi', 'unreadNotifikasi'] });
     }, []);
 
     const tandaiSemuaDibaca = () => {
@@ -71,8 +71,8 @@ export default function Notifikasi({ notifikasi = [] }) {
     };
 
     const renderRow = (item) => {
-        const apakahBelumDibaca = item.status === "belum_dibaca";
-        const { Ikon, lingkaran } = ambilVisualNotifikasi(item);
+        const isUnread = item.status === "belum_dibaca";
+        const { Icon, circle } = getNotifikasiVisual(item);
         const actor = item.updated_by || item.username || item.actor || null;
         const aksiLabel = String(item.jenis || "").includes("Ditambahkan")
             ? "Ditambahkan"
@@ -90,17 +90,17 @@ export default function Notifikasi({ notifikasi = [] }) {
         return (
                 <div
                     key={item.id}
-                    className={`flex items-center gap-4 border-b border-gray-100 dark:border-night-700 px-5 py-4 transition hover:bg-gray-50/60 dark:hover:bg-night-800/60 max-md:flex-wrap max-md:gap-3 max-md:px-4 ${apakahBelumDibaca ? "bg-red-50/50 dark:bg-red-500/10 border-l-4 border-l-red-500" : "bg-green-50/40 dark:bg-green-500/10 border-l-4 border-l-green-500"}`}
+                    className={`flex items-center gap-4 border-b border-gray-100 dark:border-night-700 px-5 py-4 transition hover:bg-gray-50/60 dark:hover:bg-night-800/60 max-md:flex-wrap max-md:gap-3 max-md:px-4 ${isUnread ? "bg-red-50/50 dark:bg-red-500/10 border-l-4 border-l-red-500" : "bg-green-50/40 dark:bg-green-500/10 border-l-4 border-l-green-500"}`}
                 >
                 <div
-                    className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${lingkaran || (apakahBelumDibaca
+                    className={`flex h-11 w-11 items-center justify-center rounded-full shadow-sm ring-1 ring-white/40 ${circle || (isUnread
                         ? "bg-red-100 dark:bg-red-500/15 text-red-600 dark:text-red-300"
                         : "bg-green-100 dark:bg-green-500/15 text-green-600 dark:text-green-300")
                         }`}
                 >
-                    {Ikon ? (
-                        <Ikon size={20} />
-                    ) : apakahBelumDibaca ? (
+                    {Icon ? (
+                        <Icon size={20} />
+                    ) : isUnread ? (
                         "⚠"
                     ) : (
                         "✓"
@@ -149,7 +149,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                     </p>
                 </div>
 
-                {apakahBelumDibaca ? (
+                {isUnread ? (
                     <span title="Belum dibaca" className="h-2 w-2 rounded-full bg-red-500" />
                 ) : (
                     <span title="Sudah dibaca" className="h-2 w-2 rounded-full bg-green-500" />
@@ -180,10 +180,10 @@ export default function Notifikasi({ notifikasi = [] }) {
     ).length;
 
     return (
-        <TataLetakUtama>
+        <MainLayout>
             <div className="space-y-4">
 
-                {/* Tajuk */}
+                {/* Header */}
 
                 <div className="flex items-stretch gap-4 max-md:flex-row max-md:items-stretch max-md:gap-2">
                     <div className="flex-1 rounded-2xl bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 py-3.5 shadow-md border border-white/10 text-white max-md:flex max-md:min-w-0 max-md:items-center max-md:rounded-xl max-md:px-3 max-md:py-2.5">
@@ -196,7 +196,7 @@ export default function Notifikasi({ notifikasi = [] }) {
                         </span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 
@@ -320,6 +320,6 @@ export default function Notifikasi({ notifikasi = [] }) {
                     )}
                 </div>
             </div>
-        </TataLetakUtama>
+        </MainLayout>
     );
 }

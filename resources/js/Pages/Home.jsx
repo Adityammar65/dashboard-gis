@@ -1,4 +1,4 @@
-import TataLetakUtama from "../Layouts/TataLetakUtama";
+import MainLayout from "../Layouts/MainLayout";
 
 import { usePage } from "@inertiajs/react";
 import {
@@ -11,11 +11,11 @@ import {
 } from "react-icons/fa";
 import { MdStorage } from "react-icons/md";
 import { LuUtilityPole } from "react-icons/lu";
-import TampilanPeta from "../Components/TampilanPeta";
+import MapView from "../Components/MapView";
 import { useState, useMemo, useCallback } from "react";
 import useBase from "../hooks/useBase";
 
-const formatRelatif = (iso) => {
+const formatRelative = (iso) => {
     if (!iso) return "-";
     const diff = Date.now() - new Date(iso).getTime();
     const m = Math.floor(diff / 60000);
@@ -28,18 +28,18 @@ const formatRelatif = (iso) => {
     return new Date(iso).toLocaleDateString("id-ID");
 };
 
-export default function Beranda() {
-    const [bukaTambah, aturBukaTambah] = useState(false);
+export default function Dashboard() {
+    const [openTambah, setOpenTambah] = useState(false);
 
-    const { pengaturan, tiang = [], ont = [], statistik = {}, asetTerbaru = [] } = usePage().props;
-    const adaWilayah = !!String(pengaturan?.nama_wilayah ?? "").trim();
-    const wilayahAktif = adaWilayah ? String(pengaturan.nama_wilayah) : "Semua";
+    const { settings, tiang = [], ont = [], stats = {}, recentAssets = [] } = usePage().props;
+    const hasWilayah = !!String(settings?.nama_wilayah ?? "").trim();
+    const activeWilayah = hasWilayah ? String(settings.nama_wilayah) : "Semua";
 
     const base = useBase();
-    const resolveHref = useCallback((tautan) => `${base}/${tautan}`.replace(/\/+/g, "/"), [base]);
+    const resolveHref = useCallback((href) => `${base}/${href}`.replace(/\/+/g, "/"), [base]);
 
-    const penanda = useMemo(() => {
-        if (!adaWilayah) return [];
+    const markers = useMemo(() => {
+        if (!hasWilayah) return [];
         const tiangMarkers = tiang.map((t) => ({
             id: t.id,
             type: "tiang",
@@ -65,12 +65,12 @@ export default function Beranda() {
             longitude: o.longitude,
         }));
         return [...tiangMarkers, ...ontMarkers];
-    }, [tiang, ont, adaWilayah]);
+    }, [tiang, ont, hasWilayah]);
 
-    const pusatWilayah = useMemo(() => {
-        if (!adaWilayah || penanda.length === 0) {
-            const all = adaWilayah ? [...tiang, ...ont] : [];
-            const koordinat = all
+    const wilayahCenter = useMemo(() => {
+        if (!hasWilayah || markers.length === 0) {
+            const all = hasWilayah ? [...tiang, ...ont] : [];
+            const coords = all
                 .map((it) => {
                     const latStr = String(it.latitude ?? "").trim().replace(",", ".");
                     const lngStr = String(it.longitude ?? "").trim().replace(",", ".");
@@ -81,13 +81,13 @@ export default function Beranda() {
                     return [lat, lng];
                 })
                 .filter(Boolean);
-            if (koordinat.length === 0) return null;
+            if (coords.length === 0) return null;
             let sLat = 0, sLng = 0;
-            for (const [a, b] of koordinat) { sLat += a; sLng += b; }
-            return [sLat / koordinat.length, sLng / koordinat.length];
+            for (const [a, b] of coords) { sLat += a; sLng += b; }
+            return [sLat / coords.length, sLng / coords.length];
         }
 
-        const koordinat = penanda
+        const coords = markers
             .map((m) => {
                 const lat = parseFloat(String(m.latitude ?? "").trim().replace(",", "."));
                 const lng = parseFloat(String(m.longitude ?? "").trim().replace(",", "."));
@@ -95,17 +95,17 @@ export default function Beranda() {
                 return [lat, lng];
             })
             .filter(Boolean);
-        if (koordinat.length === 0) return null;
+        if (coords.length === 0) return null;
         let sLat = 0, sLng = 0;
-        for (const [a, b] of koordinat) { sLat += a; sLng += b; }
-        return [sLat / koordinat.length, sLng / koordinat.length];
-    }, [penanda, tiang, ont, adaWilayah]);
+        for (const [a, b] of coords) { sLat += a; sLng += b; }
+        return [sLat / coords.length, sLng / coords.length];
+    }, [markers, tiang, ont, hasWilayah]);
 
     return (
-        <TataLetakUtama>
+        <MainLayout>
             <div className="space-y-4">
 
-                {/* Tajuk */}
+                {/* Header */}
 
                 <div className="mb-4">
                     <h1 className="text-xl font-bold text-gray-800 dark:text-night-200">
@@ -127,14 +127,14 @@ export default function Beranda() {
                         <span className="mx-3 opacity-60 max-md:mx-1.5 max-md:shrink-0">/</span>
 
                         <span className="text-xs font-light capitalize opacity-90 max-md:truncate max-md:text-[11px]">
-                            {pengaturan?.nama_wilayah ?? "Wilayah belum ditentukan"}
+                            {settings?.nama_wilayah ?? "Wilayah belum ditentukan"}
                         </span>
                     </div>
 
                     <div className="relative max-md:shrink-0">
 
                         <button
-                            onClick={() => aturBukaTambah(!bukaTambah)}
+                            onClick={() => setOpenTambah(!openTambah)}
                             title="Tambah Aset"
                             aria-label="Tambah Aset"
                             className="flex h-full w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition hover:shadow-lg hover:from-green-600 hover:to-emerald-700 active:scale-[0.98] max-md:rounded-lg max-md:px-4 max-md:py-4 max-md:text-xs"
@@ -143,12 +143,12 @@ export default function Beranda() {
                             <span className="max-md:hidden">Tambah Aset</span>
                         </button>
 
-                        {bukaTambah && (
+                        {openTambah && (
                             <div className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 shadow-xl max-md:right-0 max-md:w-52">
 
                                 <a
                                     href={resolveHref("tambah-tiang")}
-                                    onClick={() => aturBukaTambah(false)}
+                                    onClick={() => setOpenTambah(false)}
                                     className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-night-200 transition hover:bg-blue-50 dark:hover:bg-blue-500/15 hover:text-blue-800 dark:hover:text-blue-200"
                                 >
                                     <LuUtilityPole className="text-blue-700 dark:text-blue-300" />
@@ -157,7 +157,7 @@ export default function Beranda() {
 
                                 <a
                                     href={resolveHref("tambah-ont")}
-                                    onClick={() => aturBukaTambah(false)}
+                                    onClick={() => setOpenTambah(false)}
                                     className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-night-200 transition hover:bg-sky-50 dark:hover:bg-sky-500/15 hover:text-sky-700 dark:hover:text-sky-200"
                                 >
                                     <FaWifi className="text-sky-500 text-lg" />
@@ -184,7 +184,7 @@ export default function Beranda() {
                                     TOTAL TIANG
                                 </p>
                                 <h2 className="mt-1 text-2xl font-bold text-gray-800 dark:text-night-200 max-md:text-xl">
-                                    {statistik?.tiang?.total ?? 0}
+                                    {stats?.tiang?.total ?? 0}
                                 </h2>
                             </div>
 
@@ -196,12 +196,12 @@ export default function Beranda() {
                         <div className="mt-4 flex gap-4 text-xs max-md:mt-3 max-md:flex-wrap max-md:gap-1.5">
                             <span className="flex items-center gap-2 rounded-full bg-green-50 dark:bg-green-500/15 px-2 py-1 ring-1 ring-green-200 dark:ring-green-500/30 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
                                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                                Aktif {statistik?.tiang?.aktif ?? 0}
+                                Aktif {stats?.tiang?.aktif ?? 0}
                             </span>
 
                             <span className="flex items-center gap-2 rounded-full bg-red-50 dark:bg-red-500/15 px-2 py-1 ring-1 ring-red-200 dark:ring-red-500/30 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
                                 <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                                Nonaktif {statistik?.tiang?.nonaktif ?? 0}
+                                Nonaktif {stats?.tiang?.nonaktif ?? 0}
                             </span>
                         </div>
                     </div>
@@ -215,7 +215,7 @@ export default function Beranda() {
                                     TOTAL ONT
                                 </p>
                                 <h2 className="mt-1 text-2xl font-bold text-gray-800 dark:text-night-200 max-md:text-xl">
-                                    {statistik?.ont?.total ?? 0}
+                                    {stats?.ont?.total ?? 0}
                                 </h2>
                             </div>
 
@@ -227,12 +227,12 @@ export default function Beranda() {
                         <div className="mt-4 flex gap-4 text-xs max-md:mt-3 max-md:flex-wrap max-md:gap-1.5">
                             <span className="flex items-center gap-2 rounded-full bg-green-50 dark:bg-green-500/15 px-2 py-1 ring-1 ring-green-200 dark:ring-green-500/30 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
                                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                                Aktif {statistik?.ont?.aktif ?? 0}
+                                Aktif {stats?.ont?.aktif ?? 0}
                             </span>
 
                             <span className="flex items-center gap-2 rounded-full bg-red-50 dark:bg-red-500/15 px-2 py-1 ring-1 ring-red-200 dark:ring-red-500/30 max-md:gap-1 max-md:px-1.5 max-md:text-[10px]">
                                 <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                                Nonaktif {statistik?.ont?.nonaktif ?? 0}
+                                Nonaktif {stats?.ont?.nonaktif ?? 0}
                             </span>
                         </div>
                     </div>
@@ -246,7 +246,7 @@ export default function Beranda() {
                                     WILAYAH COVERAGE
                                 </p>
                                 <h2 className="mt-1 truncate whitespace-nowrap text-2xl font-bold text-gray-800 dark:text-night-200 max-md:text-xl">
-                                    {statistik?.wilayah?.total ?? 0} Wilayah
+                                    {stats?.wilayah?.total ?? 0} Wilayah
                                 </h2>
                             </div>
 
@@ -273,7 +273,7 @@ export default function Beranda() {
                                     DATA BERKOORDINAT
                                 </p>
                                 <h2 className="mt-1 text-2xl font-bold text-gray-800 dark:text-night-200 max-md:text-xl">
-                                    {statistik?.koordinat?.persen ?? 0}%
+                                    {stats?.koordinat?.persen ?? 0}%
                                 </h2>
                             </div>
 
@@ -323,9 +323,9 @@ export default function Beranda() {
                             </a>
                         </div>
 
-                        {adaWilayah ? (
+                        {hasWilayah ? (
                             <div className="gis-map-wrap relative z-0 h-[450px] overflow-hidden rounded-xl border border-gray-100 dark:border-night-700 shadow-inner max-md:h-[300px]">
-                                <TampilanPeta penanda={penanda} wilayah={wilayahAktif} pusatWilayah={pusatWilayah} />
+                                <MapView markers={markers} wilayah={activeWilayah} wilayahCenter={wilayahCenter} />
                             </div>
                         ) : (
                             <a
@@ -351,7 +351,7 @@ export default function Beranda() {
                                     PEMBARUAN ASET
                                 </p>
                                 <h3 className="text-sm font-semibold text-gray-800 dark:text-night-200">
-                                    {asetTerbaru.length} Aset Diperbarui
+                                    {recentAssets.length} Aset Diperbarui
                                 </h3>
                             </div>
 
@@ -361,14 +361,14 @@ export default function Beranda() {
                         </div>
 
                         <div className="mt-5 space-y-3">
-                            {asetTerbaru.length > 0 ? (
-                                asetTerbaru.map((item) => {
-                                    const waktuBuatMs = item.created_at ? new Date(item.created_at).getTime() : null;
-                                    const waktuUbahMs = item.updated_at ? new Date(item.updated_at).getTime() : null;
-                                    const isBaru = waktuBuatMs !== null && waktuUbahMs !== null
-                                        ? Math.abs(waktuUbahMs - waktuBuatMs) <= 1000
+                            {recentAssets.length > 0 ? (
+                                recentAssets.map((item) => {
+                                    const createdMs = item.created_at ? new Date(item.created_at).getTime() : null;
+                                    const updatedMs = item.updated_at ? new Date(item.updated_at).getTime() : null;
+                                    const isBaru = createdMs !== null && updatedMs !== null
+                                        ? Math.abs(updatedMs - createdMs) <= 1000
                                         : false;
-                                    const waktuTampil = isBaru ? item.created_at : item.updated_at;
+                                    const displayTime = isBaru ? item.created_at : item.updated_at;
                                     return (
                                         <div
                                             key={`${item.type}-${item.id}`}
@@ -406,7 +406,7 @@ export default function Beranda() {
                                                     {item.status}
                                                 </span>
                                                 <p className="mt-1 text-[10px] text-gray-500 dark:text-night-400">
-                                                    {formatRelatif(waktuTampil)}
+                                                    {formatRelative(displayTime)}
                                                 </p>
                                             </div>
                                         </div>
@@ -431,6 +431,6 @@ export default function Beranda() {
                     </div>
                 </div>
             </div>
-        </TataLetakUtama>
+        </MainLayout>
     );
 }

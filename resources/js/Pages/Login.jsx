@@ -1,53 +1,53 @@
 import { useState, useEffect } from "react";
-import TataLetakOtentikasi from "../Layouts/TataLetakOtentikasi";
-import PengalihTema from "../Components/PengalihTema";
-import { MasukanOtentikasi, KolomKataSandi } from "../Components/BidangOtentikasi";
+import AuthLayout from "../Layouts/AuthLayout";
+import ThemeToggle from "../Components/ThemeToggle";
+import { AuthInput, PasswordField } from "../Components/AuthFields";
 import { router, usePage } from "@inertiajs/react";
 
-export default function Masuk() {
-    const [tampilKataSandi, aturTampilKataSandi] = useState(false);
-    const [user, aturUser] = useState("");
-    const [kataSandi, aturKataSandi] = useState("");
-    const [ingatSaya, aturIngatSaya] = useState(false);
+export default function Login() {
+    const [showPassword, setShowPassword] = useState(false);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
 
     const { errors } = usePage().props;
 
     const errorMessage = Object.values(errors || {})[0];
 
     useEffect(() => {
-        const ingatTersimpan = localStorage.getItem("gis_remember_me") === "true";
-        const userTersimpan = localStorage.getItem("gis_saved_username") || "";
-        if (ingatTersimpan && userTersimpan) {
-            aturIngatSaya(true);
-            aturUser(userTersimpan);
+        const savedRemember = localStorage.getItem("gis_remember_me") === "true";
+        const savedUsername = localStorage.getItem("gis_saved_username") || "";
+        if (savedRemember && savedUsername) {
+            setRememberMe(true);
+            setUsername(savedUsername);
         }
     }, []);
 
-    const tanganiKirim = (kejadian) => {
-        kejadian.preventDefault();
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
-        if (ingatSaya) {
+        if (rememberMe) {
             localStorage.setItem("gis_remember_me", "true");
-            localStorage.setItem("gis_saved_username", user);
+            localStorage.setItem("gis_saved_username", username);
         } else {
             localStorage.removeItem("gis_remember_me");
             localStorage.removeItem("gis_saved_username");
         }
 
         router.post("proses-login", {
-            username: user,
-            password: kataSandi,
-            remember: ingatSaya,
+            username,
+            password,
+            remember: rememberMe,
         });
     };
 
     return (
-        <TataLetakOtentikasi errorMessage={errorMessage}>
+        <AuthLayout errorMessage={errorMessage}>
             <div className="relative flex p-6 pt-14 max-md:w-full max-md:max-w-md max-md:rounded-3xl max-md:bg-white max-md:p-6 max-md:pt-14 max-md:shadow-xl max-md:ring-1 max-md:ring-black/5 dark:max-md:bg-night-900 dark:max-md:ring-white/10">
                 <div className="absolute right-4 top-4">
-                    <PengalihTema variant="login" />
+                    <ThemeToggle variant="login" />
                 </div>
-                <form className="space-y-5 max-md:w-full" onSubmit={tanganiKirim}>
+                <form className="space-y-5 max-md:w-full" onSubmit={handleSubmit}>
 
                     {/* Judul mobile */}
 
@@ -62,31 +62,31 @@ export default function Masuk() {
 
                     {/* Nama Pengguna */}
 
-                    <MasukanOtentikasi
+                    <AuthInput
                         id="username"
                         name="username"
                         type="text"
-                        label="Nama Pengguna"
-                        value={user}
-                        onChange={(kejadian) => aturUser(kejadian.target.value)}
-                        placeholder="Masukkan nama pengguna"
+                        label="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Masukkan username"
                         autoComplete="username"
                     />
 
                     {/* Kata Sandi */}
 
-                    <KolomKataSandi
+                    <PasswordField
                         id="password"
                         name="password"
-                        label="Kata Sandi"
-                        value={kataSandi}
-                        onChange={(kejadian) => aturKataSandi(kejadian.target.value)}
-                        placeholder="Masukkan kata sandi"
+                        label="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Masukkan password"
                         autoComplete="current-password"
-                        tampil={tampilKataSandi}
-                        saatAlih={() => aturTampilKataSandi(!tampilKataSandi)}
-                        labelTampilAria="Tampilkan kata sandi"
-                        labelSembunyiAria="Sembunyikan kata sandi"
+                        show={showPassword}
+                        onToggle={() => setShowPassword(!showPassword)}
+                        showAriaLabel="Tampilkan password"
+                        hideAriaLabel="Sembunyikan password"
                     />
 
                     {/* Ingat Saya */}
@@ -100,9 +100,9 @@ export default function Masuk() {
                                 type="checkbox"
                                 id="remember"
                                 name="remember"
-                                checked={ingatSaya}
-                                onChange={(kejadian) =>
-                                    aturIngatSaya(kejadian.target.checked)
+                                checked={rememberMe}
+                                onChange={(e) =>
+                                    setRememberMe(e.target.checked)
                                 }
                                 className="h-4 w-4 rounded border-gray-300 dark:border-night-600 text-[#ab3c3c] accent-[#ab3c3c] focus:ring-1 focus:ring-[#ab3c3c]/20"
                             />
@@ -115,7 +115,7 @@ export default function Masuk() {
                             href="lupa-password"
                             className="text-sm text-gray-500 dark:text-night-400 transition hover:text-[#ab3c3c]"
                         >
-                            Lupa kata sandi?
+                            Lupa password?
                         </a>
                     </div>
 
@@ -129,6 +129,6 @@ export default function Masuk() {
                     </button>
                 </form>
             </div>
-        </TataLetakOtentikasi>
+        </AuthLayout>
     );
 }

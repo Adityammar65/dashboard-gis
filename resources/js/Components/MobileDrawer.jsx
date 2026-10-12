@@ -3,44 +3,44 @@ import { FaUserCircle } from "react-icons/fa";
 import { IoIosLogOut, IoIosSettings, IoMdNotifications } from "react-icons/io";
 import { FiX } from "react-icons/fi";
 import { usePage } from "@inertiajs/react";
-import { butirMenu, apakahJalurAktif, apakahJalurPengaturan, apakahJalurNotifikasi, KONFIRMASI_KELUAR } from "./butirMenu";
+import { menuItems, isActivePath, isPengaturanPath, isNotifikasiPath, LOGOUT_CONFIRM } from "./navItems";
 import { useResolveHref } from "../hooks/useBase";
 
-const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
+const MobileDrawer = memo(function MobileDrawer({ open, onClose }) {
     const { url, props } = usePage();
-    const jalurSaatIni = useMemo(() => url.split("?")[0], [url]);
-    const user = props?.auth?.username ?? "";
-    const jumlahBelumDibaca = Number(props?.notifikasiBelumDibaca || 0);
+    const currentPath = useMemo(() => url.split("?")[0], [url]);
+    const username = props?.auth?.username ?? "";
+    const unreadCount = Number(props?.unreadNotifikasi || 0);
     const resolveHref = useResolveHref();
 
-    const isPengaturan = apakahJalurPengaturan(jalurSaatIni);
-    const isNotifikasi = apakahJalurNotifikasi(jalurSaatIni);
+    const isPengaturan = isPengaturanPath(currentPath);
+    const isNotifikasi = isNotifikasiPath(currentPath);
 
     useEffect(() => {
-        if (!buka) return;
+        if (!open) return;
         const prev = document.body.style.overflow;
         document.body.style.overflow = "hidden";
-        const saatTombol = (kejadian) => {
-            if (kejadian.key === "Escape") saatTutup?.();
+        const onKey = (e) => {
+            if (e.key === "Escape") onClose?.();
         };
-        document.addEventListener("keydown", saatTombol);
+        document.addEventListener("keydown", onKey);
         return () => {
             document.body.style.overflow = prev;
-            document.removeEventListener("keydown", saatTombol);
+            document.removeEventListener("keydown", onKey);
         };
-    }, [buka, saatTutup]);
+    }, [open, onClose]);
 
     return (
-        <div className="md:hidden" aria-hidden={!buka}>
+        <div className="md:hidden" aria-hidden={!open}>
 
             {/* Latar */}
 
             <div
-                onClick={saatTutup}
+                onClick={onClose}
                 className={`
                     fixed inset-0 z-[60] bg-black/50
                     transition-opacity duration-300
-                    ${buka ? "opacity-100" : "pointer-events-none opacity-0"}
+                    ${open ? "opacity-100" : "pointer-events-none opacity-0"}
                 `}
             />
 
@@ -54,7 +54,7 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
                     fixed left-0 top-0 z-[61] flex h-[100vh] w-[280px] max-w-[85vw] flex-col
                     bg-slate-100 shadow-2xl dark:bg-night-900 dark:border-r dark:border-night-700
                     transition-transform duration-300 ease-out
-                    ${buka ? "translate-x-0" : "-translate-x-full"}
+                    ${open ? "translate-x-0" : "-translate-x-full"}
                 `}
             >
 
@@ -63,7 +63,7 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
                 <div className="relative shrink-0 bg-gradient-to-br from-[#6F2424] to-[#AB3C3C] px-4 pb-5 pt-4">
                     <button
                         type="button"
-                        onClick={saatTutup}
+                        onClick={onClose}
                         aria-label="Tutup menu"
                         className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25"
                     >
@@ -78,8 +78,8 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
                             <p className="text-[10px] font-medium uppercase tracking-widest text-white/60">
                                 Pengguna
                             </p>
-                            <p className="truncate text-base font-semibold text-white" title={user}>
-                                {user || "-"}
+                            <p className="truncate text-base font-semibold text-white" title={username}>
+                                {username || "-"}
                             </p>
                         </div>
                     </div>
@@ -88,26 +88,26 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
                 {/* Navigasi */}
 
                 <nav className="gis-drawer-nav flex-1 space-y-2 overflow-y-auto overscroll-contain px-3 py-4">
-                    {butirMenu.map((item) => {
-                        const apakahAktif = apakahJalurAktif(jalurSaatIni, item.jalurAktif);
+                    {menuItems.map((item) => {
+                        const isActive = isActivePath(currentPath, item.activePaths);
                         return (
                             <a
-                                key={item.tautan}
-                                href={resolveHref(item.tautan)}
-                                onClick={saatTutup}
-                                aria-current={apakahAktif ? "page" : undefined}
+                                key={item.href}
+                                href={resolveHref(item.href)}
+                                onClick={onClose}
+                                aria-current={isActive ? "page" : undefined}
                                 className={`
                                     relative flex items-center gap-3
                                     rounded-xl px-3 py-3
                                     text-sm font-medium
                                     transition-all duration-200
-                                    ${apakahAktif
+                                    ${isActive
                                         ? "bg-[#AB3C3C] text-white shadow-md shadow-[#AB3C3C]/20"
                                         : "text-[#992e2e] hover:bg-[#F3DADA] hover:text-[#AB3C3C] dark:text-night-300 dark:hover:bg-night-800 dark:hover:text-white"
                                     }
                                 `}
                             >
-                                {apakahAktif && (
+                                {isActive && (
                                     <span className="absolute left-0 h-7 w-1 rounded-r-full bg-white" />
                                 )}
                                 <span className="shrink-0">{item.icon}</span>
@@ -120,7 +120,7 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
 
                     <a
                         href={resolveHref("notifikasi")}
-                        onClick={saatTutup}
+                        onClick={onClose}
                         aria-current={isNotifikasi ? "page" : undefined}
                         className={`
                             relative flex items-center gap-3
@@ -138,9 +138,9 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
                         )}
                         <span className="relative shrink-0">
                             <IoMdNotifications size={20} />
-                            {jumlahBelumDibaca > 0 && (
+                            {unreadCount > 0 && (
                                 <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-0.5 text-[8px] font-bold leading-none text-white">
-                                    {jumlahBelumDibaca > 99 ? "99+" : jumlahBelumDibaca}
+                                    {unreadCount > 99 ? "99+" : unreadCount}
                                 </span>
                             )}
                         </span>
@@ -157,7 +157,7 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
 
                     <a
                         href={resolveHref("pengaturan")}
-                        onClick={saatTutup}
+                        onClick={onClose}
                         aria-current={isPengaturan ? "page" : undefined}
                         className={`
                             relative flex items-center gap-3
@@ -183,11 +183,11 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
 
                     <a
                         href={resolveHref("logout")}
-                        onClick={(kejadian) => {
-                            if (!confirm(KONFIRMASI_KELUAR)) {
-                                kejadian.preventDefault();
+                        onClick={(e) => {
+                            if (!confirm(LOGOUT_CONFIRM)) {
+                                e.preventDefault();
                             } else {
-                                saatTutup?.();
+                                onClose?.();
                             }
                         }}
                         className="
@@ -209,4 +209,4 @@ const LaciSeluler = memo(function LaciSeluler({ buka, saatTutup }) {
     );
 });
 
-export default LaciSeluler;
+export default MobileDrawer;
