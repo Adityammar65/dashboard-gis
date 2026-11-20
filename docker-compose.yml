@@ -59,6 +59,20 @@ services:
       start_period: 30s
     restart: unless-stopped
 
+  phpmyadmin:
+    image: phpmyadmin:5-apache
+    container_name: dashboard-gis-phpmyadmin
+    ports:
+      - "${PHPMYADMIN_PORT:-8091}:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: "3306"
+      PMA_ABSOLUTE_URI: "http://localhost:${PHPMYADMIN_PORT:-8091}/"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
 volumes:
   app-storage:
   app-bootstrap:
