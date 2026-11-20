@@ -27,14 +27,14 @@ Project ini menyediakan Docker Compose untuk menggantikan XAMPP lokal.
 docker compose up -d --build
 ```
 
-Compose otomatis membuat `APP_KEY`, menunggu MySQL siap, menjalankan migrasi, lalu menjalankan aplikasi sebagai user `daemon`. Key dan database tersimpan di Docker volumes. Aplikasi tersedia di `http://localhost:8090`; MySQL host port `5060` dipetakan ke port internal `3306`.
+Compose otomatis membuat `APP_KEY`, menunggu MySQL siap, menjalankan migrasi, lalu menjalankan aplikasi sebagai user `daemon`. Key dan database tersimpan di Docker volumes. Aplikasi tersedia di `http://localhost:8090`; MySQL host port `3307` dipetakan ke port internal `3306`; port `3307` dapat dipakai phpMyAdmin melalui host `127.0.0.1`.
 
 ---
 
 ### Improvement (branch ini)
 
 - **Docker Compose** menggantikan XAMPP lokal; jalankan seluruh aplikasi dengan `docker compose up -d --build`.
-- **Port mapping**: aplikasi di `8090`, MySQL di `5060` (port internal MySQL tetap `3306`).
+- **Port mapping**: aplikasi di `8090`, MySQL di `3307` (port internal MySQL tetap `3306`; host dapat diakses phpMyAdmin dari `127.0.0.1:3307`).
 - **Database terisolasi**: app container selalu memakai `DB_HOST=mysql`; `.env` XAMPP dengan `DB_HOST=127.0.0.1` tidak memengaruhi koneksi Docker.
 - **Permission**: PHP berjalan sebagai `daemon:daemon`; direktori storage, cache, dan `public` writable.
 - **Volume persisten** menyimpan data MySQL, file aplikasi, dan cache saat container dihentikan. Hindari `docker compose down -v` kecuali ingin menghapus data.

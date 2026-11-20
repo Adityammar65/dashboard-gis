@@ -38,7 +38,7 @@ services:
     image: mysql:8.0
     container_name: dashboard-gis-mysql
     ports:
-      - "${MYSQL_PORT:-5060}:3306"
+      - "${MYSQL_PORT:-3307}:3306"
     environment:
       MYSQL_DATABASE: "${DB_DATABASE:-gis_database}"
       MYSQL_USER: "laravel"
