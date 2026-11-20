@@ -27,7 +27,7 @@ export default function AuthLayout({ children, errorMessage }) {
                 className="gis-auth-hero relative flex w-1/2 items-center justify-center overflow-hidden max-md:h-auto max-md:min-h-0 max-md:w-full max-md:px-5 max-md:pb-12 max-md:pt-10"
                 style={{
                     backgroundImage:
-                        `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)), url('${asset("public/Assets/LoginBackground.jpg")}')`,
+                        `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)), url('${asset("Assets/LoginBackground.jpg")}')`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}
@@ -44,7 +44,7 @@ export default function AuthLayout({ children, errorMessage }) {
 
                 <div className="relative flex flex-row items-center gap-8 max-md:flex-col max-md:gap-3 max-md:px-0 max-md:text-center">
                     <img
-                        src={asset("public/Assets/Logo.png")}
+                        src={asset("Assets/Logo.png")}
                         alt="Logo"
                         className="w-25 max-md:w-16"
                         width="100"

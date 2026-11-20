@@ -175,7 +175,7 @@ const Header = memo(function Header({ onMenu }) {
                 )}
                 <div>
                     <img
-                        src={asset("public/Assets/Logo.png")}
+                        src={asset("Assets/Logo.png")}
                         alt="Logo"
                         className="w-10 max-md:w-8"
                         width="40"

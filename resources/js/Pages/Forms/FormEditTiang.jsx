@@ -6,10 +6,11 @@ import { useState, useEffect, useMemo } from "react";
 import useBase from "../../hooks/useBase";
 
 export default function FormEditTiang({ tiang, wilayah }) {
+    const base = useBase();
     const getFotoUrl = (foto) => {
         if (!foto) return null;
 
-        return `../public/storage/${foto}`;
+        return `${base}/storage/${foto}`.replace(/\/+/g, '/');
     };
 
     const [form, setForm] = useState({
@@ -35,7 +36,6 @@ export default function FormEditTiang({ tiang, wilayah }) {
     const [kecamatanLoading, setKecamatanLoading] = useState(false);
     const [kelurahanLoading, setKelurahanLoading] = useState(false);
     const [kelurahanManual, setKelurahanManual] = useState(false);
-    const base = useBase();
     const resolveUrl = (path) => `${base}/${path}`.replace(/\/+/g, '/');
 
     // Kecamatan Kelurahan

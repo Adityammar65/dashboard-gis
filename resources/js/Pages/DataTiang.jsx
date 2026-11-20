@@ -790,7 +790,7 @@ export default function DataTiang({
                                                     {tiang.foto_tiang_1 ? (
 
                                                         <img
-                                                            src={`${base}/public/storage/${tiang.foto_tiang_1}`.replace(/\/+/g, '/')}
+                                                            src={`${base}/storage/${tiang.foto_tiang_1}`.replace(/\/+/g, '/')}
                                                             alt={`Foto ${tiang.kode_tiang}`}
                                                             className="h-full w-full object-cover"
                                                             loading="lazy"
@@ -941,7 +941,7 @@ export default function DataTiang({
                                     key={tiang.id ?? index}
                                     title={tiang.kode_tiang}
                                     subtitle={`${tiang.wilayah || tiang.kabupaten || ""}${(tiang.kecamatan || tiang.area) ? ` • ${tiang.kecamatan || tiang.area}` : ""}`}
-                                    imageSrc={tiang.foto_tiang_1 ? `${base}/public/storage/${tiang.foto_tiang_1}`.replace(/\/+/g, '/') : null}
+                                    imageSrc={tiang.foto_tiang_1 ? `${base}/storage/${tiang.foto_tiang_1}`.replace(/\/+/g, '/') : null}
                                     imageAlt={`Foto ${tiang.kode_tiang || "tiang"}`}
                                     status={tiang.status}
                                     meta={[

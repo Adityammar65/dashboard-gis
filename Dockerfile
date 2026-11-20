@@ -39,13 +39,14 @@ COPY . .
 RUN rm -f .env
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=frontend /app/public/build ./public/build
+RUN printf '%s\n' '<?php' 'require dirname(__DIR__) . "/index.php";' > public/index.php
 
 RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && rm -rf bootstrap/cache/* \
     && chown -R daemon:daemon storage bootstrap/cache public
 
-USER daemon
+USER root
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "if [ -z \"$APP_KEY\" ]; then key_file=/var/www/html/storage/app/.docker-app-key; if [ ! -s \"$key_file\" ]; then php artisan key:generate --show > \"$key_file\"; fi; export APP_KEY=\"$(cat \"$key_file\")\"; fi; php artisan migrate --force && php artisan storage:link --force && exec php artisan serve --host=0.0.0.0 --port=8000"]
+CMD ["sh", "-c", "chown -R daemon:daemon /var/www/html/storage/app /var/www/html/bootstrap/cache && su daemon -s /bin/sh -c 'if [ -z \"$APP_KEY\" ]; then key_file=/var/www/html/storage/app/.docker-app-key; if [ ! -s \"$key_file\" ]; then php artisan key:generate --show > \"$key_file\"; fi; export APP_KEY=\"$(cat \"$key_file\")\"; fi; php artisan migrate --force && php artisan storage:link --force && exec php artisan serve --host=0.0.0.0 --port=8000'"]

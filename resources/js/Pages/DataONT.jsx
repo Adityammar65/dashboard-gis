@@ -788,7 +788,7 @@ export default function DataONT({
                                                     {ont.foto_ont_1 ? (
 
                                                         <img
-                                                            src={`${base}/public/storage/${ont.foto_ont_1}`.replace(/\/+/g, '/')}
+                                                            src={`${base}/storage/${ont.foto_ont_1}`.replace(/\/+/g, '/')}
                                                             alt={`Foto ${ont.kode_ont}`}
                                                             className="h-full w-full object-cover"
                                                             loading="lazy"
@@ -939,7 +939,7 @@ export default function DataONT({
                                     key={ont.id ?? index}
                                     title={ont.kode_ont}
                                     subtitle={`${ont.wilayah || ont.kabupaten || ""}${(ont.kecamatan || ont.area) ? ` • ${ont.kecamatan || ont.area}` : ""}`}
-                                    imageSrc={ont.foto_ont_1 ? `${base}/public/storage/${ont.foto_ont_1}`.replace(/\/+/g, '/') : null}
+                                    imageSrc={ont.foto_ont_1 ? `${base}/storage/${ont.foto_ont_1}`.replace(/\/+/g, '/') : null}
                                     imageAlt={`Foto ${ont.kode_ont || "ont"}`}
                                     status={ont.status}
                                     meta={[

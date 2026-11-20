@@ -6,10 +6,11 @@ import { useState, useEffect, useMemo } from "react";
 import useBase from "../../hooks/useBase";
 
 export default function FormEditONT({ ont, wilayah }) {
+    const base = useBase();
     const getFotoUrl = (foto) => {
         if (!foto) return null;
 
-        return `../public/storage/${foto}`;
+        return `${base}/storage/${foto}`.replace(/\/+/g, '/');
     };
 
     const [form, setForm] = useState({
@@ -37,7 +38,6 @@ export default function FormEditONT({ ont, wilayah }) {
     const [kelurahanManual, setKelurahanManual] = useState(false);
     const [kecFocused, setKecFocused] = useState(false);
     const [kelFocused, setKelFocused] = useState(false);
-    const base = useBase();
     const resolveUrl = (path) => `${base}/${path}`.replace(/\/+/g, '/');
     useEffect(() => {
         let cancelled = false;

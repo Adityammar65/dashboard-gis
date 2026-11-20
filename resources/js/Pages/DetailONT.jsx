@@ -13,7 +13,7 @@ export default function DetailONT({ ont }) {
 
     const getFotoUrl = (foto) => {
         if (!foto) return null;
-        return `${base}/public/storage/${foto}`.replace(/\/+/g, '/');
+        return `${base}/storage/${foto}`.replace(/\/+/g, '/');
     };
 
     const images = [

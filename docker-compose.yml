@@ -4,7 +4,6 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: dashboard-gis-app
-    user: "daemon:daemon"
     ports:
       - "${APP_PORT:-8090}:8000"
     environment:
