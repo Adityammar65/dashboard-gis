@@ -19,6 +19,37 @@ Dashboard GIS untuk memantau dan mengelola aset jaringan **Tiang** dan **ONT** b
 - **MySQL**
 - **Git**
 
+## Panduan Docker
+
+Project ini menyediakan Docker Compose untuk menggantikan XAMPP lokal.
+
+```bash
+docker compose up -d --build
+```
+
+Compose otomatis membuat `APP_KEY`, menunggu MySQL siap, menjalankan migrasi, lalu menjalankan aplikasi sebagai user `daemon`. Key dan database tersimpan di Docker volumes. Aplikasi tersedia di `http://localhost:8090`; MySQL host port `5060` dipetakan ke port internal `3306`.
+
+---
+
+### Improvement (branch ini)
+
+- **Docker Compose** menggantikan XAMPP lokal; jalankan seluruh aplikasi dengan `docker compose up -d --build`.
+- **Port mapping**: aplikasi di `8090`, MySQL di `5060` (port internal MySQL tetap `3306`).
+- **Database terisolasi**: app container selalu memakai `DB_HOST=mysql`; `.env` XAMPP dengan `DB_HOST=127.0.0.1` tidak memengaruhi koneksi Docker.
+- **Permission**: PHP berjalan sebagai `daemon:daemon`; direktori storage, cache, dan `public` writable.
+- **Volume persisten** menyimpan data MySQL, file aplikasi, dan cache saat container dihentikan. Hindari `docker compose down -v` kecuali ingin menghapus data.
+- **Startup otomatis** membuat dan menyimpan `APP_KEY`, menunggu MySQL siap, menjalankan migrasi, lalu membuat storage link.
+- **Build multi-stage** menghasilkan asset frontend dan dependency PHP di image runtime lokal; tidak perlu login ke registry. Base image publik tetap diunduh jika belum ada di mesin.
+- `.env.example` mencantumkan URL dan port Docker default.
+
+Untuk memuat data awal:
+
+```bash
+docker compose exec app php artisan db:seed --force
+```
+
+Untuk menghentikan layanan, jalankan `docker compose down`. Jangan tambahkan `-v` kecuali ingin menghapus data database dan file aplikasi.
+
 ## Panduan Instalasi
 
 ### 1. Clone Proyek
