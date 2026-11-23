@@ -8,16 +8,28 @@ use Illuminate\Support\Str;
 
 class OntSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     * 2 per wilayah, kode O-<KODE>-<n>, random area, lorem 5 words, petugas John/Jane Doe, 404 dummy image.
-     * Run manually: php artisan db:seed --class=OntSeeder
-     * Not registered in DatabaseSeeder.
-     */
     public function run(): void
     {
-        $areas = ['Area A', 'Area B', 'Area C', 'Kawasan 1', 'Kawasan 2', 'Blok Utara', 'Blok Selatan'];
-        $kelurahan = ['Kel. A', 'Kel. B', 'Kelurahan C', 'Kelurahan 1', 'Kelurahan 2', 'Kel. Utara', 'Kel. Selatan'];
+        $areas = [
+            'Area A',
+            'Area B',
+            'Area C',
+            'Kawasan 1',
+            'Kawasan 2',
+            'Blok Utara',
+            'Blok Selatan'
+        ];
+
+        $kelurahan = [
+            'Kel. A',
+            'Kel. B',
+            'Kelurahan C',
+            'Kelurahan 1',
+            'Kelurahan 2',
+            'Kel. Utara',
+            'Kel. Selatan'
+        ];
+
         $lorems = [
             'Lorem ipsum dolor sit amet',
             'Consectetur adipiscing elit sed do',
@@ -27,6 +39,7 @@ class OntSeeder extends Seeder
             'Sed ut perspiciatis unde omnis',
             'Nemo enim ipsam voluptatem quia',
         ];
+
         $petugas = ['John Doe', 'Jane Doe'];
 
         $wilayahData = [
@@ -42,26 +55,32 @@ class OntSeeder extends Seeder
 
         foreach ($wilayahData as $w) {
             [$latMin, $latMax, $lngMin, $lngMax] = $w['bbox'];
+
             for ($n = 1; $n <= 2; $n++) {
+                $kodeOnt = sprintf('SIMS-%s-%03d', $w['kode'], $n);
+
                 $lat = $latMin + (mt_rand() / mt_getrandmax()) * ($latMax - $latMin);
                 $lng = $lngMin + (mt_rand() / mt_getrandmax()) * ($lngMax - $lngMin);
 
-                ONTModel::create([
-                    'kode_ont' => sprintf("SIMS-%s-%03d", $w['kode'], $n),
-                    'wilayah' => $w['nama'],
-                    'kecamatan' => $areas[array_rand($areas)],
-                    'kelurahan' => $kelurahan[array_rand($kelurahan)],
-                    'deskripsi_ont' => Str::words($lorems[array_rand($lorems)], 5, ''),
-                    'foto_ont_1' => 'ont/dummy.jpg',
-                    'foto_ont_2' => 'ont/dummy.jpg',
-                    'foto_ont_3' => 'ont/dummy.jpg',
-                    'foto_ont_4' => 'ont/dummy.jpg',
-                    'foto_ont_5' => 'ont/dummy.jpg',
-                    'latitude' => number_format($lat, 6, '.', ''),
-                    'longitude' => number_format($lng, 6, '.', ''),
-                    'nama_petugas' => $petugas[array_rand($petugas)],
-                    'status' => (bool) random_int(0, 1) ? 'aktif' : 'nonaktif',
-                ]);
+                ONTModel::updateOrCreate(
+                    ['kode_ont' => $kodeOnt],
+                    [
+                        'wilayah' => $w['nama'],
+                        'kode_wilayah' => $w['kode'],
+                        'kecamatan' => $areas[array_rand($areas)],
+                        'kelurahan' => $kelurahan[array_rand($kelurahan)],
+                        'deskripsi_ont' => Str::words($lorems[array_rand($lorems)], 5, ''),
+                        'foto_ont_1' => 'ont/dummy.jpg',
+                        'foto_ont_2' => 'ont/dummy.jpg',
+                        'foto_ont_3' => 'ont/dummy.jpg',
+                        'foto_ont_4' => 'ont/dummy.jpg',
+                        'foto_ont_5' => 'ont/dummy.jpg',
+                        'latitude' => number_format($lat, 6, '.', ''),
+                        'longitude' => number_format($lng, 6, '.', ''),
+                        'nama_petugas' => $petugas[array_rand($petugas)],
+                        'status' => random_int(0, 1) ? 'aktif' : 'nonaktif',
+                    ]
+                );
             }
         }
     }

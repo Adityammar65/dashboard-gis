@@ -188,7 +188,7 @@ export default function Tiang({
                                     Semua Wilayah
                                 </option>
                                 {wilayah.map((item) => (
-                                    <option key={item.id} value={item.id} className="capitalize">
+                                    <option key={item.kode_wilayah} value={item.kode_wilayah} className="capitalize">
                                         {item.nama_wilayah}
                                     </option>
                                 ))}
@@ -263,7 +263,7 @@ export default function Tiang({
                             <tbody className="text-center capitalize divide-y divide-gray-100 dark:divide-night-700">
                                 {listWilayah.length > 0 ? (
                                     listWilayah.map((row, index) => (
-                                        <tr key={row.id ?? row.nama_wilayah ?? index} className="border-b border-gray-100 dark:border-night-700 last:border-b-0 hover:bg-gray-50/80 dark:hover:bg-night-800/80 transition-colors font-light">
+                                        <tr key={row.kode_wilayah ?? row.nama_wilayah ?? index} className="border-b border-gray-100 dark:border-night-700 last:border-b-0 hover:bg-gray-50/80 dark:hover:bg-night-800/80 transition-colors font-light">
                                             <td className="px-4 py-2">
                                                 {String((dataWilayah?.from ? dataWilayah.from + index : index + 1)).padStart(2, "0")}
                                             </td>
@@ -300,7 +300,7 @@ export default function Tiang({
                                                 <div className="flex items-center justify-center">
                                                     <TableDelete
                                                         type="wilayah"
-                                                        id={row.id}
+                                                        id={row.kode_wilayah}
                                                         name={row.nama_wilayah}
                                                         base={base}
                                                         title="Hapus Wilayah"
@@ -323,7 +323,7 @@ export default function Tiang({
                         {listWilayah.length > 0 ? (
                             listWilayah.map((row, index) => (
                                 <MobileDataCard
-                                    key={row.id ?? row.nama_wilayah ?? index}
+                                    key={row.kode_wilayah ?? row.nama_wilayah ?? index}
                                     title={row.nama_wilayah}
                                     subtitle={`Total ${row.total_aset ?? 0} aset • Tiang ${row.total_tiang ?? 0} • ONT ${row.total_ont ?? 0}`}
                                     imageSrc={null}
@@ -336,7 +336,7 @@ export default function Tiang({
                                     actions={
                                         <CardDelete
                                             type="wilayah"
-                                            id={row.id}
+                                            id={row.kode_wilayah}
                                             name={row.nama_wilayah}
                                             base={base}
                                         />

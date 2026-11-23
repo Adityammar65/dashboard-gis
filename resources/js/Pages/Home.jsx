@@ -41,7 +41,7 @@ export default function Dashboard() {
     const markers = useMemo(() => {
         if (!hasWilayah) return [];
         const tiangMarkers = tiang.map((t) => ({
-            id: t.id,
+            id: t.kode_tiang,
             type: "tiang",
             kode: t.kode_tiang,
             status: t.status,
@@ -53,7 +53,7 @@ export default function Dashboard() {
             longitude: t.longitude,
         }));
         const ontMarkers = ont.map((o) => ({
-            id: o.id,
+            id: o.kode_ont,
             type: "ont",
             kode: o.kode_ont,
             status: o.status,

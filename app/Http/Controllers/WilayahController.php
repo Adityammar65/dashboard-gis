@@ -20,7 +20,7 @@ class WilayahController extends Controller
         try {
             $validated = $request->validate([
                 'nama_wilayah' => 'required|string|max:255|unique:wilayah,nama_wilayah',
-                'kode_wilayah' => 'required|string|max:255|unique:wilayah,kode_wilayah',
+                'kode_wilayah' => ['required', 'regex:/^[A-Za-z]{3}$/', 'unique:wilayah,kode_wilayah'],
             ], [
                 'nama_wilayah.required' => 'Nama Wilayah wajib diisi.',
                 'nama_wilayah.unique' => 'Nama Wilayah sudah digunakan.',
@@ -57,12 +57,12 @@ class WilayahController extends Controller
 
     public function HapusWilayah($id)
     {
-        $wilayah = WilayahModel::findOrFail($id);
+        $wilayah = WilayahModel::where('kode_wilayah', $id)->firstOrFail();
         $nama = $wilayah->nama_wilayah;
         $kode = $wilayah->kode_wilayah;
 
-        $tiangCount = TiangModel::where('wilayah', $nama)->count();
-        $ontCount = ONTModel::where('wilayah', $nama)->count();
+        $tiangCount = TiangModel::where('kode_wilayah', $kode)->count();
+        $ontCount = ONTModel::where('kode_wilayah', $kode)->count();
 
         if ($tiangCount > 0 || $ontCount > 0) {
             $parts = [];
@@ -76,7 +76,7 @@ class WilayahController extends Controller
         $wilayah->delete();
 
         Cache::forget('wilayah:list');
-        Cache::forget('wilayah:' . $id);
+        Cache::forget('wilayah:' . $kode);
         Cache::forget('wilayah:name:' . strtolower($nama));
 
         NotifikasiHelper::kirim('Data Wilayah Dihapus', 'wilayah', "Wilayah {$nama} ({$kode}) berhasil dihapus.");

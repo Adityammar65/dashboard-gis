@@ -200,7 +200,7 @@ export default function FormEditONT({ ont, wilayah }) {
         e.preventDefault();
 
         router.post(
-            resolveUrl(`update-ont/${ont.id}`),
+            resolveUrl(`update-ont/${ont.kode_ont}`),
             {
                 ...form,
                 hapus_foto_1: hapusFoto.foto_ont_1 ? 1 : 0,

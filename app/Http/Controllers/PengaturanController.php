@@ -14,13 +14,12 @@ class PengaturanController extends Controller
     public function perbaruiWilayah(Request $request)
     {
         $request->validate([
-            'wilayah' => ['required', 'exists:wilayah,id'],
+            'wilayah' => ['required', 'exists:wilayah,kode_wilayah'],
         ]);
 
-        $wilayah = WilayahModel::findOrFail($request->wilayah);
+        $wilayah = WilayahModel::where('kode_wilayah', $request->wilayah)->firstOrFail();
 
         $settings = [
-            'id' => $wilayah->id,
             'nama_wilayah' => $wilayah->nama_wilayah,
             'kode_wilayah' => $wilayah->kode_wilayah,
         ];

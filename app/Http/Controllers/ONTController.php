@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ONTModel;
+use App\Models\WilayahModel;
 use App\Helpers\NotifikasiHelper;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -61,6 +62,7 @@ class ONTController extends Controller
             $data = [
                 'kode_ont'      => $validated['kode_ont'],
                 'wilayah'         => $validated['wilayah'],
+                'kode_wilayah'    => WilayahModel::where('nama_wilayah', $validated['wilayah'])->value('kode_wilayah'),
                 'kecamatan'       => $validated['kecamatan'],
                 'kelurahan'       => $validated['kelurahan'],
                 'deskripsi_ont' => $validated['deskripsi_ont'],
@@ -120,9 +122,9 @@ class ONTController extends Controller
         $newFiles = [];
         $oldFilesToDelete = [];
         try {
-            $ont = ONTModel::findOrFail($id);
+            $ont = ONTModel::where('kode_ont', $id)->firstOrFail();
             $validated = $request->validate([
-                'kode_ont'      => 'required|string|max:255|unique:ont,kode_ont,' . $id,
+                'kode_ont'      => 'required|string|max:255|unique:ont,kode_ont,' . $ont->kode_ont,
                 'wilayah'         => 'required|string|max:255',
                 'kecamatan'       => 'required|string|max:255',
                 'kelurahan'       => 'required|string|max:255',
@@ -159,6 +161,7 @@ class ONTController extends Controller
             $data = [
                 'kode_ont'      => $validated['kode_ont'],
                 'wilayah'         => $validated['wilayah'],
+                'kode_wilayah'    => WilayahModel::where('nama_wilayah', $validated['wilayah'])->value('kode_wilayah'),
                 'kecamatan'       => $validated['kecamatan'],
                 'kelurahan'       => $validated['kelurahan'],
                 'deskripsi_ont' => $validated['deskripsi_ont'],
@@ -237,7 +240,7 @@ class ONTController extends Controller
 
     public function HapusONT($id)
     {
-        $ont = ONTModel::findOrFail($id);
+        $ont = ONTModel::where('kode_ont', $id)->firstOrFail();
         $kode = $ont->kode_ont;
         $lama = $ont->toArray();
         $files = array_filter([$ont->foto_ont_1, $ont->foto_ont_2, $ont->foto_ont_3, $ont->foto_ont_4, $ont->foto_ont_5]);

@@ -35,7 +35,7 @@ class FormulirController extends Controller
 
     public function EditTiang($id)
     {
-        $tiang = \App\Models\TiangModel::findOrFail($id);
+        $tiang = \App\Models\TiangModel::where('kode_tiang', $id)->firstOrFail();
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
         return Inertia::render('Forms/FormEditTiang', [
             'tiang' => $tiang,
@@ -47,7 +47,7 @@ class FormulirController extends Controller
 
     public function EditONT($id)
     {
-        $ont = ONTModel::findOrFail($id);
+        $ont = ONTModel::where('kode_ont', $id)->firstOrFail();
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
         return Inertia::render('Forms/FormEditONT', [
             'ont' => $ont,

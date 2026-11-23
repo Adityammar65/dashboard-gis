@@ -91,14 +91,14 @@ class SetelUlangKataSandiController extends Controller
             }
 
             $sudahDipakai = UserModel::where('username', $userBaru)
-                ->where('id', '!=', $user->id)
+                ->where('id_user', '!=', $user->id_user)
                 ->exists();
 
             if ($sudahDipakai) {
                 return back()->withErrors(['Username baru sudah digunakan pengguna lain.']);
             }
 
-            DB::table('user')->where('id', $user->id)->update([
+            DB::table('user')->where('id_user', $user->id_user)->update([
                 'username' => $userBaru,
                 'updated_at' => now(),
             ]);
@@ -116,7 +116,7 @@ class SetelUlangKataSandiController extends Controller
             return back()->withErrors(['Data kata sandi pada permintaan tidak valid.']);
         }
 
-        DB::table('user')->where('id', $user->id)->update([
+        DB::table('user')->where('id_user', $user->id_user)->update([
             'password' => $reset->password_baru,
             'remember_token' => null,
             'updated_at' => now(),

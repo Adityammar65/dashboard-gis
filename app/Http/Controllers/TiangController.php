@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TiangModel;
+use App\Models\WilayahModel;
 use App\Helpers\NotifikasiHelper;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -63,6 +64,7 @@ class TiangController extends Controller
             $data = [
                 'kode_tiang'      => $validated['kode_tiang'],
                 'wilayah'         => $validated['wilayah'],
+                'kode_wilayah'    => WilayahModel::where('nama_wilayah', $validated['wilayah'])->value('kode_wilayah'),
                 'kecamatan'       => $validated['kecamatan'],
                 'kelurahan'       => $validated['kelurahan'],
                 'deskripsi_tiang' => $validated['deskripsi_tiang'],
@@ -122,9 +124,9 @@ class TiangController extends Controller
         $newFiles = [];
         $oldFilesToDelete = [];
         try {
-            $tiang = TiangModel::findOrFail($id);
+            $tiang = TiangModel::where('kode_tiang', $id)->firstOrFail();
             $validated = $request->validate([
-                'kode_tiang'      => 'required|string|max:255|unique:tiang,kode_tiang,' . $id,
+                'kode_tiang'      => 'required|string|max:255|unique:tiang,kode_tiang,' . $tiang->kode_tiang,
                 'wilayah'         => 'required|string|max:255',
                 'kecamatan'       => 'required|string|max:255',
                 'kelurahan'       => 'required|string|max:255',
@@ -161,6 +163,7 @@ class TiangController extends Controller
             $data = [
                 'kode_tiang'      => $validated['kode_tiang'],
                 'wilayah'         => $validated['wilayah'],
+                'kode_wilayah'    => WilayahModel::where('nama_wilayah', $validated['wilayah'])->value('kode_wilayah'),
                 'kecamatan'       => $validated['kecamatan'],
                 'kelurahan'       => $validated['kelurahan'],
                 'deskripsi_tiang' => $validated['deskripsi_tiang'],
@@ -239,7 +242,7 @@ class TiangController extends Controller
 
     public function HapusTiang($id)
     {
-        $tiang = TiangModel::findOrFail($id);
+        $tiang = TiangModel::where('kode_tiang', $id)->firstOrFail();
         $kode = $tiang->kode_tiang;
         $lama = $tiang->toArray();
         $files = array_filter([$tiang->foto_tiang_1, $tiang->foto_tiang_2, $tiang->foto_tiang_3, $tiang->foto_tiang_4, $tiang->foto_tiang_5]);

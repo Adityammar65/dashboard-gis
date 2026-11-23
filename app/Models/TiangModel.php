@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class TiangModel extends Model
 {
     protected $table = 'tiang';
+    protected $primaryKey = 'kode_tiang';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'kode_tiang',
         'wilayah',
+        'kode_wilayah',
         'kecamatan',
         'kelurahan',
         'deskripsi_tiang',

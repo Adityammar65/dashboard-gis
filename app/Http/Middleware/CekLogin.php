@@ -29,7 +29,7 @@ class CekLogin
                     $request->session()->regenerate();
                     $request->session()->put([
                         'login' => true,
-                        'user_id' => $user->id,
+                        'user_id' => $user->id_user,
                         'username' => $user->username,
                     ]);
 

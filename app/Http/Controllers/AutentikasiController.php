@@ -40,7 +40,7 @@ class AutentikasiController extends Controller
 
         $request->session()->put([
             'login' => true,
-            'user_id' => $user->id,
+            'user_id' => $user->id_user,
             'username' => $user->username
         ]);
 
@@ -52,7 +52,7 @@ class AutentikasiController extends Controller
                 'remember_token' => hash('sha256', $plainToken),
             ])->save();
 
-            $cookieValue = $user->id . '|' . $plainToken;
+            $cookieValue = $user->id_user . '|' . $plainToken;
 
             Cookie::queue(
                 'gis_remember',
@@ -122,7 +122,7 @@ class AutentikasiController extends Controller
                 'string',
                 'min:3',
                 'max:255',
-                Rule::unique('user', 'username')->ignore($user->id),
+                Rule::unique('user', 'username')->ignore($user->id_user, 'id_user'),
             ],
         ], [
             'username.unique' => 'Username sudah digunakan.',
@@ -260,7 +260,7 @@ class AutentikasiController extends Controller
                     'string',
                     'min:3',
                     'max:255',
-                    Rule::unique('user', 'username')->ignore($user->id),
+                    Rule::unique('user', 'username')->ignore($user->id_user, 'id_user'),
                 ],
             ], [
                 'username.unique' => 'Username sudah digunakan.',

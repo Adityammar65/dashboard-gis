@@ -19,10 +19,10 @@ class WilayahApiController extends Controller
             if (!file_exists($path)) return [];
             return json_decode(file_get_contents($path), true) ?? [];
         });
-        $id = $settings['id'] ?? null;
+        $kodeWilayah = $settings['kode_wilayah'] ?? null;
         $nama = $settings['nama_wilayah'] ?? null;
-        if ($id) {
-            $w = WilayahModel::find($id);
+        if ($kodeWilayah) {
+            $w = WilayahModel::where('kode_wilayah', $kodeWilayah)->first();
             if ($w) return $w;
         }
         if ($nama) {

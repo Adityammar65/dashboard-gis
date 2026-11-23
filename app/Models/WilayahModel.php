@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Cache;
 class WilayahModel extends Model
 {
     protected $table = 'wilayah';
+    protected $primaryKey = 'kode_wilayah';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'nama_wilayah',
@@ -18,8 +21,8 @@ class WilayahModel extends Model
     {
         $clearCache = function ($model) {
             Cache::forget('wilayah:list');
-            if ($model->id) {
-                Cache::forget('wilayah:' . $model->id);
+            if ($model->kode_wilayah) {
+                Cache::forget('wilayah:' . $model->kode_wilayah);
             }
             if ($model->nama_wilayah) {
                 Cache::forget('wilayah:name:' . strtolower($model->nama_wilayah));

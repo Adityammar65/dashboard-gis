@@ -49,4 +49,7 @@ USER root
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "chown -R daemon:daemon /var/www/html/storage/app /var/www/html/bootstrap/cache && su daemon -s /bin/sh -c 'if [ -z \"$APP_KEY\" ]; then key_file=/var/www/html/storage/app/.docker-app-key; if [ ! -s \"$key_file\" ]; then php artisan key:generate --show > \"$key_file\"; fi; export APP_KEY=\"$(cat \"$key_file\")\"; fi; php artisan migrate --force && php artisan storage:link --force && exec php artisan serve --host=0.0.0.0 --port=8000'"]
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+COPY wait-for-mysql.php /usr/local/bin/wait-for-mysql.php
+RUN chmod +x /usr/local/bin/docker-entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint"]

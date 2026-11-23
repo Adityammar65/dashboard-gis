@@ -65,7 +65,7 @@ export default function DataTiang({
 
     const selectedWilayahLabel = useMemo(() => {
         if (!filterWilayah) return "Semua Wilayah";
-        const found = wilayah.find((item) => String(item.id) === String(filterWilayah));
+        const found = wilayah.find((item) => String(item.kode_wilayah) === String(filterWilayah));
         return found ? found.nama_wilayah : "Semua Wilayah";
     }, [filterWilayah, wilayah]);
 
@@ -97,7 +97,7 @@ export default function DataTiang({
 
     useEffect(() => {
         if (!filterWilayah) { setKecamatanOptions([]); return; }
-        const wil = wilayah.find((w) => String(w.id) === String(filterWilayah));
+        const wil = wilayah.find((w) => String(w.kode_wilayah) === String(filterWilayah));
         const kode = wil?.kode_wilayah || "";
         if (!kode) { setKecamatanOptions([]); return; }
         let cancelled = false;
@@ -561,8 +561,8 @@ export default function DataTiang({
                                 {wilayah.map((item) => (
                                     <option
                                         className="capitalize"
-                                        key={item.id}
-                                        value={item.id}
+                                        key={item.kode_wilayah}
+                                        value={item.kode_wilayah}
                                     >
                                         {item.nama_wilayah}
                                     </option>

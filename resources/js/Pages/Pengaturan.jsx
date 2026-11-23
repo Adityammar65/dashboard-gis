@@ -98,7 +98,7 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
     };
 
     const handleApproveReset = (item) => {
-        const id = typeof item === "object" ? item.id : item;
+        const id = typeof item === "object" ? item.kode_wilayah : item;
         const label = typeof item === "object" ? getRequestDetail(item) : `akun "${item}"`;
         if (!window.confirm(`Setujui ${getRequestLabel(typeof item === "object" ? item : null)} untuk ${label}?`)) {
             return;
@@ -108,7 +108,7 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
     };
 
     const handleRejectReset = (item) => {
-        const id = typeof item === "object" ? item.id : item;
+        const id = typeof item === "object" ? item.kode_wilayah : item;
         const label = typeof item === "object" ? getRequestDetail(item) : `akun "${item}"`;
         if (!window.confirm(`Tolak ${getRequestLabel(typeof item === "object" ? item : null)} untuk ${label}?`)) {
             return;
@@ -416,8 +416,8 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                                         {wilayah.map((item) => (
                                             <option
                                                 className="capitalize"
-                                                key={item.id}
-                                                value={item.id}
+                                                key={item.kode_wilayah}
+                                                value={item.kode_wilayah}
                                             >
                                                 {item.nama_wilayah}
                                             </option>
@@ -471,7 +471,7 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                                 const own = isOwnRequest(item);
                                 return (
                                 <div
-                                    key={item.id}
+                                    key={item.kode_wilayah}
                                     className="flex items-center gap-3 rounded-xl border border-gray-100 dark:border-night-700 bg-white dark:bg-night-900 px-4 py-3 shadow-sm max-md:flex-wrap"
                                 >
                                     <div className="min-w-0 flex-1">
@@ -531,7 +531,7 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
                             <div className="space-y-2">
                                 {resetHistory.map((item) => (
                                     <div
-                                        key={item.id}
+                                        key={item.kode_wilayah}
                                         className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-xs max-md:flex-wrap max-md:gap-1"
                                     >
                                         <span className="truncate font-medium text-gray-700 dark:text-night-200" title={getRequestDetail(item)}>

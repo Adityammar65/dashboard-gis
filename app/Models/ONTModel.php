@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class ONTModel extends Model
 {
     protected $table = 'ont';
+    protected $primaryKey = 'kode_ont';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'kode_ont',
         'wilayah',
+        'kode_wilayah',
         'kecamatan',
         'kelurahan',
         'deskripsi_ont',

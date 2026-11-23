@@ -34,7 +34,6 @@ class BuatPengaturan extends Command
         }
 
         $settings = [
-            'id' => 1,
             'nama_wilayah' => 'yogyakarta',
             'kode_wilayah' => 'YGY',
         ];

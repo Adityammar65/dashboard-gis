@@ -35,7 +35,7 @@ export default function Peta() {
     const markers = useMemo(() => {
         const tiangMarkers = (assetType === "Semua" || assetType === "Tiang")
             ? tiang.filter(matchesScope).map((t) => ({
-                id: t.id,
+                id: t.kode_tiang,
                 type: "tiang",
                 kode: t.kode_tiang,
                 status: t.status,
@@ -49,7 +49,7 @@ export default function Peta() {
             : [];
         const ontMarkers = (assetType === "Semua" || assetType === "ONT")
             ? ont.filter(matchesScope).map((o) => ({
-                id: o.id,
+                id: o.kode_ont,
                 type: "ont",
                 kode: o.kode_ont,
                 status: o.status,

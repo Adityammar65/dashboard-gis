@@ -251,7 +251,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
         e.preventDefault();
 
         router.post(
-            resolveUrl(`update-tiang/${tiang.id}`),
+            resolveUrl(`update-tiang/${tiang.kode_tiang}`),
             {
                 ...form,
                 hapus_foto_1: hapusFoto.foto_tiang_1 ? 1 : 0,

@@ -8,16 +8,28 @@ use Illuminate\Support\Str;
 
 class TiangSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     * 2 per wilayah, kode T-<KODE>-<n>, random area, lorem 5 words, petugas John/Jane Doe, 404 dummy image.
-     * Run manually: php artisan db:seed --class=TiangSeeder
-     * Not registered in DatabaseSeeder.
-     */
     public function run(): void
     {
-        $areas = ['Area A', 'Area B', 'Area C', 'Kawasan 1', 'Kawasan 2', 'Blok Utara', 'Blok Selatan'];
-        $kelurahan = ['Kel. A', 'Kel. B', 'Kelurahan C', 'Kelurahan 1', 'Kelurahan 2', 'Kel. Utara', 'Kel. Selatan'];
+        $areas = [
+            'Area A',
+            'Area B',
+            'Area C',
+            'Kawasan 1',
+            'Kawasan 2',
+            'Blok Utara',
+            'Blok Selatan'
+        ];
+
+        $kelurahan = [
+            'Kel. A',
+            'Kel. B',
+            'Kelurahan C',
+            'Kelurahan 1',
+            'Kelurahan 2',
+            'Kel. Utara',
+            'Kel. Selatan'
+        ];
+
         $lorems = [
             'Lorem ipsum dolor sit amet',
             'Consectetur adipiscing elit sed do',
@@ -27,9 +39,9 @@ class TiangSeeder extends Seeder
             'Sed ut perspiciatis unde omnis',
             'Nemo enim ipsam voluptatem quia',
         ];
+
         $petugas = ['John Doe', 'Jane Doe'];
 
-        // bbox per wilayah: [latMin, latMax, lngMin, lngMax]
         $wilayahData = [
             ['nama' => 'yogyakarta', 'kode' => 'YGY', 'bbox' => [-7.825, -7.770, 110.330, 110.390]],
             ['nama' => 'sleman', 'kode' => 'SLM', 'bbox' => [-7.760, -7.680, 110.300, 110.450]],
@@ -43,26 +55,32 @@ class TiangSeeder extends Seeder
 
         foreach ($wilayahData as $w) {
             [$latMin, $latMax, $lngMin, $lngMax] = $w['bbox'];
+
             for ($n = 1; $n <= 2; $n++) {
+                $kodeTiang = sprintf('SIMS-%s-%03d', $w['kode'], $n);
+
                 $lat = $latMin + (mt_rand() / mt_getrandmax()) * ($latMax - $latMin);
                 $lng = $lngMin + (mt_rand() / mt_getrandmax()) * ($lngMax - $lngMin);
 
-                TiangModel::create([
-                    'kode_tiang' => sprintf("SIMS-%s-%03d", $w['kode'], $n),
-                    'wilayah' => $w['nama'],
-                    'kecamatan' => $areas[array_rand($areas)],
-                    'kelurahan' => $kelurahan[array_rand($kelurahan)],
-                    'deskripsi_tiang' => Str::words($lorems[array_rand($lorems)], 5, ''),
-                    'foto_tiang_1' => 'tiang/dummy.jpg',
-                    'foto_tiang_2' => 'tiang/dummy.jpg',
-                    'foto_tiang_3' => 'tiang/dummy.jpg',
-                    'foto_tiang_4' => 'tiang/dummy.jpg',
-                    'foto_tiang_5' => 'tiang/dummy.jpg',
-                    'latitude' => number_format($lat, 6, '.', ''),
-                    'longitude' => number_format($lng, 6, '.', ''),
-                    'nama_petugas' => $petugas[array_rand($petugas)],
-                    'status' => (bool) random_int(0, 1) ? 'aktif' : 'nonaktif',
-                ]);
+                TiangModel::updateOrCreate(
+                    ['kode_tiang' => $kodeTiang],
+                    [
+                        'wilayah' => $w['nama'],
+                        'kode_wilayah' => $w['kode'],
+                        'kecamatan' => $areas[array_rand($areas)],
+                        'kelurahan' => $kelurahan[array_rand($kelurahan)],
+                        'deskripsi_tiang' => Str::words($lorems[array_rand($lorems)], 5, ''),
+                        'foto_tiang_1' => 'tiang/dummy.jpg',
+                        'foto_tiang_2' => 'tiang/dummy.jpg',
+                        'foto_tiang_3' => 'tiang/dummy.jpg',
+                        'foto_tiang_4' => 'tiang/dummy.jpg',
+                        'foto_tiang_5' => 'tiang/dummy.jpg',
+                        'latitude' => number_format($lat, 6, '.', ''),
+                        'longitude' => number_format($lng, 6, '.', ''),
+                        'nama_petugas' => $petugas[array_rand($petugas)],
+                        'status' => random_int(0, 1) ? 'aktif' : 'nonaktif',
+                    ]
+                );
             }
         }
     }

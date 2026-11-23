@@ -24,44 +24,48 @@ class HalamanController extends Controller
             if (!file_exists($path)) return [];
             return json_decode(file_get_contents($path), true) ?? [];
         });
+        $kodeWilayah = trim((string) ($settings['kode_wilayah'] ?? ''));
         $namaWilayah = trim((string) ($settings['nama_wilayah'] ?? ''));
+        if ($kodeWilayah === '' && $namaWilayah !== '') {
+            $kodeWilayah = (string) WilayahModel::where('nama_wilayah', $namaWilayah)->value('kode_wilayah');
+        }
 
         $tiang = collect();
         $ont = collect();
 
-        if ($namaWilayah !== '') {
+        if ($kodeWilayah !== '') {
             $tiang = TiangModel::query()
-                ->select(['id', 'kode_tiang', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'latitude', 'longitude'])
-                ->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)])
+                ->select(['kode_tiang as id', 'kode_tiang', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'latitude', 'longitude'])
+                ->where('kode_wilayah', $kodeWilayah)
                 ->whereNotNull('latitude')->where('latitude', '!=', '')
                 ->whereNotNull('longitude')->where('longitude', '!=', '')
-                ->orderByDesc('id')->limit(2000)->get();
+                ->orderByDesc('kode_tiang')->limit(2000)->get();
             $ont = ONTModel::query()
-                ->select(['id', 'kode_ont', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'latitude', 'longitude'])
-                ->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)])
+                ->select(['kode_ont as id', 'kode_ont', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'latitude', 'longitude'])
+                ->where('kode_wilayah', $kodeWilayah)
                 ->whereNotNull('latitude')->where('latitude', '!=', '')
                 ->whereNotNull('longitude')->where('longitude', '!=', '')
-                ->orderByDesc('id')->limit(2000)->get();
+                ->orderByDesc('kode_ont')->limit(2000)->get();
         }
 
         $tiangAgg = TiangModel::query()
-            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->when($kodeWilayah !== '', fn($q) => $q->where('kode_wilayah', $kodeWilayah))
             ->selectRaw("COUNT(*) as total, SUM(CASE WHEN LOWER(status)='aktif' THEN 1 ELSE 0 END) as aktif, SUM(CASE WHEN LOWER(status)='nonaktif' THEN 1 ELSE 0 END) as nonaktif")
             ->first();
         $ontAgg = ONTModel::query()
-            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->when($kodeWilayah !== '', fn($q) => $q->where('kode_wilayah', $kodeWilayah))
             ->selectRaw("COUNT(*) as total, SUM(CASE WHEN LOWER(status)='aktif' THEN 1 ELSE 0 END) as aktif, SUM(CASE WHEN LOWER(status)='nonaktif' THEN 1 ELSE 0 END) as nonaktif")
             ->first();
 
         $wilayahTotal = WilayahModel::count();
 
         $berkoordTiang = TiangModel::query()
-            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->when($kodeWilayah !== '', fn($q) => $q->where('kode_wilayah', $kodeWilayah))
             ->whereNotNull('latitude')->where('latitude', '!=', '')
             ->whereNotNull('longitude')->where('longitude', '!=', '')
             ->count();
         $berkoordOnt = ONTModel::query()
-            ->when($namaWilayah !== '', fn($q) => $q->whereRaw('LOWER(wilayah) = ?', [strtolower($namaWilayah)]))
+            ->when($kodeWilayah !== '', fn($q) => $q->where('kode_wilayah', $kodeWilayah))
             ->whereNotNull('latitude')->where('latitude', '!=', '')
             ->whereNotNull('longitude')->where('longitude', '!=', '')
             ->count();
@@ -94,12 +98,12 @@ class HalamanController extends Controller
         ];
 
         $recentTiang = TiangModel::query()
-            ->select(['id', 'kode_tiang as kode', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'nama_petugas', 'updated_by', 'created_at', 'updated_at'])
-            ->orderByDesc('updated_at')->orderByDesc('id')->limit(5)->get()
+            ->select(['kode_tiang as id', 'kode_tiang as kode', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'nama_petugas', 'updated_by', 'created_at', 'updated_at'])
+            ->orderByDesc('updated_at')->orderByDesc('kode_tiang')->limit(5)->get()
             ->map(fn($r) => array_merge($r->toArray(), ['type' => 'tiang']));
         $recentOnt = ONTModel::query()
-            ->select(['id', 'kode_ont as kode', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'nama_petugas', 'updated_by', 'created_at', 'updated_at'])
-            ->orderByDesc('updated_at')->orderByDesc('id')->limit(5)->get()
+            ->select(['kode_ont as id', 'kode_ont as kode', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'nama_petugas', 'updated_by', 'created_at', 'updated_at'])
+            ->orderByDesc('updated_at')->orderByDesc('kode_ont')->limit(5)->get()
             ->map(fn($r) => array_merge($r->toArray(), ['type' => 'ont']));
         $recentAssets = $recentTiang->concat($recentOnt)->sortByDesc('updated_at')->take(5)->values();
 
@@ -115,12 +119,12 @@ class HalamanController extends Controller
 
     public function DataTiang(Request $request)
     {
-        $query = TiangModel::query()->select(['id', 'kode_tiang', 'wilayah', 'kecamatan', 'kelurahan', 'nama_petugas', 'status', 'foto_tiang_1', 'latitude', 'longitude']);
+        $query = TiangModel::query()->select(['kode_tiang as id', 'kode_tiang', 'wilayah', 'kecamatan', 'kelurahan', 'nama_petugas', 'status', 'foto_tiang_1', 'latitude', 'longitude']);
 
         if ($request->filled('wilayah')) {
-            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
+            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::where('kode_wilayah', $request->wilayah)->first());
             if ($wilayah) {
-                $query->where('wilayah', $wilayah->nama_wilayah);
+                $query->where('kode_wilayah', $wilayah->kode_wilayah);
             }
         }
 
@@ -158,7 +162,7 @@ class HalamanController extends Controller
             }
         }
 
-        $dataTiang = $query->latest('id')->paginate(15)->withQueryString();
+        $dataTiang = $query->latest('kode_tiang')->paginate(15)->withQueryString();
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
 
         return Inertia::render('DataTiang', [
@@ -178,12 +182,12 @@ class HalamanController extends Controller
 
     public function DataONT(Request $request)
     {
-        $query = ONTModel::query()->select(['id', 'kode_ont', 'wilayah', 'kecamatan', 'kelurahan', 'nama_petugas', 'status', 'foto_ont_1', 'latitude', 'longitude']);
+        $query = ONTModel::query()->select(['kode_ont as id', 'kode_ont', 'wilayah', 'kecamatan', 'kelurahan', 'nama_petugas', 'status', 'foto_ont_1', 'latitude', 'longitude']);
 
         if ($request->filled('wilayah')) {
-            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
+            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::where('kode_wilayah', $request->wilayah)->first());
             if ($wilayah) {
-                $query->where('wilayah', $wilayah->nama_wilayah);
+                $query->where('kode_wilayah', $wilayah->kode_wilayah);
             }
         }
 
@@ -221,7 +225,7 @@ class HalamanController extends Controller
             }
         }
 
-        $dataONT = $query->latest('id')->paginate(15)->withQueryString();
+        $dataONT = $query->latest('kode_tiang')->paginate(15)->withQueryString();
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
 
         return Inertia::render('DataONT', [
@@ -260,7 +264,7 @@ class HalamanController extends Controller
         $rankSqlOnt = "CASE WHEN kode_ont = ? THEN 0 WHEN kode_ont LIKE ? THEN 1 WHEN kode_ont LIKE ? THEN 2 WHEN wilayah = ? THEN 3 WHEN wilayah LIKE ? THEN 4 WHEN wilayah LIKE ? THEN 5 WHEN kecamatan = ? THEN 6 WHEN kecamatan LIKE ? THEN 7 WHEN kecamatan LIKE ? THEN 8 WHEN kelurahan = ? THEN 9 WHEN kelurahan LIKE ? THEN 10 WHEN kelurahan LIKE ? THEN 11 WHEN nama_petugas = ? THEN 12 WHEN nama_petugas LIKE ? THEN 13 WHEN nama_petugas LIKE ? THEN 14 ELSE 15 END";
 
         if ($type === '' || $type === 'tiang') {
-            $tiangRows = TiangModel::select(['id', 'kode_tiang', 'wilayah', 'kecamatan', 'kelurahan', 'nama_petugas'])
+            $tiangRows = TiangModel::select(['kode_tiang as id', 'kode_tiang', 'wilayah', 'kecamatan', 'kelurahan', 'nama_petugas'])
                 ->selectRaw("{$rankSqlTiang} as r", [$exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like])
                 ->where(function ($w) use ($like) {
                     $w->where('kode_tiang', 'like', $like)->orWhere('wilayah', 'like', $like)->orWhere('kecamatan', 'like', $like)->orWhere('kelurahan', 'like', $like)->orWhere('nama_petugas', 'like', $like);
@@ -270,28 +274,28 @@ class HalamanController extends Controller
                 $r = (int) $row->r;
                 $isKode = $r <= 2;
                 if ($isKode) {
-                    $results->push(['id' => $row->id, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => 'kode', 'matchedValue' => $row->kode_tiang, 'label' => $row->kode_tiang . ' - ' . $row->wilayah . ' / ' . $row->kecamatan . ' / ' . $row->kelurahan, 'href' => "detail-tiang/{$row->id}", 'rank' => $r]);
+                    $results->push(['id' => $row->kode_tiang, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => 'kode', 'matchedValue' => $row->kode_tiang, 'label' => $row->kode_tiang . ' - ' . $row->wilayah . ' / ' . $row->kecamatan . ' / ' . $row->kelurahan, 'href' => "detail-tiang/{$row->kode_tiang}", 'rank' => $r]);
                 } else {
                     $field = $r <= 5 ? 'wilayah' : ($r <= 8 ? 'kecamatan' : ($r <= 11 ? 'kelurahan' : 'petugas'));
                     $val = $field === 'wilayah' ? $row->wilayah : ($field === 'kecamatan' ? $row->kecamatan : ($field === 'kelurahan' ? $row->kelurahan : $row->nama_petugas));
                     $href = null;
                     $parentWilayah = Cache::remember('wilayah:name:' . strtolower($row->wilayah ?? ''), 3600, fn() => WilayahModel::where('nama_wilayah', $row->wilayah)->first());
-                    $parentWilayahId = $parentWilayah ? $parentWilayah->id : null;
+                    $parentWilayahId = $parentWilayah ? $parentWilayah->kode_wilayah : null;
                     if ($field === 'wilayah') {
                         $wModel = Cache::remember('wilayah:name:' . strtolower($val), 3600, fn() => WilayahModel::where('nama_wilayah', $val)->first());
-                        if ($wModel) $href = "data-tiang?wilayah={$wModel->id}";
+                        if ($wModel) $href = "data-tiang?wilayah={$wModel->kode_wilayah}";
                         else $href = "data-tiang?q=" . urlencode($val);
-                        $parentWilayahId = $wModel ? $wModel->id : $parentWilayahId;
+                        $parentWilayahId = $wModel ? $wModel->kode_wilayah : $parentWilayahId;
                     } else {
                         $href = "data-tiang?q=" . urlencode($val);
                     }
-                    $results->push(['id' => $row->id, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'wilayah' => $row->wilayah, 'wilayahId' => $parentWilayahId, 'rank' => $r + 2]);
+                    $results->push(['id' => $row->kode_tiang, 'kode' => $row->kode_tiang, 'type' => 'tiang', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'wilayah' => $row->wilayah, 'wilayahId' => $parentWilayahId, 'rank' => $r + 2]);
                 }
             }
         }
 
         if ($type === '' || $type === 'ont') {
-            $ontRows = ONTModel::select(['id', 'kode_ont', 'wilayah', 'kecamatan', 'kelurahan', 'nama_petugas'])
+            $ontRows = ONTModel::select(['kode_ont as id', 'kode_ont', 'wilayah', 'kecamatan', 'kelurahan', 'nama_petugas'])
                 ->selectRaw("{$rankSqlOnt} as r", [$exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like, $exact, $prefix, $like])
                 ->where(function ($w) use ($like) {
                     $w->where('kode_ont', 'like', $like)->orWhere('wilayah', 'like', $like)->orWhere('kecamatan', 'like', $like)->orWhere('kelurahan', 'like', $like)->orWhere('nama_petugas', 'like', $like);
@@ -301,22 +305,22 @@ class HalamanController extends Controller
                 $r = (int) $row->r;
                 $isKode = $r <= 2;
                 if ($isKode) {
-                    $results->push(['id' => $row->id, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => 'kode', 'matchedValue' => $row->kode_ont, 'label' => $row->kode_ont . ' - ' . $row->wilayah . ' / ' . $row->kecamatan . ' / ' . $row->kelurahan, 'href' => "detail-ont/{$row->id}", 'rank' => $r]);
+                    $results->push(['id' => $row->kode_ont, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => 'kode', 'matchedValue' => $row->kode_ont, 'label' => $row->kode_ont . ' - ' . $row->wilayah . ' / ' . $row->kecamatan . ' / ' . $row->kelurahan, 'href' => "detail-ont/{$row->kode_ont}", 'rank' => $r]);
                 } else {
                     $field = $r <= 5 ? 'wilayah' : ($r <= 8 ? 'kecamatan' : ($r <= 11 ? 'kelurahan' : 'petugas'));
                     $val = $field === 'wilayah' ? $row->wilayah : ($field === 'kecamatan' ? $row->kecamatan : ($field === 'kelurahan' ? $row->kelurahan : $row->nama_petugas));
                     $href = null;
                     $parentWilayah = Cache::remember('wilayah:name:' . strtolower($row->wilayah ?? ''), 3600, fn() => WilayahModel::where('nama_wilayah', $row->wilayah)->first());
-                    $parentWilayahId = $parentWilayah ? $parentWilayah->id : null;
+                    $parentWilayahId = $parentWilayah ? $parentWilayah->kode_wilayah : null;
                     if ($field === 'wilayah') {
                         $wModel = Cache::remember('wilayah:name:' . strtolower($val), 3600, fn() => WilayahModel::where('nama_wilayah', $val)->first());
-                        if ($wModel) $href = "data-ont?wilayah={$wModel->id}";
+                        if ($wModel) $href = "data-ont?wilayah={$wModel->kode_wilayah}";
                         else $href = "data-ont?q=" . urlencode($val);
-                        $parentWilayahId = $wModel ? $wModel->id : $parentWilayahId;
+                        $parentWilayahId = $wModel ? $wModel->kode_wilayah : $parentWilayahId;
                     } else {
                         $href = "data-ont?q=" . urlencode($val);
                     }
-                    $results->push(['id' => $row->id, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'wilayah' => $row->wilayah, 'wilayahId' => $parentWilayahId, 'rank' => $r + 2]);
+                    $results->push(['id' => $row->kode_ont, 'kode' => $row->kode_ont, 'type' => 'ont', 'match' => $field, 'matchedValue' => $val, 'label' => ucfirst($field) . ": {$val}", 'href' => $href, 'wilayah' => $row->wilayah, 'wilayahId' => $parentWilayahId, 'rank' => $r + 2]);
                 }
             }
         }
@@ -402,7 +406,7 @@ class HalamanController extends Controller
             $aktif = (int) ($tg->aktif ?? 0) + (int) ($og->aktif ?? 0);
             $nonaktif = (int) ($tg->nonaktif ?? 0) + (int) ($og->nonaktif ?? 0);
             return [
-                'id' => $w->id,
+                'kode_wilayah' => $w->kode_wilayah,
                 'nama_wilayah' => $nama,
                 'kode_wilayah' => $w->kode_wilayah,
                 'total_tiang' => $totalTiang,
@@ -417,9 +421,9 @@ class HalamanController extends Controller
         $filterAset = $request->query('aset', '');
 
         if ($request->filled('wilayah')) {
-            $wilayahFilter = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
+            $wilayahFilter = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::where('kode_wilayah', $request->wilayah)->first());
             if ($wilayahFilter) {
-                $rows = $rows->where('id', (int) $wilayahFilter->id)->values();
+                $rows = $rows->where('kode_wilayah', $wilayahFilter->kode_wilayah)->values();
             } else {
                 $rows = $rows->where('nama_wilayah', $request->wilayah)->values();
             }
@@ -434,7 +438,7 @@ class HalamanController extends Controller
                         $tg = $tiangGrouped->get($nama);
                         $og = $ontGrouped->get($nama);
                         return [
-                            'id' => $w->id,
+                            'id' => $w->kode_wilayah,
                             'nama_wilayah' => $nama,
                             'kode_wilayah' => $w->kode_wilayah,
                             'total_tiang' => $tg ? (int) $tg->total : 0,
@@ -443,7 +447,7 @@ class HalamanController extends Controller
                             'aset_aktif' => (int) ($tg->aktif ?? 0) + (int) ($og->aktif ?? 0),
                             'aset_nonaktif' => (int) ($tg->nonaktif ?? 0) + (int) ($og->nonaktif ?? 0),
                         ];
-                    })->where('id', (int) $request->wilayah)->values();
+                    })->where('kode_wilayah', $request->wilayah)->values();
                 }
             }
 
@@ -455,7 +459,7 @@ class HalamanController extends Controller
                         $tg = $tiangGrouped->get($nama);
                         $og = $ontGrouped->get($nama);
                         return [
-                            'id' => $w->id,
+                            'id' => $w->kode_wilayah,
                             'nama_wilayah' => $nama,
                             'kode_wilayah' => $w->kode_wilayah,
                             'total_tiang' => $tg ? (int) $tg->total : 0,
@@ -464,7 +468,7 @@ class HalamanController extends Controller
                             'aset_aktif' => (int) ($tg->aktif ?? 0) + (int) ($og->aktif ?? 0),
                             'aset_nonaktif' => (int) ($tg->nonaktif ?? 0) + (int) ($og->nonaktif ?? 0),
                         ];
-                    })->where('id', (int) $request->wilayah)->values();
+                    })->where('kode_wilayah', $request->wilayah)->values();
                 }
             }
         }
@@ -495,14 +499,14 @@ class HalamanController extends Controller
 
     public function PetaSebaranAset()
     {
-        $tiang = TiangModel::query()->select(['id', 'kode_tiang', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'latitude', 'longitude', 'nama_petugas'])
+        $tiang = TiangModel::query()->select(['kode_tiang as id', 'kode_tiang', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'latitude', 'longitude', 'nama_petugas'])
             ->whereNotNull('latitude')->where('latitude', '!=', '')
             ->whereNotNull('longitude')->where('longitude', '!=', '')
-            ->orderByDesc('id')->limit(2000)->get();
-        $ont = ONTModel::query()->select(['id', 'kode_ont', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'latitude', 'longitude', 'nama_petugas'])
+            ->orderByDesc('kode_tiang')->limit(2000)->get();
+        $ont = ONTModel::query()->select(['kode_ont as id', 'kode_ont', 'wilayah', 'kecamatan', 'kelurahan', 'status', 'latitude', 'longitude', 'nama_petugas'])
             ->whereNotNull('latitude')->where('latitude', '!=', '')
             ->whereNotNull('longitude')->where('longitude', '!=', '')
-            ->orderByDesc('id')->limit(2000)->get();
+            ->orderByDesc('kode_ont')->limit(2000)->get();
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
 
         return Inertia::render('PetaSebaranAset', [
@@ -516,7 +520,7 @@ class HalamanController extends Controller
 
     public function DetailTiang($id)
     {
-        $tiang = TiangModel::findOrFail($id);
+        $tiang = TiangModel::where('kode_tiang', $id)->firstOrFail();
 
         return Inertia::render('DetailTiang', [
             'tiang' => $tiang,
@@ -527,7 +531,7 @@ class HalamanController extends Controller
 
     public function DetailONT($id)
     {
-        $ont = ONTModel::findOrFail($id);
+        $ont = ONTModel::where('kode_ont', $id)->firstOrFail();
 
         return Inertia::render('DetailONT', [
             'ont' => $ont,
@@ -550,7 +554,7 @@ class HalamanController extends Controller
                 $request->session()->regenerate();
                 $request->session()->put([
                     'login' => true,
-                    'user_id' => $user->id,
+                    'user_id' => $user->id_user,
                     'username' => $user->username,
                 ]);
                 return redirect('home');
@@ -576,7 +580,7 @@ class HalamanController extends Controller
                 $request->session()->regenerate();
                 $request->session()->put([
                     'login' => true,
-                    'user_id' => $user->id,
+                    'user_id' => $user->id_user,
                     'username' => $user->username,
                 ]);
                 return redirect('home');

@@ -41,7 +41,7 @@ class EksporController extends Controller
         $semua = in_array($cakupan, ['all', 'semua', 'semua-data', 'semua_data'], true);
 
         if ($semua) {
-            $items = $this->bangunKueri($type, $request)->latest('id')->get();
+            $items = $this->bangunKueri($type, $request)->latest($type === 'ont' ? 'kode_ont' : 'kode_tiang')->get();
 
             if ($items->isEmpty()) {
                 return response()->json(['message' => 'Tidak ada data yang dapat diexpor pada filter saat ini.'], 422);
@@ -146,7 +146,6 @@ class EksporController extends Controller
         $kode = $config['kode'];
 
         $query = $config['model']::query()->select([
-            'id',
             $kode,
             'wilayah',
             'kecamatan',
@@ -161,9 +160,9 @@ class EksporController extends Controller
         ]);
 
         if ($request->filled('wilayah')) {
-            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
+            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::where("kode_wilayah", $request->wilayah)->first());
             if ($wilayah) {
-                $query->where('wilayah', $wilayah->nama_wilayah);
+                $query->where('kode_wilayah', $wilayah->kode_wilayah);
             }
         }
 
@@ -201,7 +200,7 @@ class EksporController extends Controller
             }
         }
 
-        return $query->latest('id');
+        return $query->latest($kode);
     }
 
     // Baris Laporan
@@ -238,7 +237,7 @@ class EksporController extends Controller
     private function wilayahEkspor(Request $request): string
     {
         if ($request->filled('wilayah')) {
-            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::find($request->wilayah));
+            $wilayah = Cache::remember('wilayah:' . $request->wilayah, 3600, fn() => WilayahModel::where("kode_wilayah", $request->wilayah)->first());
             if ($wilayah) {
                 return ucfirst($wilayah->nama_wilayah);
             }
