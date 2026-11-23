@@ -29,6 +29,14 @@ return new class extends Migration
             }
         }
 
+        foreach (['tiang', 'ont'] as $table) {
+            if (!Schema::hasColumn($table, 'kode_wilayah')) {
+                Schema::table($table, function ($blueprint) {
+                    $blueprint->string('kode_wilayah', 255)->nullable();
+                });
+            }
+        }
+
         // 2. Populate kode_wilayah.
         foreach (['tiang', 'ont'] as $table) {
             DB::statement("
