@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
         UserModel::firstOrCreate(
             ['username' => 'admin'],
             [
+                'id_user' => 'USR-ADMIN',
                 'password' => Hash::make('password'),
                 'remember_token' => null,
             ]
@@ -25,6 +26,7 @@ class UserSeeder extends Seeder
         UserModel::firstOrCreate(
             ['username' => 'admin2'],
             [
+                'id_user' => 'USR-ADMIN2',
                 'password' => Hash::make('password2'),
                 'remember_token' => null,
             ]

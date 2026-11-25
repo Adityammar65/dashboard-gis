@@ -53,11 +53,12 @@ class OntSeeder extends Seeder
             ['nama' => 'magelang', 'kode' => 'MGL', 'bbox' => [-7.620, -7.400, 110.100, 110.300]],
         ];
 
+        $kodeWilayahSeed = array_column($wilayahData, 'kode');
         foreach ($wilayahData as $w) {
             [$latMin, $latMax, $lngMin, $lngMax] = $w['bbox'];
 
             for ($n = 1; $n <= 2; $n++) {
-                $kodeOnt = sprintf('SIMS-%s-%03d', $w['kode'], $n);
+                $kodeOnt = sprintf('SIMS-ONT-%s-%03d', $w['kode'], $n);
 
                 $lat = $latMin + (mt_rand() / mt_getrandmax()) * ($latMax - $latMin);
                 $lng = $lngMin + (mt_rand() / mt_getrandmax()) * ($lngMax - $lngMin);
@@ -83,5 +84,11 @@ class OntSeeder extends Seeder
                 );
             }
         }
+
+        ONTModel::query()
+            ->where('kode_ont', 'like', 'SIMS-%')
+            ->whereIn('kode_wilayah', $kodeWilayahSeed)
+            ->whereNotLike('kode_ont', 'SIMS-ONT-%')
+            ->delete();
     }
 }

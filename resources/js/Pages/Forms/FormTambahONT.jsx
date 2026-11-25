@@ -26,7 +26,7 @@ export default function FormTambahONT({ wilayah }) {
     const placeholderKode = useMemo(() => {
         const wil = wilayah?.find((w) => w.nama_wilayah === form.wilayah);
         const kode = wil?.kode_wilayah;
-        return kode ? `SIMS-${kode}-` : "SIMS-YGY-";
+        return kode ? `SIMS-ONT-${kode}-` : "";
     }, [form.wilayah, wilayah]);
     const { settings } = usePage().props;
     const [kecamatanOptions, setKecamatanOptions] = useState([]);
@@ -143,9 +143,15 @@ export default function FormTambahONT({ wilayah }) {
         if (name === "wilayah") {
             const wil = wilayah?.find((w) => w.nama_wilayah === value);
             const kodeWil = wil?.kode_wilayah;
-            const prefix = kodeWil ? `SIMS-${kodeWil}-` : "";
-            if (!kodeEdited && prefix) {
-                setForm((prev) => ({ ...prev, wilayah: value, kecamatan: "", kelurahan: "", kode_ont: prefix }));
+            const prefix = kodeWil ? `SIMS-ONT-${kodeWil}-` : "";
+            if (!kodeEdited) {
+                setForm((prev) => ({
+                    ...prev,
+                    wilayah: value,
+                    kecamatan: "",
+                    kelurahan: "",
+                    kode_ont: prefix,
+                }));
             } else {
                 setForm((prev) => ({ ...prev, wilayah: value, kecamatan: "", kelurahan: "" }));
             }

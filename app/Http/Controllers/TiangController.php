@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\Rule;
 use App\Services\ImageService;
 
 class TiangController extends Controller
@@ -126,7 +127,7 @@ class TiangController extends Controller
         try {
             $tiang = TiangModel::where('kode_tiang', $id)->firstOrFail();
             $validated = $request->validate([
-                'kode_tiang'      => 'required|string|max:255|unique:tiang,kode_tiang,' . $tiang->kode_tiang,
+                'kode_tiang'      => ['required', 'string', 'max:255', Rule::unique('tiang', 'kode_tiang')->ignore($tiang->kode_tiang, 'kode_tiang')],
                 'wilayah'         => 'required|string|max:255',
                 'kecamatan'       => 'required|string|max:255',
                 'kelurahan'       => 'required|string|max:255',

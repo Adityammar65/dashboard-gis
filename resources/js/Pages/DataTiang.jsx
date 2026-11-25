@@ -908,8 +908,8 @@ export default function DataTiang({
                                                     id={tiang.id}
                                                     kode={tiang.kode_tiang}
                                                     base={base}
-                                                    detailHref={resolveHref(`detail-tiang/${tiang.id}`)}
-                                                    editHref={resolveHref(`edit-tiang/${tiang.id}`)}
+                                                    detailHref={resolveHref(`detail-tiang/${tiang.kode_tiang}`)}
+                                                    editHref={resolveHref(`edit-tiang/${tiang.kode_tiang}`)}
                                                 />
 
                                             </td>
@@ -954,8 +954,8 @@ export default function DataTiang({
                                             id={tiang.id}
                                             kode={tiang.kode_tiang}
                                             base={base}
-                                            detailHref={resolveHref(`detail-tiang/${tiang.id}`)}
-                                            editHref={resolveHref(`edit-tiang/${tiang.id}`)}
+                                            detailHref={resolveHref(`detail-tiang/${tiang.kode_tiang}`)}
+                                            editHref={resolveHref(`edit-tiang/${tiang.kode_tiang}`)}
                                         />
                                     }
                                 />

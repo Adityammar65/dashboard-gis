@@ -903,11 +903,11 @@ export default function DataONT({
 
                                                 <TableActions
                                                     type="ont"
-                                                    id={ont.id}
+                                                    id={ont.kode_ont}
                                                     kode={ont.kode_ont}
                                                     base={base}
-                                                    detailHref={resolveHref(`detail-ont/${ont.id}`)}
-                                                    editHref={resolveHref(`edit-ont/${ont.id}`)}
+                                                    detailHref={resolveHref(`detail-ont/${ont.kode_ont}`)}
+                                                    editHref={resolveHref(`edit-ont/${ont.kode_ont}`)}
                                                 />
 
                                             </td>
@@ -936,7 +936,7 @@ export default function DataONT({
                         {listONT.length > 0 ? (
                             listONT.map((ont, index) => (
                                 <MobileDataCard
-                                    key={ont.id ?? index}
+                                    key={ont.kode_ont ?? index}
                                     title={ont.kode_ont}
                                     subtitle={`${ont.wilayah || ont.kabupaten || ""}${(ont.kecamatan || ont.area) ? ` • ${ont.kecamatan || ont.area}` : ""}`}
                                     imageSrc={ont.foto_ont_1 ? `${base}/storage/${ont.foto_ont_1}`.replace(/\/+/g, '/') : null}
@@ -949,11 +949,11 @@ export default function DataONT({
                                     actions={
                                         <CardActions
                                             type="ont"
-                                            id={ont.id}
+                                            id={ont.kode_ont}
                                             kode={ont.kode_ont}
                                             base={base}
-                                            detailHref={resolveHref(`detail-ont/${ont.id}`)}
-                                            editHref={resolveHref(`edit-ont/${ont.id}`)}
+                                            detailHref={resolveHref(`detail-ont/${ont.kode_ont}`)}
+                                            editHref={resolveHref(`edit-ont/${ont.kode_ont}`)}
                                         />
                                     }
                                 />

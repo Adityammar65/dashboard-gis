@@ -9,6 +9,7 @@ use App\Helpers\NotifikasiHelper;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\Rule;
 use App\Services\ImageService;
 
 class ONTController extends Controller
@@ -124,7 +125,7 @@ class ONTController extends Controller
         try {
             $ont = ONTModel::where('kode_ont', $id)->firstOrFail();
             $validated = $request->validate([
-                'kode_ont'      => 'required|string|max:255|unique:ont,kode_ont,' . $ont->kode_ont,
+                'kode_ont'      => ['required', 'string', 'max:255', Rule::unique('ont', 'kode_ont')->ignore($ont->kode_ont, 'kode_ont')],
                 'wilayah'         => 'required|string|max:255',
                 'kecamatan'       => 'required|string|max:255',
                 'kelurahan'       => 'required|string|max:255',

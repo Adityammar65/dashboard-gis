@@ -225,7 +225,7 @@ class HalamanController extends Controller
             }
         }
 
-        $dataONT = $query->latest('kode_tiang')->paginate(15)->withQueryString();
+        $dataONT = $query->latest('kode_ont')->paginate(15)->withQueryString();
         $wilayah = Cache::remember('wilayah:list', 3600, fn() => WilayahModel::all());
 
         return Inertia::render('DataONT', [
@@ -350,7 +350,9 @@ class HalamanController extends Controller
             return response()->json(['error' => 'Wilayah tidak ditemukan'], 404);
         }
 
-        $prefix = 'SIMS-' . $kodeWil;
+        $prefix = $type === 'ont'
+            ? 'SIMS-ONT-' . $kodeWil
+            : 'SIMS-' . $kodeWil;
         $column = $type === 'ont' ? 'kode_ont' : 'kode_tiang';
         $modelClass = $type === 'ont' ? ONTModel::class : TiangModel::class;
 
@@ -367,7 +369,7 @@ class HalamanController extends Controller
 
         return response()->json([
             'kode' => $nextKode,
-            'prefix' => $prefix,
+            'prefix' => $prefix . '-',
             'wilayah' => $wilayahModel->nama_wilayah,
             'kode_wilayah' => $kodeWil,
             'type' => $type,

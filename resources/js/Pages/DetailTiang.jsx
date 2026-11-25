@@ -294,7 +294,7 @@ export default function DetailTiang({ tiang }) {
                         <div className="mt-5 flex flex-wrap items-center gap-2 max-sm:flex-col max-sm:items-stretch">
                             <button
                                 type="button"
-                                onClick={() => router.get(`${base}/edit-tiang/${tiang?.id}`.replace(/\/+/g, '/'))}
+                                onClick={() => router.get(`${base}/edit-tiang/${tiang?.kode_tiang}`.replace(/\/+/g, '/'))}
                                 className="flex w-fit items-center gap-2 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 px-4 py-2.5 text-xs font-medium text-white shadow-md transition hover:shadow-lg hover:from-blue-700 hover:to-blue-800 active:scale-[0.98] max-sm:w-full max-sm:justify-center"
                             >
 
@@ -311,7 +311,7 @@ export default function DetailTiang({ tiang }) {
 
                             <DeleteDataButton
                                 type="tiang"
-                                id={tiang?.id}
+                                id={tiang?.kode_tiang}
                                 kode={tiang?.kode_tiang}
                                 base={base}
                             />

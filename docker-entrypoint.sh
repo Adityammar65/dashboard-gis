@@ -22,4 +22,4 @@ until su daemon -s /bin/sh -c 'php /usr/local/bin/wait-for-mysql.php'; do
     sleep 2
 done
 
-su daemon -s /bin/sh -c 'php artisan migrate --force --seed && php artisan storage:link --force && exec php artisan serve --host=0.0.0.0 --port=8000'
+su daemon -s /bin/sh -c 'php artisan migrate --force && php artisan storage:link --force && exec php artisan serve --host=0.0.0.0 --port=8000'
