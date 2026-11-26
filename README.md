@@ -11,52 +11,72 @@ Dashboard GIS untuk memantau dan mengelola aset jaringan **Tiang** dan **ONT** b
 - [Panduan Notifikasi dan Rekapitulasi](docs/panduan-notifikasi-rekapitulasi.md)
 - [Dokumentasi Teknis Sistem](docs/dokumentasi-teknis-sistem.md)
 
-## Prasyarat
+## Panduan Docker (Disarankan)
+
+### Prasyarat
+
+- **Docker Engine** 24+ dan **Docker Compose** v2 (`docker compose`)
+- **Git**
+
+### Quick Start
+
+```bash
+git clone https://github.com/Magang-VAS/dashboard-gis.git
+cd dashboard-gis
+cp .env.example .env
+docker compose up -d --build
+```
+
+Compose membangun image, membuat `APP_KEY` jika belum ada, menunggu MySQL siap, menjalankan migrasi, membuat storage link, lalu menjalankan aplikasi.
+
+- Aplikasi: `http://localhost:8090`
+- phpMyAdmin: `http://localhost:8091` (server `mysql`, user `laravel`, password `laravel`, database `gis_database`)
+- MySQL: host port `3307`, container port `3306`
+
+Port dapat diubah melalui `APP_PORT`, `PHPMYADMIN_PORT`, dan `MYSQL_PORT` di `.env`. Variabel koneksi database container menggunakan `DB_HOST=mysql`; jangan ubah menjadi `127.0.0.1` untuk Docker.
+
+### Perintah Umum
+
+```bash
+# Muat data contoh
+docker compose exec app php artisan db:seed --force
+
+# Lihat log aplikasi
+docker compose logs -f app
+
+# Hentikan layanan; data volume tetap tersimpan
+docker compose down
+```
+
+Volume `mysql-data`, `app-storage`, dan `app-bootstrap` menyimpan database serta file aplikasi. `docker compose down -v` menghapus semua volume dan data persisten; gunakan hanya untuk reset total.
+
+## Improvement
+
+- **Docker**: Compose untuk aplikasi, MySQL, dan phpMyAdmin; multi-stage build untuk asset frontend dan dependency PHP.
+- **Startup container**: pembuatan `APP_KEY`, menunggu koneksi MySQL, migrasi otomatis, dan storage link. PHP berjalan sebagai `daemon`.
+- **Konfigurasi dan persistensi**: `.env.example` menyediakan default Docker; volume mempertahankan database dan file saat container dihentikan.
+- **Normalisasi primary key**: migrasi baru menggunakan `kode_wilayah`, `kode_tiang`, dan `kode_ont` sebagai business key; `user` mendapat identifier `id_user`.
+- **Penyesuaian aplikasi**: model, controller, query peta/wilayah, form, dan seeder mengikuti business key baru.
+- **Port default**: aplikasi `8090`, phpMyAdmin `8091`, MySQL host `3307` → container `3306`.
+
+Lihat [Panduan Instalasi Manual](#panduan-instalasi-manual-pengembangan-lokal-tanpa-docker) bila menjalankan tanpa Docker.
+
+## Panduan Instalasi Manual (Pengembangan Lokal / Tanpa Docker)
+
+Gunakan panduan ini hanya jika tidak memakai Docker Compose.
+
+### Prasyarat
 
 - **PHP 8.2** + ekstensi `gd`, `mbstring`, `pdo_mysql`, `fileinfo`, `openssl`
 - **Composer 2.x**
 - **Node.js 20+** & **npm 9+**
-- **MySQL**
+- **MySQL** (lokal / XAMPP)
 - **Git**
-
-## Panduan Docker
-
-Project ini menyediakan Docker Compose untuk menggantikan XAMPP lokal.
-
-```bash
-docker compose up -d --build
-```
-
-Compose otomatis membuat `APP_KEY`, menunggu MySQL siap, menjalankan migrasi, lalu menjalankan aplikasi sebagai user `daemon`. Key dan database tersimpan di Docker volumes. Aplikasi tersedia di `http://localhost:8090`, phpMyAdmin di `http://localhost:8091`, dan MySQL host port `3307` dipetakan ke port internal `3306`. Login phpMyAdmin memakai server `mysql`, user `laravel`, password `laravel`, database `gis_database`.
-
----
-
-### Improvement (branch ini)
-
-- **Docker Compose** menggantikan XAMPP lokal; jalankan seluruh aplikasi dengan `docker compose up -d --build`.
-- **Port mapping**: aplikasi `8090`, phpMyAdmin `8091`, MySQL host `3307` → container `3306`.
-- **Database terisolasi**: app container selalu memakai `DB_HOST=mysql`; `.env` XAMPP dengan `DB_HOST=127.0.0.1` tidak memengaruhi koneksi Docker.
-- **Permission**: PHP berjalan sebagai `daemon:daemon`; direktori storage, cache, dan `public` writable.
-- **Volume persisten** menyimpan data MySQL, file aplikasi, dan cache saat container dihentikan. Hindari `docker compose down -v` kecuali ingin menghapus data.
-- **Startup otomatis** membuat dan menyimpan `APP_KEY`, menunggu MySQL siap, menjalankan migrasi, lalu membuat storage link.
-- **Build multi-stage** menghasilkan asset frontend dan dependency PHP di image runtime lokal; tidak perlu login ke registry. Base image publik tetap diunduh jika belum ada di mesin.
-- `.env.example` mencantumkan URL dan port Docker default.
-
-Untuk memuat data awal:
-
-```bash
-docker compose exec app php artisan db:seed --force
-```
-
-Untuk menghentikan layanan, jalankan `docker compose down`. Jangan tambahkan `-v` kecuali ingin menghapus data database dan file aplikasi.
-
-## Panduan Instalasi
 
 ### 1. Clone Proyek
 
 ```bash
 git clone https://github.com/Magang-VAS/dashboard-gis.git dashboard-gis
-
 cd dashboard-gis
 ```
 
@@ -75,7 +95,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Buka file `.env` lalu sesuaikan dengan device:
+Buka file `.env` lalu sesuaikan (contoh XAMPP default):
 
 ```env
 APP_URL=http://localhost
@@ -111,92 +131,31 @@ php artisan migrate --seed
 php artisan storage:link
 ```
 
-Pastikan folder writable:
+Pastikan folder writable (Linux / macOS):
 
 ```bash
-# Linux / macOS
 chown -R $USER:daemon dashboard-gis
-
 chmod -R 775 dashboard-gis
-
 chmod -R 775 storage bootstrap/cache
 ```
 
-Foto pada data contoh menggunakan path `tiang/dummy.jpg` dan `ont/dummy.jpg` (string placeholder, tidak memerlukan file fisik).
+> Foto data contoh memakai path `tiang/dummy.jpg` dan `ont/dummy.jpg`; pastikan file tersedia di `storage/app/public`.
 
-### 5. Setup Konfigurasi Wilayah Operasi
+### 5. Jalankan Server Pengembangan
 
-```bash
-php artisan settings:generate
-
-cd storage/app
-
-chmod 775 settings.json
-
-chown $USER:daemon settings.json
-```
-
-settings.json digunakan sebagai konfigurasi dinamis untuk wilayah operasi
-
-### 6. Build Frontend
-
-Untuk produksi:
-
-```bash
-npm run build
-```
-
-Hasil build akan ada di `public/build`. Untuk pengembangan:
-
-```bash
-npm run dev
-```
-
-### 7. Jalankan Aplikasi
-
-**Opsi A — via Composer (disarankan):**
-
-```bash
-composer run dev
-```
-
-Perintah ini menjalankan `php artisan serve` + `queue:listen` + `pail` + `vite` secara bersamaan.
-
-**Opsi B — Manual (terminal terpisah):**
+Terminal pertama (backend):
 
 ```bash
 php artisan serve
-# Akses: http://localhost:8000/home
-# Jika via XAMPP htdocs: http://localhost/dashboard-gis/home
+```
 
-# Terminal lain:
+Terminal kedua (frontend Vite):
+
+```bash
 npm run dev
 ```
 
-### 8. Login & Verifikasi
-
-Akun default dari seeder:
-
-- **Username:** `admin`
-- **Password:** `password`
-
-Setelah login, verifikasi:
-
-- Buka `/home` — 4 kartu statistik (TOTAL TIANG, TOTAL ONT, WILAYAH COVERAGE, DATA BERKOORDINAT) harus menampilkan angka dari database, bukan `9999`.
-- Peta tampil jika wilayah sudah dipilih di `/pengaturan` (default `sleman` jika sudah seed & `storage/app/settings.json` terisi). Jika belum, akan muncul ajakan "Wilayah Belum Ditentukan".
-- Buka `/data-tiang` dan `/data-ont` — tabel paginasi 15 baris, foto dummy, filter wilayah/status berfungsi.
-- Buka `/wilayah` — harus ada 8 baris wilayah beserta total aset.
-- Buka `/peta-sebaran-aset` — filter Tiang/ONT, status, dan wilayah berfungsi; marker sesuai bbox tiap wilayah.
-
-### 9. Fitur Utama
-
-- **Dashboard & Rekapitulasi** — statistik live Tiang/ONT (Aktif/Nonaktif), cakupan wilayah, % berkoordinat, peta pratinjau wilayah operasi, dan 5 pembaruan aset terbaru.
-- **Data Tiang, ONT & Wilayah** — tabel paginasi + filter + pencarian dengan aksi Detail/Edit/Hapus; rekap per wilayah; hapus wilayah ditolak bila masih punya aset.
-- **Formulir Aset** — kode otomatis (`SIMS-kode-nomor`), autocomplete kecamatan/kelurahan, koordinat via klik peta atau pencarian alamat, 5 foto (otomatis WebP; bisa diganti/dikosongkan per slot saat ubah).
-- **Peta Sebaran Aset** — filter jenis/status/wilayah, marker hijau (Aktif) dan merah (Nonaktif), popup + tautan detail, tombol Google Maps, dan koordinat kursor live.
-- **Ekspor & Pencarian** — unduh PDF/Excel mengikuti filter aktif (cakupan halaman ini atau semua data); pencarian global di header (min. 2 huruf).
-- **Notifikasi** — audit trail tiap CRUD dan permintaan reset akun, status baca otomatis, serta tombol tandai semua dibaca dan hapus yang dibaca.
-- **Pengaturan & Akun** — wilayah operasi (`settings.json`), profil dan reset kata sandi via persetujuan admin, tema Terang/Gelap per perangkat, login sesi + Ingat Saya 30 hari + Lupa Password; konversi foto via `cwebp`/ImageMagick (lihat `config/image.php`).
+Aplikasi tersedia di `http://localhost:8000` (atau port yang ditampilkan `php artisan serve`).
 
 ### 10. Dokumentasi Antarmuka
 
@@ -345,6 +304,6 @@ Halaman Lupa Password dapat dibuka tanpa login melalui tautan "Lupa password?" d
 
 ### Contributor
 
-Aditya Ammar Al Haqqi
+Aditya Ammar Al Haqqi (24.02.1095)
 
-Luthfi Fajar Prasetyo
+Luthfi Fajar Prasetyo (24.02.1108)
