@@ -575,7 +575,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     <div>
                                         <div className="mb-2 flex items-center justify-between">
                                             <label className="block text-xs text-gray-500 dark:text-night-400">
-                                                Foto 1
+                                                Foto 1 (maks 5 MB)
                                             </label>
 
                                             {(preview.foto_tiang_1 || tiang?.foto_tiang_1) && (
@@ -616,7 +616,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         <input
                                             name="foto_tiang_1"
                                             type="file"
-                                            accept="image/*"
+                                            accept="image/*" placeholder="Maks. 5 MB"
                                             onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
@@ -627,7 +627,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     <div>
                                         <div className="mb-2 flex items-center justify-between">
                                             <label className="block text-xs text-gray-500 dark:text-night-400">
-                                                Foto 2
+                                                Foto 2 (maks 5 MB)
                                             </label>
 
                                             {(preview.foto_tiang_2 || tiang?.foto_tiang_2) && (
@@ -668,7 +668,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         <input
                                             name="foto_tiang_2"
                                             type="file"
-                                            accept="image/*"
+                                            accept="image/*" placeholder="Maks. 5 MB"
                                             onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
@@ -679,7 +679,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     <div>
                                         <div className="mb-2 flex items-center justify-between">
                                             <label className="block text-xs text-gray-500 dark:text-night-400">
-                                                Foto 3
+                                                Foto 3 (maks 5 MB)
                                             </label>
 
                                             {(preview.foto_tiang_3 || tiang?.foto_tiang_3) && (
@@ -720,7 +720,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         <input
                                             name="foto_tiang_3"
                                             type="file"
-                                            accept="image/*"
+                                            accept="image/*" placeholder="Maks. 5 MB"
                                             onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
@@ -731,7 +731,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     <div>
                                         <div className="mb-2 flex items-center justify-between">
                                             <label className="block text-xs text-gray-500 dark:text-night-400">
-                                                Foto 4
+                                                Foto 4 (maks 5 MB)
                                             </label>
 
                                             {(preview.foto_tiang_4 || tiang?.foto_tiang_4) && (
@@ -772,7 +772,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         <input
                                             name="foto_tiang_4"
                                             type="file"
-                                            accept="image/*"
+                                            accept="image/*" placeholder="Maks. 5 MB"
                                             onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
@@ -783,7 +783,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                     <div>
                                         <div className="mb-2 flex items-center justify-between">
                                             <label className="block text-xs text-gray-500 dark:text-night-400">
-                                                Foto 5
+                                                Foto 5 (maks 5 MB)
                                             </label>
 
                                             {(preview.foto_tiang_5 || tiang?.foto_tiang_5) && (
@@ -824,7 +824,7 @@ export default function FormEditTiang({ tiang, wilayah }) {
                                         <input
                                             name="foto_tiang_5"
                                             type="file"
-                                            accept="image/*"
+                                            accept="image/*" placeholder="Maks. 5 MB"
                                             onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />

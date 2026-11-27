@@ -14,7 +14,6 @@ class RequestPerubahanAkun extends Model
         'requested_by',
         'username_baru',
         'status',
-        'requested_ip',
         'handled_by',
         'handled_at',
     ];

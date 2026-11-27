@@ -42,7 +42,6 @@ class SetelUlangKataSandiController extends Controller
             'requested_by' => $username,
             'username_baru' => null,
             'status' => 'pending',
-            'requested_ip' => $request->ip(),
         ]);
 
         $notif = NotifikasiHelper::kirim(

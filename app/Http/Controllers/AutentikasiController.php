@@ -152,7 +152,6 @@ class AutentikasiController extends Controller
             'requested_by' => $userSaatIni,
             'username_baru' => $userBaru,
             'status' => 'pending',
-            'requested_ip' => $request->ip(),
         ]);
 
         $notif = NotifikasiHelper::kirim(
@@ -210,7 +209,6 @@ class AutentikasiController extends Controller
             'requested_by' => $userSaatIni,
             'username_baru' => null,
             'status' => 'pending',
-            'requested_ip' => $request->ip(),
         ]);
 
         $notif = NotifikasiHelper::kirim(
@@ -309,7 +307,6 @@ class AutentikasiController extends Controller
                 'requested_by' => $userSaatIni,
                 'username_baru' => $userBaru,
                 'status' => 'pending',
-                'requested_ip' => $request->ip(),
             ]);
 
             $notif = NotifikasiHelper::kirim(
@@ -333,7 +330,6 @@ class AutentikasiController extends Controller
                 'requested_by' => $userSaatIni,
                 'username_baru' => null,
                 'status' => 'pending',
-                'requested_ip' => $request->ip(),
             ]);
 
             $notif = NotifikasiHelper::kirim(

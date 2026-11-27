@@ -521,7 +521,7 @@ export default function FormTambahTiang({ wilayah }) {
 
                                     <div>
                                         <label className="block text-xs text-gray-500 dark:text-night-400 mb-1">
-                                            Foto 1
+                                            Foto 1 (wajib, maks 5 MB)
                                         </label>
 
                                         <input
@@ -538,7 +538,7 @@ export default function FormTambahTiang({ wilayah }) {
 
                                     <div>
                                         <label className="block text-xs text-gray-500 dark:text-night-400 mb-1">
-                                            Foto 2
+                                            Foto 2 (wajib, maks 5 MB)
                                         </label>
 
                                         <input
@@ -555,7 +555,7 @@ export default function FormTambahTiang({ wilayah }) {
 
                                     <div>
                                         <label className="block text-xs text-gray-500 dark:text-night-400 mb-1">
-                                            Foto 3
+                                            Foto 3 (wajib, maks 5 MB)
                                         </label>
 
                                         <input
@@ -572,14 +572,13 @@ export default function FormTambahTiang({ wilayah }) {
 
                                     <div>
                                         <label className="block text-xs text-gray-500 dark:text-night-400 mb-1">
-                                            Foto 4
+                                            Foto 4 (opsional, maks 5 MB)
                                         </label>
 
                                         <input
                                             name="foto_tiang_4"
                                             type="file"
                                             accept="image/*"
-                                            required
                                             onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
@@ -589,14 +588,13 @@ export default function FormTambahTiang({ wilayah }) {
 
                                     <div>
                                         <label className="block text-xs text-gray-500 dark:text-night-400 mb-1">
-                                            Foto 5
+                                            Foto 5 (opsional, maks 5 MB)
                                         </label>
 
                                         <input
                                             name="foto_tiang_5"
                                             type="file"
                                             accept="image/*"
-                                            required
                                             onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-200 dark:border-night-700 rounded-xl text-sm text-gray-600 dark:text-night-300 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100 shadow-sm"
                                         />
