@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RequestPerubahanAkun extends Model
 {
@@ -25,5 +26,15 @@ class RequestPerubahanAkun extends Model
     public function isPending(): bool
     {
         return $this->status === 'pending';
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(UserModel::class, 'requested_by', 'id_user');
+    }
+
+    public function getUsernamePemohonAttribute(): string
+    {
+        return $this->user?->username ?? $this->requested_by;
     }
 }

@@ -137,7 +137,7 @@ class AutentikasiController extends Controller
 
         $menunggu = RequestPerubahanAkun::where('status', 'pending')
             ->where('tipe_request', 'username_change')
-            ->where('requested_by', $userSaatIni)
+            ->where('requested_by', $user->id_user)
             ->exists();
 
         if ($menunggu) {
@@ -149,7 +149,7 @@ class AutentikasiController extends Controller
         $reset = RequestPerubahanAkun::create([
             'password_baru' => null,
             'tipe_request' => 'username_change',
-            'requested_by' => $userSaatIni,
+            'requested_by' => $user->id_user,
             'username_baru' => $userBaru,
             'status' => 'pending',
         ]);
@@ -194,7 +194,7 @@ class AutentikasiController extends Controller
 
         $menunggu = RequestPerubahanAkun::where('status', 'pending')
             ->whereIn('tipe_request', ['password_change', 'password_reset'])
-            ->where('requested_by', $userSaatIni)
+            ->where('requested_by', $user->id_user)
             ->exists();
 
         if ($menunggu) {
@@ -206,7 +206,7 @@ class AutentikasiController extends Controller
         $reset = RequestPerubahanAkun::create([
             'password_baru' => Hash::make($request->password),
             'tipe_request' => 'password_change',
-            'requested_by' => $userSaatIni,
+            'requested_by' => $user->id_user,
             'username_baru' => null,
             'status' => 'pending',
         ]);
@@ -266,7 +266,7 @@ class AutentikasiController extends Controller
 
             $menungguUser = RequestPerubahanAkun::where('status', 'pending')
                 ->where('tipe_request', 'username_change')
-                ->where('requested_by', $userSaatIni)
+                ->where('requested_by', $user->id_user)
                 ->exists();
 
             if ($menungguUser) {
@@ -288,7 +288,7 @@ class AutentikasiController extends Controller
 
             $menungguKataSandi = RequestPerubahanAkun::where('status', 'pending')
                 ->whereIn('tipe_request', ['password_change', 'password_reset'])
-                ->where('requested_by', $userSaatIni)
+                ->where('requested_by', $user->id_user)
                 ->exists();
 
             if ($menungguKataSandi) {
@@ -304,7 +304,7 @@ class AutentikasiController extends Controller
             $reset = RequestPerubahanAkun::create([
                 'password_baru' => null,
                 'tipe_request' => 'username_change',
-                'requested_by' => $userSaatIni,
+                'requested_by' => $user->id_user,
                 'username_baru' => $userBaru,
                 'status' => 'pending',
             ]);
@@ -327,7 +327,7 @@ class AutentikasiController extends Controller
             $reset = RequestPerubahanAkun::create([
                 'password_baru' => Hash::make($password),
                 'tipe_request' => 'password_change',
-                'requested_by' => $userSaatIni,
+                'requested_by' => $user->id_user,
                 'username_baru' => null,
                 'status' => 'pending',
             ]);

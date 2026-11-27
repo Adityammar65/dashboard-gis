@@ -24,9 +24,10 @@ class SetelUlangKataSandiController extends Controller
             'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
         ]);
 
-        $username = $request->username;
+        $user = UserModel::where('username', $request->username)->firstOrFail();
+        $username = $user->username;
 
-        $pending = RequestPerubahanAkun::where('requested_by', $username)
+        $pending = RequestPerubahanAkun::where('requested_by', $user->id_user)
             ->where('status', 'pending')
             ->exists();
 
@@ -39,7 +40,7 @@ class SetelUlangKataSandiController extends Controller
         $reset = RequestPerubahanAkun::create([
             'password_baru' => Hash::make($request->password),
             'tipe_request' => 'password_reset',
-            'requested_by' => $username,
+            'requested_by' => $user->id_user,
             'username_baru' => null,
             'status' => 'pending',
         ]);
@@ -69,17 +70,17 @@ class SetelUlangKataSandiController extends Controller
         }
 
         $penyetuju = $request->session()->get('username');
-        $usernameAkun = $reset->requested_by;
-        $jenis = $reset->tipe_request ?: 'password_reset';
-
-        if ($penyetuju && $penyetuju === $usernameAkun) {
-            return back()->withErrors(['Tidak dapat menyetujui permintaan akun sendiri.']);
-        }
-
-        $user = UserModel::where('username', $usernameAkun)->first();
+        $user = UserModel::find($reset->requested_by);
 
         if (!$user) {
             return back()->withErrors(['Akun tidak ditemukan (mungkin sudah dihapus).']);
+        }
+
+        $usernameAkun = $user->username;
+        $jenis = $reset->tipe_request ?: 'password_reset';
+
+        if ($request->session()->get('user_id') === $reset->requested_by) {
+            return back()->withErrors(['Tidak dapat menyetujui permintaan akun sendiri.']);
         }
 
         if ($jenis === 'username_change') {
@@ -141,9 +142,15 @@ class SetelUlangKataSandiController extends Controller
         }
 
         $penyetuju = $request->session()->get('username');
-        $usernameAkun = $reset->requested_by;
+        $user = UserModel::find($reset->requested_by);
 
-        if ($penyetuju && $penyetuju === $usernameAkun) {
+        if (!$user) {
+            return back()->withErrors(['Akun tidak ditemukan (mungkin sudah dihapus).']);
+        }
+
+        $usernameAkun = $user->username;
+
+        if ($request->session()->get('user_id') === $reset->requested_by) {
             return back()->withErrors(['Tidak dapat menolak permintaan akun sendiri.']);
         }
 

@@ -613,12 +613,14 @@ class HalamanController extends Controller
         }
         $resetRequest = null;
         if ($notifikasi->reset_request_id) {
-            $resetRequest = RequestPerubahanAkun::where('id', $notifikasi->reset_request_id)
-                ->first(['id', 'tipe_request', 'requested_by', 'username_baru', 'status', 'handled_by', 'handled_at', 'created_at']);
+            $resetRequest = RequestPerubahanAkun::with('user:id_user,username')
+                ->where('id', $notifikasi->reset_request_id)
+                ->first(['id', 'tipe_request', 'requested_by', 'username_baru', 'status', 'handled_by', 'handled_at', 'created_at'])
+                ?->append('username_pemohon');
         }
         return Inertia::render('DetailNotifikasi', [
             'notifikasi' => $notifikasi,
-            'resetRequest' => $resetRequest,
+            'resetRequest' => $resetRequest?->append('username_pemohon'),
         ]);
     }
 
@@ -658,13 +660,17 @@ class HalamanController extends Controller
         return Inertia::render('Pengaturan', [
             'wilayah' => $wilayah,
             'settings' => $settings,
-            'resetRequests' => RequestPerubahanAkun::where('status', 'pending')
+            'resetRequests' => RequestPerubahanAkun::with('user:id_user,username')
+                ->where('status', 'pending')
                 ->orderByDesc('id')
-                ->get(['id', 'tipe_request', 'requested_by', 'username_baru', 'created_at']),
-            'resetHistory' => RequestPerubahanAkun::whereIn('status', ['approved', 'rejected'])
+                ->get(['id', 'tipe_request', 'requested_by', 'username_baru', 'created_at'])
+                ->map(fn ($r) => $r->append('username_pemohon')),
+            'resetHistory' => RequestPerubahanAkun::with('user:id_user,username')
+                ->whereIn('status', ['approved', 'rejected'])
                 ->orderByDesc('id')
                 ->limit(5)
-                ->get(['id', 'tipe_request', 'requested_by', 'username_baru', 'status', 'handled_by', 'handled_at']),
+                ->get(['id', 'tipe_request', 'requested_by', 'username_baru', 'status', 'handled_by', 'handled_at'])
+                ->map(fn ($r) => $r->append('username_pemohon')),
         ]);
     }
 }

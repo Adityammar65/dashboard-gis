@@ -19,7 +19,7 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const myPending = resetRequests.filter(
-        (r) => r.requested_by === currentUsername
+        (r) => r.username_pemohon === currentUsername
     );
     const myPendingUsername = myPending.find((r) => (r.tipe_request ?? "password_reset") === "username_change");
     const myPendingPassword = myPending.find((r) => {
@@ -37,15 +37,15 @@ export default function Pengaturan({ wilayah, resetRequests = [], resetHistory =
     const getRequestDetail = (item) => {
         const t = item?.tipe_request ?? "password_reset";
         if (t === "username_change" && item?.username_baru) {
-            return `${item.requested_by} → ${item.username_baru}`;
+            return `${item.username_pemohon ?? item.requested_by} → ${item.username_baru}`;
         }
         if (t === "password_change") {
-            return `Ubah kata sandi akun ${item.requested_by}`;
+            return `Ubah kata sandi akun ${item.username_pemohon ?? item.requested_by}`;
         }
-        return `Reset kata sandi akun ${item.requested_by}`;
+        return `Reset kata sandi akun ${item.username_pemohon ?? item.requested_by}`;
     };
 
-    const isOwnRequest = (item) => item?.requested_by === currentUsername;
+    const isOwnRequest = (item) => item?.username_pemohon === currentUsername;
 
     const handleSimpan = () => {
         if (!selectedWilayah) {
