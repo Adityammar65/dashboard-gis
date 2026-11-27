@@ -1,13 +1,17 @@
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+
+const resourcesJs = fileURLToPath(new URL('./resources/js', import.meta.url));
+const inertiaCompat = fileURLToPath(new URL('./resources/js/compat/inertia.jsx', import.meta.url));
 
 export default defineConfig({
     plugins: [react(), tailwindcss()],
     resolve: {
         alias: {
-            '@inertiajs/react': '@/compat/inertia',
-            '@': '/opt/lampp/htdocs/dashboard-gis-clone/resources/js',
+            '@inertiajs/react': inertiaCompat,
+            '@': resourcesJs,
         },
     },
     build: {
