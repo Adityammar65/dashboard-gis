@@ -1,7 +1,7 @@
 import MainLayout from "../Layouts/MainLayout";
 import MobileDataCard from "../Components/MobileDataCard";
 import { TableDelete, CardDelete, TableEmpty, CardEmpty } from "../Components/DataActions";
-import { usePage, router } from "@inertiajs/react";
+import { usePage, router } from "@/compat/inertia";
 import { useState, useMemo, useCallback } from "react";
 
 import { FaFilter, FaMap, FaPlus } from "react-icons/fa";

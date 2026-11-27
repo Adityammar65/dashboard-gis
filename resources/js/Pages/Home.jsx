@@ -1,6 +1,6 @@
 import MainLayout from "../Layouts/MainLayout";
 
-import { usePage } from "@inertiajs/react";
+import { usePage } from "@/compat/inertia";
 import {
     FaPlus,
     FaArrowRight,

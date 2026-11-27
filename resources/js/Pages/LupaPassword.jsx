@@ -3,7 +3,7 @@ import AuthLayout from "../Layouts/AuthLayout";
 import ThemeToggle from "../Components/ThemeToggle";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FaKey } from "react-icons/fa";
-import { router, usePage } from "@inertiajs/react";
+import { router, usePage } from "@/compat/inertia";
 
 export default function LupaPassword() {
     const [showPassword, setShowPassword] = useState(false);

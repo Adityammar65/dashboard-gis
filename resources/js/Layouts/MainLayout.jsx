@@ -1,7 +1,7 @@
 import { useState, createContext, useContext, useEffect, useCallback } from "react";
 import { Header, Sidebar, MobileDrawer } from "../Components";
 import { FiX } from "react-icons/fi";
-import { usePage } from "@inertiajs/react";
+import { usePage } from "@/compat/inertia";
 
 export const LayoutErrorContext = createContext(null);
 

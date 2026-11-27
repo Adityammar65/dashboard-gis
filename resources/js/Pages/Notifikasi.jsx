@@ -3,7 +3,7 @@ import MainLayout from "../Layouts/MainLayout";
 import { FaWifi, FaChevronRight, FaMap, FaCheckDouble, FaTrash, FaUser, FaKey } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
 import { useEffect } from "react";
-import { router, usePage } from "@inertiajs/react";
+import { router, usePage } from "@/compat/inertia";
 import useBase from "../hooks/useBase";
 
 const getIconByKategori = (kategori) => {

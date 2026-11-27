@@ -2,7 +2,7 @@ import MainLayout from "../Layouts/MainLayout";
 import MobileDataCard from "../Components/MobileDataCard";
 import { TableActions, CardActions, TableEmpty, CardEmpty } from "../Components/DataActions";
 
-import { usePage, router } from "@inertiajs/react";
+import { usePage, router } from "@/compat/inertia";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { FaPlus, FaFilter, FaChevronDown, FaFileExport, FaFilePdf, FaFileExcel } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";

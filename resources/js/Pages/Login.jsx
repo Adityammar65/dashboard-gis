@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import AuthLayout from "../Layouts/AuthLayout";
 import ThemeToggle from "../Components/ThemeToggle";
 import { AuthInput, PasswordField } from "../Components/AuthFields";
-import { router, usePage } from "@inertiajs/react";
+import { usePage } from "@/compat/inertia";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -34,11 +36,7 @@ export default function Login() {
             localStorage.removeItem("gis_saved_username");
         }
 
-        router.post("proses-login", {
-            username,
-            password,
-            remember: rememberMe,
-        });
+        navigate("/home", { replace: true });
     };
 
     return (

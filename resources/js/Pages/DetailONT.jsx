@@ -4,7 +4,7 @@ import GoogleMapsButton from "../Components/GoogleMapsButton";
 import DeleteDataButton from "../Components/DeleteDataButton";
 import { FaArrowLeft, FaPen } from "react-icons/fa";
 import { useState } from "react";
-import { router, usePage } from "@inertiajs/react";
+import { router, usePage } from "@/compat/inertia";
 import useBase from "../hooks/useBase";
 
 export default function DetailONT({ ont }) {

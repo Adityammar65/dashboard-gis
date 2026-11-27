@@ -1,4 +1,46 @@
-# Dashboard GIS
+# Dashboard GIS — Live Demo
+
+Frontend-only GIS dashboard demo, dibangun dengan React, Vite, Tailwind CSS, dan Leaflet. Seluruh data berasal dari fixture statis `resources/js/data/demoData.js`; tidak ada backend atau database. Perubahan hanya tampilan dan tidak disimpan.
+
+## Jalankan lokal
+
+```bash
+npm install
+npm run dev
+```
+
+## Build dan deploy ke Vercel
+
+```bash
+npm run build
+```
+
+Vercel membaca `vercel.json`: build command `npm run build`, output directory `dist`, serta SPA fallback untuk deep links. Import repository di Vercel tanpa environment variables atau database.
+
+Demo membutuhkan koneksi internet untuk font Google Fonts dan peta OpenStreetMap tiles.
+
+## Data demo
+
+Ubah `resources/js/data/demoData.js` untuk mengedit aset, wilayah, statistik, dan notifikasi contoh.
+
+## Batasan
+
+Login, CRUD, ekspor, pengaturan tersimpan, dan operasi backend tidak tersedia. File halaman/backend lama yang tidak dipakai tidak disertakan ke dalam bundle Vite.
+
+---
+
+## Dokumentasi versi Laravel sebelumnya
+
+Dokumentasi berikut merujuk ke versi backend yang sudah dikeluarkan dari branch live demo:
+
+- [Panduan Penggunaan Aplikasi](docs/panduan-penggunaan-aplikasi.md)
+- [Panduan Pengelolaan Data Aset](docs/panduan-pengelolaan-data-aset.md)
+- [Panduan Penggunaan Peta Sebaran](docs/panduan-peta-sebaran-aset.md)
+- [Dokumentasi Teknis Sistem](docs/dokumentasi-teknis-sistem.md)
+
+---
+
+### Arsip README lama
 
 Dashboard GIS untuk memantau dan mengelola aset jaringan **Tiang** dan **ONT** berbasis peta. Dibangun dengan Laravel & Inertia + React + Leaflet, mendukung manajemen per wilayah, foto aset, dan notifikasi aktivitas.
 

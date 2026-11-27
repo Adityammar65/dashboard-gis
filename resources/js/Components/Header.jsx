@@ -4,7 +4,7 @@ import { LuUtilityPole } from "react-icons/lu";
 import { IoMdArrowDropdown, IoMdNotifications } from "react-icons/io";
 import { IoIosSettings, IoIosLogOut } from "react-icons/io";
 import { FiMenu } from "react-icons/fi";
-import { usePage, router } from "@inertiajs/react";
+import { usePage, router } from "@/compat/inertia";
 import useBase, { asset } from "../hooks/useBase";
 
 const Header = memo(function Header({ onMenu }) {
@@ -358,7 +358,7 @@ const Header = memo(function Header({ onMenu }) {
                                     Pengaturan Profil
                                 </a>
                                 <a
-                                    href={`${base}/logout`.replace(/\/+/g, '/')}
+                                    href={`${base}/login`.replace(/\/+/g, '/')}
                                     onClick={(e) => {
                                         if (!confirm("Kembali ke Halaman Login?")) {
                                             e.preventDefault();

@@ -3,7 +3,7 @@ import ThemeToggle from "../Components/ThemeToggle";
 import { AuthInput, PasswordField } from "../Components/AuthFields";
 import { FaMapMarked, FaSave, FaUserCog, FaKey, FaMoon, FaCheck, FaTimes, FaUserShield } from "react-icons/fa";
 import { useState } from "react";
-import { router, usePage } from "@inertiajs/react";
+import { router, usePage } from "@/compat/inertia";
 
 export default function Pengaturan({ wilayah, resetRequests = [], resetHistory = [] }) {
     const { props } = usePage();

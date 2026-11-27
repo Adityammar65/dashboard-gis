@@ -1,7 +1,7 @@
 import MainLayout from "../Layouts/MainLayout";
 import MobileDataCard from "../Components/MobileDataCard";
 
-import { usePage, router } from "@inertiajs/react";
+import { usePage, router } from "@/compat/inertia";
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { TableActions, CardActions, TableEmpty, CardEmpty } from "../Components/DataActions";
 

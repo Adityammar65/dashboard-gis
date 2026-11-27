@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { FaChevronDown, FaWifi } from "react-icons/fa";
 import { LuUtilityPole } from "react-icons/lu";
-import { usePage } from "@inertiajs/react";
+import { usePage } from "@/compat/inertia";
 
 import MainLayout from "../Layouts/MainLayout";
 import MapView from "../Components/MapView";

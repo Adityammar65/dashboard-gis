@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { FaArrowLeft } from "react-icons/fa";
-import { router, usePage } from "@inertiajs/react";
+import { router, usePage } from "@/compat/inertia";
 
 export default function PanduanLayout({ children }) {
     const { auth } = usePage().props;

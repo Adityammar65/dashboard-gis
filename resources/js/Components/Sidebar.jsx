@@ -1,7 +1,7 @@
 import { memo, useMemo } from "react";
 import { IoIosLogOut, IoIosSettings } from "react-icons/io";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { usePage } from "@inertiajs/react";
+import { usePage } from "@/compat/inertia";
 import { menuItems, isActivePath, isPengaturanPath, LOGOUT_CONFIRM } from "./navItems";
 import { useResolveHref } from "../hooks/useBase";
 
@@ -197,7 +197,7 @@ const Sidebar = memo(function Sidebar({ isOpen, onToggle }) {
 
                         {isOpen && (
                             <a
-                                href={resolveHref("logout")}
+                                href={resolveHref("login")}
                                 className="flex-1"
                                 onClick={confirmLogout}
                             >

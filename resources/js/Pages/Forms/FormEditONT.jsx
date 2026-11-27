@@ -1,7 +1,7 @@
 import MainLayout from "../../Layouts/MainLayout";
 import LocationPicker from "../../Components/LocationPicker";
 import { FaArrowLeft, FaSave, FaTrash, FaUndo } from "react-icons/fa";
-import { router, usePage } from "@inertiajs/react";
+import { router, usePage } from "@/compat/inertia";
 import { useState, useEffect, useMemo } from "react";
 import useBase from "../../hooks/useBase";
 

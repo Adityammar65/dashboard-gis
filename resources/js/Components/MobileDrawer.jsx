@@ -2,7 +2,7 @@ import { memo, useMemo, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosLogOut, IoIosSettings, IoMdNotifications } from "react-icons/io";
 import { FiX } from "react-icons/fi";
-import { usePage } from "@inertiajs/react";
+import { usePage } from "@/compat/inertia";
 import { menuItems, isActivePath, isPengaturanPath, isNotifikasiPath, LOGOUT_CONFIRM } from "./navItems";
 import { useResolveHref } from "../hooks/useBase";
 
@@ -182,7 +182,7 @@ const MobileDrawer = memo(function MobileDrawer({ open, onClose }) {
                     {/* Keluar */}
 
                     <a
-                        href={resolveHref("logout")}
+                        href={resolveHref("login")}
                         onClick={(e) => {
                             if (!confirm(LOGOUT_CONFIRM)) {
                                 e.preventDefault();
